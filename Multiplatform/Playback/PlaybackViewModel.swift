@@ -233,34 +233,32 @@ final class PlaybackViewModel {
         }
     }
     
-    nonisolated func createQuickBookmark() {
+    func createQuickBookmark() {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 isCreatingBookmark = true
             }
-            
+
             do {
                 try await AudioPlayer.shared.createQuickBookmark()
                 let _ = try? await CreateBookmarkIntent().donate()
-                
-                await MainActor.withAnimation {
+
+                withAnimation {
                     notifySuccess.toggle()
                     isCreatingBookmark = false
                 }
             } catch {
-                await MainActor.withAnimation {
+                withAnimation {
                     notifyError.toggle()
                     isCreatingBookmark = false
                 }
             }
         }
     }
-    nonisolated func cyclePlaybackSpeed() {
+    func cyclePlaybackSpeed() {
         Task {
             await AudioPlayer.shared.cyclePlaybackSpeed()
-            await MainActor.run {
-                notifySuccess.toggle()
-            }
+            notifySuccess.toggle()
         }
     }
     
@@ -282,35 +280,31 @@ final class PlaybackViewModel {
         bookmarkNote = ""
         self.bookmarkCapturedTime = nil
     }
-    nonisolated func finalizeBookmarkCreation() {
+    func finalizeBookmarkCreation() {
         Task {
-            guard let bookmarkCapturedTime = await bookmarkCapturedTime, let currentItemID = await AudioPlayer.shared.currentItemID else {
+            guard let bookmarkCapturedTime = bookmarkCapturedTime, let currentItemID = await AudioPlayer.shared.currentItemID else {
                 return
             }
-            
-            let note = await bookmarkNote.trimmingCharacters(in: .whitespacesAndNewlines)
-            
-            await MainActor.withAnimation {
+
+            let note = bookmarkNote.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            withAnimation {
                 isCreatingBookmark = true
             }
-            
+
             do {
                 if note.isEmpty {
                     try await AudioPlayer.shared.createQuickBookmark()
                 } else {
-                    try await PersistenceManager.shared.bookmark.create(at: bookmarkCapturedTime, note: await bookmarkNote, for: currentItemID)
+                    try await PersistenceManager.shared.bookmark.create(at: bookmarkCapturedTime, note: bookmarkNote, for: currentItemID)
                 }
-            
-                await MainActor.run {
-                    notifySuccess.toggle()
-                }
+
+                notifySuccess.toggle()
             } catch {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
+                notifyError.toggle()
             }
-            
-            await MainActor.withAnimation {
+
+            withAnimation {
                 isCreatingBookmark = false
                 isCreateBookmarkAlertVisible = false
                 
@@ -322,12 +316,12 @@ final class PlaybackViewModel {
 }
 
 private extension PlaybackViewModel {
-    nonisolated func loadIDs(itemID: ItemIdentifier) {
+    func loadIDs(itemID: ItemIdentifier) {
         Task {
             guard let item = try? await itemID.resolved else {
                 return
             }
-            
+
             await withTaskGroup {
                 $0.addTask { await self.loadAuthorIDs(item: item) }
                 $0.addTask { await self.loadNarratorIDs(item: item) }
@@ -335,52 +329,52 @@ private extension PlaybackViewModel {
             }
         }
     }
-    nonisolated func loadAuthorIDs(item: Item) async {
+    func loadAuthorIDs(item: Item) async {
         var authorIDs = [(ItemIdentifier, String)]()
-        
+
         for author in item.authors {
             do {
                 let authorID = try await ABSClient[item.id.connectionID].authorID(from: item.id.libraryID, name: author)
                 authorIDs.append((authorID, author))
             } catch {}
         }
-        
-        await MainActor.withAnimation {
+
+        withAnimation {
             self.authorIDs = authorIDs
         }
     }
-    nonisolated func loadNarratorIDs(item: Item) async {
+    func loadNarratorIDs(item: Item) async {
         guard let audiobook = item as? Audiobook else {
-            await MainActor.withAnimation {
+            withAnimation {
                 self.narratorIDs.removeAll()
             }
-            
+
             return
         }
-        
+
         let mapped = audiobook.narrators.map { (Person.convertNarratorToID($0, libraryID: item.id.libraryID, connectionID: item.id.connectionID), $0) }
-        
-        await MainActor.withAnimation {
+
+        withAnimation {
             self.narratorIDs = mapped
         }
     }
-    nonisolated func loadSeriesIDs(item: Item) async {
+    func loadSeriesIDs(item: Item) async {
         guard let audiobook = item as? Audiobook else {
-            await MainActor.withAnimation {
+            withAnimation {
                 self.seriesIDs.removeAll()
             }
-            
+
             return
         }
-        
+
         var seriesIDs = [(ItemIdentifier, String)]()
-        
+
         for series in audiobook.series {
             if let seriesID = series.id {
                 seriesIDs.append((seriesID, series.name))
                 continue
             }
-            
+
             do {
                 let seriesID = try await ABSClient[item.id.connectionID].seriesID(from: item.id.libraryID, name: series.name)
                 seriesIDs.append((seriesID, series.name))
@@ -388,8 +382,8 @@ private extension PlaybackViewModel {
                 continue
             }
         }
-        
-        await MainActor.withAnimation {
+
+        withAnimation {
             self.seriesIDs = seriesIDs
         }
     }

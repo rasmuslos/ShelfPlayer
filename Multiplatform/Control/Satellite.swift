@@ -59,7 +59,7 @@ final class Satellite {
     private(set) var busy = [ItemIdentifier: Int]()
     
     @ObservationIgnored
-    private(set) nonisolated(unsafe) var skipTask: Task<Void, Never>?
+    private(set) var skipTask: Task<Void, Never>?
     
     private(set) var notifySkipBackwards = false
     private(set) var notifySkipForwards = false
@@ -387,24 +387,24 @@ extension Satellite {
 // MARK: Miscellaneous
 
 extension Satellite {
-    nonisolated func deleteBookmark(at time: UInt64, from itemID: ItemIdentifier) {
+    func deleteBookmark(at time: UInt64, from itemID: ItemIdentifier) {
         Task {
-            await startWorking(on: itemID)
+            startWorking(on: itemID)
 
             do {
                 try await PersistenceManager.shared.bookmark.delete(at: time, from: itemID)
 
-                if await nowPlayingItemID == itemID {
-                    await MainActor.withAnimation {
+                if nowPlayingItemID == itemID {
+                    withAnimation {
                         bookmarks.removeAll {
                             $0.time == time
                         }
                     }
                 }
 
-                await endWorking(on: itemID, successfully: true)
+                endWorking(on: itemID, successfully: true)
             } catch {
-                await endWorking(on: itemID, successfully: false)
+                endWorking(on: itemID, successfully: false)
             }
         }
     }
@@ -425,42 +425,42 @@ extension Satellite {
     }
 
 
-    nonisolated func play() {
+    func play() {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
-            
+            startWorking(on: currentItemID)
+
             await AudioPlayer.shared.play()
-            
+
             do {
                 try await PlayIntent().donate()
             } catch {
                 logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
             }
-            
-            await endWorking(on: currentItemID, successfully: nil)
+
+            endWorking(on: currentItemID, successfully: nil)
         }
     }
-    nonisolated func pause() {
+    func pause() {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
-            
+            startWorking(on: currentItemID)
+
             await AudioPlayer.shared.pause()
-            
+
             do {
                 try await PauseIntent().donate()
             } catch {
                 logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
             }
-            
-            await endWorking(on: currentItemID, successfully: nil)
+
+            endWorking(on: currentItemID, successfully: nil)
         }
     }
     func togglePlaying() {
@@ -471,52 +471,52 @@ extension Satellite {
         }
     }
 
-    nonisolated func skip(forwards: Bool) {
+    func skip(forwards: Bool) {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
+            startWorking(on: currentItemID)
 
             do {
                 try await AudioPlayer.shared.skip(forwards: forwards)
-                
+
                 let intent: any AppIntent
-                
+
                 if forwards {
                     intent = SkipForwardsIntent()
                 } else {
                     intent = SkipBackwardsIntent()
                 }
-                
+
                 do {
                     try await intent.donate()
                 } catch {
                     logger.error("Failed to donate skip intent: \(error)")
                 }
-                
-                await endWorking(on: currentItemID, successfully: nil)
+
+                endWorking(on: currentItemID, successfully: nil)
             } catch {
-                await endWorking(on: currentItemID, successfully: false)
+                endWorking(on: currentItemID, successfully: false)
             }
         }
     }
-    nonisolated func seek(to time: TimeInterval, insideChapter: Bool, completion: (@Sendable @escaping () -> Void)) {
+    func seek(to time: TimeInterval, insideChapter: Bool, completion: (@Sendable @escaping () -> Void)) {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
+            startWorking(on: currentItemID)
 
             do {
                 try await AudioPlayer.shared.seek(to: time, insideChapter: insideChapter)
-                await endWorking(on: currentItemID, successfully: true)
+                endWorking(on: currentItemID, successfully: true)
 
                 completion()
             } catch {
-                await endWorking(on: currentItemID, successfully: false)
+                endWorking(on: currentItemID, successfully: false)
             }
         }
     }
@@ -556,117 +556,113 @@ extension Satellite {
         }
     }
 
-    nonisolated func start(_ itemID: ItemIdentifier, at: TimeInterval? = nil, origin: AudioPlayerItem.PlaybackOrigin = .unknown, queue: [ItemIdentifier] = []) {
+    func start(_ itemID: ItemIdentifier, at: TimeInterval? = nil, origin: AudioPlayerItem.PlaybackOrigin = .unknown, queue: [ItemIdentifier] = []) {
         Task {
-            guard await self.nowPlayingItemID != itemID else {
-                await togglePlaying()
-                return
-            }
-            
-            guard await PersistenceManager.shared.download.status(of: itemID) != .downloading else {
-                await warn(.playbackStartWhileDownloading(itemID))
-                return
-            }
-            
-            guard await !isLoading(observing: itemID) else {
+            guard self.nowPlayingItemID != itemID else {
+                togglePlaying()
                 return
             }
 
-            await startWorking(on: itemID)
+            guard await PersistenceManager.shared.download.status(of: itemID) != .downloading else {
+                warn(.playbackStartWhileDownloading(itemID))
+                return
+            }
+
+            guard !isLoading(observing: itemID) else {
+                return
+            }
+
+            startWorking(on: itemID)
 
             do {
                 try await AudioPlayer.shared.start(.init(itemID: itemID, origin: origin))
-                
+
                 if let at {
                     try await AudioPlayer.shared.seek(to: at, insideChapter: false)
                 }
-                
+
                 try await AudioPlayer.shared.queue(queue.map { .init(itemID: $0, origin: .unknown) })
-                
-                await endWorking(on: itemID, successfully: true)
+
+                endWorking(on: itemID, successfully: true)
             } catch {
-                await endWorking(on: itemID, successfully: false)
+                endWorking(on: itemID, successfully: false)
             }
         }
     }
-    nonisolated func stop() {
+    func stop() {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
+            startWorking(on: currentItemID)
             await AudioPlayer.shared.stop()
-            await endWorking(on: currentItemID, successfully: true)
+            endWorking(on: currentItemID, successfully: true)
         }
     }
 
-    nonisolated func queue(_ itemID: ItemIdentifier) {
+    func queue(_ itemID: ItemIdentifier) {
         Task {
-            await startWorking(on: itemID)
-            
+            startWorking(on: itemID)
+
             do {
                 try await AudioPlayer.shared.queue([.init(itemID: itemID, origin: .unknown)])
-                await endWorking(on: itemID, successfully: true)
+                endWorking(on: itemID, successfully: true)
             } catch {
-                await endWorking(on: itemID, successfully: false)
+                endWorking(on: itemID, successfully: false)
             }
         }
     }
-    nonisolated func queue(_ itemIDs: [ItemIdentifier], origin: AudioPlayerItem.PlaybackOrigin = .unknown) {
+    func queue(_ itemIDs: [ItemIdentifier], origin: AudioPlayerItem.PlaybackOrigin = .unknown) {
         Task {
-            await MainActor.withAnimation {
+            withAnimation {
                 totalLoading += 1
             }
 
             do {
                 try await AudioPlayer.shared.queue(itemIDs.map { .init(itemID: $0, origin: origin) })
-                
-                await MainActor.run {
-                    notifySuccess.toggle()
-                }
+
+                notifySuccess.toggle()
             } catch {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
+                notifyError.toggle()
             }
-            
-            await MainActor.withAnimation {
+
+            withAnimation {
                 totalLoading -= 1
             }
         }
     }
 
-    nonisolated func setPlaybackRate(_ rate: Percentage) {
+    func setPlaybackRate(_ rate: Percentage) {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
-            
+            startWorking(on: currentItemID)
+
             await AudioPlayer.shared.setPlaybackRate(rate)
-            
+
             do {
                 try await SetPlaybackRateIntent(rate: rate).donate()
             } catch {
                 logger.error("Failed to donate SetPlaybackRateIntent: \(error)")
             }
-            
-            await endWorking(on: currentItemID, successfully: true)
+
+            endWorking(on: currentItemID, successfully: true)
         }
     }
 
-    nonisolated func setSleepTimer(_ configuration: SleepTimerConfiguration?) {
+    func setSleepTimer(_ configuration: SleepTimerConfiguration?) {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
-            
+            startWorking(on: currentItemID)
+
             await AudioPlayer.shared.setSleepTimer(configuration)
-            
+
             do {
                 switch configuration {
                     case .interval(let deadline, _):
@@ -680,139 +676,139 @@ extension Satellite {
             } catch {
                 logger.error("Failed to donate SetSleepTimerIntent: \(error)")
             }
-            
-            await resolveRemainingSleepTime()
-            
-            await endWorking(on: currentItemID, successfully: true)
+
+            resolveRemainingSleepTime()
+
+            endWorking(on: currentItemID, successfully: true)
         }
     }
-    nonisolated func extendSleepTimer() {
+    func extendSleepTimer() {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
-            
+            startWorking(on: currentItemID)
+
             await AudioPlayer.shared.extendSleepTimer()
-            
+
             do {
                 try await ExtendSleepTimerIntent().donate()
             } catch {
                 logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
             }
-            
-            await endWorking(on: currentItemID, successfully: true)
+
+            endWorking(on: currentItemID, successfully: true)
         }
     }
-    nonisolated func setSleepTimerToChapter(_ chapter: Chapter) {
+    func setSleepTimerToChapter(_ chapter: Chapter) {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
+            startWorking(on: currentItemID)
             let chapters = await AudioPlayer.shared.chapters
 
             guard let index = chapters.firstIndex(of: chapter),
                   let currentChapterIndex = await AudioPlayer.shared.activeChapterIndex,
                   index >= currentChapterIndex else {
-                await endWorking(on: currentItemID, successfully: false)
+                endWorking(on: currentItemID, successfully: false)
                 return
             }
 
             let amount = index - currentChapterIndex + 1
 
             await AudioPlayer.shared.setSleepTimer(.chapters(amount, 1))
-            
+
             do {
                 try await SetSleepTimerIntent(amount: amount, type: .chapters).donate()
             } catch {
                 logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
             }
-            
-            await endWorking(on: currentItemID, successfully: true)
+
+            endWorking(on: currentItemID, successfully: true)
         }
     }
 
-    nonisolated func skip(queueIndex index: Int) {
+    func skip(queueIndex index: Int) {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
+            startWorking(on: currentItemID)
             await AudioPlayer.shared.skip(queueIndex: index)
-            await endWorking(on: currentItemID, successfully: true)
+            endWorking(on: currentItemID, successfully: true)
         }
     }
-    nonisolated func skip(upNextQueueIndex index: Int) {
+    func skip(upNextQueueIndex index: Int) {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
+            startWorking(on: currentItemID)
             await AudioPlayer.shared.skip(upNextQueueIndex: index)
-            await endWorking(on: currentItemID, successfully: true)
+            endWorking(on: currentItemID, successfully: true)
         }
     }
-    
-    nonisolated func move(queueIndex: IndexSet, to: Int) {
+
+    func move(queueIndex: IndexSet, to: Int) {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
+            startWorking(on: currentItemID)
             await AudioPlayer.shared.move(queueIndex: queueIndex, to: to)
-            await endWorking(on: currentItemID, successfully: true)
+            endWorking(on: currentItemID, successfully: true)
         }
     }
 
-    nonisolated func remove(queueIndex index: Int) {
+    func remove(queueIndex index: Int) {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
+            startWorking(on: currentItemID)
             await AudioPlayer.shared.remove(queueIndex: index)
-            await endWorking(on: currentItemID, successfully: true)
+            endWorking(on: currentItemID, successfully: true)
         }
     }
-    nonisolated func remove(upNextQueueIndex index: Int) {
+    func remove(upNextQueueIndex index: Int) {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
+            startWorking(on: currentItemID)
             await AudioPlayer.shared.remove(upNextQueueIndex: index)
-            await endWorking(on: currentItemID, successfully: true)
+            endWorking(on: currentItemID, successfully: true)
         }
     }
 
-    nonisolated func clearQueue() {
+    func clearQueue() {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
+            startWorking(on: currentItemID)
             await AudioPlayer.shared.clearQueue()
-            await endWorking(on: currentItemID, successfully: true)
+            endWorking(on: currentItemID, successfully: true)
         }
     }
-    nonisolated func clearUpNextQueue() {
+    func clearUpNextQueue() {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
+            guard let currentItemID = nowPlayingItemID else {
                 return
             }
 
-            await startWorking(on: currentItemID)
+            startWorking(on: currentItemID)
             await AudioPlayer.shared.clearUpNextQueue()
-            await endWorking(on: currentItemID, successfully: true)
+            endWorking(on: currentItemID, successfully: true)
         }
     }
 }
@@ -820,44 +816,44 @@ extension Satellite {
 // MARK: Progress
 
 extension Satellite {
-    nonisolated func markAsFinished(_ itemID: ItemIdentifier) {
+    func markAsFinished(_ itemID: ItemIdentifier) {
         Task {
-            await startWorking(on: itemID)
-            
+            startWorking(on: itemID)
+
             do {
-                if await nowPlayingItemID == itemID {
+                if nowPlayingItemID == itemID {
                     try await AudioPlayer.shared.seek(to: duration, insideChapter: false)
                 } else {
                     try await PersistenceManager.shared.progress.markAsCompleted([itemID])
                 }
-                
-                await endWorking(on: itemID, successfully: true)
+
+                endWorking(on: itemID, successfully: true)
             } catch {
-                await endWorking(on: itemID, successfully: false)
+                endWorking(on: itemID, successfully: false)
             }
         }
     }
-    nonisolated func markAsUnfinished(_ itemID: ItemIdentifier) {
+    func markAsUnfinished(_ itemID: ItemIdentifier) {
         Task {
-            await startWorking(on: itemID)
-            
+            startWorking(on: itemID)
+
             do {
                 try await PersistenceManager.shared.progress.markAsListening([itemID])
-                await endWorking(on: itemID, successfully: true)
+                endWorking(on: itemID, successfully: true)
             } catch {
-                await endWorking(on: itemID, successfully: false)
+                endWorking(on: itemID, successfully: false)
             }
         }
     }
-    nonisolated func deleteProgress(_ itemID: ItemIdentifier) {
+    func deleteProgress(_ itemID: ItemIdentifier) {
         Task {
-            await startWorking(on: itemID)
-            
+            startWorking(on: itemID)
+
             do {
                 try await PersistenceManager.shared.progress.delete(itemID: itemID)
-                await endWorking(on: itemID, successfully: true)
+                endWorking(on: itemID, successfully: true)
             } catch {
-                await endWorking(on: itemID, successfully: false)
+                endWorking(on: itemID, successfully: false)
             }
         }
     }
@@ -866,65 +862,61 @@ extension Satellite {
 // MARK: Download
 
 extension Satellite {
-    nonisolated func download(itemID: ItemIdentifier) {
+    func download(itemID: ItemIdentifier) {
         Task {
             let status = await PersistenceManager.shared.download.status(of: itemID)
 
             guard status == .none else {
                 return
             }
-            
+
             guard await AudioPlayer.shared.currentItemID != itemID else {
-                await warn(.downloadStartWhilePlaying)
+                warn(.downloadStartWhilePlaying)
                 return
             }
-            await startWorking(on: itemID)
+            startWorking(on: itemID)
 
             do {
                 try await PersistenceManager.shared.download.download(itemID)
-                await endWorking(on: itemID, successfully: true)
+                endWorking(on: itemID, successfully: true)
             } catch {
                 logger.error("Failed to download item \(itemID, privacy: .public): \(error)")
-                await endWorking(on: itemID, successfully: false)
+                endWorking(on: itemID, successfully: false)
             }
         }
     }
-    
-    nonisolated func removeDownload(itemID: ItemIdentifier, force: Bool) {
+
+    func removeDownload(itemID: ItemIdentifier, force: Bool) {
         Task {
             if !force {
-                guard await nowPlayingItemID != itemID else {
-                    await warn(.downloadRemoveWhilePlaying)
+                guard nowPlayingItemID != itemID else {
+                    warn(.downloadRemoveWhilePlaying)
                     return
                 }
-                
+
                 guard await !PersistenceManager.shared.convenienceDownload.isManaged(itemID: itemID) else {
-                    await warn(.convenienceDownloadManaged(itemID))
+                    warn(.convenienceDownloadManaged(itemID))
                     return
                 }
             }
-            
+
             do {
                 try await PersistenceManager.shared.download.remove(itemID)
-                
-                await MainActor.run {
-                    notifySuccess.toggle()
-                }
+
+                notifySuccess.toggle()
             } catch {
-                await MainActor.run {
-                    notifyError.toggle()
-                }
+                notifyError.toggle()
             }
         }
     }
-    nonisolated func removeConvenienceDownloadConfigurations(from itemID: ItemIdentifier) {
+    func removeConvenienceDownloadConfigurations(from itemID: ItemIdentifier) {
         Task {
-            await startWorking(on: itemID)
-            
+            startWorking(on: itemID)
+
             await PersistenceManager.shared.convenienceDownload.removeConfigurations(associatedWith: itemID)
             removeDownload(itemID: itemID, force: true)
-            
-            await endWorking(on: itemID, successfully: true)
+
+            endWorking(on: itemID, successfully: true)
         }
     }
 }
@@ -932,45 +924,41 @@ extension Satellite {
 // MARK: Private
 
 private extension Satellite {
-    nonisolated func resolvePlayingItem() {
+    func resolvePlayingItem() {
         Task {
-            guard let currentItemID = await nowPlayingItemID else {
-                await MainActor.withAnimation {
+            guard let currentItemID = nowPlayingItemID else {
+                withAnimation {
                     self.nowPlayingItem = nil
                 }
-                
+
                 return
             }
-            
+
             do {
                 guard let item = try await currentItemID.resolved as? PlayableItem else {
                     throw SatelliteError.missingItem
                 }
-                
-                await MainActor.run {
-                    self.nowPlayingItem = item
-                }
+
+                self.nowPlayingItem = item
             } catch {
-                await MainActor.run {
-                    self.notifyError.toggle()
-                }
+                self.notifyError.toggle()
             }
         }
     }
-    nonisolated func loadBookmarks(itemID: ItemIdentifier) {
+    func loadBookmarks(itemID: ItemIdentifier) {
         Task {
             do {
                 guard itemID.type == .audiobook else {
                     throw CancellationError()
                 }
-                
+
                 let bookmarks = try await PersistenceManager.shared.bookmark[itemID]
-                
-                await MainActor.withAnimation {
+
+                withAnimation {
                     self.bookmarks = bookmarks
                 }
             } catch {
-                await MainActor.withAnimation {
+                withAnimation {
                     self.bookmarks = []
                 }
             }
@@ -1164,11 +1152,11 @@ private extension Satellite {
         }
     }
     
-    nonisolated func resolveUpNextOrigin() {
+    func resolveUpNextOrigin() {
         Task {
-            let upNextStrategy = await upNextStrategy
+            let upNextStrategy = upNextStrategy
             let origin: Item?
-            
+
             switch upNextStrategy {
                 case .series(let itemID):
                     origin = try? await itemID.resolved
@@ -1179,8 +1167,8 @@ private extension Satellite {
                 default:
                     origin = nil
             }
-            
-            await MainActor.withAnimation {
+
+            withAnimation {
                 self.upNextOrigin = origin
             }
         }
