@@ -64,6 +64,14 @@ Contributions are welcome. To contribute:
 
 If you're interested in helping translate ShelfPlayer, see the [Localization Guide](https://github.com/rasmuslos/ShelfPlayer/blob/main/Localization.md) for instructions on how to contribute a translation.
 
+### AI / Vibe coding
+
+I absolutely see the value in using AI to speed up development and automate tedious tasks. However, I don’t see much value in AI-generated pull requests. I can use tools like Codex myself (even the free version) and iterate with the AI interactively, which is usually faster and more efficient.
+
+For that reason, please avoid submitting pull requests that only contain AI-generated code. Instead, feel free to open an issue describing the idea or improvement. If you’d like, you can also include the prompt you used.
+
+I simply don’t have more time to review AI-generated pull requests than I do to use AI tools directly in my own workflow.
+
 ## License
 
 ShelfPlayer is licensed under the **Mozilla Public License 2.0** with the **Commons Clause**.
@@ -82,7 +90,8 @@ Prebuilt sideloadable binaries are made available for convenience, but redistrib
 ## Notes
 
 * Some text and preview content may have been enhanced using AI tools.
-* Code was written manually with occasional help from Xcode's built-in AI suggestions.
+* Code is primarily written manually, with occasional help from Xcode’s built-in AI suggestions.
+* Codex has been used to generate some code. All AI-generated output was carefully reviewed, tested, and iterated on before being committed.
 * ShelfPlayer is not affiliated with Apple, Audiobookshelf, or any third-party platform or service.
 
 ## Legal
