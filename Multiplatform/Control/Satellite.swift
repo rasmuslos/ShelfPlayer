@@ -824,7 +824,7 @@ extension Satellite {
                 if nowPlayingItemID == itemID {
                     try await AudioPlayer.shared.seek(to: duration, insideChapter: false)
                 } else {
-                    try await PersistenceManager.shared.progress.markAsCompleted([itemID])
+                    try await PersistenceManager.shared.progress.markAsCompleted(itemID)
                 }
 
                 endWorking(on: itemID, successfully: true)
@@ -838,7 +838,7 @@ extension Satellite {
             startWorking(on: itemID)
 
             do {
-                try await PersistenceManager.shared.progress.markAsListening([itemID])
+                try await PersistenceManager.shared.progress.markAsListening(itemID)
                 endWorking(on: itemID, successfully: true)
             } catch {
                 endWorking(on: itemID, successfully: false)

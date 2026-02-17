@@ -23,9 +23,9 @@ public struct SetFinishedIntent: AppIntent {
     @MainActor
     public func perform() async throws -> some ReturnsValue<ItemEntity> {
         if finished {
-            try await PersistenceManager.shared.progress.markAsCompleted([item.id])
+            try await PersistenceManager.shared.progress.markAsCompleted(item.id)
         } else {
-            try await PersistenceManager.shared.progress.markAsListening([item.id])
+            try await PersistenceManager.shared.progress.markAsListening(item.id)
         }
         
         return .result(value: item)

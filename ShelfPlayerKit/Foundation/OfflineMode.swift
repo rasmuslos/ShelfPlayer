@@ -41,7 +41,8 @@ public extension OfflineMode {
     }
     
     func isAvailable(_ id: ItemIdentifier.ConnectionID) -> Bool {
-        availability[id] ?? true
+        (availability[id] ?? true)
+        && !forcedEnabled
     }
 }
 
@@ -57,9 +58,7 @@ public extension OfflineMode {
         let semaphore = DispatchSemaphore(value: 0)
         
         Task.detached(priority: .userInitiated) {
-            try? await PersistenceManager.shared.authorization.waitForConnections()
             await OfflineMode.shared.refreshAvailability()
-            
             semaphore.signal()
         }
         

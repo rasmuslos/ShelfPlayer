@@ -15,7 +15,7 @@ extension ResolvedUpNextStrategy {
             case .podcast(let podcastID):
                 let episodes: [Episode]
                 
-                if await OfflineMode.shared.isEnabled {
+                if await !OfflineMode.shared.isAvailable(podcastID.connectionID) {
                     episodes = try await PersistenceManager.shared.download.episodes(from: podcastID)
                 } else {
                     (_, episodes) = try await ABSClient[podcastID.connectionID].podcast(with: podcastID)
@@ -37,8 +37,7 @@ extension ResolvedUpNextStrategy {
                 }
                 
             case .listenNow:
-                #warning("grrr")
-                fatalError(":(")
+                return try await PersistenceManager.shared.listenNow.current
                 
             default:
                 throw ResolveError.invalidItemType

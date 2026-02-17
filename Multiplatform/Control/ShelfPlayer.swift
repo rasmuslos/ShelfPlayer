@@ -19,6 +19,10 @@ struct ShelfPlayer {
     // MARK: Hooks
     
     static func launchHook() {
+        Task {
+            await OfflineMode.shared.refreshAvailability()
+        }
+        
         do {
             try Tips.configure()
         } catch {

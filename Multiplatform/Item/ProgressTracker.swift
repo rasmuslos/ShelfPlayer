@@ -70,18 +70,16 @@ final class ProgressTracker {
         Task {
             let entity = await PersistenceManager.shared.progress[itemID]
             
-            withAnimation {
-                self.progress = entity.progress
-                
-                self.duration = entity.duration
-                self.currentTime = entity.currentTime
-                
-                self.startedAt = entity.startedAt
-                self.lastUpdate = entity.lastUpdate
-                self.finishedAt = entity.finishedAt
-                
-                isValid = true
-            }
+            self.progress = entity.progress
+            
+            self.duration = entity.duration
+            self.currentTime = entity.currentTime
+            
+            self.startedAt = entity.startedAt
+            self.lastUpdate = entity.lastUpdate
+            self.finishedAt = entity.finishedAt
+            
+            isValid = true
         }
     }
     

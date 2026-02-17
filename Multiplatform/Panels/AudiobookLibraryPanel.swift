@@ -235,11 +235,7 @@ private final class LibraryViewModel {
     
     func loadTabs() {
         Task {
-            let tabs = await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: .library)
-            
-            withAnimation {
-                self.tabs = tabs
-            }
+            tabs = await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: .library)
         }
     }
 }

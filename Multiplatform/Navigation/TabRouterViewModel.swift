@@ -262,10 +262,8 @@ extension TabRouterViewModel {
                 return
             }
             
-            withAnimation {
-                currentConnectionStatus[connectionID] = success
-                activeUpdateTasks[connectionID] = nil
-            }
+            currentConnectionStatus[connectionID] = success
+            activeUpdateTasks[connectionID] = nil
         }
     }
     func synchronizeFailed(connectionID: ItemIdentifier.ConnectionID) {

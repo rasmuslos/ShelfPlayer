@@ -274,16 +274,12 @@ private extension APIClient {
             return cached.response
         }
         
-        if !request.bypassesOffline, await OfflineMode.shared.isEnabled {
-            throw APIClientError.offline
-        }
-        
         guard await hasAttemptsLeft(request.id) else {
-            await OfflineMode.shared.markAsUnavailable(connectionID)
+            await markAsUnavailableAndInvalidateRequests()
             throw APIClientError.noAttemptsLeft
         }
         
-        if !request.bypassesScheduler, await !OfflineMode.shared.isAvailable(connectionID) {
+        if !request.bypassesOffline, await !OfflineMode.shared.isAvailable(connectionID) {
             throw APIClientError.unreachable
         }
         
@@ -393,7 +389,7 @@ private extension APIClient {
                     try await credentialProvider.refreshAccessToken()
                     authorizationRefreshTask = nil
                 } catch {
-                    await OfflineMode.shared.markAsUnavailable(connectionID)
+                    await markAsUnavailableAndInvalidateRequests()
                     logger.warning("Access token refresh failed: \(error). Now \(self.connectionID) unreachable")
                  
                     authorizationRefreshTask = nil
@@ -406,6 +402,21 @@ private extension APIClient {
         }
         
         return try await authorizationRefreshTask!.value
+    }
+    
+    func markAsUnavailableAndInvalidateRequests() async {
+        await OfflineMode.shared.markAsUnavailable(connectionID)
+        
+        let requests = requestQueue
+        requestQueue.removeAll()
+        
+        for request in requests {
+            responseSubject.send((request.id, (nil, APIClientError.cancelled)))
+        }
+        
+        for task in activeRequests.values {
+            task.cancel()
+        }
     }
 }
 

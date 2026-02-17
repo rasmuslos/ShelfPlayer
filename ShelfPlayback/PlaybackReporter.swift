@@ -108,7 +108,7 @@ final actor PlaybackReporter {
             }
         }
         
-        if let sessionID, let duration, let currentTime, await !OfflineMode.shared.isEnabled {
+        if let sessionID, let duration, let currentTime, await OfflineMode.shared.isAvailable(itemID.connectionID) {
             do {
                 try await ABSClient[itemID.connectionID].closeSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: 0)
                 Defaults[.openPlaybackSessions].removeAll { $0.itemID == itemID && $0.sessionID == sessionID }
@@ -163,7 +163,7 @@ private extension PlaybackReporter {
         var updateLocalSession = true
         
         do {
-            if let sessionID, await !OfflineMode.shared.isEnabled {
+            if let sessionID, await OfflineMode.shared.isAvailable(itemID.connectionID) {
                 try await ABSClient[itemID.connectionID].syncSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: timeListened)
                 updateLocalSession = false
                 
