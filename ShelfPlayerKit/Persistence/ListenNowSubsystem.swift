@@ -227,7 +227,7 @@ private struct PlayableItemProgressActiveResolver: PersistenceManager.ListenNowS
         do {
             let item = try await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
             
-            if await OfflineMode.shared.isEnabled {
+            if await !OfflineMode.shared.isAvailable(connectionID) {
                 guard await PersistenceManager.shared.download.status(of: item.id) == .completed else {
                     return nil
                 }

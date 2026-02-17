@@ -65,7 +65,7 @@ public extension ResolveCache {
                     return diskCached
                 }
                 
-                guard await !OfflineMode.shared.isEnabled else {
+                guard await OfflineMode.shared.isAvailable(itemID.connectionID) else {
                     throw APIClientError.offline
                 }
                 
@@ -128,7 +128,7 @@ public extension ResolveCache {
                 
                 logger.info("No downloaded or disk cached for playable item: \(primaryID) \(String(describing: groupingID)) \(connectionID)")
                 
-                guard await !OfflineMode.shared.isEnabled else {
+                guard await OfflineMode.shared.isAvailable(connectionID) else {
                     throw APIClientError.offline
                 }
                 
@@ -156,7 +156,7 @@ public extension ResolveCache {
         
         logger.info("No downloaded or disk cached for podcast: \(primaryID) \(connectionID)")
         
-        guard await !OfflineMode.shared.isEnabled else {
+        guard await OfflineMode.shared.isAvailable(connectionID) else {
             throw APIClientError.offline
         }
         

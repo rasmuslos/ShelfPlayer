@@ -15,7 +15,7 @@ extension SchemaV2 {
         #Index<PersistedProgress>([\.id], [\.connectionID, \.primaryID, \.groupingID])
         #Unique<PersistedProgress>([\.id], [\.connectionID, \.primaryID, \.groupingID])
         
-        private(set) var id: String
+        var id: String
         
         private(set) var connectionID: String
         
@@ -32,6 +32,7 @@ extension SchemaV2 {
         var finishedAt: Date?
         
         var status: SyncStatus
+        var hasBeenSynchronised = true
         
         init(id: String, connectionID: String, primaryID: String, groupingID: String?, progress: Percentage, duration: TimeInterval? = nil, currentTime: TimeInterval, startedAt: Date? = nil, lastUpdate: Date, finishedAt: Date? = nil, status: SyncStatus) {
             self.id = id

@@ -274,7 +274,11 @@ struct TabRouter: View {
         }
         
         viewModel.navigateToWhenReady = nil
-        RFNotification[._navigate].send(payload: navigateToWhenReady)
+        
+        Task {
+            try await Task.sleep(for: .seconds(0.4))
+            await RFNotification[._navigate].send(payload: navigateToWhenReady)
+        }
     }
     func navigateToWaitingSearch() {
         guard viewModel.selectedLibraryID != nil, itemNavigationController.search != nil else {

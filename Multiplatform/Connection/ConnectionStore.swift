@@ -37,8 +37,9 @@ final class ConnectionStore {
                 $0.name < $1.name
             }
             
+            didLoad = true
+            
             withAnimation {
-                didLoad = true
                 self.connections = connections
             }
         }

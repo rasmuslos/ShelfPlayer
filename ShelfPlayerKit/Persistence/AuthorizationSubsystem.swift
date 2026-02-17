@@ -236,10 +236,13 @@ public extension PersistenceManager.AuthorizationSubsystem {
     }
     
     func connectionAvailability(timeout: TimeInterval = OfflineMode.availabilityTimeout) async -> [ItemIdentifier.ConnectionID: Bool] {
-        let connectionIDs = self.connectionIDs
-        guard !connectionIDs.isEmpty else {
-            return [:]
+        do {
+            try await waitForConnections()
+        } catch {
+            logger.fault("Failed to wait for connections: \(error)")
         }
+        
+        let connectionIDs = self.connectionIDs
         
         return await withTaskGroup(of: (ItemIdentifier.ConnectionID, Bool).self) {
             for connectionID in connectionIDs {

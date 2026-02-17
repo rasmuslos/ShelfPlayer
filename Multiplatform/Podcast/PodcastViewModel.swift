@@ -190,10 +190,12 @@ extension PodcastViewModel {
     }
     func performBulkAction(isFinished: Bool) {
         performBulk {
-            if isFinished {
-                try await PersistenceManager.shared.progress.markAsCompleted($0)
-            } else {
-                try await PersistenceManager.shared.progress.markAsListening($0)
+            for itemID in $0 {
+                if isFinished {
+                    try await PersistenceManager.shared.progress.markAsCompleted(itemID)
+                } else {
+                    try await PersistenceManager.shared.progress.markAsListening(itemID)
+                }
             }
         }
     }

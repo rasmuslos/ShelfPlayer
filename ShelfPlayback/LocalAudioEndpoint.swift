@@ -444,7 +444,7 @@ private extension LocalAudioEndpoint {
         let sessionID: String?
         
         do {
-            if OfflineMode.shared.isEnabled {
+            if !OfflineMode.shared.isAvailable(currentItemID.connectionID) {
                 throw AudioPlayerError.offline
             }
             
