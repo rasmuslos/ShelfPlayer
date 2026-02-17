@@ -268,6 +268,9 @@ public extension PersistenceManager.ProgressSubsystem {
         if !pendingServerUpdate.isEmpty {
             try await ABSClient[connectionID].batchUpdate(progress: pendingServerUpdate.values.map { .init(persistedEntity: $0) })
         }
+        for entity in pendingServerUpdate {
+            entity.value.hasBeenSynchronised = true
+        }
         
         for id in pendingServerDeletion {
             try await ABSClient[connectionID].delete(progressID: id)
