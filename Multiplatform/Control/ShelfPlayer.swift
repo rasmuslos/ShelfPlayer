@@ -33,17 +33,15 @@ struct ShelfPlayer {
         // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.spotlightIndex"]
         // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.convenienceDownload"]
         
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: SpotlightIndexer.BACKGROUND_TASK_IDENTIFIER, using: nil) { task in
-//            Task {
-//                await SpotlightIndexer.shared.handleBackgroundTask(task)
-//            }
-            task.setTaskCompleted(success: true)
-            #warning("grrr")
+        print(Thread.isMainThread, Thread.current)
+        
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: SpotlightIndexer.BACKGROUND_TASK_IDENTIFIER, using: .main) { task in
+            Task {
+                await SpotlightIndexer.shared.handleBackgroundTask(task)
+            }
         }
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: PersistenceManager.ConvenienceDownloadSubsystem.BACKGROUND_TASK_IDENTIFIER, using: nil) {
-//            PersistenceManager.shared.convenienceDownload.handleBackgroundTask($0)
-            $0.setTaskCompleted(success: true)
-            #warning("grrr")
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: PersistenceManager.ConvenienceDownloadSubsystem.BACKGROUND_TASK_IDENTIFIER, using: .main) {
+            PersistenceManager.shared.convenienceDownload.handleBackgroundTask($0)
         }
         
         let intentAudioPlayer = EmbassyManager.shared.intentAudioPlayer

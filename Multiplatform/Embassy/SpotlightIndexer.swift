@@ -23,7 +23,7 @@ final actor SpotlightIndexer: Sendable {
     let index = CSSearchableIndex(name: "ShelfPlayer-Items", protectionClass: .completeUntilFirstUserAuthentication)
     
     func scheduleBackgroundTask() async {
-        guard await BGTaskScheduler.shared.pendingTaskRequests().first(where: {$0.identifier == Self.BACKGROUND_TASK_IDENTIFIER }) == nil else {
+        guard await BGTaskScheduler.shared.pendingTaskRequests().first(where: { $0.identifier == Self.BACKGROUND_TASK_IDENTIFIER }) == nil else {
             logger.warning("Requested background task even though it is already scheduled")
             return
         }
