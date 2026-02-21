@@ -19,8 +19,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, handlerFor intent: INIntent) -> Any? {
-        OfflineMode.refreshAvailabilityBlocking()
-        
         return switch intent {
             case is INPlayMediaIntent:
                 PlayMediaIntentHandler()

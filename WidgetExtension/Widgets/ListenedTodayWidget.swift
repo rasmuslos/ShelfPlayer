@@ -29,18 +29,24 @@ struct ListenedTodayWidgetProvider: TimelineProvider {
         ListenedTodayTimelineEntry(totalToday: nil)
     }
     func getSnapshot(in context: Context, completion: @escaping (ListenedTodayTimelineEntry) -> Void) {
-        completion(getCurrent())
+        Task {
+            completion(await getCurrent())
+        }
     }
     func getTimeline(in context: Context, completion: @escaping (Timeline<ListenedTodayTimelineEntry>) -> Void) {
-        let timeline = Timeline(entries: [
-            getCurrent(),
-            ListenedTodayTimelineEntry(date: tomorrowMidnight, totalToday: 0),
-        ], policy: .atEnd)
-        
-        completion(timeline)
+        Task {
+            let timeline = Timeline(entries: [
+                await getCurrent(),
+                ListenedTodayTimelineEntry(date: tomorrowMidnight, totalToday: 0),
+            ], policy: .atEnd)
+            
+            completion(timeline)
+        }
     }
     
-    private func getCurrent() -> ListenedTodayTimelineEntry {
+    private func getCurrent() async -> ListenedTodayTimelineEntry {
+        await OfflineMode.shared.ensureAvailabilityEstablished()
+        
         let empty = ListenedTodayTimelineEntry(totalToday: 0)
         
         guard let current = Defaults[.listenedTodayWidgetValue] else {

@@ -6,6 +6,8 @@ public final class OfflineMode: Sendable {
     
     private var availability = [ItemIdentifier.ConnectionID: Bool]()
     private var forcedEnabled = false
+    private var availabilityEstablished = false
+    private var establishAvailabilityTask: Task<Void, Never>?
     
     private init() {
         RFNotification[.connectionsChanged].subscribe { [weak self] in
@@ -54,15 +56,29 @@ public extension OfflineMode {
         applyAvailability(availability)
     }
     
-    nonisolated static func refreshAvailabilityBlocking() {
-        let semaphore = DispatchSemaphore(value: 0)
-        
-        Task.detached(priority: .userInitiated) {
-            await OfflineMode.shared.refreshAvailability()
-            semaphore.signal()
+    func ensureAvailabilityEstablished() async {
+        guard !availabilityEstablished else {
+            return
         }
         
-        semaphore.wait()
+        let task: Task<Void, Never>
+        
+        if let establishAvailabilityTask {
+            task = establishAvailabilityTask
+        } else {
+            let newTask = Task(priority: .userInitiated) {
+                await refreshAvailability()
+            }
+            
+            establishAvailabilityTask = newTask
+            task = newTask
+        }
+        
+        await task.value
+        
+        if establishAvailabilityTask == task {
+            establishAvailabilityTask = nil
+        }
     }
 }
 
@@ -82,6 +98,7 @@ private extension OfflineMode {
         let before = isEnabled
         
         self.availability = availability
+        availabilityEstablished = true
         
         guard before != isEnabled else {
             return

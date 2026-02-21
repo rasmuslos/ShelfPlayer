@@ -17,8 +17,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3A6AAF402DE8C7280090C886"
-               BuildableName = "WidgetsExtension.appex"
-               BlueprintName = "WidgetsExtension"
+               BuildableName = "WidgetExtension.appex"
+               BlueprintName = "WidgetExtension"
                ReferencedContainer = "container:ShelfPlayer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

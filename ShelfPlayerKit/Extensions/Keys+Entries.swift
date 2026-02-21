@@ -155,16 +155,11 @@ public enum ConfiguredColorScheme: Int, Defaults.Serializable, CaseIterable, Has
 public struct PlaybackInfoPayload: Codable, Defaults.Serializable {
     public let currentItemID: ItemIdentifier?
     
-    public let isDownloaded: Bool
     public let isPlaying: Bool?
     
-    public let listenNowItems: [PlayableItem]
-    
-    public init(currentItemID: ItemIdentifier?, isDownloaded: Bool, isPlaying: Bool?, listenNowItems: [PlayableItem]) {
+    public init(currentItemID: ItemIdentifier?, isPlaying: Bool?) {
         self.currentItemID = currentItemID
-        self.isDownloaded = isDownloaded
         self.isPlaying = isPlaying
-        self.listenNowItems = listenNowItems
     }
 }
 
@@ -283,4 +278,3 @@ public extension RFNotification.IsolatedNotification {
     static var collectionChanged: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayerKit.collectionChanged") }
     static var collectionDeleted: IsolatedNotification<ItemIdentifier> { .init("io.rfk.shelfPlayerKit.collectionDeleted") }
 }
-

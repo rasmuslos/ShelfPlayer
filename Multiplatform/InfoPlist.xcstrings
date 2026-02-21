@@ -93,43 +93,43 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
+            "value" : "2026 Rasmus Krämer EDV & ShelfPlayer contributors"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "2025 Rasmus Krämer et les contributeurs de ShelfPlayer"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
           }
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "2025 Расмус Крамер та співавтори ShelfPlayer"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
           }
         }

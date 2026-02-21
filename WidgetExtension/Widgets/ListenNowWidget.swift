@@ -36,20 +36,25 @@ struct ListenNowWidgetProvider: TimelineProvider {
     }
     
     private func getCurrent() async -> ListenNowTimelineEntry {
-        guard let payload = Defaults[.playbackInfoWidgetValue] else {
-            return ListenNowTimelineEntry(playbackItem: nil, items: [], covers: [:], entities: [:])
-        }
+        await OfflineMode.shared.ensureAvailabilityEstablished()
         
         let playbackItem: (ItemIdentifier, Bool)?
         
-        if let currentItemID = payload.currentItemID, let isPlaying = payload.isPlaying {
+        if let payload = Defaults[.playbackInfoWidgetValue], let currentItemID = payload.currentItemID, let isPlaying = payload.isPlaying {
             playbackItem = (currentItemID, isPlaying)
         } else {
             playbackItem = nil
         }
         
-        let itemIDs = payload.listenNowItems.map(\.id)
-        return ListenNowTimelineEntry(playbackItem: playbackItem, items: payload.listenNowItems, covers: await Cache.shared.covers(for: itemIDs, tiny: false), entities: await Cache.shared.entities(for: itemIDs))
+        guard let items = try? await PersistenceManager.shared.listenNow.current else {
+            return ListenNowTimelineEntry(playbackItem: playbackItem, items: [], covers: [:], entities: [:])
+        }
+        
+        let itemIDs = items.map(\.id)
+        async let covers = Cache.shared.covers(for: itemIDs, tiny: false)
+        async let entities = Cache.shared.entities(for: itemIDs)
+        
+        return ListenNowTimelineEntry(playbackItem: playbackItem, items: items, covers: await covers, entities: await entities)
     }
 }
 

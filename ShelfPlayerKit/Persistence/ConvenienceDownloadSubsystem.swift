@@ -562,6 +562,8 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
                         
                         return result
                     case .listenNow:
+                        await OfflineMode.shared.ensureAvailabilityEstablished()
+                        
                         guard await !OfflineMode.shared.isEnabled else {
                             throw APIClientError.offline
                         }
