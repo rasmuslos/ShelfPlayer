@@ -20,7 +20,6 @@ public enum APIClientError: Error {
     case notFound
     case cancelled
     
-    case unreachable
     case unauthorized
     case noAttemptsLeft
 }

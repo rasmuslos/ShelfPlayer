@@ -12,7 +12,7 @@ public extension APIClient {
         let payload = try await response(APIRequest<BookmarkPayload>(path: "api/me/item/\(primaryID)/bookmark", method: .post, body: [
             "title": note,
             "time": time,
-        ]))
+        ], maxAttempts: 1))
         
         return Date(timeIntervalSince1970: payload.createdAt / 1000)
     }

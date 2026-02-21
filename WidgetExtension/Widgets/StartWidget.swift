@@ -129,8 +129,6 @@ struct StartTimelineProvider: AppIntentTimelineProvider {
     }
     
     private func getCurrent(itemID: ItemIdentifier?) async -> StartWidgetTimelineEntry {
-        await OfflineMode.shared.ensureAvailabilityEstablished()
-        
         var itemID = itemID
         
         if itemID == nil, let listenNowItems = try? await PersistenceManager.shared.listenNow.current {

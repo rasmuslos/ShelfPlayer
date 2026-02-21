@@ -35,7 +35,7 @@ public extension APIClient {
                 "audio/aac",
                 "audio/x-aiff",
             ]
-        ]))
+        ], maxAttempts: 2))
         
         guard let tracks = response.audioTracks, let chapters = response.chapters else {
             throw APIClientError.notFound
@@ -94,7 +94,7 @@ public extension APIClient {
             startedAt: Double(UInt64(started.timeIntervalSince1970 * 1000)),
             updatedAt: Double(UInt64(updated.timeIntervalSince1970 * 1000)))
         
-        let _ = try await response(APIRequest<EmptyResponse>(path: "api/session/local", method: .post, body: session))
+        let _ = try await response(APIRequest<EmptyResponse>(path: "api/session/local", method: .post, body: session, maxAttempts: 2))
     }
     
     func syncSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
@@ -102,14 +102,14 @@ public extension APIClient {
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,
-        ]))
+        ], maxAttempts: 1))
     }
     func closeSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
         let _ = try await response(APIRequest<EmptyResponse>(path: "api/session/\(sessionID)/close", method: .post, body: [
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,
-        ]))
+        ], maxAttempts: 2))
     }
     func deleteSession(sessionID: String) async throws {
         let _ = try await response(APIRequest<EmptyResponse>(path: "api/session/\(sessionID)", method: .delete))

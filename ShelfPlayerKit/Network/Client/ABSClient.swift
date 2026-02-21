@@ -22,7 +22,11 @@ public final actor APIClientStore: Sendable {
         }
     }
     
-    func client(for connectionID: ItemIdentifier.ConnectionID) async throws -> APIClient {
+    func client(for connectionID: ItemIdentifier.ConnectionID, ensureAvailabilityEstablished: Bool = true) async throws -> APIClient {
+        if ensureAvailabilityEstablished {
+            await OfflineMode.shared.ensureAvailabilityEstablished()
+        }
+        
         if storage[connectionID] == nil {
             storage[connectionID] = .init {
                 try await APIClient(connectionID: connectionID, credentialProvider: AuthorizedAPIClientCredentialProvider(connectionID: connectionID))

@@ -13,11 +13,11 @@ public extension APIClient {
         
         switch type {
             case .collection:
-                payload = try await response(APIRequest<ItemPayload>(path: "api/collections", method: .post, body: CreateCollectionBooksPayload(name: name, libraryId: libraryID, books: itemIDs.map(\.primaryID))))
+                payload = try await response(APIRequest<ItemPayload>(path: "api/collections", method: .post, body: CreateCollectionBooksPayload(name: name, libraryId: libraryID, books: itemIDs.map(\.primaryID)), maxAttempts: 1))
             case .playlist:
                 payload = try await response(APIRequest<ItemPayload>(path: "api/playlists", method: .post, body: CreateCollectionItemsPayload(name: name, libraryId: libraryID, items: itemIDs.map {
                     .init(libraryItemId: $0.apiItemID, episodeId: $0.apiEpisodeID)
-                })))
+                }), maxAttempts: 1))
         }
         
         return .init(primaryID: payload.id, groupingID: nil, libraryID: libraryID, connectionID: connectionID, type: type.itemType)
@@ -81,7 +81,7 @@ public extension APIClient {
     }
     
     func createPlaylistCopy(collectionID: ItemIdentifier) async throws -> ItemIdentifier {
-        let response: ItemPayload = try await response(APIRequest<ItemPayload>(path: "api/playlists/collection/\(collectionID.primaryID)", method: .post))
+        let response: ItemPayload = try await response(APIRequest<ItemPayload>(path: "api/playlists/collection/\(collectionID.primaryID)", method: .post, maxAttempts: 1))
         return .init(primaryID: response.id, groupingID: nil, libraryID: collectionID.libraryID, connectionID: connectionID, type: .playlist)
     }
     
