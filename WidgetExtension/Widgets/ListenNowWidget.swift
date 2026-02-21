@@ -36,8 +36,6 @@ struct ListenNowWidgetProvider: TimelineProvider {
     }
     
     private func getCurrent() async -> ListenNowTimelineEntry {
-        await OfflineMode.shared.ensureAvailabilityEstablished()
-        
         let playbackItem: (ItemIdentifier, Bool)?
         
         if let payload = Defaults[.playbackInfoWidgetValue], let currentItemID = payload.currentItemID, let isPlaying = payload.isPlaying {

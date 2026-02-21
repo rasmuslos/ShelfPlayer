@@ -18,6 +18,7 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
     
     public let ttl: TimeInterval?
     public let timeout: TimeInterval
+    public let maxAttempts: Int
     public let bypassesOffline: Bool
     public let bypassesScheduler: Bool
     
@@ -26,7 +27,7 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
     public let id: String
     public let description: String
     
-    public init(path: String, method: HTTPMethod, body: Any? = nil, query: [URLQueryItem] = [], headers: [String: String] = [:], ttl: TimeInterval? = nil, timeout: TimeInterval = 45, bypassesOffline: Bool = false, bypassesScheduler: Bool = false) {
+    public init(path: String, method: HTTPMethod, body: Any? = nil, query: [URLQueryItem] = [], headers: [String: String] = [:], ttl: TimeInterval? = nil, timeout: TimeInterval = 45, maxAttempts: Int = 3, bypassesOffline: Bool = false, bypassesScheduler: Bool = false) {
         self.path = path
         self.method = method
         
@@ -36,6 +37,7 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
         
         self.ttl = ttl
         self.timeout = timeout
+        self.maxAttempts = maxAttempts
         
         self.bypassesOffline = bypassesOffline
         self.bypassesScheduler = bypassesScheduler
@@ -65,6 +67,7 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
         Body: \(bodyDescription)
         TTL: \(ttl?.description ?? "nil")
         Timeout: \(timeout)
+        Max Attempts: \(self.maxAttempts)
         Bypasses Offline: \(bypassesOffline)
         Bypasses Scheduler: \(bypassesScheduler)
         """
@@ -81,6 +84,7 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
         hasher.combine(query)
         hasher.combine(ttl)
         hasher.combine(timeout)
+        hasher.combine(maxAttempts)
         hasher.combine(bypassesOffline)
         hasher.combine(bypassesScheduler)
     }

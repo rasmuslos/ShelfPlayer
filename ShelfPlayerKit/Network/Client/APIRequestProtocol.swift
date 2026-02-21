@@ -21,6 +21,7 @@ public protocol APIRequestProtocol: Identifiable, Hashable, Sendable, Equatable 
     
     var ttl: TimeInterval? { get }
     var timeout: TimeInterval { get }
+    var maxAttempts: Int { get }
     var bypassesOffline: Bool { get }
     var bypassesScheduler: Bool { get }
     

@@ -63,6 +63,8 @@ private extension PersistenceManager.WebSocketSubsystem {
     
     // async operations should be avoided to avoid socket.io race conditions
     func performUpdate() async {
+        await OfflineMode.shared.ensureAvailabilityEstablished()
+        
         let isOffline = OfflineMode.shared.isEnabled
         let connectionsList = await PersistenceManager.shared.authorization.friendlyConnections
         

@@ -166,6 +166,10 @@ public extension APIClient {
             let response = try await perform(request)
             return try request.typecast(decodable: response)
         } else {
+            if !request.bypassesOffline, await !OfflineMode.shared.isAvailable(connectionID) {
+                throw APIClientError.offline
+            }
+            
             if !activeRequests.keys.contains(request.id) {
                 let exists = requestQueue.contains { $0.id == request.id }
                 
@@ -274,13 +278,13 @@ private extension APIClient {
             return cached.response
         }
         
-        guard await hasAttemptsLeft(request.id) else {
+        guard await hasAttemptsLeft(request) else {
             await markAsUnavailableAndInvalidateRequests()
             throw APIClientError.noAttemptsLeft
         }
         
         if !request.bypassesOffline, await !OfflineMode.shared.isAvailable(connectionID) {
-            throw APIClientError.unreachable
+            throw APIClientError.offline
         }
         
         var urlRequest = try await self.request(request)
@@ -354,14 +358,14 @@ private extension APIClient {
     
     // MARK: Attempts
     
-    func hasAttemptsLeft(_ id: String) -> Bool {
-        guard let attempts = attempts[id] else {
+    func hasAttemptsLeft(_ request: any APIRequestProtocol) -> Bool {
+        guard let attempts = attempts[request.id] else {
             return true
         }
         
-        logger.info("Request \(id) \(attempts)/3 attempts used")
+        logger.info("Request \(request.id) \(attempts)/\(request.maxAttempts) attempts used")
         
-        return attempts < 3
+        return attempts < request.maxAttempts
     }
     func resetAttempts(_ id: String) {
         attempts[id] = nil

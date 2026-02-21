@@ -25,7 +25,7 @@ public extension APIClient {
     }
     
     func status() async throws -> (String, [AuthorizationStrategy], Bool) {
-        let response = try await response(APIRequest<StatusResponse>(path: "status", method: .get, bypassesOffline: true, bypassesScheduler: true))
+        let response = try await response(APIRequest<StatusResponse>(path: "status", method: .get, maxAttempts: 4, bypassesOffline: true, bypassesScheduler: true))
         
         let strategies: [AuthorizationStrategy] = response.authMethods.compactMap {
             switch $0 {
@@ -41,11 +41,11 @@ public extension APIClient {
         return (response.serverVersion, strategies, response.isInit)
     }
     func ping(timeout: TimeInterval = OfflineMode.availabilityTimeout) async -> Bool {
-        (try? await response(APIRequest<APIClient.EmptyResponse>(path: "ping", method: .get, timeout: timeout, bypassesOffline: true, bypassesScheduler: true))) != nil
+        (try? await response(APIRequest<APIClient.EmptyResponse>(path: "ping", method: .get, timeout: timeout, maxAttempts: 2, bypassesOffline: true, bypassesScheduler: true))) != nil
     }
     
     func me() async throws -> (String, String) {
-        let request = APIRequest<MeResponse>(path: "api/me", method: .get, bypassesOffline: true)
+        let request = APIRequest<MeResponse>(path: "api/me", method: .get, maxAttempts: 4, bypassesOffline: true)
         let response = try await response(request)
         return (response.id, response.username)
     }

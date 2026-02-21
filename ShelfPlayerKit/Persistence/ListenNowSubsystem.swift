@@ -69,9 +69,9 @@ public extension PersistenceManager.ListenNowSubsystem {
 private extension PersistenceManager.ListenNowSubsystem {
     func results(itemType type: ItemIdentifier.ItemType) async throws -> [Result] {
         if let (items, timestamp) = try? await updateTask[type]?.value, timestamp.distance(to: .now) < lifetime {
-            items
+            return items
         } else {
-            try await update(type: type)
+            return try await update(type: type)
         }
     }
     func update(type: ItemIdentifier.ItemType) async throws -> [Result] {

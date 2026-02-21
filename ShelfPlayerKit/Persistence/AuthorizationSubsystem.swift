@@ -247,7 +247,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
         return await withTaskGroup(of: (ItemIdentifier.ConnectionID, Bool).self) {
             for connectionID in connectionIDs {
                 $0.addTask {
-                    guard let client = try? await ABSClient[connectionID] else {
+                    guard let client = try? await ABSClient.client(for: connectionID, ensureAvailabilityEstablished: false) else {
                         return (connectionID, false)
                     }
                     
@@ -400,7 +400,7 @@ extension PersistenceManager.AuthorizationSubsystem {
         
         do {
             (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
-        } catch APIClientError.cancelled, APIClientError.unreachable, APIClientError.offline {
+        } catch APIClientError.cancelled, APIClientError.offline {
             await RFNotification[.accessTokenExpired].send(payload: connectionID)
             throw APIClientError.offline
         } catch {

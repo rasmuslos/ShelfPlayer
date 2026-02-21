@@ -19,10 +19,6 @@ struct ShelfPlayer {
     // MARK: Hooks
     
     static func launchHook() {
-        Task {
-            await OfflineMode.shared.refreshAvailability()
-        }
-        
         do {
             try Tips.configure()
         } catch {
@@ -32,8 +28,6 @@ struct ShelfPlayer {
         // Execute task early:
         // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.spotlightIndex"]
         // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"io.rfk.shelfPlayer.convenienceDownload"]
-        
-        print(Thread.isMainThread, Thread.current)
         
         BGTaskScheduler.shared.register(forTaskWithIdentifier: SpotlightIndexer.BACKGROUND_TASK_IDENTIFIER, using: .main) { task in
             Task {

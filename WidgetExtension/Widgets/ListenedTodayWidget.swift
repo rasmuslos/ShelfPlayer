@@ -45,8 +45,6 @@ struct ListenedTodayWidgetProvider: TimelineProvider {
     }
     
     private func getCurrent() async -> ListenedTodayTimelineEntry {
-        await OfflineMode.shared.ensureAvailabilityEstablished()
-        
         let empty = ListenedTodayTimelineEntry(totalToday: 0)
         
         guard let current = Defaults[.listenedTodayWidgetValue] else {

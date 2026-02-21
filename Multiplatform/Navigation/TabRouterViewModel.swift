@@ -80,7 +80,7 @@ final class TabRouterViewModel: Sendable {
                 
                 $0.addTask {
                     do {
-                        let libraries = try await ABSClient[connectionID].libraries()
+                        let libraries = try await ABSClient[connectionID].librariesBypassingSchedulerAndOfflineMode()
                         var results = [Library: ([TabValue], [TabValue])]()
                         
                         self.logger.info("Got libraries for connection: \(connectionID)")
