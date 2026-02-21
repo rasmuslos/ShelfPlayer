@@ -16,6 +16,12 @@ final class TabRouterViewModel: Sendable {
             }
         }
         didSet {
+            if case .search = tabValue {
+                keepCustomTabsActiveWhileSearching = isPinned(oldValue)
+            } else {
+                keepCustomTabsActiveWhileSearching = false
+            }
+            
             if let tab = tabValue, tab.isEligibleForSaving {
                 Defaults[.lastTabValue] = tab
             }
@@ -41,6 +47,7 @@ final class TabRouterViewModel: Sendable {
     // MARK: Helper
     
     var navigateToWhenReady: ItemIdentifier?
+    private(set) var keepCustomTabsActiveWhileSearching = false
     
     init() {
         RFNotification[.invalidateTabs].subscribe { [weak self] in
@@ -106,9 +113,12 @@ final class TabRouterViewModel: Sendable {
 
 extension TabRouterViewModel {
     var pinnedTabsActive: Bool {
-        if case .custom = tabValue {
+        switch tabValue {
+        case .custom:
             true
-        } else {
+        case .search:
+            keepCustomTabsActiveWhileSearching
+        default:
             false
         }
     }
@@ -190,6 +200,17 @@ extension TabRouterViewModel {
 }
 
 private extension TabRouterViewModel {
+    func isPinned(_ tab: TabValue?) -> Bool {
+        switch tab {
+        case .custom:
+            true
+        case .search:
+            keepCustomTabsActiveWhileSearching
+        default:
+            false
+        }
+    }
+    
     func restoreLastTabValue() -> Bool {
         if let navigateToWhenReady {
             selectFirstCompactTab(for: .convertItemIdentifierToLibraryIdentifier(navigateToWhenReady), allowPinned: true)
