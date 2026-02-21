@@ -14,6 +14,8 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
     let logger = Logger(subsystem: "Intents", category: "PlayMedia")
     
     func resolveMediaItems(for intent: INPlayMediaIntent) async -> [INPlayMediaMediaItemResolutionResult] {
+        await OfflineMode.shared.ensureAvailabilityEstablished()
+        
         if let items = intent.mediaItems {
             return INPlayMediaMediaItemResolutionResult.successes(with: items)
         }
@@ -42,6 +44,8 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
     }
     
     func handle(intent: INPlayMediaIntent) async -> INPlayMediaIntentResponse {
+        await OfflineMode.shared.ensureAvailabilityEstablished()
+        
         guard let identifier = intent.mediaItems?.first?.identifier, ItemIdentifier.isValid(identifier) else {
             return .init(code: .failure, userActivity: nil)
         }
@@ -79,6 +83,8 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
         return INPlayMediaIntent(mediaItems: [intentItem], mediaContainer: container, playShuffled: nil, playbackRepeatMode: .unknown, resumePlayback: nil, playbackQueueLocation: .now, playbackSpeed: await AudioPlayer.shared.playbackRate, mediaSearch: nil)
     }
     static func donateListenNowIntents() async {
+        await OfflineMode.shared.ensureAvailabilityEstablished()
+        
         INUpcomingMediaManager.shared.setPredictionMode(.default, for: .audioBook)
         INUpcomingMediaManager.shared.setPredictionMode(.default, for: .podcastShow)
         INUpcomingMediaManager.shared.setPredictionMode(.default, for: .podcastEpisode)

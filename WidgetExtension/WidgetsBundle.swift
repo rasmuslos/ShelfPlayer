@@ -12,10 +12,6 @@ import ShelfPlayerKit
 
 @main
 struct WidgetsBundle: WidgetBundle {
-    init() {
-        OfflineMode.refreshAvailabilityBlocking()
-    }
-    
     var body: some Widget {
         StartWidget()
         

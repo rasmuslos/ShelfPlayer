@@ -62,13 +62,16 @@ public final class IntentAudioPlayer: Sendable {
         await _setPlaying(playing)
     }
     func start(_ item: ItemIdentifier) async throws {
+        await OfflineMode.shared.ensureAvailabilityEstablished()
         try await _start(item)
     }
     func startGrouping(_ item: ItemIdentifier) async throws -> ItemIdentifier {
-        try await _startGrouping(item)
+        await OfflineMode.shared.ensureAvailabilityEstablished()
+        return try await _startGrouping(item)
     }
     
     func createBookmark(_ note: String?) async throws {
+        await OfflineMode.shared.ensureAvailabilityEstablished()
         try await _createBookmark(note)
     }
     

@@ -57,7 +57,7 @@ struct StartWidgetTimelineEntry: TimelineEntry {
         
         progress = nil
     }
-    init(date: Date = .now, item: Item?, isDownloaded: Bool, isPlaying: Bool?, isStandalone: Bool = false) async {
+    init(date: Date = .now, item: Item?, playbackItemID: ItemIdentifier?, isPlaying: Bool?, isStandalone: Bool = false) async {
         self.date = date
         
         if let isPlaying {
@@ -81,22 +81,37 @@ struct StartWidgetTimelineEntry: TimelineEntry {
             entity = nil
         }
         
-        self.isDownloaded = isDownloaded
         self.isPlaying = isPlaying
         
-        if let item {
-            if item.id.isPlayable {
-                progress = await PersistenceManager.shared.progress[item.id].progress
-            } else if let currentItemID = Defaults[.playbackInfoWidgetValue]?.currentItemID, currentItemID.groupingID == item.id.primaryID {
-                progress = await PersistenceManager.shared.progress[currentItemID].progress
-            } else if let nextUp = try? await ResolveCache.nextGroupingItem(item.id) {
-                progress = await PersistenceManager.shared.progress[nextUp.id].progress
-            } else {
-                progress = nil
-            }
+        let activeItemID = await Self.resolveActiveItemID(item: item, playbackItemID: playbackItemID)
+        
+        if let activeItemID {
+            self.isDownloaded = await PersistenceManager.shared.download.status(of: activeItemID) == .completed
+            progress = await PersistenceManager.shared.progress[activeItemID].progress
         } else {
+            self.isDownloaded = false
             progress = nil
         }
+    }
+    
+    private static func resolveActiveItemID(item: Item?, playbackItemID: ItemIdentifier?) async -> ItemIdentifier? {
+        guard let item else {
+            return nil
+        }
+        
+        if item.id.isPlayable {
+            return item.id
+        }
+        
+        if let playbackItemID, playbackItemID.groupingID == item.id.primaryID {
+            return playbackItemID
+        }
+        
+        if let nextUp = try? await ResolveCache.nextGroupingItem(item.id) {
+            return nextUp.id
+        }
+        
+        return nil
     }
 }
 
@@ -106,36 +121,38 @@ struct StartTimelineProvider: AppIntentTimelineProvider {
     }
     
     func snapshot(for configuration: StartWidgetConfiguration, in context: Context) async -> StartWidgetTimelineEntry {
-        return await resolve(itemID: configuration.item?.id)
+        return await getCurrent(itemID: configuration.item?.id)
     }
     func timeline(for configuration: StartWidgetConfiguration, in context: Context) async -> Timeline<StartWidgetTimelineEntry> {
-        let entry = await resolve(itemID: configuration.item?.id)
+        let entry = await getCurrent(itemID: configuration.item?.id)
         return .init(entries: [entry], policy: configuration.item == nil ? .after(.now.advanced(by: 60 * 60 * 2)) : .never)
     }
     
-    private func resolve(itemID: ItemIdentifier?) async -> StartWidgetTimelineEntry {
+    private func getCurrent(itemID: ItemIdentifier?) async -> StartWidgetTimelineEntry {
+        await OfflineMode.shared.ensureAvailabilityEstablished()
+        
         var itemID = itemID
         
-        if itemID == nil, let listenNowItems = Defaults[.playbackInfoWidgetValue]?.listenNowItems {
+        if itemID == nil, let listenNowItems = try? await PersistenceManager.shared.listenNow.current {
             itemID = listenNowItems.first?.id
         }
         
         guard let itemID else {
-            return await .init(item: nil, isDownloaded: false, isPlaying: nil)
+            return .init(item: nil, isDownloaded: false, isPlaying: nil)
         }
         
         let isPlaying: Bool?
-        let isDownloaded: Bool
+        let playbackItemID: ItemIdentifier?
         
         if let playbackInfoWidgetValue = Defaults[.playbackInfoWidgetValue], (playbackInfoWidgetValue.currentItemID == itemID || playbackInfoWidgetValue.currentItemID?.groupingID == itemID.primaryID) {
             isPlaying = playbackInfoWidgetValue.isPlaying
-            isDownloaded = playbackInfoWidgetValue.isDownloaded
+            playbackItemID = playbackInfoWidgetValue.currentItemID
         } else {
             isPlaying = nil
-            isDownloaded = false
+            playbackItemID = nil
         }
         
-        return await StartWidgetTimelineEntry(item: try? itemID.resolved, isDownloaded: isDownloaded, isPlaying: isPlaying, isStandalone: true)
+        return await StartWidgetTimelineEntry(item: try? itemID.resolved, playbackItemID: playbackItemID, isPlaying: isPlaying, isStandalone: true)
     }
 }
 

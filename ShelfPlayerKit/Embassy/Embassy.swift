@@ -14,7 +14,7 @@ public struct Embassy {
             return
         }
         
-        Defaults[.playbackInfoWidgetValue] = .init(currentItemID: current.currentItemID, isDownloaded: current.isDownloaded, isPlaying: nil, listenNowItems: current.listenNowItems)
+        Defaults[.playbackInfoWidgetValue] = .init(currentItemID: current.currentItemID, isPlaying: nil)
         
         WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.start")
         WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")

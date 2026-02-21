@@ -51,7 +51,6 @@
 		3A36D78B2ACF2C1D002EEC54 /* AudiobookGrids.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36D78A2ACF2C1D002EEC54 /* AudiobookGrids.swift */; };
 		3A38A1582AD4715100D533F3 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A38A1572AD4715100D533F3 /* PlayButton.swift */; };
 		3A3B3EDA2E7D294B00CFA44E /* CompactToolbarModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3B3ED92E7D294400CFA44E /* CompactToolbarModifier.swift */; };
-		3AC6A6242F1301A900F4C02A /* View+HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6A6232F1301A900F4C02A /* View+HapticFeedback.swift */; };
 		3A3D2D602F0BD0B2005DBD52 /* CompactLibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3D2D5F2F0BD0B2005DBD52 /* CompactLibraryPicker.swift */; };
 		3A4523D32E3C915E00FE8053 /* ConnectionEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4523D22E3C915E00FE8053 /* ConnectionEditSheet.swift */; };
 		3A45C8B82DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A45C8B72DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift */; };
@@ -71,7 +70,7 @@
 		3A65DB012D771D4200332BF3 /* ItemIDLoadLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A65DB002D771D3B00332BF3 /* ItemIDLoadLink.swift */; };
 		3A6924AB2D6B9BAF004E291E /* EmptyCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6924AA2D6B9BA9004E291E /* EmptyCollectionView.swift */; };
 		3A6AAF3C2DE852920090C886 /* StatisticsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6AAF3B2DE852920090C886 /* StatisticsSheet.swift */; };
-		3A6AAF542DE8C7290090C886 /* WidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3A6AAF412DE8C7280090C886 /* WidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3A6AAF542DE8C7290090C886 /* WidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3A6AAF412DE8C7280090C886 /* WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3A6AAF5E2DE8CEF60090C886 /* EmbassyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6AAF5D2DE8CEF30090C886 /* EmbassyManager.swift */; };
 		3A6B93152C26BB3600400802 /* UnavailableWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6B93142C26BB2F00400802 /* UnavailableWrapper.swift */; };
 		3A6DC0802DE495A800FB7D21 /* ContextProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6DC07E2DE495A800FB7D21 /* ContextProvider.swift */; };
@@ -184,6 +183,7 @@
 		3AC6A6182F123D7600F4C02A /* PanelItemCountLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6A6172F123D7600F4C02A /* PanelItemCountLabel.swift */; };
 		3AC6A61D2F1243BA00F4C02A /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 3AC6A61C2F1243BA00F4C02A /* SocketIO */; };
 		3AC6A6202F1256FC00F4C02A /* DebugSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6A61F2F1256FC00F4C02A /* DebugSheet.swift */; };
+		3AC6A6242F1301A900F4C02A /* View+HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6A6232F1301A900F4C02A /* View+HapticFeedback.swift */; };
 		3AC9A8D72DEC713A004BC123 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 3AC9A8D62DEC713A004BC123 /* SwiftSoup */; };
 		3ACB3B8D2AD16F37005EA609 /* SeriesGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */; };
 		3ACB8D042DDCA124005336C0 /* AudiobookBookmarksPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */; };
@@ -306,7 +306,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				3A6AAF542DE8C7290090C886 /* WidgetsExtension.appex in Embed Foundation Extensions */,
+				3A6AAF542DE8C7290090C886 /* WidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -363,7 +363,6 @@
 		3A36D78A2ACF2C1D002EEC54 /* AudiobookGrids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookGrids.swift; sourceTree = "<group>"; };
 		3A38A1572AD4715100D533F3 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		3A3B3ED92E7D294400CFA44E /* CompactToolbarModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactToolbarModifier.swift; sourceTree = "<group>"; };
-		3AC6A6232F1301A900F4C02A /* View+HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+HapticFeedback.swift"; sourceTree = "<group>"; };
 		3A3D2D5F2F0BD0B2005DBD52 /* CompactLibraryPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactLibraryPicker.swift; sourceTree = "<group>"; };
 		3A4523D22E3C915E00FE8053 /* ConnectionEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionEditSheet.swift; sourceTree = "<group>"; };
 		3A45C8B72DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvenienceDownloadPreferences.swift; sourceTree = "<group>"; };
@@ -388,7 +387,7 @@
 		3A65DB002D771D3B00332BF3 /* ItemIDLoadLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemIDLoadLink.swift; sourceTree = "<group>"; };
 		3A6924AA2D6B9BA9004E291E /* EmptyCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCollectionView.swift; sourceTree = "<group>"; };
 		3A6AAF3B2DE852920090C886 /* StatisticsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsSheet.swift; sourceTree = "<group>"; };
-		3A6AAF412DE8C7280090C886 /* WidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A6AAF412DE8C7280090C886 /* WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A6AAF422DE8C7280090C886 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		3A6AAF442DE8C7280090C886 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		3A6AAF5D2DE8CEF30090C886 /* EmbassyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmbassyManager.swift; sourceTree = "<group>"; };
@@ -501,6 +500,7 @@
 		3AC6A6152F12392800F4C02A /* DownloadedPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadedPanel.swift; sourceTree = "<group>"; };
 		3AC6A6172F123D7600F4C02A /* PanelItemCountLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelItemCountLabel.swift; sourceTree = "<group>"; };
 		3AC6A61F2F1256FC00F4C02A /* DebugSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSheet.swift; sourceTree = "<group>"; };
+		3AC6A6232F1301A900F4C02A /* View+HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+HapticFeedback.swift"; sourceTree = "<group>"; };
 		3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ShelfPlayback.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ACB3B8C2AD16F37005EA609 /* SeriesGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesGrid.swift; sourceTree = "<group>"; };
 		3ACB8D032DDCA124005336C0 /* AudiobookBookmarksPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookBookmarksPanel.swift; sourceTree = "<group>"; };
@@ -567,13 +567,13 @@
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 3A6AAF402DE8C7280090C886 /* WidgetsExtension */;
+			target = 3A6AAF402DE8C7280090C886 /* WidgetExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3A0FCCE22EF9A7B500A53508 /* ShelfPlayerTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ShelfPlayerTests; sourceTree = "<group>"; };
-		3A6AAF462DE8C7280090C886 /* WidgetsExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3A6AAF552DE8C7290090C886 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WidgetsExtension; sourceTree = "<group>"; };
+		3A6AAF462DE8C7280090C886 /* WidgetExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3A6AAF552DE8C7290090C886 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WidgetExtension; sourceTree = "<group>"; };
 		3A6EECA62DEC6D630000CAF2 /* ShelfPlayerKit */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3A5295212F06846500FA687B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3A5295222F06846500FA687B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ShelfPlayerKit; sourceTree = "<group>"; };
 		3AC9A8DE2DEC716F004BC123 /* ShelfPlayback */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ShelfPlayback; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -632,7 +632,7 @@
 				3A2385C32E91100D00D0ABF9 /* ShelfPlayer.icon */,
 				3AF6A5292B603FA000770A1E /* Configuration */,
 				3A0AE6A22AB623F400ACCD68 /* Multiplatform */,
-				3A6AAF462DE8C7280090C886 /* WidgetsExtension */,
+				3A6AAF462DE8C7280090C886 /* WidgetExtension */,
 				3A6EECA62DEC6D630000CAF2 /* ShelfPlayerKit */,
 				3AC9A8DE2DEC716F004BC123 /* ShelfPlayback */,
 				3A0FCCE22EF9A7B500A53508 /* ShelfPlayerTests */,
@@ -1030,7 +1030,7 @@
 			isa = PBXGroup;
 			children = (
 				3AB162A42E04C17100D33868 /* ShelfPlayer.app */,
-				3A6AAF412DE8C7280090C886 /* WidgetsExtension.appex */,
+				3A6AAF412DE8C7280090C886 /* WidgetExtension.appex */,
 				3A6EECA52DEC6D630000CAF2 /* ShelfPlayerKit.framework */,
 				3AC9A8DD2DEC716F004BC123 /* ShelfPlayback.framework */,
 				3A0FCCE12EF9A7B500A53508 /* ShelfPlayerTests.xctest */,
@@ -1167,9 +1167,9 @@
 			productReference = 3A0FCCE12EF9A7B500A53508 /* ShelfPlayerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		3A6AAF402DE8C7280090C886 /* WidgetsExtension */ = {
+		3A6AAF402DE8C7280090C886 /* WidgetExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3A6AAF562DE8C7290090C886 /* Build configuration list for PBXNativeTarget "WidgetsExtension" */;
+			buildConfigurationList = 3A6AAF562DE8C7290090C886 /* Build configuration list for PBXNativeTarget "WidgetExtension" */;
 			buildPhases = (
 				3A6AAF3D2DE8C7280090C886 /* Sources */,
 				3A6AAF3E2DE8C7280090C886 /* Frameworks */,
@@ -1183,13 +1183,13 @@
 				3AC9A90C2DEC71E6004BC123 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				3A6AAF462DE8C7280090C886 /* WidgetsExtension */,
+				3A6AAF462DE8C7280090C886 /* WidgetExtension */,
 			);
-			name = WidgetsExtension;
+			name = WidgetExtension;
 			packageProductDependencies = (
 			);
 			productName = WidgetsExtension;
-			productReference = 3A6AAF412DE8C7280090C886 /* WidgetsExtension.appex */;
+			productReference = 3A6AAF412DE8C7280090C886 /* WidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		3A6EECA42DEC6D630000CAF2 /* ShelfPlayerKit */ = {
@@ -1303,7 +1303,7 @@
 			projectRoot = "";
 			targets = (
 				3A0AE69F2AB623F400ACCD68 /* Multiplatform */,
-				3A6AAF402DE8C7280090C886 /* WidgetsExtension */,
+				3A6AAF402DE8C7280090C886 /* WidgetExtension */,
 				3A6EECA42DEC6D630000CAF2 /* ShelfPlayerKit */,
 				3AC9A8DC2DEC716F004BC123 /* ShelfPlayback */,
 				3A0FCCE02EF9A7B500A53508 /* ShelfPlayerTests */,
@@ -1669,7 +1669,7 @@
 		};
 		3A6AAF532DE8C7290090C886 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3A6AAF402DE8C7280090C886 /* WidgetsExtension */;
+			target = 3A6AAF402DE8C7280090C886 /* WidgetExtension */;
 			targetProxy = 3A6AAF522DE8C7290090C886 /* PBXContainerItemProxy */;
 		};
 		3AC9A8E22DEC716F004BC123 /* PBXTargetDependency */ = {
@@ -1785,7 +1785,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Rasmus Krämer";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "2026 Rasmus Krämer EDV & ShelfPlayer contributors";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -1858,7 +1858,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Rasmus Krämer";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "2026 Rasmus Krämer EDV & ShelfPlayer contributors";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1891,7 +1891,6 @@
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "2025 Rasmus Krämer & ShelfPlayer contributors";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Grant access to connect to a Audiobookshelf-Instance inside your local network.";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play items from your library using Siri";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1934,7 +1933,6 @@
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "2025 Rasmus Krämer & ShelfPlayer contributors";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Grant access to connect to a Audiobookshelf-Instance inside your local network.";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play items from your library using Siri";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -2002,9 +2000,8 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				ENABLE_DEBUG_DYLIB = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = WidgetsExtension/Info.plist;
+				INFOPLIST_FILE = WidgetExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Widgets;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2029,9 +2026,8 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				ENABLE_DEBUG_DYLIB = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = WidgetsExtension/Info.plist;
+				INFOPLIST_FILE = WidgetExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Widgets;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2059,7 +2055,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2091,7 +2086,6 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2202,7 +2196,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3A6AAF562DE8C7290090C886 /* Build configuration list for PBXNativeTarget "WidgetsExtension" */ = {
+		3A6AAF562DE8C7290090C886 /* Build configuration list for PBXNativeTarget "WidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3A6AAF572DE8C7290090C886 /* Debug */,
