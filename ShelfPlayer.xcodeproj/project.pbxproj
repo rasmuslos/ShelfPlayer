@@ -51,6 +51,7 @@
 		3A36D78B2ACF2C1D002EEC54 /* AudiobookGrids.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A36D78A2ACF2C1D002EEC54 /* AudiobookGrids.swift */; };
 		3A38A1582AD4715100D533F3 /* PlayButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A38A1572AD4715100D533F3 /* PlayButton.swift */; };
 		3A3B3EDA2E7D294B00CFA44E /* CompactToolbarModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3B3ED92E7D294400CFA44E /* CompactToolbarModifier.swift */; };
+		3AC6A6242F1301A900F4C02A /* View+HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC6A6232F1301A900F4C02A /* View+HapticFeedback.swift */; };
 		3A3D2D602F0BD0B2005DBD52 /* CompactLibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3D2D5F2F0BD0B2005DBD52 /* CompactLibraryPicker.swift */; };
 		3A4523D32E3C915E00FE8053 /* ConnectionEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4523D22E3C915E00FE8053 /* ConnectionEditSheet.swift */; };
 		3A45C8B82DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A45C8B72DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift */; };
@@ -362,6 +363,7 @@
 		3A36D78A2ACF2C1D002EEC54 /* AudiobookGrids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudiobookGrids.swift; sourceTree = "<group>"; };
 		3A38A1572AD4715100D533F3 /* PlayButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayButton.swift; sourceTree = "<group>"; };
 		3A3B3ED92E7D294400CFA44E /* CompactToolbarModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactToolbarModifier.swift; sourceTree = "<group>"; };
+		3AC6A6232F1301A900F4C02A /* View+HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+HapticFeedback.swift"; sourceTree = "<group>"; };
 		3A3D2D5F2F0BD0B2005DBD52 /* CompactLibraryPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactLibraryPicker.swift; sourceTree = "<group>"; };
 		3A4523D22E3C915E00FE8053 /* ConnectionEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionEditSheet.swift; sourceTree = "<group>"; };
 		3A45C8B72DCE2A2D004B48A1 /* ConvenienceDownloadPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvenienceDownloadPreferences.swift; sourceTree = "<group>"; };
@@ -808,6 +810,7 @@
 				3A0E42EB2C8195810034873F /* Alignment+Text.swift */,
 				3A012E282C806D970073A619 /* View+ReverseMask.swift */,
 				3A3B3ED92E7D294400CFA44E /* CompactToolbarModifier.swift */,
+				3AC6A6232F1301A900F4C02A /* View+HapticFeedback.swift */,
 				3AE7005E2C7B1ED500D93BA8 /* MainActor+withAnimation.swift */,
 			);
 			path = SwiftUI;
@@ -1474,6 +1477,7 @@
 				3AF36C2D2E02E4B9000B6CCF /* WhatsNewSheet.swift in Sources */,
 				3AB695342ACF39F000823049 /* Array+Repeat.swift in Sources */,
 				3A3B3EDA2E7D294B00CFA44E /* CompactToolbarModifier.swift in Sources */,
+				3AC6A6242F1301A900F4C02A /* View+HapticFeedback.swift in Sources */,
 				3A1B802D2D6F18D600D69B13 /* PlaybackComponents.swift in Sources */,
 				3A0E42EE2C819FEA0034873F /* QueueButton.swift in Sources */,
 				3ACB3B8D2AD16F37005EA609 /* SeriesGrid.swift in Sources */,

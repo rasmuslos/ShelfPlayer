@@ -66,7 +66,7 @@ struct AudiobookHomePanel: View {
         .navigationTitle(library?.name ?? String(localized: "error.unavailable"))
         .largeTitleDisplayMode()
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .sensoryFeedback(.error, trigger: notifyError)
+        .hapticFeedback(.error, trigger: notifyError)
         .toolbar {
             if horizontalSizeClass == .compact {
                 ListenNowSheetToggle.toolbarItem()

@@ -68,7 +68,7 @@ struct EditCollectionSheet: View {
             }
         }
         .interactiveDismissDisabled()
-        .sensoryFeedback(.error, trigger: notifyError)
+        .hapticFeedback(.error, trigger: notifyError)
     }
     
     private func save(_ callback: @MainActor @escaping () -> Void) {

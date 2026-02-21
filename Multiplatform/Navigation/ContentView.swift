@@ -126,10 +126,10 @@ struct ContentView: View {
             $0
                 .preferredColorScheme(colorScheme == .light ? .light : .dark)
         }
-        .sensoryFeedback(.error, trigger: satellite.notifyError)
-        .sensoryFeedback(.success, trigger: satellite.notifySuccess)
-        .sensoryFeedback(.error, trigger: PlaybackViewModel.shared.notifyError)
-        .sensoryFeedback(.success, trigger: PlaybackViewModel.shared.notifySuccess)
+        .hapticFeedback(.error, trigger: satellite.notifyError)
+        .hapticFeedback(.success, trigger: satellite.notifySuccess)
+        .hapticFeedback(.error, trigger: PlaybackViewModel.shared.notifyError)
+        .hapticFeedback(.success, trigger: PlaybackViewModel.shared.notifySuccess)
         .modifier(PlaybackContentModifier())
         .sheet(item: satellite.presentedSheet) {
             sheetContent(for: $0)

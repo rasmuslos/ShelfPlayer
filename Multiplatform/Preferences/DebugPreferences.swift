@@ -138,7 +138,7 @@ private struct FlushButtons: View {
             }
         }
         .disabled(isLoading)
-        .sensoryFeedback(.error, trigger: notifyError)
+        .hapticFeedback(.error, trigger: notifyError)
         .foregroundStyle(.red)
         .task {
             load()

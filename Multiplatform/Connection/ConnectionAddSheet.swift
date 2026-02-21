@@ -90,7 +90,7 @@ struct ConnectionAddSheet: View {
                     }
                 }
             }
-            .sensoryFeedback(.error, trigger: viewModel.notifyError)
+            .hapticFeedback(.error, trigger: viewModel.notifyError)
             .onChange(of: viewModel.notifyFinished) {
                 satellite.dismissSheet()
             }

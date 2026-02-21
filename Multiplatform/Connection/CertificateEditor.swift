@@ -63,7 +63,7 @@ struct CertificateEditor: View {
                         parseP12File()
                     }
                 }
-                .sensoryFeedback(.error, trigger: notifyError)
+                .hapticFeedback(.error, trigger: notifyError)
             }
         } footer: {
             Text(String("connection.tlsClientCertificate.footer"))
