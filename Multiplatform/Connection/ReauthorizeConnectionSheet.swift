@@ -77,7 +77,7 @@ struct ReauthorizeConnectionSheet: View {
                 }
             }
         }
-        .sensoryFeedback(.error, trigger: notifyError)
+        .hapticFeedback(.error, trigger: notifyError)
     }
     
     private func dismiss() {

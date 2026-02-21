@@ -102,7 +102,7 @@ struct SleepTimerEditor: View {
         }
         .environment(\.editMode, .constant(.active))
         .navigationTitle("perferences.sleepTimer")
-        .sensoryFeedback(.error, trigger: notifyError)
+        .hapticFeedback(.error, trigger: notifyError)
     }
 }
 

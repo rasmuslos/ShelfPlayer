@@ -278,6 +278,16 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
+			<string>Haptic feedback</string>
+			<key>Key</key>
+			<string>enableHapticFeedback</string>
+			<key>DefaultValue</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
 			<string>Ultra high quality images</string>
 			<key>Key</key>
 			<string>ultraHighQuality</string>

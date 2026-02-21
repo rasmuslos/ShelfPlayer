@@ -57,7 +57,7 @@ struct ConvenienceDownloadPreferences: View {
             }
         }
         .navigationTitle("preferences.convenienceDownload")
-        .sensoryFeedback(.error, trigger: notifyError)
+        .hapticFeedback(.error, trigger: notifyError)
         .task {
             loadConfigurations()
         }

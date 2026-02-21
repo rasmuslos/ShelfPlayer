@@ -60,7 +60,7 @@ struct PodcastHomePanel: View {
         }
         .navigationTitle(library?.name ?? String(localized: "error.unavailable"))
         .largeTitleDisplayMode()
-        .sensoryFeedback(.error, trigger: didFail)
+        .hapticFeedback(.error, trigger: didFail)
         .toolbar {
             if horizontalSizeClass == .compact {
                 ListenNowSheetToggle.toolbarItem()
