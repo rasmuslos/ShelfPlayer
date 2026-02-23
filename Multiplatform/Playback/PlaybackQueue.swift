@@ -261,7 +261,7 @@ private struct QueueItemRow: View {
     @ViewBuilder
     private var queueButton: some View {
         if isUpNextQueue {
-            Button("playback.queue.add", systemImage: "text.line.last.and.arrowtriangle.forward") {
+            Button("playback.queue.add", systemImage: "list.triangle") {
                 satellite.queue(itemID)
                 satellite.remove(upNextQueueIndex: queueIndex)
             }
