@@ -4,67 +4,66 @@
 //
 //  Created by Rasmus Krämer on 23.02.24.
 //
-
 import Foundation
 import OSLog
 @preconcurrency import CarPlay
 import ShelfPlayback
-
-@MainActor
 public final class CarPlayDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "CarPlay")
-    
     private var interfaceController: CPInterfaceController?
     private var controller: CarPlayController?
-    
     public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
-        
         RFNotification[.connectionsChanged].subscribe { [weak self] in
-            self?.updateController()
+            self?.refreshController()
         }
-        
-        updateController()
+        refreshController()
     }
-    
     public func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didDisconnectInterfaceController interfaceController: CPInterfaceController) {
         self.interfaceController = nil
-        
         controller?.destroy()
         controller = nil
     }
 }
-
 private extension CarPlayDelegate {
     var noConnectionsTemplate: CPListTemplate {
-        let unauthorizedTemplate = CPListTemplate(title: nil, sections: [], assistantCellConfiguration: .none)
-        unauthorizedTemplate.emptyViewTitleVariants = [String(localized: "carPlay.noConnections")]
-        unauthorizedTemplate.emptyViewSubtitleVariants = [String(localized: "carPlay.noConnections.subtitle")]
-        
-        return unauthorizedTemplate
+        let template = CPListTemplate(title: nil, sections: [], assistantCellConfiguration: .none)
+        template.emptyViewTitleVariants = [String(localized: "carPlay.noConnections")]
+        template.emptyViewSubtitleVariants = [String(localized: "carPlay.noConnections.subtitle")]
+        return template
     }
-    
-    func updateController() {
-        Task {
-            guard let interfaceController else {
-                Self.logger.warning("Attempted to update CarPlay controller before it was initialized.")
+    func refreshController() {
+        Task { [weak self] in
+            guard let self else {
                 return
             }
-            
-            guard await !PersistenceManager.shared.authorization.connectionIDs.isEmpty else {
+            guard let interfaceController else {
+                Self.logger.warning("Attempted to refresh CarPlay before interface controller was initialized.")
+                return
+            }
+            do {
+                try await PersistenceManager.shared.authorization.waitForConnections()
+            } catch {
+                Self.logger.warning("Failed while waiting for authorization connections: \(error)")
+            }
+            let hasConnections = await !PersistenceManager.shared.authorization.connectionIDs.isEmpty
+            guard hasConnections else {
+                controller?.destroy()
+                controller = nil
                 do {
                     try await interfaceController.setRootTemplate(noConnectionsTemplate, animated: false)
                 } catch {
-                    Self.logger.error("Failed to set no connections template: \(error)")
+                    Self.logger.error("Failed to set CarPlay no-connections template: \(error)")
                 }
-                
-                controller = nil
-                
                 return
             }
-            
-            if controller == nil {
+            guard controller == nil else {
+                return
+            }
+            do {
                 controller = try await CarPlayController(interfaceController: interfaceController)
+            } catch {
+                Self.logger.error("Failed to initialize CarPlay controller: \(error)")
             }
         }
     }

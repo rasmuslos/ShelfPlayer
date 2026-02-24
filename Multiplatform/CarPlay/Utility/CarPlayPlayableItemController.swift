@@ -4,120 +4,123 @@
 //
 //  Created by Rasmus Krämer on 25.04.25.
 //
-
 import Foundation
 @preconcurrency import CarPlay
 import ShelfPlayback
-
-@MainActor
 final class CarPlayPlayableItemController: CarPlayItemController {
     let item: PlayableItem
     let displayCover: Bool
     let row: CPListItem
-    
-    let customHandler: (() -> Void)?
-    
-    @MainActor
+    private let customHandler: (() -> Void)?
     init(item: PlayableItem, displayCover: Bool, customHandler: (() -> Void)? = nil) {
         self.item = item
         self.displayCover = displayCover
         self.customHandler = customHandler
-        
         if let audiobook = item as? Audiobook {
             var detail = [[String]]()
-            
             if !audiobook.authors.isEmpty {
                 detail.append(audiobook.authors)
             }
             if !audiobook.narrators.isEmpty {
                 detail.append(audiobook.narrators)
             }
-            
-            let detailText = detail.map { $0.formatted(.list(type: .and, width: .short)) }.joined(separator: " • ")
-            
-            row = CPListItem(text: audiobook.name, detailText: detailText, image: nil)
+            row = CPListItem(
+                text: audiobook.name,
+                detailText: detail.map { $0.formatted(.list(type: .and, width: .short)) }.joined(separator: " • "),
+                image: nil
+            )
             row.isExplicitContent = audiobook.explicit
         } else if let episode = item as? Episode {
-            row = CPListItem(text: episode.name, detailText: episode.authors.formatted(.list(type: .and, width: .short)), image: nil)
+            row = CPListItem(
+                text: episode.name,
+                detailText: episode.authors.formatted(.list(type: .and, width: .short)),
+                image: nil
+            )
         } else {
             fatalError("Unsupported item type: \(type(of: item))")
         }
-        
         row.userInfo = item.id
-        
-        // row.handler = { [weak self] listItem, completion in
-        row.handler = { [item] listItem, completion in
-            if let customHandler {
-                customHandler()
+        row.playingIndicatorLocation = .leading
+        row.handler = { [weak self] listItem, completion in
+            guard let self else {
                 completion()
-                
                 return
             }
-            
             Task {
-                guard await AudioPlayer.shared.currentItemID != item.id else {
-                    if await AudioPlayer.shared.isPlaying {
-                        await AudioPlayer.shared.pause()
-                    } else {
-                        await AudioPlayer.shared.play()
-                    }
-                    
-                    completion()
-                    return
-                }
-                
-                listItem.isEnabled = false
-                try? await AudioPlayer.shared.start(.init(itemID: item.id, origin: .carPlay))
-                listItem.isEnabled = true
-                
+                await self.handleSelection(listItem)
                 completion()
-                return
             }
         }
-        
-        row.playingIndicatorLocation = .leading
-        
-        loadCover()
-        
+        refreshState()
+        loadCoverIfNeeded()
+        RFNotification[.playbackItemChanged].subscribe { [weak self] in
+            self?.row.isPlaying = self?.itemID == $0.0
+        }
+        RFNotification[.downloadStatusChanged].subscribe { [weak self] _ in
+            self?.refreshDownloadAccessory()
+        }
+        RFNotification[.reloadImages].subscribe { [weak self] itemID in
+            guard let self else {
+                return
+            }
+            if let itemID, self.itemID != itemID {
+                return
+            }
+            self.loadCoverIfNeeded()
+        }
+    }
+    var itemID: ItemIdentifier {
+        item.id
+    }
+}
+private extension CarPlayPlayableItemController {
+    func handleSelection(_ listItem: any CPSelectableListItem) async {
+        if let customHandler {
+            customHandler()
+            return
+        }
+        if await AudioPlayer.shared.currentItemID == item.id {
+            if await AudioPlayer.shared.isPlaying {
+                await AudioPlayer.shared.pause()
+            } else {
+                await AudioPlayer.shared.play()
+            }
+            return
+        }
+        listItem.isEnabled = false
+        do {
+            try await AudioPlayer.shared.start(.init(itemID: item.id, origin: .carPlay))
+        } catch {
+            // Keep the row interactive if playback start fails.
+        }
+        listItem.isEnabled = true
+    }
+    func refreshState() {
         Task {
             row.isPlaying = await AudioPlayer.shared.currentItemID == item.id
             row.playbackProgress = await PersistenceManager.shared.progress[item.id].progress
-            
+            self.refreshDownloadAccessory()
+        }
+    }
+    func refreshDownloadAccessory() {
+        Task {
             switch await PersistenceManager.shared.download.status(of: item.id) {
             case .completed:
                 row.setAccessoryImage(.init(systemName: "arrow.down.circle.fill"))
             case .downloading:
                 row.setAccessoryImage(.init(systemName: "circle.circle.fill"))
             default:
-                break
+                row.setAccessoryImage(nil)
             }
-        }
-        
-        RFNotification[.playbackItemChanged].subscribe { [weak self] in
-            self?.row.isPlaying = self?.itemID == $0.0
-        }
-        RFNotification[.reloadImages].subscribe { [weak self] itemID in
-            if let itemID, self?.itemID != itemID {
-                return
-            }
-            
-            self?.loadCover()
         }
     }
-    
-    private func loadCover() {
+    func loadCoverIfNeeded() {
         guard displayCover else {
             return
         }
-        
         Task {
-            let cover = await item.id.platformImage(size: .regular)
-            
-            row.setImage(cover)
+            let image = await item.id.platformImage(size: .regular)
+            row.setImage(image)
         }
-    }
-    
-    var itemID: ItemIdentifier {
-        item.id
     }
 }
