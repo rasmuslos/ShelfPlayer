@@ -12,7 +12,6 @@ extension Defaults.Keys {
     static let lastTabValue = Key<TabValue?>("lastTabValue")
     
     static let carPlayTabBarLibraries = Key<[Library]?>("carPlayTabBarLibraries", default: nil)
-    static let carPlayShowListenNow = Key<Bool>("carPlayShowListenNow", default: true)
     static let carPlayShowOtherLibraries = Key<Bool>("carPlayShowOtherLibraries", default: true)
     static let enableHapticFeedback = Key<Bool>("enableHapticFeedback", default: true)
 }

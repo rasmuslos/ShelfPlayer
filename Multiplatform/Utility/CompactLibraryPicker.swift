@@ -43,23 +43,9 @@ struct CompactLibraryPicker: View {
                 Divider()
             }
             
-            Button("preferences", systemImage: "gearshape") {
-                satellite.present(.preferences)
-            }
-            
             Button("navigation.offline.enable", systemImage: "network.slash") {
                 OfflineMode.shared.forceEnable()
             }
-            
-            if !tabRouterViewModel.activeUpdateTasks.isEmpty {
-                Text("connection.loading \(tabRouterViewModel.activeUpdateTasks.count)")
-            } else if !offlineConnections.isEmpty {
-                Button("connection.offline \(offlineConnections.count)", role: .destructive) {
-                    tabRouterViewModel.refresh()
-                }
-            }
-            
-            Divider()
             
             if customizeLibrary {
                 if tabRouterViewModel.pinnedTabsActive {
@@ -71,6 +57,18 @@ struct CompactLibraryPicker: View {
                         satellite.present(.customizeLibrary(library, .tabBar))
                     }
                 }
+            }
+            
+            Button("preferences", systemImage: "gearshape") {
+                satellite.present(.preferences)
+            }
+            
+            Divider()
+            
+            if !tabRouterViewModel.activeUpdateTasks.isEmpty {
+                Text("connection.loading \(tabRouterViewModel.activeUpdateTasks.count)")
+            } else if !offlineConnections.isEmpty {
+                Text("connection.offline \(offlineConnections.count)")
             }
         } label: {
             if tabRouterViewModel.pinnedTabsActive {
@@ -84,11 +82,7 @@ struct CompactLibraryPicker: View {
 
 #if DEBUG
 #Preview {
-    Menu {
-        CompactLibraryPicker()
-    } label: {
-        Text(verbatim: "LibraryPicker")
-    }
-    .previewEnvironment()
+    CompactLibraryPicker()
+        .previewEnvironment()
 }
 #endif

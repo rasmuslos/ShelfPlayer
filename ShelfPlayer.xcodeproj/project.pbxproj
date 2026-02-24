@@ -210,6 +210,7 @@
 		3AFA7F9B2ACD435000B7FF4B /* StatusOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */; };
 		3AFA7F9D2ACD440A00B7FF4B /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */; };
 		3AFB713D2D72F2F7002C3EF5 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFB713C2D72F2F7002C3EF5 /* PreferencesView.swift */; };
+		3AFD479A2F4D9D85008937A1 /* CarPlay+Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFD47992F4D9D82008937A1 /* CarPlay+Empty.swift */; };
 		3AFEEA632CC14F530040336D /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 3AFEEA622CC14F530040336D /* Intents.intentdefinition */; };
 		3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 3AFF94872AF65CF500127AFF /* Localizable.xcstrings */; };
 		3AFFE7712E79333B003E6B94 /* CompactLegacyCollapsedForeground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFFE7702E79333B003E6B94 /* CompactLegacyCollapsedForeground.swift */; };
@@ -534,6 +535,7 @@
 		3AFA7F9A2ACD435000B7FF4B /* StatusOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusOverlay.swift; sourceTree = "<group>"; };
 		3AFA7F9C2ACD440A00B7FF4B /* Triangle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		3AFB713C2D72F2F7002C3EF5 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		3AFD47992F4D9D82008937A1 /* CarPlay+Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CarPlay+Empty.swift"; sourceTree = "<group>"; };
 		3AFEEA612CC14F530040336D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
 		3AFF94872AF65CF500127AFF /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		3AFFE7702E79333B003E6B94 /* CompactLegacyCollapsedForeground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactLegacyCollapsedForeground.swift; sourceTree = "<group>"; };
@@ -692,6 +694,7 @@
 		3A0C08992DBB9D8100E677D4 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				3AFD47992F4D9D82008937A1 /* CarPlay+Empty.swift */,
 				3A4AD9542DBB85C20057349C /* CarPlayItemController.swift */,
 				3A0C089B2DBBA47E00E677D4 /* CarPlayPlayableItemController.swift */,
 			);
@@ -1488,6 +1491,7 @@
 				3ACB8D082DDCA860005336C0 /* TimeRow.swift in Sources */,
 				3A921AC32E434FD500555CA3 /* ItemConfigureButton.swift in Sources */,
 				3AB0E7252CC3FE820024DD08 /* CarPlayLibraryController.swift in Sources */,
+				3AFD479A2F4D9D85008937A1 /* CarPlay+Empty.swift in Sources */,
 				3A2B93352B00D71B00638AE9 /* ProgressButton.swift in Sources */,
 				3AB695382ACF3D1200823049 /* PersonView.swift in Sources */,
 				3AAE3F7B2E1567C8000C483B /* PodcastSortOrderPreference.swift in Sources */,

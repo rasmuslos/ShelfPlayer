@@ -7,52 +7,46 @@
 import Foundation
 @preconcurrency import CarPlay
 import ShelfPlayback
+
 final class CarPlayPlayableItemController: CarPlayItemController {
     let item: PlayableItem
     let displayCover: Bool
     let row: CPListItem
+    
     private let customHandler: (() -> Void)?
+    
     init(item: PlayableItem, displayCover: Bool, customHandler: (() -> Void)? = nil) {
         self.item = item
         self.displayCover = displayCover
         self.customHandler = customHandler
+        
         if let audiobook = item as? Audiobook {
-            var detail = [[String]]()
-            if !audiobook.authors.isEmpty {
-                detail.append(audiobook.authors)
-            }
-            if !audiobook.narrators.isEmpty {
-                detail.append(audiobook.narrators)
-            }
-            row = CPListItem(
-                text: audiobook.name,
-                detailText: detail.map { $0.formatted(.list(type: .and, width: .short)) }.joined(separator: " • "),
-                image: nil
-            )
+            row = Self.makeAudiobookRow(audiobook)
             row.isExplicitContent = audiobook.explicit
         } else if let episode = item as? Episode {
-            row = CPListItem(
-                text: episode.name,
-                detailText: episode.authors.formatted(.list(type: .and, width: .short)),
-                image: nil
-            )
+            row = Self.makeEpisodeRow(episode)
         } else {
             fatalError("Unsupported item type: \(type(of: item))")
         }
+        
         row.userInfo = item.id
         row.playingIndicatorLocation = .leading
+        
         row.handler = { [weak self] listItem, completion in
             guard let self else {
                 completion()
                 return
             }
+            
             Task {
                 await self.handleSelection(listItem)
                 completion()
             }
         }
+        
         refreshState()
         loadCoverIfNeeded()
+        
         RFNotification[.playbackItemChanged].subscribe { [weak self] in
             self?.row.isPlaying = self?.itemID == $0.0
         }
@@ -69,16 +63,44 @@ final class CarPlayPlayableItemController: CarPlayItemController {
             self.loadCoverIfNeeded()
         }
     }
+}
+
+private extension CarPlayPlayableItemController {
     var itemID: ItemIdentifier {
         item.id
     }
-}
-private extension CarPlayPlayableItemController {
+    
+    static func makeAudiobookRow(_ audiobook: Audiobook) -> CPListItem {
+        var detail = [[String]]()
+        
+        if !audiobook.authors.isEmpty {
+            detail.append(audiobook.authors)
+        }
+        
+        if !audiobook.narrators.isEmpty {
+            detail.append(audiobook.narrators)
+        }
+        
+        return CPListItem(
+            text: audiobook.name,
+            detailText: detail.map { $0.formatted(.list(type: .and, width: .short)) }.joined(separator: " • "),
+            image: nil
+        )
+    }
+    static func makeEpisodeRow(_ episode: Episode) -> CPListItem {
+        CPListItem(
+            text: episode.name,
+            detailText: episode.authors.formatted(.list(type: .and, width: .short)),
+            image: nil
+        )
+    }
+    
     func handleSelection(_ listItem: any CPSelectableListItem) async {
         if let customHandler {
             customHandler()
             return
         }
+        
         if await AudioPlayer.shared.currentItemID == item.id {
             if await AudioPlayer.shared.isPlaying {
                 await AudioPlayer.shared.pause()
@@ -87,37 +109,41 @@ private extension CarPlayPlayableItemController {
             }
             return
         }
+        
         listItem.isEnabled = false
+        
         do {
             try await AudioPlayer.shared.start(.init(itemID: item.id, origin: .carPlay))
         } catch {
             // Keep the row interactive if playback start fails.
         }
+        
         listItem.isEnabled = true
     }
+    
     func refreshState() {
         Task {
             row.isPlaying = await AudioPlayer.shared.currentItemID == item.id
             row.playbackProgress = await PersistenceManager.shared.progress[item.id].progress
-            self.refreshDownloadAccessory()
+            refreshDownloadAccessory()
         }
     }
+    
     func refreshDownloadAccessory() {
         Task {
             switch await PersistenceManager.shared.download.status(of: item.id) {
-            case .completed:
-                row.setAccessoryImage(.init(systemName: "arrow.down.circle.fill"))
-            case .downloading:
-                row.setAccessoryImage(.init(systemName: "circle.circle.fill"))
-            default:
-                row.setAccessoryImage(nil)
+                case .completed: row.setAccessoryImage(.init(systemName: "arrow.down.circle.fill"))
+                case .downloading: row.setAccessoryImage(.init(systemName: "circle.circle.fill"))
+                default: row.setAccessoryImage(nil)
             }
         }
     }
+    
     func loadCoverIfNeeded() {
         guard displayCover else {
             return
         }
+        
         Task {
             let image = await item.id.platformImage(size: .regular)
             row.setImage(image)
