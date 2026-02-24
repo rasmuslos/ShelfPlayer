@@ -6,6 +6,7 @@ public final class OfflineMode: Sendable {
     
     private var availability = [ItemIdentifier.ConnectionID: Bool]()
     private var forcedEnabled = false
+    private var activeLoadingOperations = 0
     private var availabilityEstablished = false
     private var establishAvailabilityTask: Task<Void, Never>?
     
@@ -21,6 +22,9 @@ public final class OfflineMode: Sendable {
     
     public var isEnabled: Bool {
         forcedEnabled || (!availability.isEmpty && availability.values.allSatisfy { !$0 })
+    }
+    public var isLoading: Bool {
+        activeLoadingOperations > 0
     }
 }
 
@@ -50,6 +54,13 @@ public extension OfflineMode {
 
 public extension OfflineMode {
     func refreshAvailability() async {
+        activeLoadingOperations += 1
+        defer {
+            if activeLoadingOperations > 0 {
+                activeLoadingOperations -= 1
+            }
+        }
+        
         setForcedEnabled(false)
         
         let availability = await PersistenceManager.shared.authorization.connectionAvailability()

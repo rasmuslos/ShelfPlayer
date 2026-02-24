@@ -10,6 +10,7 @@ import ShelfPlayback
 
 struct OfflineView: View {
     @Environment(Satellite.self) private var satellite
+    @Environment(OfflineMode.self) private var offlineMode
     
     @State private var audiobooks = [Audiobook]()
     @State private var podcasts = [Podcast: [Episode]]()
@@ -26,9 +27,14 @@ struct OfflineView: View {
     }
     @ViewBuilder
     private var goOnlineButton: some View {
-        Button("navigation.offline.disable", systemImage: "network") {
-            Task {
-                await OfflineMode.shared.refreshAvailability()
+        if offlineMode.isLoading {
+            ProgressView()
+                .accessibilityLabel(Text("navigation.offline.disable"))
+        } else {
+            Button("navigation.offline.disable", systemImage: "network") {
+                Task {
+                    await offlineMode.refreshAvailability()
+                }
             }
         }
     }

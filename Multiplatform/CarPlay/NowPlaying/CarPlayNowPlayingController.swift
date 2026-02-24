@@ -4,120 +4,145 @@
 //
 //  Created by Rasmus Krämer on 19.10.24.
 //
-
 import Foundation
 @preconcurrency import CarPlay
 import ShelfPlayback
-
-@MainActor
-class CarPlayNowPlayingController: NSObject {
+final class CarPlayNowPlayingController: NSObject {
     private let template = CPNowPlayingTemplate.shared
     private let interfaceController: CPInterfaceController
-    
     private let queueController: CarPlayQueueController
     private let chaptersController: CarPlayChaptersController
-    
     private let rateButton: CPNowPlayingPlaybackRateButton
-    private let nextButton: CPNowPlayingImageButton
+    private let advanceQueueButton: CPNowPlayingImageButton
     private let bookmarkButton: CPNowPlayingImageButton
-    
+    private let nextChapterButton: CPNowPlayingImageButton
+    private var updateTask: Task<Void, Never>?
     init(interfaceController: CPInterfaceController) {
         self.interfaceController = interfaceController
-        
-        queueController = .init(interfaceController: interfaceController)
-        chaptersController = .init(interfaceController: interfaceController)
-        
+        queueController = CarPlayQueueController(interfaceController: interfaceController)
+        chaptersController = CarPlayChaptersController(interfaceController: interfaceController)
         rateButton = CPNowPlayingPlaybackRateButton { _ in
             Task {
                 await AudioPlayer.shared.cyclePlaybackSpeed()
             }
         }
-        nextButton = CPNowPlayingImageButton(image: UIImage(systemName: "forward.end.fill")!) { _ in
+        advanceQueueButton = CPNowPlayingImageButton(image: UIImage(systemName: "forward.end.fill") ?? UIImage()) { _ in
             Task {
                 await AudioPlayer.shared.advance()
             }
         }
-        bookmarkButton = CPNowPlayingImageButton(image: UIImage(systemName: "bookmark.fill")!) { _ in
+        bookmarkButton = CPNowPlayingImageButton(image: UIImage(systemName: "bookmark.fill") ?? UIImage()) { _ in
             Task {
-                try await AudioPlayer.shared.createQuickBookmark()
+                try? await AudioPlayer.shared.createQuickBookmark()
             }
         }
-        
+        nextChapterButton = CPNowPlayingImageButton(image: UIImage(systemName: "forward.frame.fill") ?? UIImage()) { _ in
+            Task {
+                await Self.skipToNextChapter()
+            }
+        }
         super.init()
-        
         template.isAlbumArtistButtonEnabled = true
-        
         template.add(self)
-        
         RFNotification[.queueChanged].subscribe { [weak self] _ in
-            self?.update()
-            self?.queueController.update()
+            Task { [weak self] in
+                self?.queueController.update()
+                self?.update()
+            }
         }
         RFNotification[.upNextQueueChanged].subscribe { [weak self] _ in
-            self?.update()
-            self?.queueController.update()
+            Task { [weak self] in
+                self?.queueController.update()
+                self?.update()
+            }
         }
         RFNotification[.playbackItemChanged].subscribe { [weak self] _ in
-            self?.update()
+            Task { [weak self] in
+                self?.update()
+            }
         }
-        
+        RFNotification[.chapterChanged].subscribe { [weak self] _ in
+            Task { [weak self] in
+                self?.update()
+            }
+        }
         update()
+    }
+    deinit {
+        updateTask?.cancel()
     }
     func remove() {
         template.remove(self)
     }
-    
     func update() {
-        Task {
+        updateTask?.cancel()
+        updateTask = Task { [weak self] in
+            guard let self else {
+                return
+            }
+            let currentItemID = await AudioPlayer.shared.currentItemID
             let queue = await AudioPlayer.shared.queue
             let upNextQueue = await AudioPlayer.shared.upNextQueue
-            let currentItemID = await AudioPlayer.shared.currentItemID
-            
-            let isQueueEmpty = queue.isEmpty && upNextQueue.isEmpty
+            let chapters = await AudioPlayer.shared.chapters
+            let activeChapterIndex = await AudioPlayer.shared.activeChapterIndex
+            let isAudiobook = currentItemID?.type == .audiobook
+            let hasQueueAdvance = !queue.isEmpty || !upNextQueue.isEmpty
+            let hasNextChapter = if let activeChapterIndex {
+                chapters.indices.contains(activeChapterIndex + 1)
+            } else {
+                false
+            }
+            nextChapterButton.isEnabled = hasNextChapter
             var buttons = [CPNowPlayingButton]([rateButton])
-            
-            if currentItemID?.type == .audiobook {
+            if isAudiobook {
                 buttons.append(bookmarkButton)
+                buttons.append(nextChapterButton)
             }
-            
-            if !isQueueEmpty {
-                buttons.append(nextButton)
+            if hasQueueAdvance {
+                buttons.append(advanceQueueButton)
             }
-            
-            template.updateNowPlayingButtons(buttons)
-            template.isAlbumArtistButtonEnabled = true
-            template.isUpNextButtonEnabled = !isQueueEmpty
+            template.updateNowPlayingButtons(Array(buttons.prefix(5)))
+            template.isAlbumArtistButtonEnabled = currentItemID != nil
+            template.upNextTitle = String(localized: "playback.queue")
+            template.isUpNextButtonEnabled = hasQueueAdvance
         }
     }
-    private func applyQueueToNextUpButton() {
-        template.upNextTitle = String(localized: "playback.queue")
-        template.isUpNextButtonEnabled = true
+}
+private extension CarPlayNowPlayingController {
+    static func skipToNextChapter() async {
+        let chapters = await AudioPlayer.shared.chapters
+        guard let activeChapterIndex = await AudioPlayer.shared.activeChapterIndex else {
+            return
+        }
+        let nextIndex = activeChapterIndex + 1
+        guard chapters.indices.contains(nextIndex) else {
+            return
+        }
+        try? await AudioPlayer.shared.seek(to: chapters[nextIndex].startOffset, insideChapter: false)
     }
 }
-
 extension CarPlayNowPlayingController: @preconcurrency CPNowPlayingTemplateObserver {
     func nowPlayingTemplateUpNextButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
-        Task {
-            try await interfaceController.pushTemplate(queueController.template, animated: true)
+        Task { [weak self] in
+            guard let self else {
+                return
+            }
+            _ = try? await interfaceController.pushTemplate(queueController.template, animated: true)
         }
     }
     func nowPlayingTemplateAlbumArtistButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
-        Task {
+        Task { [weak self] in
+            guard let self else {
+                return
+            }
             guard let currentItemID = await AudioPlayer.shared.currentItemID else {
                 return
             }
-            
-            if currentItemID.type == .audiobook {
-                try await interfaceController.pushTemplate(chaptersController.template, animated: true)
-            } else if currentItemID.type == .episode {
-                let podcastID = ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(currentItemID)
-                
-                guard let podcast = try await podcastID.resolved as? Podcast else {
-                    return
-                }
-                
-                let controller = CarPlayPodcastController(interfaceController: interfaceController, podcast: podcast)
-                try await interfaceController.pushTemplate(controller.template, animated: true)
+            switch currentItemID.type {
+            case .audiobook:
+                _ = try? await interfaceController.pushTemplate(chaptersController.template, animated: true)
+            default:
+                break
             }
         }
     }

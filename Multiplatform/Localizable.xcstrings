@@ -922,6 +922,7 @@
       }
     },
     "carPlay.tabBar.preferencesTip" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -968,6 +969,7 @@
       }
     },
     "carPlay.tabBar.preferencesTip.message" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

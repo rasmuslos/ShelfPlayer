@@ -148,11 +148,11 @@ final class EmbassyManager: Sendable {
                 var shortcuts = [UIApplicationShortcutItem]()
                 
                 for item in items {
-                    let progres = await PersistenceManager.shared.progress[item.id]
+                    let progress = await PersistenceManager.shared.progress[item.id]
                     let subtitle: String?
                     
-                    if let duration = progres.duration {
-                        subtitle = (duration - progres.currentTime).formatted(.duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
+                    if let duration = progress.duration {
+                        subtitle = (duration - progress.currentTime).formatted(.duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
                     } else {
                         subtitle = item.authors.formatted(.list(type: .and))
                     }
@@ -301,7 +301,7 @@ private extension EmbassyManager {
         }
     }
     func updatePlaybackInfo(itemID: ItemIdentifier?, isPlaying: Bool?) async {
-        await Defaults[.playbackInfoWidgetValue] = .init(currentItemID: itemID, isPlaying: isPlaying)
+        Defaults[.playbackInfoWidgetValue] = .init(currentItemID: itemID, isPlaying: isPlaying)
         
         WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.start")
         WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")

@@ -1,80 +1,166 @@
 //
-//  CarPlayOfflineTemplate.swift
+//  CarPlayListenNowController.swift
 //  Multiplatform
 //
 //  Created by Rasmus Krämer on 18.10.24.
 //
-
 import Foundation
 @preconcurrency import CarPlay
 import ShelfPlayback
-
-@MainActor
 final class CarPlayListenNowController {
-    private let interfaceController: CPInterfaceController
-    
     let template: CPListTemplate
-    
     private var itemControllers = [CarPlayItemController]()
-    
-    @MainActor
+    private var refreshTask: Task<Void, Never>?
     init(interfaceController: CPInterfaceController) {
-        self.interfaceController = interfaceController
-        
-        template = .init(title: String(localized: "panel.listenNow"), sections: [], assistantCellConfiguration: .init(position: .top, visibility: .always, assistantAction: .playMedia))
-        
-        template.tabTitle = String(localized: "panel.listenNow")
+        template = CPListTemplate(
+            title: String(localized: "panel.home"),
+            sections: [],
+            assistantCellConfiguration: .init(position: .top, visibility: .always, assistantAction: .playMedia)
+        )
+        template.tabTitle = String(localized: "panel.home")
         template.tabImage = UIImage(systemName: "house.fill")
-        
-        template.emptyViewTitleVariants = [String(localized: "item.empty")]
-        template.emptyViewSubtitleVariants = [String(localized: "item.empty.description")]
-        
-        updateTemplate()
-        
-        RFNotification[.downloadStatusChanged].subscribe { [weak self] _ in
-            self?.updateTemplate()
+        template.applyCarPlayLoadingState()
+        RFNotification[.listenNowItemsChanged].subscribe { [weak self] in
+            self?.reload()
         }
+        RFNotification[.downloadStatusChanged].subscribe { [weak self] _ in
+            self?.reload()
+        }
+        RFNotification[.offlineModeChanged].subscribe { [weak self] _ in
+            self?.reload()
+        }
+        RFNotification[.connectionsChanged].subscribe { [weak self] in
+            self?.reload()
+        }
+        reload()
+    }
+    deinit {
+        refreshTask?.cancel()
     }
 }
-
 private extension CarPlayListenNowController {
-    func updateTemplate() {
-        Task {
-            var controllers = [CarPlayItemController]()
-            var sections = [CPListSection]()
-            
-            #warning("grr")
-//            let listenNowControllers = await ShelfPlayerKit.listenNowItems.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
-            let listenNowControllers = [CarPlayPlayableItemController]()
-            
-            controllers += listenNowControllers
-            sections.append(CPListSection(items: listenNowControllers.map(\.row), header: String(localized: "panel.listenNow"), sectionIndexTitle: nil))
-            
-            if let audiobooks = try? await PersistenceManager.shared.download.audiobooks() {
-                let audiobookControllers = audiobooks.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
-                
-                controllers += audiobookControllers
-                sections.append(CPListSection(items: audiobookControllers.map(\.row), header: String(localized: "row.downloaded.audiobooks"), headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil))
+    struct Snapshot {
+        let offlineEnabled: Bool
+        let listenNowItems: [PlayableItem]
+        let downloadedAudiobooks: [Audiobook]
+        let downloadedEpisodeGroups: [(Podcast, [Episode])]
+    }
+    func reload() {
+        refreshTask?.cancel()
+        template.applyCarPlayLoadingState()
+        refreshTask = Task { [weak self] in
+            guard let self else {
+                return
             }
-            
-            if let podcasts = try? await PersistenceManager.shared.download.podcasts(), let episodes = try? await PersistenceManager.shared.download.episodes() {
-                let grouped = Dictionary(grouping: episodes, by: \.podcastID).sorted { $0.key.description < $1.key.description }
-                
-                for (podcastID, contained) in grouped {
-                    guard let podcast = podcasts.first(where: { $0.id == podcastID }) else {
-                        continue
-                    }
-                    
-                    let items = contained.map { CarPlayPlayableItemController(item: $0, displayCover: false) }
-                    let section = CPListSection(items: items.map(\.row), header: podcast.name, headerSubtitle: podcast.authors.formatted(.list(type: .and, width: .short)), headerImage: await podcast.id.platformImage(size: .small), headerButton: nil, sectionIndexTitle: nil)
-                    
-                    sections.append(section)
-                    controllers += items
-                }
+            let snapshot = await self.loadSnapshot()
+            guard !Task.isCancelled else {
+                return
             }
-            
-            itemControllers = controllers
-            template.updateSections(sections)
+            self.applySnapshot(snapshot)
         }
+    }
+    func loadSnapshot() async -> Snapshot {
+        let listenNowItems = (try? await PersistenceManager.shared.listenNow.current) ?? []
+        let downloadedAudiobooks = ((try? await PersistenceManager.shared.download.audiobooks()) ?? []).sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+        let podcasts = ((try? await PersistenceManager.shared.download.podcasts()) ?? []).sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+        let episodes = (try? await PersistenceManager.shared.download.episodes()) ?? []
+        let groupedEpisodes = Dictionary(grouping: episodes, by: \.podcastID)
+        var downloadedEpisodeGroups = [(Podcast, [Episode])]()
+        for podcast in podcasts {
+            guard let contained = groupedEpisodes[podcast.id], !contained.isEmpty else {
+                continue
+            }
+            let sorted = await Podcast.filterSort(contained, podcastID: podcast.id)
+            downloadedEpisodeGroups.append((podcast, sorted))
+        }
+        return .init(
+            offlineEnabled: OfflineMode.shared.isEnabled,
+            listenNowItems: listenNowItems,
+            downloadedAudiobooks: downloadedAudiobooks,
+            downloadedEpisodeGroups: downloadedEpisodeGroups
+        )
+    }
+    func applySnapshot(_ snapshot: Snapshot) {
+        var sections = [CPListSection]()
+        var retainedControllers = [CarPlayItemController]()
+        sections.append(
+            CPListSection(items: [makeOfflineRow(offlineEnabled: snapshot.offlineEnabled)])
+        )
+        if !snapshot.listenNowItems.isEmpty {
+            let controllers = snapshot.listenNowItems.map {
+                CarPlayPlayableItemController(item: $0, displayCover: true)
+            }
+            retainedControllers.append(contentsOf: controllers)
+            sections.append(
+                CPListSection(
+                    items: controllers.map(\.row),
+                    header: String(localized: "panel.listenNow"),
+                    sectionIndexTitle: nil
+                )
+            )
+        }
+        if !snapshot.downloadedAudiobooks.isEmpty {
+            let controllers = snapshot.downloadedAudiobooks.map {
+                CarPlayPlayableItemController(item: $0, displayCover: true)
+            }
+            retainedControllers.append(contentsOf: controllers)
+            sections.append(
+                CPListSection(
+                    items: controllers.map(\.row),
+                    header: String(localized: "row.downloaded.audiobooks"),
+                    sectionIndexTitle: nil
+                )
+            )
+        }
+        if !snapshot.downloadedEpisodeGroups.isEmpty {
+            for (podcast, episodes) in snapshot.downloadedEpisodeGroups {
+                let controllers = episodes.map {
+                    CarPlayPlayableItemController(item: $0, displayCover: false)
+                }
+                retainedControllers.append(contentsOf: controllers)
+                sections.append(
+                    CPListSection(
+                        items: controllers.map(\.row),
+                        header: podcast.name,
+                        headerSubtitle: podcast.authors.formatted(.list(type: .and, width: .short)),
+                        headerImage: nil,
+                        headerButton: nil,
+                        sectionIndexTitle: nil
+                    )
+                )
+            }
+        }
+        itemControllers = retainedControllers
+        template.updateSections(sections)
+        template.applyCarPlayEmptyState()
+    }
+    func makeOfflineRow(offlineEnabled: Bool) -> CPListItem {
+        let row = CPListItem(
+            text: String(localized: offlineEnabled ? "navigation.offline.disable" : "navigation.offline.enable"),
+            detailText: offlineEnabled ? "On" : "Off",
+            image: UIImage(systemName: offlineEnabled ? "network.slash" : "network")
+        )
+        row.handler = { [weak self] listItem, completion in
+            guard let self else {
+                completion()
+                return
+            }
+            Task {
+                listItem.isEnabled = false
+                if OfflineMode.shared.isEnabled {
+                    await OfflineMode.shared.refreshAvailability()
+                } else {
+                    OfflineMode.shared.forceEnable()
+                }
+                self.reload()
+                listItem.isEnabled = true
+                completion()
+            }
+        }
+        return row
     }
 }

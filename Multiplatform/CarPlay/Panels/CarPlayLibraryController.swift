@@ -4,103 +4,79 @@
 //
 //  Created by Rasmus Krämer on 19.10.24.
 //
-
 import Foundation
 @preconcurrency import CarPlay
 import ShelfPlayback
-
-@MainActor
-class CarPlayLibraryController: CarPlayTabBar.LibraryController {
+final class CarPlayLibraryController {
     private let interfaceController: CPInterfaceController
     private let library: Library
-    
     let template: CPListTemplate
-    
     private var itemControllers = [CarPlayItemController]()
-    
-    @MainActor
+    private var refreshTask: Task<Void, Never>?
     init(interfaceController: CPInterfaceController, library: Library) {
         self.interfaceController = interfaceController
         self.library = library
-        
-        template = .init(title: library.name, sections: [], assistantCellConfiguration: .none)
-        
+        template = CPListTemplate(title: library.name, sections: [], assistantCellConfiguration: .none)
         template.tabTitle = library.name
         template.tabImage = UIImage(systemName: library.icon)
-        
-        template.emptyViewTitleVariants = [String(localized: "item.empty")]
-        template.emptyViewSubtitleVariants = [String(localized: "item.empty.description")]
-        
-        updateSections()
-        
-        RFNotification[.playbackItemChanged].subscribe { [weak self] (itemID, _, _) in
-            guard itemID.connectionID == self?.library.id.connectionID else {
+        template.applyCarPlayLoadingState()
+        RFNotification[.connectionsChanged].subscribe { [weak self] in
+            self?.reload()
+        }
+        RFNotification[.offlineModeChanged].subscribe { [weak self] _ in
+            self?.reload()
+        }
+        reload()
+    }
+    deinit {
+        refreshTask?.cancel()
+    }
+}
+private extension CarPlayLibraryController {
+    func reload() {
+        refreshTask?.cancel()
+        template.applyCarPlayLoadingState()
+        refreshTask = Task { [weak self] in
+            guard let self else {
                 return
             }
-            
-            self?.updateSections()
-        }
-    }
-    
-    private func updateSections() {
-        switch library.id.type {
-        case .audiobooks:
-            updateAudiobookSections()
-        case .podcasts:
-            updatePodcastSections()
-        }
-    }
-    private func updateSections(_ sections: [(CPListSection, [CarPlayPlayableItemController])]) {
-        itemControllers = sections.flatMap(\.1)
-        template.updateSections(sections.map(\.0))
-    }
-    
-    private func updateAudiobookSections() {
-        Task {
-            let connectionID = library.id.connectionID
-            
-            let (rows, _): ([HomeRow<Audiobook>], [HomeRow<Person>]) = try await ABSClient[connectionID].home(for: library.id.libraryID)
-            let prepared = await HomeRow.prepareForPresentation(rows, connectionID: connectionID)
-            
-            let sections = prepared.map {
-                let items = $0.entities.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
-                return (CPListSection(items: items.map(\.row), header: $0.localizedLabel, headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil), items)
+
+            guard library.id.type == .audiobooks else {
+                itemControllers = []
+                template.updateSections([])
+                template.applyCarPlayEmptyState()
+                return
             }
-            
-            itemControllers = sections.flatMap(\.1)
-            template.updateSections(sections.map(\.0))
+
+            await self.loadAudiobookHome()
         }
     }
-    private func updatePodcastSections() {
-        Task {
-            let connectionID = library.id.connectionID
-            
-            let (_, rows): ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[connectionID].home(for: library.id.libraryID)
-            let prepared = await HomeRow.prepareForPresentation(rows, connectionID: connectionID)
-            
-            let sections = prepared.map {
-                let items = $0.entities.map { CarPlayPlayableItemController(item: $0, displayCover: true) }
-                return (CPListSection(items: items.map(\.row), header: $0.localizedLabel, headerSubtitle: nil, headerImage: nil, headerButton: nil, sectionIndexTitle: nil), items)
-            }
-            
-            let item = CPListItem(text: String(localized: "panel.library"), detailText: nil)
-            item.handler = { [weak self] (_, completion) in
-                guard let self else {
-                    return
+    func loadAudiobookHome() async {
+        do {
+            let rows: ([HomeRow<Audiobook>], [HomeRow<Person>]) = try await ABSClient[library.id.connectionID].home(for: library.id.libraryID)
+            let prepared = await HomeRow.prepareForPresentation(rows.0, connectionID: library.id.connectionID)
+            var sections = [CPListSection]()
+            var retainedControllers = [CarPlayItemController]()
+            for row in prepared {
+                let controllers = row.entities.map {
+                    CarPlayPlayableItemController(item: $0, displayCover: true)
                 }
-                
-                let controller = CarPlayPodcastListController(interfaceController: interfaceController, library: library)
-                
-                Task {
-                    try await interfaceController.pushTemplate(controller.template, animated: true)
-                    completion()
-                }
+                retainedControllers.append(contentsOf: controllers)
+                sections.append(
+                    CPListSection(
+                        items: controllers.map(\.row),
+                        header: row.localizedLabel,
+                        sectionIndexTitle: nil
+                    )
+                )
             }
-            
-            itemControllers = sections.flatMap(\.1)
-            template.updateSections([
-                CPListSection(items: [item]),
-            ] + sections.map(\.0))
+            itemControllers = retainedControllers
+            template.updateSections(sections)
+            template.applyCarPlayEmptyState()
+        } catch {
+            itemControllers = []
+            template.updateSections([])
+            template.applyCarPlayEmptyState()
         }
     }
 }
