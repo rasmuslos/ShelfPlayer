@@ -9205,43 +9205,43 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Offline-Modus aktivieren"
+            "value" : "Offline gehen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enable offline mode"
+            "value" : "Go offline"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Activer le mode hors ligne"
+            "value" : "Passer hors ligne"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Включить режим без сети"
+            "value" : "Перейти в офлайн"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktivera nedkopplat läge"
+            "value" : "Koppla ner"
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Увімкнути офлайн-режим"
+            "value" : "Перейти в офлайн"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "启用离线模式"
+            "value" : "切换到离线"
           }
         }
       }

@@ -13,7 +13,6 @@ struct CarPlayPreferences: View {
     @Environment(Satellite.self) private var satellite
     
     @Default(.carPlayTabBarLibraries) private var carPlayTabBarLibraries
-    @Default(.carPlayShowListenNow) private var carPlayShowListenNow
     @Default(.carPlayShowOtherLibraries) private var carPlayShowOtherLibraries
     
     private var shouldShowOtherLibraries: Bool {
@@ -46,8 +45,6 @@ struct CarPlayPreferences: View {
     var body: some View {
         List {
             Section {
-                Toggle("panel.listenNow", isOn: $carPlayShowListenNow)
-                
                 if let carPlayTabBarLibraries {
                     ForEach(carPlayTabBarLibraries) {
                         Text($0.name)
@@ -97,7 +94,6 @@ struct CarPlayPreferences: View {
             
             Button("action.reset", role: .destructive) {
                 Defaults.reset(.carPlayTabBarLibraries)
-                Defaults.reset(.carPlayShowListenNow)
                 Defaults.reset(.carPlayShowOtherLibraries)
             }
         }
