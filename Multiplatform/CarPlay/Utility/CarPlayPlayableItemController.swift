@@ -47,8 +47,8 @@ final class CarPlayPlayableItemController: CarPlayItemController {
         refreshState()
         loadCoverIfNeeded()
         
-        RFNotification[.playbackItemChanged].subscribe { [weak self] in
-            self?.row.isPlaying = self?.itemID == $0.0
+        RFNotification[.playbackItemChanged].subscribe { [weak self] _ in
+            self?.refreshState()
         }
         RFNotification[.downloadStatusChanged].subscribe { [weak self] _ in
             self?.refreshDownloadAccessory()
@@ -132,9 +132,12 @@ private extension CarPlayPlayableItemController {
     func refreshDownloadAccessory() {
         Task {
             switch await PersistenceManager.shared.download.status(of: item.id) {
-                case .completed: row.setAccessoryImage(.init(systemName: "arrow.down.circle.fill"))
-                case .downloading: row.setAccessoryImage(.init(systemName: "circle.circle.fill"))
-                default: row.setAccessoryImage(nil)
+                case .completed:
+                    row.setAccessoryImage(.init(systemName: "arrow.down.circle.fill"))
+                case .downloading:
+                    row.setAccessoryImage(.init(systemName: "circle.circle.fill"))
+                default:
+                    row.setAccessoryImage(nil)
             }
         }
     }
