@@ -62,7 +62,7 @@ final class TabRouterViewModel: Sendable {
                 return
             }
             
-            self?.toggleCompactPinned()
+            self?.enableFirstPinnedTab()
         }
     }
     
@@ -88,7 +88,7 @@ final class TabRouterViewModel: Sendable {
                         for library in libraries {
                             let (tabBar, sideBar) = (
                                 await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: .tabBar),
-                                await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: .sidebar),
+                                PersistenceManager.shared.customization.availableTabs(for: library.id, scope: .sidebar),
                             )
                             
                             results[library] = (tabBar, sideBar)
@@ -147,20 +147,12 @@ extension TabRouterViewModel {
         }
     }
     func selectFirstCompactTab(for library: LibraryIdentifier, allowPinned: Bool) {
-        if allowPinned, let pinnedTabValue = pinnedTabValues.compactMap({ $0 }).first(where: { $0.libraryID == library }) {
-            tabValue = pinnedTabValue
-        } else {
-            tabValue = tabBar.first { $0.key == library }?.value.first
-        }
+        selectFirstTab(for: library, allowPinned: allowPinned, scope: .tabBar)
+    }
+    func selectFirstSidebarTab(for library: LibraryIdentifier, allowPinned: Bool) {
+        selectFirstTab(for: library, allowPinned: allowPinned, scope: .sidebar)
     }
     
-    func toggleCompactPinned() {
-        if pinnedTabsActive {
-            enableFirstLibrary()
-        } else {
-            enableFirstPinnedTab()
-        }
-    }
     func enableFirstPinnedTab() {
         if let first = pinnedTabValues.first {
             tabValue = first
@@ -168,17 +160,38 @@ extension TabRouterViewModel {
             Satellite.shared.present(.customTabValuePreferences)
         }
     }
-    func enableFirstLibrary() {
+    func enableFirstLibrary(scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope) {
         guard let library = libraries.first else {
             logger.warning("Requested to enable first library, but there are no libraries")
             return
         }
         
-        selectFirstCompactTab(for: library.id, allowPinned: false)
+        selectFirstTab(for: library.id, allowPinned: false, scope: scope)
     }
     
     func selectLastOrFirstCompactLibrary() {
-        guard !restoreLastTabValue() else {
+        selectLastOrFirstLibrary(scope: .tabBar)
+    }
+    func selectLastOrFirstSidebarLibrary() {
+        selectLastOrFirstLibrary(scope: .sidebar)
+    }
+
+    func navigate(to itemID: ItemIdentifier) {
+        self.navigateToWhenReady = itemID
+    }
+}
+
+private extension TabRouterViewModel {
+    func selectFirstTab(for library: LibraryIdentifier, allowPinned: Bool, scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope) {
+        if allowPinned, let pinnedTabValue = pinnedTabValues.compactMap({ $0 }).first(where: { $0.libraryID == library }) {
+            tabValue = pinnedTabValue
+        } else {
+            tabValue = tabs(for: library, scope: scope)?.first
+        }
+    }
+
+    func selectLastOrFirstLibrary(scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope) {
+        guard !restoreLastTabValue(scope: scope) else {
             return
         }
         
@@ -191,11 +204,18 @@ extension TabRouterViewModel {
             return
         }
         
-        selectFirstCompactTab(for: first.id, allowPinned: true)
+        selectFirstTab(for: first.id, allowPinned: true, scope: scope)
     }
     
-    func navigate(to itemID: ItemIdentifier) {
-        self.navigateToWhenReady = itemID
+    func tabs(for library: LibraryIdentifier, scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope) -> [TabValue]? {
+        switch scope {
+            case .tabBar:
+                tabBar[library]
+            case .sidebar:
+                sideBar[library]
+            case .library:
+                nil
+        }
     }
 }
 
@@ -211,9 +231,9 @@ private extension TabRouterViewModel {
         }
     }
     
-    func restoreLastTabValue() -> Bool {
+    func restoreLastTabValue(scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope) -> Bool {
         if let navigateToWhenReady {
-            selectFirstCompactTab(for: .convertItemIdentifierToLibraryIdentifier(navigateToWhenReady), allowPinned: true)
+            selectFirstTab(for: .convertItemIdentifierToLibraryIdentifier(navigateToWhenReady), allowPinned: true, scope: scope)
             return true
         }
         

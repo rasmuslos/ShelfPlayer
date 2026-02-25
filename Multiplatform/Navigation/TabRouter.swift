@@ -47,6 +47,9 @@ struct TabRouter: View {
     var connections: [FriendlyConnection] {
         connectionStore.connections
     }
+    var onlineConnections: [FriendlyConnection] {
+        connections.filter { !isOffline($0.id) }
+    }
     var offlineConnections: [ItemIdentifier.ConnectionID] {
         connectionStore.offlineConnections
     }
@@ -144,23 +147,64 @@ struct TabRouter: View {
         }
     }
     
+    private func tabCustomizationID(for tab: TabValue) -> String {
+        "tab_\(tab.id)"
+    }
+    private func libraryCustomizationID(for library: LibraryIdentifier) -> String {
+        "library_\(library.id)"
+    }
+    private func sidebarSectionLabel(for library: Library, connection: FriendlyConnection) -> String {
+        if onlineConnections.count == 1 {
+            library.name
+        } else {
+            "\(library.name) (\(connection.name))"
+        }
+    }
+
+    private func sidebarTabs() -> some TabContent<TabValue?> {
+        ForEach(onlineConnections) { connection in
+            if let libraries = viewModel.connectionLibraries[connection.id] {
+                ForEach(libraries) { library in
+                    if let sideBarTabs = viewModel.sideBar[library.id] {
+                        TabSection(sidebarSectionLabel(for: library, connection: connection)) {
+                            ForEach(sideBarTabs) {
+                                tab(for: $0)
+                                    .customizationID(tabCustomizationID(for: $0))
+                            }
+                        }
+                        .customizationID(libraryCustomizationID(for: library.id))
+                    }
+                }
+            }
+        }
+    }
+
     var body: some View {
         TabView(selection: $viewModel.tabValue) {
             if viewModel.connectionLibraries.isEmpty {
                 loadingTab {
                     await viewModel.loadLibraries()
                 }
-            } else if !isCompactAndReady {
+            } else if isCompact, !isCompactAndReady {
                 loadingTab() {
                     viewModel.selectLastOrFirstCompactLibrary()
                 }
+            } else if !isCompact, viewModel.tabValue == nil {
+                loadingTab() {
+                    viewModel.selectLastOrFirstSidebarLibrary()
+                }
             } else {
-                // Compact
-                if let selectedLibraryID = viewModel.selectedLibraryID, let tabBar = viewModel.tabBar[selectedLibraryID] {
-                    ForEach(tabBar) {
-                        tab(for: $0)
+                if isCompact {
+                    // Compact
+                    if let selectedLibraryID = viewModel.selectedLibraryID, let tabBar = viewModel.tabBar[selectedLibraryID] {
+                        ForEach(tabBar) {
+                            tab(for: $0)
+                        }
+                        .hidden(!isCompactAndReady || viewModel.pinnedTabsActive)
                     }
-                    .hidden(!isCompactAndReady || viewModel.pinnedTabsActive)
+                } else {
+                    // Sidebar
+                    sidebarTabs()
                 }
                 
                 // Pinned
@@ -175,25 +219,8 @@ struct TabRouter: View {
                         SearchPanel()
                     }
                 }
-                .hidden(!isCompactAndReady)
+                .hidden(isCompact ? !isCompactAndReady : false)
             }
-            
-//            ForEach(connections) { connection in
-//                TabSection {
-//                    if isOffline(connection.id) {
-//                        Tab(value: .loading) {
-//                            Text(":(")
-//                        }
-//                    } else {
-//                        Tab(value: .loading) {
-//                            Text(":)")
-//                        }
-//                    }
-//                } header: {
-//                    Text(connection.name)
-//                }
-//            }
-//            .hidden(isCompact)
         }
         .tabViewStyle(.sidebarAdaptable)
         .tabViewCustomization($customization)
@@ -233,7 +260,11 @@ struct TabRouter: View {
             
             let targetLibraryID = LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(itemID)
             if viewModel.tabValue?.libraryID != targetLibraryID {
-                viewModel.selectFirstCompactTab(for: targetLibraryID, allowPinned: true)
+                if isCompact {
+                    viewModel.selectFirstCompactTab(for: targetLibraryID, allowPinned: true)
+                } else {
+                    viewModel.selectFirstSidebarTab(for: targetLibraryID, allowPinned: true)
+                }
             }
             
             viewModel.navigateToWhenReady = itemID
@@ -369,4 +400,3 @@ extension EnvironmentValues {
         .previewEnvironment()
 }
 #endif
-

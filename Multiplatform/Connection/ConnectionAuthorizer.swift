@@ -70,7 +70,6 @@ struct ConnectionAuthorizer: View {
                         Button("connection.add.proceed") {
                             authorize()
                         }
-                        .disabled(isLoading)
                     case .openID:
                         Button("action.retry") {
                             authorize()
@@ -90,6 +89,7 @@ struct ConnectionAuthorizer: View {
             .onSubmit {
                 authorize()
             }
+            .disabled(isLoading)
         } else {
             Picker("connection.add.strategy.select", selection: $strategy) {
                 ForEach(strategies) {

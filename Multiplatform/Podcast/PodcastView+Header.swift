@@ -160,15 +160,10 @@ private struct PlayFirstEpisodeButton: View {
     @Environment(PodcastViewModel.self) private var viewModel
     
     var body: some View {
-        Group {
-            if let first = viewModel.visible.first {
-                PlayButton(item: first)
-                    .playButtonSize(.medium)
-            } else if viewModel.episodes.isEmpty {
-                PlayButton(item: Episode.placeholder)
-                    .playButtonSize(.medium)
-                    .disabled(true)
-            }
+        if let playNowEpisode = viewModel.playNowEpisode {
+            PlayButton(item: playNowEpisode)
+                .playButtonSize(.medium)
+                .disabled(playNowEpisode == .placeholder)
         }
     }
 }

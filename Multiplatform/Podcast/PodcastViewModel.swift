@@ -13,8 +13,10 @@ import ShelfPlayback
 final class PodcastViewModel: Equatable, Hashable {
     let podcast: Podcast
     
-    private(set) var episodes: [Episode]
-    private(set) var visible: [Episode]
+    private(set) var episodes = [Episode]()
+    private(set) var visible = [Episode]()
+    
+    private(set) var playNowEpisode: Episode? = .placeholder
     
     private(set) var channelPodcasts = [Podcast]()
     
@@ -34,23 +36,14 @@ final class PodcastViewModel: Equatable, Hashable {
     }
     var restrictToPersisted: Bool?
     
-    var search: String
-    var isToolbarVisible: Bool
+    var search = ""
+    var isToolbarVisible = false
     
     private(set) var dominantColor: Color?
-    private(set) var notifyError: Bool
+    private(set) var notifyError = false
     
-    init(podcast: Podcast) {
+    init(_ podcast: Podcast) {
         self.podcast = podcast
-        
-        episodes = []
-        visible = []
-        
-        search = ""
-        isToolbarVisible = false
-        
-        dominantColor = nil
-        notifyError = false
     }
     
     static func == (lhs: PodcastViewModel, rhs: PodcastViewModel) -> Bool {
@@ -240,6 +233,7 @@ extension PodcastViewModel {
             
             withAnimation {
                 self.visible = episodes
+                self.playNowEpisode = episodes.first
             }
         }
     }
@@ -278,12 +272,7 @@ private extension PodcastViewModel {
         #endif
         
         do {
-            let episodes = try await ABSClient[podcast.id.connectionID].podcast(with: podcast.id).1
-            
-            withAnimation {
-                self.episodes = episodes
-            }
-            
+            episodes = try await ABSClient[podcast.id.connectionID].podcast(with: podcast.id).1
             updateVisible()
         } catch {
             notifyError.toggle()

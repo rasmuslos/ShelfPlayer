@@ -83,11 +83,10 @@ struct PodcastLibraryPanel: View {
             PodcastVGrid(podcasts: lazyLoader.items) {
                 lazyLoader.performLoadIfRequired($0)
             }
-            
-            PanelItemCountLabel(total: lazyLoader.totalCount, type: .podcast, isLoading: lazyLoader.isLoading)
-            
             .id(id)
             .padding(.horizontal, 20)
+            
+            PanelItemCountLabel(total: lazyLoader.totalCount, type: .podcast, isLoading: lazyLoader.isLoading)
         }
     }
 

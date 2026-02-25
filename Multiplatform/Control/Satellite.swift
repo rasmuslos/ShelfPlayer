@@ -116,11 +116,11 @@ final class Satellite {
     public func isLoading(observing itemID: ItemIdentifier) -> Bool {
         totalLoading > 0 || busy[itemID] ?? 0 > 0 || itemID.primaryID == "placeholder"
     }
-
+    
     private func startWorking(on itemID: ItemIdentifier) {
+        let current = busy[itemID]
+        
         withAnimation {
-            let current = busy[itemID]
-            
             if current == nil {
                 busy[itemID] = 1
             } else {
@@ -129,20 +129,20 @@ final class Satellite {
         }
     }
     private func endWorking(on itemID: ItemIdentifier, successfully: Bool?) {
+        guard let current = busy[itemID] else {
+            logger.warning("Ending work on \(itemID, privacy: .public) but no longer busy")
+            return
+        }
+        
         withAnimation {
-            guard let current = busy[itemID] else {
-                logger.warning("Ending work on \(itemID, privacy: .public) but no longer busy")
-                return
-            }
-            
             busy[itemID] = current - 1
-            
-            if let successfully {
-                if successfully {
-                    notifySuccess.toggle()
-                } else {
-                    notifyError.toggle()
-                }
+        }
+        
+        if let successfully {
+            if successfully {
+                notifySuccess.toggle()
+            } else {
+                notifyError.toggle()
             }
         }
     }
