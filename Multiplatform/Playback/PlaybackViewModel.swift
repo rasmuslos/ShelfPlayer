@@ -268,6 +268,11 @@ final class PlaybackViewModel {
                 return
             }
             
+            if isExpanded {
+                toggleExpanded()
+                try await Task.sleep(for: .seconds(1))
+            }
+            
             bookmarkNote = ""
             bookmarkCapturedTime = UInt64(currentTime)
             isCreateBookmarkAlertVisible = true

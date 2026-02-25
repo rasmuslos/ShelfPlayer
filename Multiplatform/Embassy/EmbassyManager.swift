@@ -140,7 +140,6 @@ final class EmbassyManager: Sendable {
         
         // MARK: Quick Actions
         
-        #warning("notification")
         RFNotification[.listenNowItemsChanged].subscribe {
             Task {
                 let items = try await PersistenceManager.shared.listenNow.current.prefix(4)
@@ -181,8 +180,6 @@ final class EmbassyManager: Sendable {
         
         // MARK: Last listened
         
-        #warning("check")
-        
         RFNotification[.playStateChanged].subscribe { _ in
             self.updateLastListenedWidget()
         }
@@ -207,28 +204,8 @@ final class EmbassyManager: Sendable {
             }
         }
         RFNotification[.downloadStatusChanged].subscribe { payload in
-//            Task {
-//                guard let current = Defaults[.playbackInfoWidgetValue] else {
-//                    return
-//                }
-//                
-//                let isDownloaded: Bool
-//                
-//                if let (itemID, status) = payload {
-//                    guard itemID == current.currentItemID else {
-//                        return
-//                    }
-//                    
-//                    isDownloaded = status == .completed
-//                } else if let currentItemID = current.currentItemID {
-//                    isDownloaded = await PersistenceManager.shared.download.status(of: currentItemID) == .completed
-//                } else {
-//                    isDownloaded = false
-//                }
-//                
-//                await self.updatePlaybackInfo(itemID: current.currentItemID, isDownloaded: isDownloaded, isPlaying: current.isPlaying)
-//            }
-            #warning("a")
+            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.start")
+            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
         }
         
         // MARK: Listen now
@@ -236,12 +213,8 @@ final class EmbassyManager: Sendable {
         RFNotification[.listenNowItemsChanged].subscribe {
             AppShortcutProvider.updateAppShortcutParameters()
             
-            Task {
-                #warning("h")
-                
-                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.start")
-                WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
-            }
+            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.start")
+            WidgetCenter.shared.reloadTimelines(ofKind: "io.rfk.shelfPlayer.listenNow")
         }
         
         // MARK: Live activity (Sleep Timer)

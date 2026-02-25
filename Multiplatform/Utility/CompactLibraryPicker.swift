@@ -40,15 +40,15 @@ struct CompactLibraryPicker: View {
                 Label("panel.home", image: "shelfPlayer.fill")
             }
             
+            Button("navigation.offline.enable", systemImage: "network.slash") {
+                OfflineMode.shared.forceEnable()
+            }
+            
             Divider()
 
             if !tabRouterViewModel.pinnedTabsActive {
                 LibraryPicker()
                 Divider()
-            }
-            
-            Button("navigation.offline.enable", systemImage: "network.slash") {
-                OfflineMode.shared.forceEnable()
             }
             
             if customizeLibrary {

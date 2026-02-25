@@ -34,8 +34,10 @@ extension PodcastView {
             #warning("todo: channel")
             
             InformationListTitle(title: "item.description")
+            
             Description(description: viewModel.podcast.description, showHeadline: false)
                 .listRowInsets(.init(top: 12, leading: 20, bottom: 0, trailing: 20))
+                .listRowSeparator(.hidden)
         }
     }
 }

@@ -128,7 +128,7 @@ private extension CarPlayListenNowController {
                             items: controllers.map(\.row),
                             header: podcast.name,
                             headerSubtitle: podcast.authors.formatted(.list(type: .and, width: .short)),
-                            headerImage: nil,
+                            headerImage: await podcast.id.platformImage(size: .small),
                             headerButton: nil,
                             sectionIndexTitle: nil
                         )

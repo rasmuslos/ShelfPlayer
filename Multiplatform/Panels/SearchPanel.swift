@@ -52,7 +52,15 @@ struct SearchPanel: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                CompactLibraryPicker()
+                if horizontalSizeClass == .compact {
+                    CompactLibraryPicker()
+                } else {
+                    Menu {
+                        LibraryPicker()
+                    } label: {
+                        Label("navigation.library.select", systemImage: "books.vertical.fill")
+                    }
+                }
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
