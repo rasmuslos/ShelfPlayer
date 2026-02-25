@@ -208,7 +208,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 
                 
                 guard !received.isEmpty else {
-                    withAnimation { [self] in
+                    withAnimation {
                         finished = true
                         working = false
                     }
@@ -223,7 +223,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 received = received.filter { !existingIDs.contains($0.id) }
                 
                 if receivedCount < Self.PAGE_SIZE {
-                    withAnimation { [self] in
+                    withAnimation {
                         finished = true
                     }
                     
@@ -458,7 +458,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                 
                 // MARK: Update
                 
-                withAnimation { [self] in
+                withAnimation {
                     working = false
                     
                     self.totalCount = totalCount
@@ -481,9 +481,9 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
             } catch {
                 logger.error("Error loading more \(T.self, privacy: .public): \(error, privacy: .public)")
                 
-                withAnimation { [self] in
-                    notifyError.toggle()
-                    
+                notifyError.toggle()
+                
+                withAnimation {
                     failed = true
                     working = false
                 }

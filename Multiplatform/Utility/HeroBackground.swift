@@ -39,7 +39,7 @@ struct HeroBackground: View {
                     let expected = offset < threshold
                     
                     if expected != isToolbarVisible {
-                        withAnimation(.spring) {
+                        withAnimation {
                             isToolbarVisible = expected
                         }
                     }

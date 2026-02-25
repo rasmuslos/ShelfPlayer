@@ -25,8 +25,12 @@ struct CompactLibraryPicker: View {
     private var pinnedTabsBinding: Binding<Bool> {
         .init {
             tabRouterViewModel.pinnedTabsActive
-        } set: { _ in
-            tabRouterViewModel.toggleCompactPinned()
+        } set: {
+            if $0 {
+                tabRouterViewModel.enableFirstPinnedTab()
+            } else {
+                tabRouterViewModel.enableFirstLibrary(scope: .tabBar)
+            }
         }
     }
     

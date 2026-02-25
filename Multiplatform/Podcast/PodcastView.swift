@@ -18,7 +18,7 @@ struct PodcastView: View {
     
     init(_ podcast: Podcast, zoom: Bool) {
         self.zoom = zoom
-        _viewModel = .init(initialValue: .init(podcast: podcast))
+        _viewModel = .init(initialValue: .init(podcast))
     }
     
     var body: some View {

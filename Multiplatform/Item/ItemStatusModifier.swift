@@ -131,11 +131,7 @@ struct ItemStatusModifier: ViewModifier {
     
     private func load() {
         Task {
-            let item = try? await itemID.resolved
-            
-            withAnimation {
-                self.item = item
-            }
+            item = try? await itemID.resolved
         }
     }
 }
