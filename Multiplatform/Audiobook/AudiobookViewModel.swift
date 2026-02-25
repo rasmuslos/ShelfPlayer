@@ -70,6 +70,16 @@ final class AudiobookViewModel: Sendable {
         
         notifyError = false
         notifySuccess = false
+        
+        RFNotification[.bookmarksChanged].subscribe { [weak self] itemID in
+            guard self?.audiobook.id == itemID else {
+                return
+            }
+            
+            Task {
+                await self?.loadBookmarks()
+            }
+        }
     }
 }
 

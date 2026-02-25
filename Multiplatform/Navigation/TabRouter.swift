@@ -224,6 +224,38 @@ struct TabRouter: View {
         }
         .tabViewStyle(.sidebarAdaptable)
         .tabViewCustomization($customization)
+        .tabViewSidebarHeader {
+            Button {
+                satellite.present(.listenNow)
+            } label: {
+                ListenedTodayListRow()
+            }
+            .buttonStyle(.plain)
+        }
+        .tabViewSidebarFooter {
+            Divider()
+                .padding(.top, 8)
+            
+            Button {
+                satellite.present(.preferences)
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "gearshape")
+                        .imageScale(.large)
+                    Text("preferences")
+                    Spacer()
+                }
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.primary)
+            .padding(.vertical, 8)
+        }
+        .tabViewSidebarBottomBar {
+            Button("navigation.offline.enable", systemImage: "network.slash") {
+                OfflineMode.shared.forceEnable()
+            }
+            .buttonStyle(.plain)
+        }
         .modify {
             if #available(iOS 26, *) {
                 $0
@@ -331,72 +363,23 @@ extension EnvironmentValues {
     }
 }
 
-/*
-
-    var body: some View {
-        applyEvents {
-            ZStack {
-                
-                            ForEach(connectionStore.connections) { connection in
-                                if let libraries = connectionStore.libraries[connection.id] {
-                                    ForEach(libraries) { library in
-                                        TabSection(library.name) {
-                                            ForEach(PersistenceManager.shared.customization.availableTabs(for: library, scope: .sidebar)) { tab in
-                                                Tab(tab.label, systemImage: tab.image, value: tab) {
-                                                    if !isSynchronized && !isCompact {
-                                                        SyncGate(library: tabValue.library)
-                                                    } else {
-                                                        content(for: tab)
-                                                    }
-                                                }
-                                                .hidden(isCompact)
-                                                .customizationID("tab_\(library.id)_\(library.connectionID)_\(tab.id)")
-                                            }
-                                        }
-                                        .customizationID("library_\(library.id)_\(library.connectionID)")
-                                    }
-                                }
-                            }
-                            
-                        }
-                        .tabViewSidebarFooter {
-                            Divider()
-                                .padding(.bottom, 12)
-                            
-                            HStack(spacing: 12) {
-                                Button("preferences", systemImage: "gearshape") {
-                                    satellite.present(.preferences)
-                                }
-                                
-                                Button("navigation.offline.enable", systemImage: "network.slash") {
-                                    OfflineMode.shared.setEnabled(true)
-                                }
-                                
-                                Spacer()
-                            }
-                            .buttonStyle(.plain)
-                            .labelStyle(.iconOnly)
-                            .foregroundStyle(.primary)
-                        }
-                        .tabViewSidebarHeader {
-                            Button {
-                                satellite.present(.listenNow)
-                            } label: {
-                                ListenedTodayListRow()
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
- */
-
 #if DEBUG
 #Preview {
     TabRouter()
         .previewEnvironment()
+        .modify {
+            if #available(iOS 18.4, *) {
+                $0
+                    .contentToolbar(for: .tabViewSidebar) {
+                        ToolbarItem(placement: .automatic) {
+                            Button("preferences", systemImage: "gearshape") {
+                                
+                            }
+                        }
+                    }
+            } else {
+                $0
+            }
+        }
 }
 #endif

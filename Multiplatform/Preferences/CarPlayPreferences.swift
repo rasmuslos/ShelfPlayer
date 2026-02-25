@@ -15,30 +15,12 @@ struct CarPlayPreferences: View {
     @Default(.carPlayTabBarLibraries) private var carPlayTabBarLibraries
     @Default(.carPlayShowOtherLibraries) private var carPlayShowOtherLibraries
     
-    private var shouldShowOtherLibraries: Bool {
-        guard let carPlayTabBarLibraries else {
-            return true
-        }
-        
-        let totalLibraryCount = 0 // connectionStore.libraries.reduce(0) { $0 + $1.1.count }
-        
-        return carPlayTabBarLibraries.count != totalLibraryCount
-    }
-    private var areOtherLibrariesVisible: Bool {
-        carPlayShowOtherLibraries && shouldShowOtherLibraries
-    }
-    
     private var showTabBarLimitWarning: Bool {
         guard let carPlayTabBarLibraries else {
             return false
         }
         
-        var additionalTabs = 1
-        
-        if areOtherLibrariesVisible {
-            additionalTabs += 1
-        }
-        
+        let additionalTabs = 1
         return (carPlayTabBarLibraries.count + additionalTabs) > 5
     }
     
@@ -59,9 +41,7 @@ struct CarPlayPreferences: View {
                     }
                 }
                 
-                if shouldShowOtherLibraries {
-                    Toggle("carPlay.otherLibraries", isOn: $carPlayShowOtherLibraries)
-                }
+                Toggle("carPlay.otherLibraries", isOn: $carPlayShowOtherLibraries)
             } footer: {
                 Text("preferences.carPlay.tabBar.footer")
             }

@@ -97,7 +97,7 @@ private extension CarPlayLibraryController {
             
             for row in prepared {
                 let controllers = row.entities.map {
-                    CarPlayPlayableItemController(item: $0, displayCover: false)
+                    CarPlayPlayableItemController(item: $0, displayCover: true)
                 }
                 
                 retainedControllers.append(contentsOf: controllers)

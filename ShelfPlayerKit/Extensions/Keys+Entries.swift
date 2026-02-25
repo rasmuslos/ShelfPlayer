@@ -23,7 +23,6 @@ public extension UserDefaults {
 public extension Defaults.Keys {
     // MARK: Settings
     
-    #warning("Fix:")
     static let removeFinishedDownloads = Key("removeFinishedDownloads", default: true)
     static let forceAspectRatio = Key("forceAspectRatio", default: false)
     static let groupAudiobooksInSeries = Key("groupAudiobooksInSeries", default: true)
