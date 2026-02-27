@@ -49,7 +49,7 @@ public extension PersistenceManager.ItemSubsystem {
     
     func dominantColor(of itemID: ItemIdentifier) async -> Color? {
         #if DEBUG
-        if itemID.connectionID == "fixture" {
+        if itemID.libraryID == "fixture" {
             return .orange
         }
         #endif

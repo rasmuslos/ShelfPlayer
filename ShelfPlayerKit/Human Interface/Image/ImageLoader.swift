@@ -33,6 +33,14 @@ public final actor ImageLoader {
                 
                 let result: Data
                 
+                #if DEBUG
+                if request.itemID.libraryID == "fixture" {
+                    let (result, _) = try await URLSession.shared.data(from: URL(string: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlkgSqLF2q_KEp4inENCWmpyVniMG8einhTw&s")!)
+                    
+                    return result
+                }
+                #endif
+                
                 if let url = await PersistenceManager.shared.download.cover(for: request.itemID, size: request.size), let data = try? Data(contentsOf: url) {
                     result = data
                 } else {

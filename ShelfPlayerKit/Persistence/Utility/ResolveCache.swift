@@ -18,6 +18,16 @@ public actor ResolveCache: Sendable {
     
     let memoryCache = NSCache<NSString, Item>()
     
+    public nonisolated var cacheFileCount: Int {
+        guard let enumerator = FileManager.default.enumerator(at: cachePath, includingPropertiesForKeys: nil) else {
+            return 0
+        }
+        
+        return enumerator.reduce(0) { value, _ in
+            value + 1
+        }
+    }
+    
     var resolveItemID = [ItemIdentifier: Task<Item, Error>]()
     var resolvePlayableItem = [NSString: Task<PlayableItem, Error>]()
     var resolvePodcast = [NSString: Task<(Podcast, [Episode]), Error>]()

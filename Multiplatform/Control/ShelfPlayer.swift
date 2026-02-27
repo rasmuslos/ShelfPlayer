@@ -186,6 +186,18 @@ struct ShelfPlayer {
     }
     
     static func invalidateCache() async throws {
+        do {
+            try await PersistenceManager.shared.convenienceDownload.resetRunsInExtendedBackgroundTask()
+        } catch {
+            logger.warning("Failed to reset runs in extended background task: \(error)")
+        }
+        
+        do {
+            try await SpotlightIndexer.shared.reset()
+        } catch {
+            logger.warning("Failed to reset SpotlightIndexer: \(error)")
+        }
+        
         await ABSClient.flushClientCache()
         await ResolveCache.shared.flush()
         

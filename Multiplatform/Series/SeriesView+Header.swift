@@ -13,24 +13,52 @@ extension SeriesView {
         @Environment(SeriesViewModel.self) private var viewModel
         
         private var amountVisible: Int {
-            min(viewModel.audiobookIDs.count, 5)
+            min(viewModel.lazyLoader.loadedCount, 5)
+        }
+        
+        private func offset(for index: Int) -> CGFloat {
+            switch index {
+                case 0: 0
+                case 1: 40
+                case 2: -40
+                case 3: 75
+                case 4: -75
+                default: 0
+            }
+        }
+        private func scale(for index: Int) -> CGFloat {
+            switch index {
+                case 0: 1
+                case 1, 2: 0.9
+                case 3, 4: 0.8
+                default: 0
+            }
+        }
+        private func zIndex(for index: Int) -> Double {
+            switch index {
+                case 0: 5
+                case 1, 2: 4
+                case 3, 4: 3
+                default: 0
+            }
         }
         
         var body: some View {
-            if !viewModel.audiobookIDs.isEmpty {
+            if !viewModel.lazyLoader.items.isEmpty {
                 VStack(spacing: 16) {
                     ZStack {
-                        ForEach(0..<amountVisible, id: \.description) {
-                            let index = amountVisible - $0 - 1
-                            let itemID = viewModel.audiobookIDs.isEmpty ? nil : viewModel.audiobookIDs[index]
-                            
-                            ItemImage(itemID: itemID, size: .regular)
-                                .frame(width: index == 0 ? 200 : index == 1 || index == 2 ? 180 : 160)
-                                .offset(x: index == 0 ? 0 : index == 1 ? -40 : index == 2 ? 40 : index == 3 ? -75 : 75)
+                        ForEach(0..<amountVisible, id: \.hashValue) { index in
+                            ItemImage(item: viewModel.lazyLoader.items[index], size: .regular)
+                                .zIndex(zIndex(for: index))
+                                .padding(.horizontal, 70)
+                                .scaleEffect(scale(for: index))
+                                .offset(x: offset(for: index))
                         }
                     }
                     .accessibilityElement(children: .ignore)
                     .accessibilityAddTraits(.isImage)
+                    .frame(maxWidth: 360)
+                    .padding(.top, 12)
                     
                     Text(viewModel.series.name)
                         .font(.title)
@@ -47,6 +75,7 @@ extension SeriesView {
                     if let highlighted = viewModel.highlighted {
                         PlayButton(item: highlighted)
                             .padding(.horizontal, 20)
+                            .disabled(highlighted == .placeholder)
                     }
                 }
                 .frame(maxWidth: .infinity)

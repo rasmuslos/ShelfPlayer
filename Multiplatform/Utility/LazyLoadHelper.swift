@@ -167,6 +167,8 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                     
                     if T.self == AudiobookSection.self {
                         self.items = Array(repeating: AudiobookSection.audiobook(audiobook: .fixture), count: 7) as! [T]
+                    } else if T.self == Audiobook.self {
+                        self.items = Array(repeating: Audiobook.fixture, count: 7) as! [T]
                     } else {
                         failed = true
                     }
