@@ -167,6 +167,7 @@ extension AudioPlayer {
     }
     
     func isBusyDidChange() async {
+        await widgetManager.update(isBuffering: isBusy)
         await RFNotification[.bufferHealthChanged].send(payload: isBusy)
     }
 }
