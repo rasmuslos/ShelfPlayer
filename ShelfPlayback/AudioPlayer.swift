@@ -467,18 +467,26 @@ private extension AudioPlayer {
             return .success
         }
         
-        commandCenter.seekBackwardCommand.addTarget { _ in
+        commandCenter.seekBackwardCommand.addTarget { event in
+            guard (event as? MPSeekCommandEvent)?.type == .beginSeeking else {
+                return .success
+            }
+
             Task {
                 try await self.skip(forwards: false)
             }
-            
+
             return .success
         }
-        commandCenter.seekForwardCommand.addTarget { _ in
+        commandCenter.seekForwardCommand.addTarget { event in
+            guard (event as? MPSeekCommandEvent)?.type == .beginSeeking else {
+                return .success
+            }
+
             Task {
                 try await self.skip(forwards: true)
             }
-            
+
             return .success
         }
         
