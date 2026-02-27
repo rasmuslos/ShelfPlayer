@@ -64,6 +64,9 @@ struct SleepTimerEditor: View {
                     }
                 }
                 .pickerStyle(.wheel)
+                .alignmentGuide(.listRowSeparatorLeading) { _ in
+                    0
+                }
                 
                 Button("preferences.sleepTimer.add", systemImage: "plus") {
                     let time = Double(minuteOne) * 60 + Double(minuteTwo) * 60 * 10 + Double(hourOne) * 60 * 60

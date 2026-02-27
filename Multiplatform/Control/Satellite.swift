@@ -972,17 +972,7 @@ private extension Satellite {
         
         // MARK: General
         
-        RFNotification[.offlineModeChanged].subscribe {
-            if $0 {
-                let appearance = UINavigationBarAppearance()
-                
-                appearance.configureWithTransparentBackground()
-                UINavigationBar.appearance().standardAppearance = appearance
-                
-                appearance.configureWithDefaultBackground()
-                UINavigationBar.appearance().compactAppearance = appearance
-            }
-            
+        RFNotification[.offlineModeChanged].subscribe { _ in
             Task.detached {
                 await ShelfPlayer.invalidateShortTermCache()
             }

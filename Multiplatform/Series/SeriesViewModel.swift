@@ -22,7 +22,7 @@ final class SeriesViewModel {
     @ObservableDefault(.audiobooksDisplayType) @ObservationIgnored
     var displayType: ItemDisplayType
     
-    private(set) var highlighted: PlayableItem? = Episode.placeholder
+    private(set) var highlighted: Audiobook? = .placeholder
     
     var library: Library! {
         didSet {
@@ -51,14 +51,6 @@ final class SeriesViewModel {
         }
     }
     
-    var audiobookIDs: [ItemIdentifier] {
-        guard !lazyLoader.items.isEmpty else {
-            return series.audiobooks.map(\.id)
-        }
-        
-        return lazyLoader.items.map(\.id)
-    }
-    
     func refresh() {
         Task {
             try? await ShelfPlayer.refreshItem(itemID: series.id)
@@ -73,18 +65,13 @@ final class SeriesViewModel {
             
             for audiobook in audiobooks {
                 if await audiobook.isIncluded(in: .notFinished) {
-                    withAnimation {
-                        highlighted = audiobook
-                    }
-
+                    highlighted = audiobook
                     break
                 }
             }
             
-            if highlighted == Episode.placeholder {
-                withAnimation {
-                    highlighted = nil
-                }
+            if highlighted == .placeholder, lazyLoader.isLoading == false {
+                highlighted = nil
             }
         }
     }
