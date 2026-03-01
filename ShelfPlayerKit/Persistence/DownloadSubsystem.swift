@@ -369,6 +369,13 @@ private extension PersistenceManager.DownloadSubsystem {
 }
 
 public extension PersistenceManager.DownloadSubsystem {
+    var totalCount: Int {
+        let audiobookCount = try? modelContext.fetchCount(FetchDescriptor<PersistedAudiobook>())
+        let episodeCount = try? modelContext.fetchCount(FetchDescriptor<PersistedEpisode>())
+        
+        return (audiobookCount ?? 0) + (episodeCount ?? 0)
+    }
+    
     subscript(itemID: ItemIdentifier) -> Item? {
         switch itemID.type {
             case .audiobook:
@@ -944,3 +951,4 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         Key(identifier: "coverURL_\(itemID)_\(size)", cluster: "coverURLCache", isCachePurgeable: false)
     }
 }
+

@@ -16,7 +16,7 @@ public typealias PlatformImage = UIImage
 
 public final actor ImageLoader {
     let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ImageLoader")
-    let cachePath = ShelfPlayerKit.cacheDirectoryURL.appending(path: "Images")
+    public let cachePath = ShelfPlayerKit.cacheDirectoryURL.appending(path: "Images")
     
     var cached = [ImageRequest: Task<Data, Error>]()
     

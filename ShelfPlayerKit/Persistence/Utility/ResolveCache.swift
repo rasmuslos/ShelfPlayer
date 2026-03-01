@@ -14,19 +14,9 @@ private let ITEM_TYPE_CLUSTER = "itemTypes"
 
 public actor ResolveCache: Sendable {
     private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ResolveCache")
-    let cachePath = ShelfPlayerKit.cacheDirectoryURL.appending(path: "Items")
+    public let cachePath = ShelfPlayerKit.cacheDirectoryURL.appending(path: "Items")
     
     let memoryCache = NSCache<NSString, Item>()
-    
-    public nonisolated var cacheFileCount: Int {
-        guard let enumerator = FileManager.default.enumerator(at: cachePath, includingPropertiesForKeys: nil) else {
-            return 0
-        }
-        
-        return enumerator.reduce(0) { value, _ in
-            value + 1
-        }
-    }
     
     var resolveItemID = [ItemIdentifier: Task<Item, Error>]()
     var resolvePlayableItem = [NSString: Task<PlayableItem, Error>]()
