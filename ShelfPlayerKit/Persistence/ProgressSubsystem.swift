@@ -130,6 +130,10 @@ extension PersistenceManager.ProgressSubsystem {
 }
 
 public extension PersistenceManager.ProgressSubsystem {
+    var totalCount: Int {
+        (try? modelContext.fetchCount(FetchDescriptor<PersistedProgress>())) ?? 0
+    }
+    
     nonisolated func hiddenFromContinueListening(connectionID: ItemIdentifier.ConnectionID) async -> Set<String> {
         await PersistenceManager.shared.keyValue[.hideFromContinueListening(connectionID: connectionID)] ?? []
     }
@@ -358,9 +362,17 @@ public extension PersistenceManager.ProgressSubsystem {
         }
     }
     
-    func flush() throws {
+    func flush() async throws {
+        guard await !OfflineMode.shared.isEnabled else {
+            throw APIClientError.offline
+        }
+        
+        await OfflineMode.shared.forceEnable()
+        
         try modelContext.delete(model: PersistedProgress.self)
         try modelContext.save()
+        
+        await OfflineMode.shared.refreshAvailability()
     }
 }
 

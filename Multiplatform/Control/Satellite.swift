@@ -92,6 +92,10 @@ final class Satellite {
             self?.present(.reauthorizeConnection($0))
         }
         
+        RFNotification[.setGlobalSearch].subscribe { [weak self] _ in
+            self?.dismissSheet()
+        }
+        
         #if DEBUG
         RFNotification[.shake].subscribe { [weak self] _ in
             self?.present(.debug)

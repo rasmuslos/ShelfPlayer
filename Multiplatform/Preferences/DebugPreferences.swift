@@ -42,6 +42,8 @@ struct DebugPreferences: View {
             }
             .foregroundStyle(.primary)
             
+            CacheSection()
+            
             FlushButtons()
             
             Section {
@@ -80,8 +82,77 @@ struct DebugPreferences: View {
     }
 }
 
+private struct CacheSection: View {
+    @State private var downloadCount = 0
+    @State private var imageCount = 0
+    @State private var itemCount = 0
+    @State private var progressCount = 0
+    
+    @State private var isLoading = true
+    
+    var body: some View {
+        Section("preferences.cache") {
+            Group {
+                InformationListRow(title: String(localized: "preferences.cache.downloads"), value: downloadCount.formatted(.number))
+                InformationListRow(title: String(localized: "preferences.cache.images"), value: imageCount.formatted(.number))
+                InformationListRow(title: String(localized: "preferences.cache.items"), value: itemCount.formatted(.number))
+                InformationListRow(title: String(localized: "preferences.cache.progress"), value: progressCount.formatted(.number))
+            }
+            .modify(if: isLoading) {
+                $0
+                    .redacted(reason: .placeholder)
+            }
+        }
+        .task {
+            await load()
+        }
+    }
+    
+    private func load() async {
+        isLoading = true
+        
+        downloadCount = await PersistenceManager.shared.download.totalCount
+        imageCount = await recursiveFileCount(in: ImageLoader.shared.cachePath)
+        itemCount = await recursiveFileCount(in: ResolveCache.shared.cachePath)
+        progressCount = await PersistenceManager.shared.progress.totalCount
+        
+        isLoading = false
+    }
+    
+    private nonisolated func recursiveFileCount(in directoryURL: URL) -> Int {
+        let keys: Set<URLResourceKey> = [.isRegularFileKey]
+        
+        guard let enumerator = FileManager.default.enumerator(
+            at: directoryURL,
+            includingPropertiesForKeys: Array(keys),
+            options: [.skipsPackageDescendants],
+            errorHandler: nil
+        ) else {
+            return 0
+        }
+        
+        var count = 0
+        for case let fileURL as URL in enumerator {
+            do {
+                let values = try fileURL.resourceValues(forKeys: keys)
+                if values.isRegularFile == true {
+                    count += 1
+                }
+            } catch {
+                // If we can't read resource values for a URL, skip it and continue.
+                continue
+            }
+        }
+        
+        return count
+    }
+}
+
 private struct FlushButtons: View {
+    @Environment(OfflineMode.self) private var offlineMode
+    
     @State private var isLoading = false
+    @State private var isProgressWarningPresented = false
     
     @State private var cacheDirectorySize: Int? = nil
     @State private var downloadDirectorySize: Int? = nil
@@ -127,9 +198,18 @@ private struct FlushButtons: View {
             }
             
             Button("preferences.purge.progress", systemImage: "trash.square") {
-//                progressViewModel.flush(isLoading: $isLoading)
-                #warning("grr")
+                isProgressWarningPresented = true
             }
+            .disabled(offlineMode.isEnabled)
+        }
+        .alert("preferences.purge.progress", isPresented: $isProgressWarningPresented) {
+            Button("action.cancel", role: .cancel) {}
+            
+            Button("action.proceed") {
+                flushProgres()
+            }
+        } message: {
+            Text("preferences.purge.progress.warning")
         }
         .disabled(isLoading)
         .hapticFeedback(.error, trigger: notifyError)
@@ -141,17 +221,14 @@ private struct FlushButtons: View {
     
     func load() {
         Task {
-            #warning("TODO")
-            let (imageSize, cacheSize, downloadsSize) = (
-                0,
-                try? ShelfPlayerKit.cacheDirectoryURL.directoryTotalAllocatedSize(),
+            let (cacheSize, downloadsSize) = (
+                (try? ShelfPlayerKit.cacheDirectoryURL.directoryTotalAllocatedSize()) ?? 0,
                 try? ShelfPlayerKit.downloadDirectoryURL.directoryTotalAllocatedSize()
             )
-            let totalCacheSize = imageSize + (cacheSize ?? 0)
             
             withAnimation {
-                if totalCacheSize > 0 {
-                    cacheDirectorySize = totalCacheSize
+                if cacheSize > 0 {
+                    cacheDirectorySize = cacheSize
                 } else {
                     cacheDirectorySize = nil
                 }
@@ -202,6 +279,34 @@ private struct FlushButtons: View {
             
             do {
                 try await PersistenceManager.shared.download.removeAll()
+                success = true
+            } catch {
+                success = false
+            }
+            
+            try? await Task.sleep(for: .seconds(1))
+            
+            load()
+            
+            withAnimation {
+                isLoading = false
+                
+                if !success {
+                    notifyError.toggle()
+                }
+            }
+        }
+    }
+    func flushProgres() {
+        Task {
+            withAnimation {
+                isLoading = true
+            }
+            
+            let success: Bool
+            
+            do {
+                try await PersistenceManager.shared.progress.flush()
                 success = true
             } catch {
                 success = false

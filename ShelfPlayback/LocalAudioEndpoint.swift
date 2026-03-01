@@ -789,12 +789,6 @@ private extension LocalAudioEndpoint {
         
         if finishedCurrentItem {
             Defaults[.lastPlayedItemID] = nil
-            
-            Task.detached {
-                await withTaskGroup {
-                    $0.addTask { await PersistenceManager.shared.convenienceDownload.pruneFinishedDownloads() }
-                }
-            }
         }
         
         let nextItem: AudioPlayerItem

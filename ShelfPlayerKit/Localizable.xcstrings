@@ -1454,6 +1454,12 @@
             "value" : "URL"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1467,6 +1473,12 @@
           }
         },
         "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL"
@@ -2367,6 +2379,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supprime le téléchargement de l'élément fourni"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удаляет загрузку указанного объекта"
           }
         },
         "sv" : {

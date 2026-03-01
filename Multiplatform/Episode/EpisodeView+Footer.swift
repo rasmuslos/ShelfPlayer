@@ -27,7 +27,7 @@ extension EpisodeView {
                     InformationListRow(title: $0, value: $1)
                 }
                 
-                InformationListRow.label(title: "item.episode.type") {
+                InformationListRow.label(title: String(localized: "item.episode.type")) {
                     Menu {
                         ForEach(Episode.EpisodeType.allCases) { type in
                             if viewModel.episode.type == type {

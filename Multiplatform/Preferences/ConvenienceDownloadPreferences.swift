@@ -98,24 +98,10 @@ struct ConvenienceDownloadPreferences: View {
     
     private func loadConfigurations() {
         Task {
-            await withTaskGroup {
-                $0.addTask {
-                    let configurations = await PersistenceManager.shared.convenienceDownload.activeConfigurations.sorted {
-                        $0.id < $1.id
-                    }
-                    
-                    withAnimation {
-                        self.configurations = configurations
-                    }
-                }
-                $0.addTask {
-                    let count = await PersistenceManager.shared.convenienceDownload.totalDownloadCount
-                    
-                    withAnimation {
-                        self.totalDownloaded = count
-                    }
-                }
+            configurations = await PersistenceManager.shared.convenienceDownload.activeConfigurations.sorted {
+                $0.id < $1.id
             }
+            totalDownloaded = await PersistenceManager.shared.convenienceDownload.totalDownloadCount
         }
     }
 }

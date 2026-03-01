@@ -55,16 +55,6 @@ extension EpisodeViewModel {
         
         return information
     }
-//    var linkRanges: [NSRange<String.Index>: URL] {
-//        guard let description = episode.description, let matches = episode.chapterMatches else {
-//            return [:]
-//        }
-//        
-//        return matches.compactMap {
-//            let chapterTime = $0.1
-//            return (, URL(string: "shelfPlayer://chapter?time=\(chapterTime)")!)
-//        }
-//    }
     
     func load(refresh: Bool) {
         Task {
@@ -102,6 +92,8 @@ extension EpisodeViewModel {
             do {
                 let episodeID = episode.id
                 try await ABSClient[episodeID.connectionID].setEpisodeType(type: type, for: episodeID)
+                
+                try await Task.sleep(for: .seconds(1))
                 
                 await load(refresh: true)
                 
