@@ -93,17 +93,12 @@ final class CarPlayNowPlayingController: NSObject {
             let currentItemID = await AudioPlayer.shared.currentItemID
             let queue = await AudioPlayer.shared.queue
             let upNextQueue = await AudioPlayer.shared.upNextQueue
-            let chapters = await AudioPlayer.shared.chapters
             let activeChapterIndex = await AudioPlayer.shared.activeChapterIndex
             
             let isAudiobook = currentItemID?.type == .audiobook
             let hasQueueAdvance = !queue.isEmpty || !upNextQueue.isEmpty
             
-            let hasNextChapter = if let activeChapterIndex {
-                chapters.indices.contains(activeChapterIndex + 1)
-            } else {
-                false
-            }
+            let hasNextChapter = activeChapterIndex != nil
             
             nextChapterButton.isEnabled = hasNextChapter
             
@@ -112,6 +107,9 @@ final class CarPlayNowPlayingController: NSObject {
             
             if isAudiobook {
                 buttons.append(bookmarkButton)
+            }
+            
+            if hasNextChapter {
                 buttons.append(nextChapterButton)
             }
             

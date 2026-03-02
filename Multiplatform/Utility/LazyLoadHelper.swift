@@ -117,6 +117,8 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
             }
         }
     }
+    // The app does not compile in release mode without this since Xcode 26.3
+    deinit {}
     
     var didLoad: Bool {
         totalCount > 0
@@ -173,7 +175,7 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         failed = true
                     }
                     
-                    self.loadedCount = 7
+                    loadedCount = 7
                     totalCount = 7
                     
                     working = false
