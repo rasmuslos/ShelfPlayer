@@ -345,6 +345,7 @@ public extension PersistenceManager.ProgressSubsystem {
         let entity = try await integrate(identifier: nil,
                                          connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID,
                                          progress: currentTime / duration, duration: duration, currentTime: currentTime, startedAt: .now, lastUpdate: .now, finishedAt: nil, didStartPlayback: true)
+        
         progressEntityDidUpdate(.init(persistedEntity: entity))
     }
     
