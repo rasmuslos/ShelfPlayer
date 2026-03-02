@@ -232,6 +232,11 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
             
             if !orphanedDownloads.isEmpty {
                 for itemID in orphanedDownloads {
+                    guard await OfflineMode.shared.isAvailable(itemID.connectionID) else {
+                        logger.info("Skipping orphaned download because the associated connection is not available: \(itemID)")
+                        continue
+                    }
+                    
                     await remove(itemID: itemID, configurationID: configurationID)
                 }
             }
