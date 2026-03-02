@@ -82,6 +82,8 @@ struct ShelfPlayer {
                 $0.addTask { await PersistenceManager.shared.download.invalidateActiveDownloads() }
                 $0.addTask { await PersistenceManager.shared.download.scheduleUpdateTask() }
                 
+                $0.addTask { await PersistenceManager.shared.convenienceDownload.pruneFinishedDownloads() }
+                
                 $0.addTask { await EmbassyManager.shared.setupObservers() }
                 $0.addTask { await EmbassyManager.shared.endSleepTimerActivity() }
             }

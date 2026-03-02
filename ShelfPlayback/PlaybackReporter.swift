@@ -117,6 +117,10 @@ final actor PlaybackReporter {
             }
         }
         
+        Task {
+            await PersistenceManager.shared.convenienceDownload.pruneFinishedDownloads()
+        }
+        
         await UIApplication.shared.endBackgroundTask(task)
     }
 }

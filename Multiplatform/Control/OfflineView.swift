@@ -168,9 +168,11 @@ struct OfflineView: View {
             podcasts.sort { $0.sortName < $1.sortName }
             
             let grouped = Dictionary(grouping: episodes, by: \.podcastID)
-            let mapped = Dictionary(uniqueKeysWithValues: podcasts.map {
-                ($0, grouped[$0.id] ?? [])
-            })
+            
+            var mapped = [Podcast: [Episode]]()
+            for podcast in podcasts {
+                mapped[podcast] = await Podcast.filterSort(grouped[podcast.id] ?? [], podcastID: podcast.id)
+            }
             
             withAnimation {
                 self.audiobooks = audiobooks

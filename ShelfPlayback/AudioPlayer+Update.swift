@@ -154,8 +154,6 @@ extension AudioPlayer {
             return
         }
         
-        await PersistenceManager.shared.convenienceDownload.pruneFinishedDownloads()
-        
         do {
             try audioSession.setActive(false)
         } catch {
