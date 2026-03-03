@@ -9,7 +9,7 @@ import Foundation
 
 public extension Audiobook {
     static let placeholder: Audiobook = .init(
-        id: .init(primaryID: "fixture", groupingID: "fixture", libraryID: "fixture", connectionID: "fixture", type: .audiobook),
+        id: .init(primaryID: "placeholder", groupingID: "placeholder", libraryID: "placeholder", connectionID: "placeholder", type: .audiobook),
         name: "Placeholder",
         authors: [],
         description: nil,

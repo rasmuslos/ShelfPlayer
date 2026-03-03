@@ -265,7 +265,7 @@ private extension APIClient {
     }
     @concurrent
     nonisolated func perform(_ request: any APIRequestProtocol) async throws -> Decodable & Sendable {
-        logger.info("Performing \(request.method.value) \(request.path)")
+        logger.info("Performing \(request.method.value, privacy: .public) \(request.path, privacy: .public)")
         
         #if DEBUG
         await incrementRequestCount()
@@ -322,7 +322,7 @@ private extension APIClient {
             logger.warning("Cancelled request to \(request.path)")
             throw APIClientError.cancelled
         } catch {
-            logger.warning("Failed to perform request \(request.path): \(error)")
+            logger.warning("Failed to perform request \(request.path, privacy: .public): \(error, privacy: .public)")
             
             await increaseAttempts(request.id)
             return try await perform(request)

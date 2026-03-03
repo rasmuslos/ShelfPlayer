@@ -442,7 +442,7 @@ private extension PersistenceManager.AuthorizationSubsystem {
         let status = SecItemCopyMatching(query as CFDictionary, &data)
         
         guard status == errSecSuccess, let data = data as? Data else {
-            logger.fault("Error retrieving token data from keychain \(service): \(SecCopyErrorMessageString(status, nil))")
+            logger.fault("Error retrieving token data from keychain \(service, privacy: .public): \(SecCopyErrorMessageString(status, nil), privacy: .public) (\(status, privacy: .public))")
             throw PersistenceError.keychainRetrieveFailed
         }
         
@@ -503,7 +503,7 @@ private extension PersistenceManager.AuthorizationSubsystem {
         let status = SecItemDelete(query)
         
         guard status == errSecSuccess else {
-            logger.error("Error removing access token to keychain for \(connectionID) & \(service): \(SecCopyErrorMessageString(status, nil))")
+            logger.error("Error removing access token to keychain for \(connectionID, privacy: .public) & \(service, privacy: .public): \(SecCopyErrorMessageString(status, nil), privacy: .public) (\(status, privacy: .public))")
             throw PersistenceError.keychainInsertFailed
         }
     }

@@ -172,15 +172,15 @@ struct PlayButton: View {
             .onChange(of: item) {
                 id = .init()
             }
+            .onChange(of: item, initial: true) {
+                loadColor()
+            }
             .onReceive(RFNotification[.reloadImages].publisher()) {
                 if let itemID = $0, itemID == item.id {
                     loadColor()
                 } else if $0 == nil {
                     loadColor()
                 }
-            }
-            .task {
-                loadColor()
             }
     }
     
@@ -195,9 +195,7 @@ struct PlayButton: View {
                 return
             }
             
-            let color = await PersistenceManager.shared.item.dominantColor(of: item.id)
-            
-            self.color = color
+            color = await PersistenceManager.shared.item.dominantColor(of: item.id)
         }
     }
 }
