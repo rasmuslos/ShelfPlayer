@@ -217,6 +217,8 @@ final class LazyLoadHelper<T, O>: Sendable where T: Sendable & Equatable & Ident
                         working = false
                     }
                     
+                    didLoadMore?(items)
+                    
                     logger.info("Finished loading \(loadedCount) items of type \(T.self, privacy: .public)")
                     return
                 }
