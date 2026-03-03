@@ -70,7 +70,7 @@ final class SeriesViewModel {
                 }
             }
             
-            if highlighted == .placeholder, lazyLoader.isLoading == false {
+            if highlighted == .placeholder, lazyLoader.finished {
                 highlighted = nil
             }
         }

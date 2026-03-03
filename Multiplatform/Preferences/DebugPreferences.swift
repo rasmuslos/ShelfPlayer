@@ -13,6 +13,7 @@ struct DebugPreferences: View {
     @Default(.lastConvenienceDownloadRun) private var lastConvenienceDownloadRun
     
     @State private var downloadRunsInExtendedBackgroundTask: Bool? = nil
+    @State private var cacheRefreshID = 0
     
     var body: some View {
         List {
@@ -43,8 +44,11 @@ struct DebugPreferences: View {
             .foregroundStyle(.primary)
             
             CacheSection()
+                .id(cacheRefreshID)
             
-            FlushButtons()
+            FlushButtons {
+                cacheRefreshID += 1
+            }
             
             Section {
                 if let spotlightIndexCompletionDate {
@@ -150,6 +154,8 @@ private struct CacheSection: View {
 
 private struct FlushButtons: View {
     @Environment(OfflineMode.self) private var offlineMode
+    
+    let onCacheNeedsUpdate: () -> Void
     
     @State private var isLoading = false
     @State private var isProgressWarningPresented = false
@@ -267,6 +273,8 @@ private struct FlushButtons: View {
                     notifyError.toggle()
                 }
             }
+            
+            onCacheNeedsUpdate()
         }
     }
     func removeDownloads() {
@@ -295,6 +303,8 @@ private struct FlushButtons: View {
                     notifyError.toggle()
                 }
             }
+            
+            onCacheNeedsUpdate()
         }
     }
     func flushProgres() {
@@ -323,6 +333,8 @@ private struct FlushButtons: View {
                     notifyError.toggle()
                 }
             }
+            
+            onCacheNeedsUpdate()
         }
     }
 }
@@ -336,3 +348,4 @@ private struct FlushButtons: View {
     .previewEnvironment()
 }
 #endif
+
