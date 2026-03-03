@@ -209,7 +209,7 @@ private struct RegularPresentation: View {
             .frame(height: 0)
             
             HStack(spacing: 40) {
-                ItemImage(item: viewModel.audiobook, size: .large, aspectRatio: .none, contrastConfiguration: .init(shadowRadius: 40, shadowOpacity: 0.6))
+                ItemImage(item: viewModel.audiobook, size: .large, aspectRatio: .none, contrastConfiguration: .init(shadowRadius: 20, shadowOpacity: 0.4))
                     .frame(width: max(0, min(400, (availableWidth - 40) / 2)))
                 
                 Color.clear

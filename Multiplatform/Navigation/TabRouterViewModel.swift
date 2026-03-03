@@ -64,6 +64,17 @@ final class TabRouterViewModel: Sendable {
             
             self?.enableFirstPinnedTab()
         }
+        
+        RFNotification[.connectionsChanged].subscribe { [weak self] in
+            Task {
+                self?.refresh()
+            }
+        }
+        RFNotification[.connectionUnauthorized].subscribe { [weak self] _ in
+            Task {
+                self?.refresh()
+            }
+        }
     }
     
     func refresh() {

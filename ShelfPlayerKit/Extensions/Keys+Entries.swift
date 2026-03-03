@@ -54,7 +54,7 @@ public extension Defaults.Keys {
     static let itemImageStatusPercentageText = Key("itemImageStatusPercentageText", default: false)
     
     static let lockSeekBar = Key("lockSeekBar", default: false)
-    static let replaceVolumeWithTotalProgress = Key("replaceVolumeWithTotalProgress", default: false)
+    static let replaceVolumeWithTotalProgress = Key("replaceVolumeWithTotalProgress", default: true)
     
     static let allowCellularDownloads = Key("allowCellularDownloads", default: false)
     

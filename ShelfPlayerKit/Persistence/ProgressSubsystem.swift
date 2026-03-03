@@ -204,7 +204,7 @@ public extension PersistenceManager.ProgressSubsystem {
         try Task.checkCancellation()
         
         var pendingServerUpdate = [String: PersistedProgress]()
-        var pendingServerDeletion = [String]()
+        var pendingServerDeletion = [String: PersistedProgress]()
         
         var pendingLocalUpdate = [ProgressPayload]()
         var pendingLocalDeletion = [PersistedProgress.ID]()
@@ -237,7 +237,7 @@ public extension PersistenceManager.ProgressSubsystem {
             }
             
             guard localEntity.status != .tombstone else {
-                pendingServerDeletion.append(remotePayload.id)
+                pendingServerDeletion[remotePayload.id] = localEntity
                 continue
             }
             
@@ -273,15 +273,21 @@ public extension PersistenceManager.ProgressSubsystem {
             try await ABSClient[connectionID].batchUpdate(progress: pendingServerUpdate.values.map { .init(persistedEntity: $0) })
         }
         for entity in pendingServerUpdate {
+            entity.value.status = .synchronized
             entity.value.hasBeenSynchronised = true
         }
         
-        for id in pendingServerDeletion {
+        for (id, entity) in pendingServerDeletion {
             try await ABSClient[connectionID].delete(progressID: id)
+            modelContext.delete(entity)
         }
         for id in remoteDuplicates {
             do {
                 try await ABSClient[connectionID].delete(progressID: id)
+                
+                try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+                    $0.id == id
+                })
             } catch {
                 logger.warning("Failed to delete remote duplicate \(id): \(error)")
             }

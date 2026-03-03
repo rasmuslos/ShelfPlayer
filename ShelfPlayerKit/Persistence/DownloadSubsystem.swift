@@ -474,6 +474,8 @@ public extension PersistenceManager.DownloadSubsystem {
             }
         }
         
+        logger.warning("Download status for \(itemID) is not cached, fetching again.")
+        
         // Should be cached already
         let status = fetchDownloadStatus(of: itemID)
         try? await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), status)

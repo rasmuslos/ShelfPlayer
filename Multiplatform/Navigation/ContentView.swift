@@ -153,7 +153,7 @@ struct ContentView: View {
             ShelfPlayer.initializeUIHook()
         }
         .onChange(of: scenePhase) {
-            Task.detached { [scenePhase] in
+            Task {
                 switch scenePhase {
                     case .active:
                         await RFNotification[.scenePhaseDidChange].send(payload: true)

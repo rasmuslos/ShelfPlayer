@@ -525,7 +525,7 @@ struct PlaybackSleepTimerButton: View {
                                 Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
                                     .fontDesign(.rounded)
                                     .contentTransition(.numericText())
-                                    .animation(.smooth, value: remainingSleepTime)
+                                    .animation(viewModel.expansionAnimationCount > 0 ? Animation.smooth(duration: 0.1) : .smooth, value: remainingSleepTime)
                             } else {
                                 ProgressView()
                                     .scaleEffect(0.5)

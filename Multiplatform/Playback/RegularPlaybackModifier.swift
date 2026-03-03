@@ -28,6 +28,7 @@ struct RegularPlaybackBarModifier: ViewModifier {
     private func label(_ itemID: ItemIdentifier) -> some View {
         HStack(spacing: 8) {
             ItemImage(itemID: itemID, size: .small)
+                .padding(.leading, 4)
             
             VStack(alignment: .leading, spacing: 2) {
                 if let currentItem = satellite.nowPlayingItem {

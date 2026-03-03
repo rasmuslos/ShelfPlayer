@@ -151,6 +151,18 @@ private final class SocketConnection {
             self?.logger.info("Connection \(self?.connectionID ?? "<nil>") authorized")
         }
         
+        // Library
+        
+        socket.on("library_updated") { [weak self] _, _ in
+            self?.librariesChanged()
+        }
+        socket.on("library_added") { [weak self] _, _ in
+            self?.librariesChanged()
+        }
+        socket.on("library_removed") { [weak self] _, _ in
+            self?.librariesChanged()
+        }
+        
         RFNotification[.accessTokenExpired].subscribe { [weak self] _ in
             Task {
                 await self?.authorize()
@@ -174,5 +186,9 @@ private final class SocketConnection {
         }
         
         socket.emit("auth", accessToken)
+    }
+    
+    func librariesChanged() {
+        fatalError("BAZINGA")
     }
 }

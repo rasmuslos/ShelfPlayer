@@ -78,9 +78,10 @@ final class Satellite {
     private init() {
         RFNotification[.scenePhaseDidChange].subscribe { [weak self] in
             if $0 {
-                self?.setupObservers()
-                
                 Task {
+                    try await Task.sleep(for: .milliseconds(100))
+                    
+                    self?.setupObservers()
                     await self?.syncAudioPlayerState()
                 }
             } else {

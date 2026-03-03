@@ -115,7 +115,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
     let audioPlayerVolume: Float = 1
     
     init(_ item: AudioPlayerItem) async throws {
-        logger.info("Starting up local audio endpoint with item ID \(item.itemID))")
+        logger.info("Starting up local audio endpoint with item ID \(item.itemID)")
         
         playbackReporter = nil
         audioPlayer = .init()
