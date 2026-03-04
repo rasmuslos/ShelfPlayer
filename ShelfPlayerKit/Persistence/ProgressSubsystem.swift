@@ -232,7 +232,7 @@ public extension PersistenceManager.ProgressSubsystem {
             let localEntity = local[key]!
             let remotePayload = remote[key]!
             
-            if localEntity.duration == nil, let duration = remotePayload.duration {
+            if localEntity.duration == nil, let duration = remotePayload.duration, duration.isFinite, duration > 0 {
                 localEntity.duration = duration
             }
             
@@ -249,6 +249,12 @@ public extension PersistenceManager.ProgressSubsystem {
             let remoteUpdated = Date(timeIntervalSince1970: Double(lastUpdate) / 1000)
             
             let currentTime = remotePayload.currentTime
+            
+            if let currentTime, currentTime == 0, localEntity.currentTime >= 10 {
+                logger.info("Remote currentTime is zero while local \(localEntity.id) is at least 10 seconds ahead. Preferring local state.")
+                pendingServerUpdate[key] = localEntity
+                continue
+            }
             
             if let currentTime, isEqual(localEntity.currentTime, rhs: currentTime) {
                 continue
@@ -348,9 +354,17 @@ public extension PersistenceManager.ProgressSubsystem {
     func update(_ itemID: ItemIdentifier, currentTime: Double, duration: Double) async throws {
         logger.info("Playback update for item \(itemID).")
         
+        let progress: Percentage
+        
+        if duration > 0 && duration.isFinite && currentTime.isFinite {
+            progress = (currentTime / duration)
+        } else {
+            progress = 0
+        }
+        
         let entity = try await integrate(identifier: nil,
                                          connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID,
-                                         progress: currentTime / duration, duration: duration, currentTime: currentTime, startedAt: .now, lastUpdate: .now, finishedAt: nil, didStartPlayback: true)
+                                         progress: progress, duration: duration, currentTime: currentTime, startedAt: .now, lastUpdate: .now, finishedAt: nil, didStartPlayback: true)
         
         progressEntityDidUpdate(.init(persistedEntity: entity))
     }
@@ -392,14 +406,35 @@ private extension PersistenceManager.ProgressSubsystem {
                    connectionID: ItemIdentifier.ConnectionID,
                    primaryID: ItemIdentifier.PrimaryID,
                    groupingID: ItemIdentifier.GroupingID?,
-                   progress: Double,
-                   duration: Double?,
-                   currentTime: Double,
+                   progress rawProgress: Double,
+                   duration rawDuration: Double?,
+                   currentTime rawCurrentTime: Double,
                    startedAt: Date?,
                    lastUpdate: Date,
                    finishedAt: Date?,
                    didStartPlayback: Bool = false,
                    performRemoteWork: Bool = true) async throws -> PersistedProgress {
+        let duration: Double?
+        
+        if let rawDuration, rawDuration.isFinite, rawDuration > 0 {
+            duration = rawDuration
+        } else {
+            duration = nil
+        }
+        
+        var currentTime = rawCurrentTime.isFinite ? max(0, rawCurrentTime) : 0
+        
+        if let duration {
+            currentTime = min(currentTime, duration)
+        }
+        
+        var progress: Percentage = rawProgress.isFinite ? rawProgress : 0
+        progress = min(1, max(0, progress))
+        
+        if progress >= 1, let duration {
+            currentTime = duration
+        }
+        
         let updated: PersistedProgress
         let freshEntity: Bool
         
