@@ -22,39 +22,8 @@ public final actor ImageLoader {
     
     func data(for request: ImageRequest) async throws -> Data {
         if cached[request] == nil {
-            cached[request] = .init {
-                let cacheURL = await cacheURL(for: request)
-                
-                if FileManager.default.fileExists(atPath: cacheURL.relativePath), let data = try? Data(contentsOf: cacheURL) {
-                    return data
-                }
-                
-                logger.info("No cached image for \(request.itemID) \(request.size.base). Fetching from server.")
-                
-                let result: Data
-                
-                #if DEBUG
-                if request.itemID.libraryID == "fixture" {
-                    let (result, _) = try await URLSession.shared.data(from: URL(string: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlkgSqLF2q_KEp4inENCWmpyVniMG8einhTw&s")!)
-                    
-                    return result
-                }
-                #endif
-                
-                if let url = await PersistenceManager.shared.download.cover(for: request.itemID, size: request.size), let data = try? Data(contentsOf: url) {
-                    result = data
-                } else {
-                    result = try await ABSClient[request.itemID.connectionID].cover(from: request.itemID, width: request.size.width)
-                }
-                
-                do {
-                    try FileManager.default.createDirectory(at: directoryURL(for: request), withIntermediateDirectories: true)
-                    try result.write(to: cacheURL)
-                } catch {
-                    logger.error("Failed to cache image: \(error)")
-                }
-                
-                return result
+            cached[request] = Task {
+                try await dataTask(for: request)
             }
         }
         
@@ -95,6 +64,42 @@ public extension ImageLoader {
 }
 
 private extension ImageLoader {
+    @concurrent
+    nonisolated func dataTask(for request: ImageRequest) async throws -> Data {
+        let cacheURL = await cacheURL(for: request)
+        
+        if FileManager.default.fileExists(atPath: cacheURL.relativePath), let data = try? Data(contentsOf: cacheURL) {
+            return data
+        }
+        
+        logger.info("No cached image for \(request.itemID) \(request.size.base). Fetching from server.")
+        
+        let result: Data
+        
+        #if DEBUG
+        if request.itemID.libraryID == "fixture" {
+            let (result, _) = try await URLSession.shared.data(from: URL(string: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlkgSqLF2q_KEp4inENCWmpyVniMG8einhTw&s")!)
+            
+            return result
+        }
+        #endif
+        
+        if let url = await PersistenceManager.shared.download.cover(for: request.itemID, size: request.size), let data = try? Data(contentsOf: url) {
+            result = data
+        } else {
+            result = try await ABSClient[request.itemID.connectionID].cover(from: request.itemID, width: request.size.width)
+        }
+        
+        do {
+            try await FileManager.default.createDirectory(at: directoryURL(for: request), withIntermediateDirectories: true)
+            try result.write(to: cacheURL)
+        } catch {
+            logger.error("Failed to cache image: \(error)")
+        }
+        
+        return result
+    }
+    
     func directoryURL(for request: ImageRequest) -> URL {
         cachePath
             .appending(path: request.itemID.connectionID.urlSafe)

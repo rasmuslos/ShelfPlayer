@@ -84,6 +84,7 @@ struct PodcastLibraryPanel: View {
                 lazyLoader.performLoadIfRequired($0)
             }
             .id(id)
+            .padding(.top, 12)
             .padding(.horizontal, 20)
             
             PanelItemCountLabel(total: lazyLoader.totalCount, type: .podcast, isLoading: lazyLoader.isLoading)

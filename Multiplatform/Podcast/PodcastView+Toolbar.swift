@@ -13,7 +13,7 @@ extension PodcastView {
         @Environment(\.horizontalSizeClass) private var horizontalSizeClass
         @Environment(PodcastViewModel.self) private var viewModel
         
-        private var isRegularPresentation: Bool {
+        private var isRegular: Bool {
             horizontalSizeClass == .regular
         }
         
@@ -21,8 +21,8 @@ extension PodcastView {
             content
                 .navigationTitle(viewModel.podcast.name)
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbarBackground(isRegularPresentation ? .automatic : viewModel.isToolbarVisible ? .visible : .hidden, for: .navigationBar)
-                .navigationBarBackButtonHidden(!viewModel.isToolbarVisible && !isRegularPresentation)
+                .toolbarBackground(isRegular ? .automatic : viewModel.isToolbarVisible ? .visible : .hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden(!viewModel.isToolbarVisible && !isRegular)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         if viewModel.isToolbarVisible {
@@ -46,7 +46,7 @@ extension PodcastView {
                     }
                 }
                 .toolbar {
-                    if !viewModel.isToolbarVisible && !isRegularPresentation {
+                    if !viewModel.isToolbarVisible && !isRegular {
                         ToolbarItem(placement: .navigation) {
                             HeroBackButton()
                         }
