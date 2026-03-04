@@ -239,19 +239,24 @@ public extension PersistenceManager.AuthorizationSubsystem {
         do {
             try await waitForConnections()
         } catch {
-            logger.fault("Failed to wait for connections: \(error)")
+            logger.fault("Failed to wait for connections before availability probe: \(error, privacy: .public)")
         }
         
         let connectionIDs = self.connectionIDs
+        let logger = self.logger
+        
+        logger.info("Probing connection availability for \(connectionIDs.count, privacy: .public) connection(s) with timeout \(timeout, privacy: .public)s")
         
         return await withTaskGroup(of: (ItemIdentifier.ConnectionID, Bool).self) {
             for connectionID in connectionIDs {
                 $0.addTask {
                     guard let client = try? await ABSClient.client(for: connectionID, ensureAvailabilityEstablished: false) else {
+                        logger.warning("Availability probe marked \(connectionID, privacy: .public) offline because API client initialization failed")
                         return (connectionID, false)
                     }
                     
                     let isAvailable = await client.ping(timeout: timeout)
+                    logger.info("Availability probe for \(connectionID, privacy: .public) returned \(isAvailable, privacy: .public)")
                     
                     return (connectionID, isAvailable)
                 }
@@ -393,6 +398,8 @@ extension PersistenceManager.AuthorizationSubsystem {
         try token(for: connectionID, service: accessTokenService)
     }
     func refreshAccessToken(for connectionID: String) async throws -> String {
+        logger.info("Refreshing access token for \(connectionID, privacy: .public)")
+        
         let credentialProvider = try await AuthorizedAPIClientCredentialProvider(connectionID: connectionID)
         let client = try await APIClient(connectionID: connectionID, credentialProvider: credentialProvider)
         
@@ -400,12 +407,28 @@ extension PersistenceManager.AuthorizationSubsystem {
         
         do {
             (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
-        } catch APIClientError.cancelled, APIClientError.offline {
+        } catch APIClientError.cancelled {
+            logger.warning("Access token refresh for \(connectionID, privacy: .public) was cancelled. Treating this as offline and dispatching accessTokenExpired")
+            await RFNotification[.accessTokenExpired].send(payload: connectionID)
+            throw APIClientError.offline
+        } catch APIClientError.offline {
+            logger.warning("Access token refresh for \(connectionID, privacy: .public) failed because the server is offline or unreachable. Dispatching accessTokenExpired")
             await RFNotification[.accessTokenExpired].send(payload: connectionID)
             throw APIClientError.offline
         } catch {
-            try? removeToken(for: connectionID, service: accessTokenService)
-            try? removeToken(for: connectionID, service: refreshTokenService)
+            logger.error("Access token refresh for \(connectionID, privacy: .public) failed with non-recoverable error: \(error, privacy: .public). Removing stored tokens and dispatching accessTokenExpired")
+            
+            do {
+                try removeToken(for: connectionID, service: accessTokenService)
+            } catch {
+                logger.error("Failed to remove access token for \(connectionID, privacy: .public) after refresh failure: \(error, privacy: .public)")
+            }
+            
+            do {
+                try removeToken(for: connectionID, service: refreshTokenService)
+            } catch {
+                logger.error("Failed to remove refresh token for \(connectionID, privacy: .public) after refresh failure: \(error, privacy: .public)")
+            }
             
             await RFNotification[.accessTokenExpired].send(payload: connectionID)
             
@@ -420,7 +443,7 @@ extension PersistenceManager.AuthorizationSubsystem {
         
         await RFNotification[.accessTokenExpired].send(payload: connectionID)
         
-        logger.info("Refreshed access token for \(connectionID)")
+        logger.info("Successfully refreshed access token for \(connectionID, privacy: .public). New refresh token present: \((refreshToken != nil), privacy: .public)")
         
         return accessToken
     }

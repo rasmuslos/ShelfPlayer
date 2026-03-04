@@ -27,7 +27,9 @@ final actor AuthorizedAPIClientCredentialProvider: APICredentialProvider {
         do {
             accessToken = try await PersistenceManager.shared.authorization.refreshAccessToken(for: connectionID)
         } catch {
-            await RFNotification[.connectionUnauthorized].send(payload: connectionID)
+            logger.error("Access token refresh failed for \(self.connectionID, privacy: .public). Dispatching connectionUnauthorized notification. Cause: \(error, privacy: .public)")
+            await RFNotification[.connectionUnauthorized].send(payload: self.connectionID)
+            logger.info("Dispatched connectionUnauthorized notification for \(self.connectionID, privacy: .public)")
             throw error
         }
     }
