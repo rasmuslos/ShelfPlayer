@@ -9,9 +9,12 @@ import SwiftUI
 import Intents
 import CoreSpotlight
 import SwiftData
+import OSLog
 import ShelfPlayback
 
 struct ContentView: View {
+    let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ContentView")
+    
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.scenePhase) private var scenePhase
     
@@ -150,25 +153,29 @@ struct ContentView: View {
             applyEnvironment($0)
         }
         .onAppear {
+            logger.info("ContentView::onAppear")
             ShelfPlayer.initializeUIHook()
         }
         .onChange(of: scenePhase) {
             Task {
-                switch scenePhase {
-                    case .active:
-                        await RFNotification[.scenePhaseDidChange].send(payload: true)
-                    case .inactive:
-                        await ShelfPlayer.invalidateShortTermCache()
-                        await RFNotification[.scenePhaseDidChange].send(payload: false)
-                    default:
-                        break
+                if scenePhase == .active {
+                    logger.info("Scene is now active")
+                    await RFNotification[.scenePhaseDidChange].send(payload: true)
+                } else {
+                    logger.info("Scene is now inactive")
+                    
+                    await ShelfPlayer.invalidateShortTermCache()
+                    await RFNotification[.scenePhaseDidChange].send(payload: false)
                 }
             }
         }
         .onContinueUserActivity(CSQueryContinuationActionType) {
             guard let query = $0.userInfo?[CSSearchQueryString] as? String else {
+                logger.warning("Received a malformed query to set the global search from Spotlight")
                 return
             }
+            
+            logger.info("Setting global search to: \(query) from Spotlight")
             
             Task {
                 try await Task.sleep(for: .seconds(0.6))
@@ -177,8 +184,11 @@ struct ContentView: View {
         }
         .onContinueUserActivity("io.rfk.shelfPlayer.item") { activity in
             guard let identifier = activity.persistentIdentifier else {
+                logger.info("Spotlight activity did not contain a valid persistent identifier")
                 return
             }
+            
+            logger.info("Received a Spotlight activity for item with identifier: \(identifier)")
             
             Task {
                 try await Task.sleep(for: .seconds(0.6))

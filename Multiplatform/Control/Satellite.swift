@@ -85,6 +85,7 @@ final class Satellite {
                     await self?.syncAudioPlayerState()
                 }
             } else {
+                self?.logger.info("Clearing marker stash on scene deactivation")
                 self?.stash.clear()
             }
         }
@@ -973,6 +974,8 @@ private extension Satellite {
     // MARK: Observers
 
     func setupObservers() {
+        logger.info("Setting up Satellite observers")
+        
         stash.clear()
         
         // MARK: General
