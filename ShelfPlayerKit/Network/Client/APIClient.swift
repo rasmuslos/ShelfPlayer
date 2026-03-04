@@ -167,6 +167,7 @@ public extension APIClient {
             return try request.typecast(decodable: response)
         } else {
             if !request.bypassesOffline, await !OfflineMode.shared.isAvailable(connectionID) {
+                logger.warning("Rejected \(request.method.value, privacy: .public) \(request.path, privacy: .public) because connection \(self.connectionID, privacy: .public) is currently marked offline and the request does not bypass offline mode")
                 throw APIClientError.offline
             }
             
@@ -279,11 +280,12 @@ private extension APIClient {
         }
         
         guard await hasAttemptsLeft(request) else {
-            await markAsUnavailableAndInvalidateRequests()
+            await markAsUnavailableAndInvalidateRequests(reason: "Request \(request.method.value) \(request.path) exhausted all \(request.maxAttempts) attempts")
             throw APIClientError.noAttemptsLeft
         }
         
         if !request.bypassesOffline, await !OfflineMode.shared.isAvailable(connectionID) {
+            logger.warning("Aborting \(request.method.value, privacy: .public) \(request.path, privacy: .public) because connection \(self.connectionID, privacy: .public) is currently unavailable")
             throw APIClientError.offline
         }
         
@@ -304,13 +306,13 @@ private extension APIClient {
             }
             
             await resetAttempts(request.id)
-            await OfflineMode.shared.markAsAvailable(connectionID)
+            await OfflineMode.shared.markAsAvailable(connectionID, reason: "Successful response for \(request.method.value) \(request.path)")
             
             logger.info("Received successful response for \(request.path)")
             
             return response
         } catch APIClientError.unauthorized {
-            logger.warning("Got 401 while performing request \(request.path)")
+            logger.warning("Got 401 while performing \(request.method.value, privacy: .public) \(request.path, privacy: .public). Attempting access token refresh")
             await increaseAttempts(request.id)
             
             try await refreshAccessToken(currentToken: token)
@@ -382,6 +384,7 @@ private extension APIClient {
     
     func refreshAccessToken(currentToken: String?) async throws {
         guard await currentToken == (try? credentialProvider.accessToken) else {
+            logger.info("Skipping token refresh for \(self.connectionID, privacy: .public) because token already changed in the credential provider")
             return
         }
         
@@ -393,8 +396,8 @@ private extension APIClient {
                     try await credentialProvider.refreshAccessToken()
                     authorizationRefreshTask = nil
                 } catch {
-                    await markAsUnavailableAndInvalidateRequests()
-                    logger.warning("Access token refresh failed: \(error). Now \(self.connectionID) unreachable")
+                    await markAsUnavailableAndInvalidateRequests(reason: "Access token refresh failed with error: \(error)")
+                    logger.warning("Access token refresh failed for \(self.connectionID, privacy: .public): \(error, privacy: .public). Connection marked unavailable and queued requests cancelled")
                  
                     authorizationRefreshTask = nil
                     
@@ -408,8 +411,9 @@ private extension APIClient {
         return try await authorizationRefreshTask!.value
     }
     
-    func markAsUnavailableAndInvalidateRequests() async {
-        await OfflineMode.shared.markAsUnavailable(connectionID)
+    func markAsUnavailableAndInvalidateRequests(reason: String) async {
+        logger.error("Marking \(self.connectionID, privacy: .public) unavailable. Reason: \(reason, privacy: .public). Active requests: \(self.activeRequests.count, privacy: .public). Queued requests: \(self.requestQueue.count, privacy: .public)")
+        await OfflineMode.shared.markAsUnavailable(self.connectionID, reason: reason)
         
         let requests = requestQueue
         requestQueue.removeAll()

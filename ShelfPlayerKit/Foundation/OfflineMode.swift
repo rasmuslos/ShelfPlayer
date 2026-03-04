@@ -1,8 +1,11 @@
 import Foundation
+import OSLog
 
 @Observable @MainActor
 public final class OfflineMode: Sendable {
     nonisolated public static let availabilityTimeout: TimeInterval = 2.5
+    
+    private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "OfflineMode")
     
     private var availability = [ItemIdentifier.ConnectionID: Bool]()
     private var forcedEnabled = false
@@ -29,21 +32,21 @@ public final class OfflineMode: Sendable {
 }
 
 public extension OfflineMode {
-    func markAsUnavailable(_ id: ItemIdentifier.ConnectionID) {
+    func markAsUnavailable(_ id: ItemIdentifier.ConnectionID, reason: String = "Connection marked unavailable", file: StaticString = #fileID, function: StaticString = #function, line: UInt = #line) {
         var availability = availability
         availability[id] = false
         
-        applyAvailability(availability)
+        applyAvailability(availability, reason: reason, file: file, function: function, line: line)
     }
-    func markAsAvailable(_ id: ItemIdentifier.ConnectionID) {
+    func markAsAvailable(_ id: ItemIdentifier.ConnectionID, reason: String = "Connection marked available", file: StaticString = #fileID, function: StaticString = #function, line: UInt = #line) {
         var availability = availability
         availability[id] = true
         
-        applyAvailability(availability)
+        applyAvailability(availability, reason: reason, file: file, function: function, line: line)
     }
     
-    func forceEnable() {
-        setForcedEnabled(true)
+    func forceEnable(reason: String = "Manual offline mode request", file: StaticString = #fileID, function: StaticString = #function, line: UInt = #line) {
+        setForcedEnabled(true, reason: reason, file: file, function: function, line: line)
     }
     
     func isAvailable(_ id: ItemIdentifier.ConnectionID) -> Bool {
@@ -53,21 +56,25 @@ public extension OfflineMode {
 }
 
 public extension OfflineMode {
-    func refreshAvailability() async {
+    func refreshAvailability(reason: String = "Connection availability refresh requested", file: StaticString = #fileID, function: StaticString = #function, line: UInt = #line) async {
         activeLoadingOperations += 1
+        
+        let source = sourceDescription(file: file, function: function, line: line)
+        logger.info("Refreshing offline availability. Trigger: \(reason, privacy: .public). Source: \(source, privacy: .public)")
+        
         defer {
             if activeLoadingOperations > 0 {
                 activeLoadingOperations -= 1
             }
         }
         
-        setForcedEnabled(false)
+        setForcedEnabled(false, reason: "Refresh reset forced offline state before probing reachability", file: file, function: function, line: line)
         
         let availability = await PersistenceManager.shared.authorization.connectionAvailability()
-        applyAvailability(availability)
+        applyAvailability(availability, reason: "Availability probe completed (\(reason))", file: file, function: function, line: line)
     }
     
-    func ensureAvailabilityEstablished() async {
+    func ensureAvailabilityEstablished(reason: String = "Initial availability check requested", file: StaticString = #fileID, function: StaticString = #function, line: UInt = #line) async {
         guard !availabilityEstablished else {
             return
         }
@@ -78,7 +85,7 @@ public extension OfflineMode {
             task = establishAvailabilityTask
         } else {
             let newTask = Task(priority: .userInitiated) {
-                await refreshAvailability()
+                await refreshAvailability(reason: reason, file: file, function: function, line: line)
             }
             
             establishAvailabilityTask = newTask
@@ -94,27 +101,60 @@ public extension OfflineMode {
 }
 
 private extension OfflineMode {
-    func setForcedEnabled(_ forcedEnabled: Bool) {
+    func setForcedEnabled(_ forcedEnabled: Bool, reason: String, file: StaticString, function: StaticString, line: UInt) {
+        let source = sourceDescription(file: file, function: function, line: line)
         let before = isEnabled
+        let wasForcedEnabled = self.forcedEnabled
+        
         self.forcedEnabled = forcedEnabled
         
         guard before != isEnabled else {
+            self.logger.info("Offline mode unchanged (\(before.description, privacy: .public)). Forced state \(wasForcedEnabled, privacy: .public) -> \(forcedEnabled, privacy: .public). Trigger: \(reason, privacy: .public). Source: \(source, privacy: .public). Availability: \(self.availabilityDescription(self.availability), privacy: .public)")
             return
+        }
+        
+        if isEnabled {
+            self.logger.warning("Offline mode enabled because forced state changed \(wasForcedEnabled, privacy: .public) -> \(forcedEnabled, privacy: .public). Trigger: \(reason, privacy: .public). Source: \(source, privacy: .public). Availability: \(self.availabilityDescription(self.availability), privacy: .public)")
+        } else {
+            self.logger.info("Offline mode disabled because forced state changed \(wasForcedEnabled, privacy: .public) -> \(forcedEnabled, privacy: .public). Trigger: \(reason, privacy: .public). Source: \(source, privacy: .public). Availability: \(self.availabilityDescription(self.availability), privacy: .public)")
         }
         
         RFNotification[.offlineModeChanged].dispatch(payload: isEnabled)
     }
     
-    func applyAvailability(_ availability: [ItemIdentifier.ConnectionID: Bool]) {
+    func applyAvailability(_ availability: [ItemIdentifier.ConnectionID: Bool], reason: String, file: StaticString, function: StaticString, line: UInt) {
+        let source = sourceDescription(file: file, function: function, line: line)
+        let previousAvailability = self.availability
         let before = isEnabled
         
         self.availability = availability
         availabilityEstablished = true
         
         guard before != isEnabled else {
+            self.logger.info("Offline mode unchanged (\(before.description, privacy: .public)) after availability update. Trigger: \(reason, privacy: .public). Source: \(source, privacy: .public). Previous availability: \(self.availabilityDescription(previousAvailability), privacy: .public). New availability: \(self.availabilityDescription(availability), privacy: .public)")
             return
         }
         
+        if isEnabled {
+            self.logger.warning("Offline mode enabled after availability update. Trigger: \(reason, privacy: .public). Source: \(source, privacy: .public). New availability: \(self.availabilityDescription(availability), privacy: .public)")
+        } else {
+            self.logger.info("Offline mode disabled after availability update. Trigger: \(reason, privacy: .public). Source: \(source, privacy: .public). New availability: \(self.availabilityDescription(availability), privacy: .public)")
+        }
+        
         RFNotification[.offlineModeChanged].dispatch(payload: isEnabled)
+    }
+    
+    func sourceDescription(file: StaticString, function: StaticString, line: UInt) -> String {
+        "\(file):\(line) \(function)"
+    }
+    func availabilityDescription(_ availability: [ItemIdentifier.ConnectionID: Bool]) -> String {
+        guard !availability.isEmpty else {
+            return "<none>"
+        }
+        
+        return availability
+            .sorted { $0.key < $1.key }
+            .map { "\($0.key)=\($0.value ? "online" : "offline")" }
+            .joined(separator: ", ")
     }
 }
