@@ -71,6 +71,7 @@ struct AudiobookLibraryPanel: View {
                 viewModel.lazyLoader.performLoadIfRequired($0)
             }
             .id(id)
+            .padding(.top, 12)
             .padding(.horizontal, 20)
             
             PanelItemCountLabel(total: viewModel.lazyLoader.totalCount, type: .none, isLoading: viewModel.lazyLoader.isLoading)

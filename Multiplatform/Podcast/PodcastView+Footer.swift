@@ -26,7 +26,7 @@ extension PodcastView {
             }
             
             if let publishingType = viewModel.podcast.publishingType {
-                InformationListRow(title: "item.publishing", value: publishingType.label)
+                InformationListRow(title: String(localized: "item.publishing"), value: publishingType.label)
             }
             
             InformationListRow(title: String(localized: "item.rating"), value: viewModel.podcast.explicit ? String(localized: "item.explicit") : String(localized: "item.rating.safe"))
