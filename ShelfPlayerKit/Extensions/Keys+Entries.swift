@@ -202,6 +202,9 @@ public extension RFNotification.IsolatedNotification {
     static var progressEntityUpdated: IsolatedNotification<(connectionID: String, primaryID: String, groupingID: String?, ProgressEntity?)> {
         .init("io.rfk.shelfPlayerKit.progressEntity.updated")
     }
+    static var invalidateProgressCache: IsolatedNotification<String?> {
+        .init("io.rfk.shelfPlayerKit.progressEntity.cache.invalidate")
+    }
     static var invalidateProgressEntities: IsolatedNotification<String?> {
         .init("io.rfk.shelfPlayerKit.progressEntity.invalidate")
     }
