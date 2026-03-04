@@ -9,63 +9,6 @@ import SwiftUI
 import OSLog
 import ShelfPlayback
 
-private actor ProgressCache: Sendable {
-    var cached = [ItemIdentifier: Task<ProgressEntity, Never>]()
-    
-    private init() {
-        RFNotification[.invalidateProgressEntities].subscribe { [weak self] connectionID in
-            Task {
-                await self?.invalidateAndPropagate(connectionID: connectionID)
-            }
-        }
-        RFNotification[.progressEntityUpdated].subscribe { [weak self] payload in
-            Task {
-                await self?.invalidate(connectionID: payload.connectionID, primaryID: payload.primaryID, groupingID: payload.groupingID)
-            }
-        }
-    }
-    
-    func entity(for itemID: ItemIdentifier) async -> ProgressEntity {
-        if cached[itemID] == nil {
-            cached[itemID] = Task.detached {
-                await PersistenceManager.shared.progress[itemID]
-            }
-        }
-        
-        return await cached[itemID]!.value
-    }
-    
-    private func invalidateAndPropagate(connectionID: ItemIdentifier.ConnectionID?) async {
-        guard let connectionID else {
-            cached.removeAll()
-            return
-        }
-        
-        let keys = cached.keys.filter {
-            $0.connectionID == connectionID
-        }
-        
-        for key in keys {
-            cached[key] = nil
-        }
-        
-        await RFNotification[.invalidateProgressCache].send(payload: connectionID)
-    }
-    private func invalidate(connectionID: ItemIdentifier.ConnectionID, primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?) {
-        let keys = cached.keys.filter {
-            $0.connectionID == connectionID
-                && $0.primaryID == primaryID
-                && $0.groupingID == groupingID
-        }
-        
-        for key in keys {
-            cached[key] = nil
-        }
-    }
-    
-    nonisolated static let shared = ProgressCache()
-}
-
 @Observable @MainActor
 final class ProgressTracker {
     let itemID: ItemIdentifier
@@ -147,4 +90,61 @@ final class ProgressTracker {
             nil
         }
     }
+}
+
+private actor ProgressCache: Sendable {
+    var cached = [ItemIdentifier: Task<ProgressEntity, Never>]()
+    
+    private init() {
+        RFNotification[.invalidateProgressEntities].subscribe { [weak self] connectionID in
+            Task {
+                await self?.invalidateAndPropagate(connectionID: connectionID)
+            }
+        }
+        RFNotification[.progressEntityUpdated].subscribe { [weak self] payload in
+            Task {
+                await self?.invalidate(connectionID: payload.connectionID, primaryID: payload.primaryID, groupingID: payload.groupingID)
+            }
+        }
+    }
+    
+    func entity(for itemID: ItemIdentifier) async -> ProgressEntity {
+        if cached[itemID] == nil {
+            cached[itemID] = Task.detached {
+                await PersistenceManager.shared.progress[itemID]
+            }
+        }
+        
+        return await cached[itemID]!.value
+    }
+    
+    private func invalidateAndPropagate(connectionID: ItemIdentifier.ConnectionID?) async {
+        guard let connectionID else {
+            cached.removeAll()
+            return
+        }
+        
+        let keys = cached.keys.filter {
+            $0.connectionID == connectionID
+        }
+        
+        for key in keys {
+            cached[key] = nil
+        }
+        
+        await RFNotification[.invalidateProgressCache].send(payload: connectionID)
+    }
+    private func invalidate(connectionID: ItemIdentifier.ConnectionID, primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?) {
+        let keys = cached.keys.filter {
+            $0.connectionID == connectionID
+                && $0.primaryID == primaryID
+                && $0.groupingID == groupingID
+        }
+        
+        for key in keys {
+            cached[key] = nil
+        }
+    }
+    
+    nonisolated static let shared = ProgressCache()
 }
