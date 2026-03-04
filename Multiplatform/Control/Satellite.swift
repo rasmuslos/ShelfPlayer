@@ -72,6 +72,8 @@ final class Satellite {
     var notifySuccess = false
     
     private var stash = RFNotification.MarkerStash()
+    @ObservationIgnored
+    private var areObserversRegistered = false
     
     // MARK: Init
     
@@ -85,8 +87,7 @@ final class Satellite {
                     await self?.syncAudioPlayerState()
                 }
             } else {
-                self?.logger.info("Clearing marker stash on scene deactivation")
-                self?.stash.clear()
+                self?.unregisterObservers()
             }
         }
         
@@ -974,9 +975,12 @@ private extension Satellite {
     // MARK: Observers
 
     func setupObservers() {
-        logger.info("Setting up Satellite observers")
+        guard !areObserversRegistered else {
+            return
+        }
         
-        stash.clear()
+        logger.info("Setting up Satellite observers")
+        areObserversRegistered = true
         
         // MARK: General
         
@@ -1063,14 +1067,14 @@ private extension Satellite {
         
         RFNotification[.queueChanged].subscribe { [weak self] queue in
             self?.queue = queue
-        }
+        }.store(in: &stash)
         RFNotification[.upNextQueueChanged].subscribe { [weak self] upNextQueue in
             self?.upNextQueue = upNextQueue
-        }
+        }.store(in: &stash)
         RFNotification[.upNextStrategyChanged].subscribe { [weak self] strategy in
             self?.upNextStrategy = strategy
             self?.resolveUpNextOrigin()
-        }
+        }.store(in: &stash)
         
         RFNotification[.playbackStopped].subscribe { [weak self] in
             self?.nowPlayingItemID = nil
@@ -1109,6 +1113,15 @@ private extension Satellite {
             
             self?.loadBookmarks(itemID: itemID)
         }.store(in: &stash)
+    }
+    func unregisterObservers() {
+        guard areObserversRegistered else {
+            return
+        }
+        
+        logger.info("Unregistering Satellite observers")
+        stash.clear()
+        areObserversRegistered = false
     }
     
     func syncAudioPlayerState() async {
