@@ -153,8 +153,6 @@ private struct CacheSection: View {
 }
 
 private struct FlushButtons: View {
-    @Environment(OfflineMode.self) private var offlineMode
-    
     let onCacheNeedsUpdate: () -> Void
     
     @State private var isLoading = false
@@ -206,7 +204,6 @@ private struct FlushButtons: View {
             Button("preferences.purge.progress", systemImage: "trash.square") {
                 isProgressWarningPresented = true
             }
-            .disabled(offlineMode.isEnabled)
         }
         .alert("preferences.purge.progress", isPresented: $isProgressWarningPresented) {
             Button("action.cancel", role: .cancel) {}

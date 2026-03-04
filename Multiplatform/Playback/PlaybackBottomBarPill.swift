@@ -28,6 +28,11 @@ struct PlaybackBottomBarPill: View {
             .lineLimit(1)
             .id(nowPlayingItemName + "_nowPlaying_collapsed_name")
     }
+    @ViewBuilder
+    private var image: some View {
+        ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: viewModel.PILL_IMAGE_CORNER_RADIUS)
+            .opacity(!viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
+    }
     
     @ViewBuilder
     private var label: some View {
@@ -44,10 +49,14 @@ struct PlaybackBottomBarPill: View {
                         .onChange(of: x, initial: true) { viewModel.pillImageX = x }
                         .onChange(of: y, initial: true) { viewModel.pillImageY = y }
                         .onChange(of: size, initial: true) { viewModel.pillImageSize = size }
-                }
                     
-                ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: viewModel.PILL_IMAGE_CORNER_RADIUS)
-                    .opacity(!viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
+                    Color.clear
+                        .overlay {
+                            image
+                        }
+                } else {
+                    image
+                }
             }
             .aspectRatio(1, contentMode: .fit)
             .padding(.vertical, 8)
