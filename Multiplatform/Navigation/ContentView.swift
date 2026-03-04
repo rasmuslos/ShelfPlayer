@@ -157,15 +157,15 @@ struct ContentView: View {
             ShelfPlayer.initializeUIHook()
         }
         .onChange(of: scenePhase) {
-            Task {
-                if scenePhase == .active {
-                    logger.info("Scene is now active")
-                    await RFNotification[.scenePhaseDidChange].send(payload: true)
-                } else {
-                    logger.info("Scene is now inactive")
-                    
+            if scenePhase == .active {
+                logger.info("Scene is now active")
+                RFNotification[.scenePhaseDidChange].send(payload: true)
+            } else {
+                logger.info("Scene is now inactive")
+                RFNotification[.scenePhaseDidChange].send(payload: false)
+                
+                Task {
                     await ShelfPlayer.invalidateShortTermCache()
-                    await RFNotification[.scenePhaseDidChange].send(payload: false)
                 }
             }
         }
