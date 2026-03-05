@@ -339,8 +339,6 @@ public extension PersistenceManager.ProgressSubsystem {
         let entity = try await integrate(identifier: nil,
                                          connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID,
                                          progress: 1, duration: nil, currentTime: 0, startedAt: .now, lastUpdate: .now, finishedAt: .now)
-        
-        progressEntityDidUpdate(.init(persistedEntity: entity))
     }
     func markAsListening(_ itemID: ItemIdentifier) async throws {
         logger.info("Marking progress as listening for item \(itemID).")
@@ -348,7 +346,6 @@ public extension PersistenceManager.ProgressSubsystem {
         let entity = try await integrate(identifier: nil,
                                          connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID,
                                          progress: 0, duration: nil, currentTime: 0, startedAt: nil, lastUpdate: .now, finishedAt: nil)
-        progressEntityDidUpdate(.init(persistedEntity: entity))
     }
     
     func update(_ itemID: ItemIdentifier, currentTime: Double, duration: Double) async throws {
@@ -365,8 +362,6 @@ public extension PersistenceManager.ProgressSubsystem {
         let entity = try await integrate(identifier: nil,
                                          connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID,
                                          progress: progress, duration: duration, currentTime: currentTime, startedAt: .now, lastUpdate: .now, finishedAt: nil, didStartPlayback: true)
-        
-        progressEntityDidUpdate(.init(persistedEntity: entity))
     }
     
     func delete(itemID: ItemIdentifier) async throws {
@@ -501,6 +496,8 @@ private extension PersistenceManager.ProgressSubsystem {
             
             try modelContext.save()
             
+            progressEntityDidUpdate(.init(persistedEntity: updated))
+            
             throw APIClientError.offline
         }
         
@@ -508,7 +505,10 @@ private extension PersistenceManager.ProgressSubsystem {
             try await ABSClient[connectionID].batchUpdate(progress: [.init(persistedEntity: updated)])
         } catch {
             logger.error("Failed to sync progress: \(error)")
+            
             try modelContext.save()
+            
+            progressEntityDidUpdate(.init(persistedEntity: updated))
             
             throw error
         }
@@ -517,6 +517,8 @@ private extension PersistenceManager.ProgressSubsystem {
         updated.hasBeenSynchronised = true
         
         try modelContext.save()
+        
+        progressEntityDidUpdate(.init(persistedEntity: updated))
         
         return updated
     }
