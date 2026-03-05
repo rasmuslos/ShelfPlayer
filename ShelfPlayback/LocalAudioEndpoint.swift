@@ -443,6 +443,8 @@ private extension LocalAudioEndpoint {
         let startTime: TimeInterval
         let sessionID: String?
         
+        let entity = await PersistenceManager.shared.progress[currentItemID]
+        
         do {
             if !OfflineMode.shared.isAvailable(currentItemID.connectionID) {
                 throw AudioPlayerError.offline
@@ -450,14 +452,21 @@ private extension LocalAudioEndpoint {
             
             // Attempt to start a playback session
             
-            (audioTracks, chapters, startTime, sessionID) = try await ABSClient[currentItemID.connectionID].startPlaybackSession(itemID: currentItemID)
+            let suggestedStartTime: TimeInterval
+            (audioTracks, chapters, suggestedStartTime, sessionID) = try await ABSClient[currentItemID.connectionID].startPlaybackSession(itemID: currentItemID)
+            
+            let delta = abs(entity.currentTime - suggestedStartTime)
+            
+            if delta > 60 {
+                logger.warning("Server suggested a playback start time of \(suggestedStartTime), but our local state indicates \(entity.currentTime). This may cause playback to skip or rewind. Using whichever is greater.")
+                startTime = max(entity.currentTime, suggestedStartTime)
+            } else {
+                startTime = suggestedStartTime
+            }
             
             Defaults[.openPlaybackSessions].append(OpenPlaybackSessionPayload(sessionID: sessionID!, itemID: currentItemID))
         } catch {
             // Fall back to resolving and reporting locally
-            
-            let entity = await PersistenceManager.shared.progress[currentItemID]
-            
             if entity.isFinished {
                 startTime = 0
             } else {
