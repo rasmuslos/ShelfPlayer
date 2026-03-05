@@ -8,7 +8,7 @@
 import Foundation
 
 extension URL {
-    func directoryTotalAllocatedSize(recursive: Bool = true) throws -> Int? {
+    nonisolated func directoryTotalAllocatedSize(recursive: Bool = true) throws -> Int? {
         guard try resourceValues(forKeys: [.isDirectoryKey]).isDirectory == true, try checkResourceIsReachable() else {
             return nil
         }

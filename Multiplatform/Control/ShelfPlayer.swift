@@ -140,6 +140,7 @@ struct ShelfPlayer {
         
         try await writeLogEntitiesToFile(all, at: baseURL.appending(path: "ShelfPlayerAll.log"))
         try await writeLogEntitiesToFile(filtered, at: baseURL.appending(path: "ShelfPlayerFiltered.log"))
+        try await writeGeneralStateToFile(at: baseURL.appending(path: "ShelfPlayerState.log"))
         
         var error: NSError?
         var moveError: Error?
@@ -161,6 +162,27 @@ struct ShelfPlayer {
         }
         
         return targetURL
+    }
+    
+    // MARK: Diagnostics
+    
+    @concurrent
+    static func cacheDiagnostics() async -> CacheDiagnostics {
+        async let downloadCount = PersistenceManager.shared.download.totalCount
+        async let progressCount = PersistenceManager.shared.progress.totalCount
+        
+        let imageCachePath = await ImageLoader.shared.cachePath
+        let itemCachePath = await ResolveCache.shared.cachePath
+        
+        let imageCount = recursiveFileCount(in: imageCachePath)
+        let itemCount = recursiveFileCount(in: itemCachePath)
+        
+        return .init(downloadCount: await downloadCount,
+                     imageCount: imageCount,
+                     itemCount: itemCount,
+                     progressCount: await progressCount,
+                     cacheDirectorySize: try? ShelfPlayerKit.cacheDirectoryURL.directoryTotalAllocatedSize(),
+                     downloadDirectorySize: try? ShelfPlayerKit.downloadDirectoryURL.directoryTotalAllocatedSize())
     }
     
     // MARK: Cache invalidation
@@ -209,6 +231,16 @@ struct ShelfPlayer {
         
         try await PersistenceManager.shared.invalidateCache()
     }
+    
+    struct CacheDiagnostics: Sendable {
+        let downloadCount: Int
+        let imageCount: Int
+        let itemCount: Int
+        let progressCount: Int
+        
+        let cacheDirectorySize: Int?
+        let downloadDirectorySize: Int?
+    }
 }
 
 private extension ShelfPlayer {
@@ -217,5 +249,135 @@ private extension ShelfPlayer {
         try entities.map {
             "\($0.date.formatted(.iso8601)): \($0.composedMessage)"
         }.joined(separator: "\n").write(to: url, atomically: true, encoding: .utf8)
+    }
+    
+    @concurrent
+    static func writeGeneralStateToFile(at url: URL) async throws {
+        let now = Date.now
+        
+        let cacheDiagnostics = await cacheDiagnostics()
+        
+        async let friendlyConnections = PersistenceManager.shared.authorization.friendlyConnections
+        
+        async let currentItemID = AudioPlayer.shared.currentItemID
+        async let isPlaying = AudioPlayer.shared.isPlaying
+        async let isBuffering = AudioPlayer.shared.isBusy
+        async let queue = AudioPlayer.shared.queue
+        async let upNextQueue = AudioPlayer.shared.upNextQueue
+        async let currentTime = AudioPlayer.shared.currentTime
+        async let duration = AudioPlayer.shared.duration
+        async let chapterCurrentTime = AudioPlayer.shared.chapterCurrentTime
+        async let chapterDuration = AudioPlayer.shared.chapterDuration
+        async let playbackRate = AudioPlayer.shared.playbackRate
+        async let sleepTimer = AudioPlayer.shared.sleepTimer
+        async let route = AudioPlayer.shared.route
+        
+        let osVersion: String
+        
+        #if canImport(UIKit)
+        osVersion = await ShelfPlayerKit.osVersion
+        #else
+        osVersion = ProcessInfo.processInfo.operatingSystemVersionString
+        #endif
+        
+        let resolvedConnections = await friendlyConnections
+        
+        let resolvedCurrentItemID = await currentItemID
+        let resolvedIsPlaying = await isPlaying
+        let resolvedIsBuffering = await isBuffering
+        let resolvedQueue = await queue
+        let resolvedUpNextQueue = await upNextQueue
+        let resolvedPlaybackRate = await playbackRate
+        let resolvedSleepTimer = await sleepTimer
+        let resolvedRoute = await route
+        
+        var lines = [String]()
+        
+        lines.append("# ShelfPlayer State Snapshot")
+        lines.append("generatedAt=\(now.formatted(.iso8601))")
+        lines.append("bundleIdentifier=\(Bundle.main.bundleIdentifier ?? "unknown")")
+        lines.append("offlineModeEnabled=\(await OfflineMode.shared.isEnabled)")
+        lines.append("offlineModeLoading=\(await OfflineMode.shared.isLoading)")
+        lines.append("")
+        
+        lines.append("[device]")
+        lines.append("model=\(ShelfPlayerKit.model)")
+        lines.append("osVersion=\(osVersion)")
+        lines.append("clientVersion=\(ShelfPlayerKit.clientVersion)")
+        lines.append("clientBuild=\(ShelfPlayerKit.clientBuild)")
+        lines.append("enableCentralized=\(ShelfPlayerKit.enableCentralized)")
+        lines.append("groupContainer=\(ShelfPlayerKit.groupContainer)")
+        lines.append("")
+        
+        lines.append("[cache]")
+        lines.append("downloads=\(cacheDiagnostics.downloadCount)")
+        lines.append("images=\(cacheDiagnostics.imageCount)")
+        lines.append("items=\(cacheDiagnostics.itemCount)")
+        lines.append("progress=\(cacheDiagnostics.progressCount)")
+        
+        if let cacheDirectorySize = cacheDiagnostics.cacheDirectorySize {
+            lines.append("cacheSizeBytes=\(cacheDirectorySize)")
+        } else {
+            lines.append("cacheSizeBytes=<none>")
+        }
+        
+        if let downloadDirectorySize = cacheDiagnostics.downloadDirectorySize {
+            lines.append("downloadSizeBytes=\(downloadDirectorySize)")
+        } else {
+            lines.append("downloadSizeBytes=<none>")
+        }
+        
+        lines.append("")
+        lines.append("[connections]")
+        lines.append("count=\(resolvedConnections.count)")
+        
+        if resolvedConnections.isEmpty {
+            lines.append("entries=<none>")
+        } else {
+            for connection in resolvedConnections {
+                lines.append("\(connection.id)=\(connection.name)")
+            }
+        }
+        
+        #if DEBUG
+        lines.append("activeWebSocketConnections=\(await PersistenceManager.shared.webSocket.connected)")
+        #endif
+        
+        lines.append("")
+        lines.append("[player]")
+        lines.append("currentItemID=\(resolvedCurrentItemID?.description ?? "<none>")")
+        lines.append("isPlaying=\(resolvedIsPlaying)")
+        lines.append("isBuffering=\(resolvedIsBuffering)")
+        lines.append("queueCount=\(resolvedQueue.count)")
+        lines.append("upNextQueueCount=\(resolvedUpNextQueue.count)")
+        lines.append("playbackRate=\(resolvedPlaybackRate)")
+        lines.append("sleepTimer=\(String(describing: resolvedSleepTimer))")
+        lines.append("routeIcon=\(resolvedRoute?.icon ?? "<none>")")
+        
+        try lines.joined(separator: "\n").write(to: url, atomically: true, encoding: .utf8)
+    }
+    
+    nonisolated static func recursiveFileCount(in directoryURL: URL) -> Int {
+        let keys: Set<URLResourceKey> = [.isRegularFileKey]
+        
+        guard let enumerator = FileManager.default.enumerator(
+            at: directoryURL,
+            includingPropertiesForKeys: Array(keys),
+            options: [.skipsPackageDescendants],
+            errorHandler: nil
+        ) else {
+            return 0
+        }
+        
+        var count = 0
+        for case let fileURL as URL in enumerator {
+            guard let values = try? fileURL.resourceValues(forKeys: keys), values.isRegularFile == true else {
+                continue
+            }
+            
+            count += 1
+        }
+        
+        return count
     }
 }

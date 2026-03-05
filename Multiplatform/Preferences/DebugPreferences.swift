@@ -115,40 +115,14 @@ private struct CacheSection: View {
     private func load() async {
         isLoading = true
         
-        downloadCount = await PersistenceManager.shared.download.totalCount
-        imageCount = await recursiveFileCount(in: ImageLoader.shared.cachePath)
-        itemCount = await recursiveFileCount(in: ResolveCache.shared.cachePath)
-        progressCount = await PersistenceManager.shared.progress.totalCount
+        let diagnostics = await ShelfPlayer.cacheDiagnostics()
+        
+        downloadCount = diagnostics.downloadCount
+        imageCount = diagnostics.imageCount
+        itemCount = diagnostics.itemCount
+        progressCount = diagnostics.progressCount
         
         isLoading = false
-    }
-    
-    private nonisolated func recursiveFileCount(in directoryURL: URL) -> Int {
-        let keys: Set<URLResourceKey> = [.isRegularFileKey]
-        
-        guard let enumerator = FileManager.default.enumerator(
-            at: directoryURL,
-            includingPropertiesForKeys: Array(keys),
-            options: [.skipsPackageDescendants],
-            errorHandler: nil
-        ) else {
-            return 0
-        }
-        
-        var count = 0
-        for case let fileURL as URL in enumerator {
-            do {
-                let values = try fileURL.resourceValues(forKeys: keys)
-                if values.isRegularFile == true {
-                    count += 1
-                }
-            } catch {
-                // If we can't read resource values for a URL, skip it and continue.
-                continue
-            }
-        }
-        
-        return count
     }
 }
 
@@ -224,10 +198,9 @@ private struct FlushButtons: View {
     
     func load() {
         Task {
-            let (cacheSize, downloadsSize) = (
-                (try? ShelfPlayerKit.cacheDirectoryURL.directoryTotalAllocatedSize()) ?? 0,
-                try? ShelfPlayerKit.downloadDirectoryURL.directoryTotalAllocatedSize()
-            )
+            let diagnostics = await ShelfPlayer.cacheDiagnostics()
+            let cacheSize = diagnostics.cacheDirectorySize ?? 0
+            let downloadsSize = diagnostics.downloadDirectorySize
             
             withAnimation {
                 if cacheSize > 0 {
@@ -345,4 +318,3 @@ private struct FlushButtons: View {
     .previewEnvironment()
 }
 #endif
-
