@@ -162,6 +162,12 @@ private final class SocketConnection {
         socket.on("library_removed") { [weak self] _, _ in
             self?.librariesChanged()
         }
+
+        // User
+
+        socket.on("user_updated") { [weak self] data, _ in
+            self?.userUpdated(data)
+        }
         
         RFNotification[.accessTokenExpired].subscribe { [weak self] _ in
             Task {
@@ -189,6 +195,32 @@ private final class SocketConnection {
     }
     
     func librariesChanged() {
-        fatalError("BAZINGA")
+        logger.info("Libraries changed. Sending update")
+        RFNotification[.librariesChanged].dispatch()
     }
+
+    func userUpdated(_ data: [Any]) {
+        guard let payload = data.first else {
+            logger.warning("Socket \(self.connectionID) received user_updated without payload")
+            return
+        }
+
+        guard let payloadData = try? JSONSerialization.data(withJSONObject: payload),
+              let decoded = try? JSONDecoder().decode(UserUpdatedPayload.self, from: payloadData) else {
+            logger.warning("Socket \(self.connectionID) failed to decode user_updated payload")
+            return
+        }
+
+        for payload in decoded.mediaProgress {
+            logger.info("Socket \(self.connectionID) user_updated mediaProgress: \(String(describing: payload), privacy: .public)")
+            
+            Task {
+                await PersistenceManager.shared.progress.receivedProgressUpdate(payload, connectionID: connectionID)
+            }
+        }
+    }
+}
+
+private struct UserUpdatedPayload: Decodable {
+    let mediaProgress: [ProgressPayload]
 }

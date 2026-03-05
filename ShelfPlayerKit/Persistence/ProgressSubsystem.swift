@@ -336,14 +336,14 @@ public extension PersistenceManager.ProgressSubsystem {
     func markAsCompleted(_ itemID: ItemIdentifier) async throws {
         logger.info("Marking progress as completed for item \(itemID).")
         
-        let entity = try await integrate(identifier: nil,
+        let _ = try await integrate(identifier: nil,
                                          connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID,
                                          progress: 1, duration: nil, currentTime: 0, startedAt: .now, lastUpdate: .now, finishedAt: .now)
     }
     func markAsListening(_ itemID: ItemIdentifier) async throws {
         logger.info("Marking progress as listening for item \(itemID).")
         
-        let entity = try await integrate(identifier: nil,
+        let _ = try await integrate(identifier: nil,
                                          connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID,
                                          progress: 0, duration: nil, currentTime: 0, startedAt: nil, lastUpdate: .now, finishedAt: nil)
     }
@@ -359,9 +359,29 @@ public extension PersistenceManager.ProgressSubsystem {
             progress = 0
         }
         
-        let entity = try await integrate(identifier: nil,
+        let _ = try await integrate(identifier: nil,
                                          connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID,
                                          progress: progress, duration: duration, currentTime: currentTime, startedAt: .now, lastUpdate: .now, finishedAt: nil, didStartPlayback: true)
+    }
+    func receivedProgressUpdate(_ payload: ProgressPayload, connectionID: ItemIdentifier.ConnectionID) async {
+        do {
+            let  _ = try await integrate(identifier: payload.id,
+                                         connectionID: connectionID,
+                                         primaryID: payload.episodeId ?? payload.libraryItemId,
+                                         groupingID: payload.episodeId == nil ? nil : payload.libraryItemId,
+                                         progress: payload.progress ?? 0,
+                                         duration: payload.duration,
+                                         currentTime: payload.currentTime ?? 0,
+                                         startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
+                                         lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
+                                         finishedAt: payload.finishedAt != nil ? Date(timeIntervalSince1970: Double(payload.finishedAt!) / 1000) : nil,
+                                         performRemoteWork: false)
+        } catch {
+            logger.warning("Failed to integrate received progress update with ID \(payload.id): \(error)")
+        }
+        
+        try? await Task.sleep(for: .seconds(2))
+        await RFNotification[.invalidateTransientPanels].send()
     }
     
     func delete(itemID: ItemIdentifier) async throws {
@@ -485,6 +505,8 @@ private extension PersistenceManager.ProgressSubsystem {
             updated.hasBeenSynchronised = true
             
             try modelContext.save()
+            
+            progressEntityDidUpdate(.init(persistedEntity: updated))
             
             return updated
         }

@@ -253,7 +253,7 @@ public extension RFNotification.IsolatedNotification {
     static var upNextStrategyChanged: IsolatedNotification<ResolvedUpNextStrategy?> { .init("io.rfk.shelfPlayerKit.upNextStrategyChanged") }
     
     static var playbackStopped: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.playbackStopped") }
-    static var playbackReported: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.playbackReported") }
+    static var invalidateTransientPanels: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.playbackReported") }
     
     // MARK: Utility
     
@@ -267,6 +267,10 @@ public extension RFNotification.IsolatedNotification {
     static var enablePinnedTabs: IsolatedNotification<RFNotificationEmptyPayload> { .init("io.rfk.shelfPlayerKit.enablePinnedTabs") }
     
     static var scenePhaseDidChange: IsolatedNotification<Bool> { .init("io.rfk.shelfPlayer.scenePhaseDidChange") }
+    
+    static var librariesChanged: IsolatedNotification<RFNotificationEmptyPayload> {
+        .init("io.rfk.shelfPlayerKit.librariesChanged")
+    }
     
     // Sessions
     

@@ -75,6 +75,13 @@ final class TabRouterViewModel: Sendable {
                 self?.refresh()
             }
         }
+        
+        RFNotification[.librariesChanged].subscribe { [weak self] in
+            Task {
+                try? await Task.sleep(for: .seconds(2))
+                self?.refresh()
+            }
+        }
     }
     
     func refresh() {
