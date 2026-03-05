@@ -68,14 +68,14 @@ public final class PersistenceManager: Sendable {
     }
     
     public func remove(itemID: ItemIdentifier) async {
-        await keyValue.remove(itemID: itemID)
+        await bookmark.remove(itemID: itemID)
         await progress.remove(itemID: itemID)
         await session.remove(itemID: itemID)
         
         try? await download.remove(itemID)
         await convenienceDownload.remove(itemID: itemID, configurationID: nil)
         
-        await bookmark.remove(itemID: itemID)
+        await keyValue.remove(itemID: itemID)
         
         let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: ItemEntity.self, identifier: itemID)))
         let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: AudiobookEntity.self, identifier: itemID)))
@@ -87,14 +87,21 @@ public final class PersistenceManager: Sendable {
         await ResolveCache.shared.flush()
     }
     public func remove(connectionID: ItemIdentifier.ConnectionID) async {
-        await keyValue.remove(connectionID: connectionID)
-        await authorization.remove(connectionID: connectionID)
+        await bookmark.remove(connectionID: connectionID)
         await progress.remove(connectionID: connectionID)
         await session.remove(connectionID: connectionID)
+        
         await download.remove(connectionID: connectionID)
-        await bookmark.remove(connectionID: connectionID)
+        await convenienceDownload.purge(connectionID: connectionID)
+        
+        await authorization.remove(connectionID: connectionID)
+        await keyValue.remove(connectionID: connectionID)
         
         await ResolveCache.shared.flush()
+    }
+    public func removeAllDownloads() async throws {
+        try await download.removeAll()
+        await convenienceDownload.purge()
     }
     
     public func refreshItem(itemID: ItemIdentifier) async throws {

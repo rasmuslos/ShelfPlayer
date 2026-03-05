@@ -506,6 +506,46 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         }
     }
     
+    func purge(connectionID: ItemIdentifier.ConnectionID) async {
+        pendingConfigurationIDs.removeAll()
+        await RFNotification[.convenienceDownloadConfigurationsChanged].send()
+    }
+    func purge() async {
+        shouldComeToEnd = true
+        task?.cancel()
+        
+        task = nil
+        pendingConfigurationIDs.removeAll()
+        
+        do {
+            try await PersistenceManager.shared.keyValue.remove(cluster: RETRIEVALS_KEY_VALUE_CLUSTER)
+        } catch {
+            logger.error("Failed to purge convenience retrieval entries: \(error)")
+        }
+        
+        do {
+            try await PersistenceManager.shared.keyValue.remove(cluster: DOWNLOADED_KEY_VALUE_CLUSTER)
+        } catch {
+            logger.error("Failed to purge convenience downloaded entries: \(error)")
+        }
+        
+        do {
+            try await PersistenceManager.shared.keyValue.remove(cluster: ASSOCIATED_KEY_VALUE_CLUSTER)
+        } catch {
+            logger.error("Failed to purge convenience association entries: \(error)")
+        }
+        
+        do {
+            try await PersistenceManager.shared.keyValue.set(.runExtendedBackgroundTask, nil)
+        } catch {
+            logger.error("Failed to purge convenience background-task marker: \(error)")
+        }
+        
+        shouldComeToEnd = false
+        
+        await RFNotification[.convenienceDownloadConfigurationsChanged].send()
+    }
+    
     // MARK: Types
     
     enum ConvenienceDownloadConfiguration: Codable, Sendable, Identifiable {
@@ -585,6 +625,17 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
     private enum ConvenienceDownloadError: Error {
         case notFound
         case invalidItemType
+    }
+}
+
+private extension PersistenceManager.ConvenienceDownloadSubsystem {
+    func removeKeyValueEntity<Value: Codable>(identifier: String, cluster: String, as _: Value.Type) async {
+        do {
+            let key = PersistenceManager.KeyValueSubsystem.Key<Value>(identifier: identifier, cluster: cluster, isCachePurgeable: false)
+            try await PersistenceManager.shared.keyValue.set(key, nil)
+        } catch {
+            logger.error("Failed to remove convenience key-value entity \(identifier): \(error)")
+        }
     }
 }
 

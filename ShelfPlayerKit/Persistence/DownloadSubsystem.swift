@@ -82,6 +82,8 @@ extension PersistenceManager {
         }
         
         func remove(connectionID: ItemIdentifier.ConnectionID) async {
+            logger.info("Removing downloads related to connection \(connectionID, privacy: .public)")
+            
             do {
                 try modelContext.delete(model: PersistedAudiobook.self, where: #Predicate { $0._id.contains(connectionID) })
                 
@@ -730,6 +732,8 @@ public extension PersistenceManager.DownloadSubsystem {
         }
     }
     func remove(_ itemID: ItemIdentifier) async throws {
+        logger.info("Removing download: \(itemID)")
+        
         guard itemID.type != .podcast else {
             guard let podcast = persistedPodcast(for: itemID) else {
                 throw PersistenceError.missing
