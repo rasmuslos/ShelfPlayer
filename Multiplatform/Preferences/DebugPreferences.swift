@@ -256,7 +256,7 @@ private struct FlushButtons: View {
             let success: Bool
             
             do {
-                try await PersistenceManager.shared.download.removeAll()
+                try await PersistenceManager.shared.removeAllDownloads()
                 success = true
             } catch {
                 success = false

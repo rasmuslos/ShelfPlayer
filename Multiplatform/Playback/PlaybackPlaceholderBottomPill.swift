@@ -20,8 +20,13 @@ struct PlaybackPlaceholderBottomPill: View {
             satellite.start(itemID)
         } label: {
             HStack(spacing: 8) {
-                ItemImage(itemID: itemID, size: .small)
+                Rectangle()
+                    .fill(.clear)
+                    .aspectRatio(1, contentMode: .fit)
                     .padding(.vertical, 8)
+                    .overlay {
+                        ItemImage(itemID: itemID, size: .small)
+                    }
                 
                 VStack(alignment: .leading, spacing: 0) {
                     if let lastPlayedItemName {

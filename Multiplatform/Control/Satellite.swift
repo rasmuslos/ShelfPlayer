@@ -840,8 +840,11 @@ extension Satellite {
                 } else {
                     try await PersistenceManager.shared.progress.markAsCompleted(itemID)
                 }
-
+                
                 endWorking(on: itemID, successfully: true)
+            } catch APIClientError.offline {
+                let success = !OfflineMode.shared.isAvailable(itemID.connectionID)
+                endWorking(on: itemID, successfully: success)
             } catch {
                 endWorking(on: itemID, successfully: false)
             }
@@ -854,6 +857,9 @@ extension Satellite {
             do {
                 try await PersistenceManager.shared.progress.markAsListening(itemID)
                 endWorking(on: itemID, successfully: true)
+            } catch APIClientError.offline {
+                let success = !OfflineMode.shared.isAvailable(itemID.connectionID)
+                endWorking(on: itemID, successfully: success)
             } catch {
                 endWorking(on: itemID, successfully: false)
             }
