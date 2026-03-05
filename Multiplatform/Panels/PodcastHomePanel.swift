@@ -78,7 +78,7 @@ struct PodcastHomePanel: View {
             fetchItems()
             ListenedTodayTracker.shared.refresh()
         }
-        .onReceive(RFNotification[.playbackReported].publisher()) { _ in
+        .onReceive(RFNotification[.invalidateTransientPanels].publisher()) { _ in
             fetchItems()
         }
     }
