@@ -125,7 +125,8 @@ struct ShelfPlayer {
     
     // MARK: Actions
     
-    static func generateLogArchive() throws -> URL {
+    @concurrent
+    static func generateLogArchive() async throws -> URL {
         let store = try OSLogStore(scope: .currentProcessIdentifier)
         let predicate = NSPredicate(format: "subsystem BEGINSWITH %@", "io.rfk.")
         
@@ -137,8 +138,8 @@ struct ShelfPlayer {
         
         try FileManager.default.createDirectory(at: baseURL, withIntermediateDirectories: true)
         
-        try writeLogEntitiesToFile(all, at: baseURL.appending(path: "ShelfPlayerAll.log"))
-        try writeLogEntitiesToFile(filtered, at: baseURL.appending(path: "ShelfPlayerFiltered.log"))
+        try await writeLogEntitiesToFile(all, at: baseURL.appending(path: "ShelfPlayerAll.log"))
+        try await writeLogEntitiesToFile(filtered, at: baseURL.appending(path: "ShelfPlayerFiltered.log"))
         
         var error: NSError?
         var moveError: Error?
@@ -155,7 +156,7 @@ struct ShelfPlayer {
         }
         
         if let error = error ?? moveError {
-            logger.error("Failed to create zip log archive: \(error)")
+            await logger.error("Failed to create zip log archive: \(error)")
             throw error
         }
         
@@ -211,7 +212,8 @@ struct ShelfPlayer {
 }
 
 private extension ShelfPlayer {
-    static func writeLogEntitiesToFile(_ entities: AnySequence<OSLogEntry>, at url: URL) throws {
+    @concurrent
+    static func writeLogEntitiesToFile(_ entities: AnySequence<OSLogEntry>, at url: URL) async throws {
         try entities.map {
             "\($0.date.formatted(.iso8601)): \($0.composedMessage)"
         }.joined(separator: "\n").write(to: url, atomically: true, encoding: .utf8)

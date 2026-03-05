@@ -50,6 +50,8 @@ struct ContentView: View {
                     .navigationTransition(.zoom(sourceID: "listen-now-sheet", in: namespace))
             case .preferences:
                 PreferencesView()
+            case .debugPreferences:
+                DebugPreferences()
             case .customTabValuePreferences:
                 CustomTabValueSheet()
             case .description(let item):

@@ -38,7 +38,7 @@ struct CreateLogArchiveButton: View {
             }
             
             do {
-                let url = try ShelfPlayer.generateLogArchive()
+                let url = try await ShelfPlayer.generateLogArchive()
                 
                 withAnimation {
                     isLoading = false

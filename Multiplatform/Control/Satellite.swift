@@ -162,6 +162,7 @@ extension Satellite {
         case listenNow
         
         case preferences
+        case debugPreferences
         case customTabValuePreferences
         
         case description(Item)
@@ -186,18 +187,24 @@ extension Satellite {
             switch self {
                 case .listenNow:
                     "listenNow"
+                    
                 case .preferences:
                     "preferences"
+                case .debugPreferences:
+                    "debugPreferences"
                 case .customTabValuePreferences:
                     "customTabValuePreferences"
+                    
                 case .description(let item):
                     "description-\(item.id)"
                 case .configureGrouping(let itemID):
                     "configureGrouping-\(itemID)"
+                    
                 case .editCollection(let collection):
                     "editCollection-\(collection.id)"
                 case .editCollectionMembership(let itemID):
                     "editCollectionMembership-\(itemID)"
+                    
                 case .addConnection:
                     "addConnection"
                 case .editConnection(let connectionID):
