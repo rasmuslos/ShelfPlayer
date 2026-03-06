@@ -86,6 +86,7 @@ private extension PersistenceManager.ListenNowSubsystem {
 // MARK: Resolve
 
 private extension PersistenceManager.ListenNowSubsystem {
+    @concurrent
     nonisolated func resolve() async throws -> [Result] {
         var resolvers = [any ListenNowResolver]()
         
@@ -158,8 +159,10 @@ private extension PersistenceManager.ListenNowSubsystem {
     protocol ListenNowResolver: Sendable, Hashable {
         var id: String { get }
         
-        func resolve() async throws -> [Result]
-        func cacheIdentifier() async throws -> NSString
+        @concurrent
+        nonisolated func resolve() async throws -> [Result]
+        @concurrent
+        nonisolated func cacheIdentifier() async throws -> NSString
     }
     struct Result: Sendable {
         let item: Item
@@ -197,14 +200,16 @@ private struct PlayableItemProgressActiveResolver: PersistenceManager.ListenNowS
     var id: String {
         "playable-item-progress-active"
     }
-    func cacheIdentifier() async throws -> NSString {
+    @concurrent
+    nonisolated func cacheIdentifier() async throws -> NSString {
         let entities = try await PersistenceManager.shared.progress.activeProgressEntities.sorted { $0.lastUpdate < $1.lastUpdate }
         let isOffline = await OfflineMode.shared.isEnabled
         
         return NSString(string: "\(isOffline)_\(entities.reduce("") { $0 + $1.connectionID + $1.primaryID + ($1.groupingID ?? ".") })")
     }
     
-    func resolve() async throws -> [PersistenceManager.ListenNowSubsystem.Result] {
+    @concurrent
+    nonisolated func resolve() async throws -> [PersistenceManager.ListenNowSubsystem.Result] {
         let entities = try await PersistenceManager.shared.progress.activeProgressEntities
 
         var resolved = [PersistenceManager.ListenNowSubsystem.Result]()
@@ -223,7 +228,8 @@ private struct PlayableItemProgressActiveResolver: PersistenceManager.ListenNowS
         
         return resolved
     }
-    static func resolve(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) async throws -> Item? {
+    @concurrent
+    nonisolated static func resolve(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) async throws -> Item? {
         do {
             let item = try await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
             

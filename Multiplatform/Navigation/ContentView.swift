@@ -162,13 +162,13 @@ struct ContentView: View {
             if scenePhase == .active {
                 logger.info("Scene is now active")
                 RFNotification[.scenePhaseDidChange].send(payload: true)
-            } else {
-                logger.info("Scene is now inactive")
-                RFNotification[.scenePhaseDidChange].send(payload: false)
                 
                 Task {
                     await ShelfPlayer.invalidateShortTermCache()
                 }
+            } else {
+                logger.info("Scene is now inactive")
+                RFNotification[.scenePhaseDidChange].send(payload: false)
             }
         }
         .onContinueUserActivity(CSQueryContinuationActionType) {

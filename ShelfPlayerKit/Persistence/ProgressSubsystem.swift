@@ -421,7 +421,7 @@ private extension PersistenceManager.ProgressSubsystem {
                    connectionID: ItemIdentifier.ConnectionID,
                    primaryID: ItemIdentifier.PrimaryID,
                    groupingID: ItemIdentifier.GroupingID?,
-                   progress rawProgress: Double,
+                   progress rawProgress: Percentage,
                    duration rawDuration: Double?,
                    currentTime rawCurrentTime: Double,
                    startedAt: Date?,
@@ -429,6 +429,8 @@ private extension PersistenceManager.ProgressSubsystem {
                    finishedAt: Date?,
                    didStartPlayback: Bool = false,
                    performRemoteWork: Bool = true) async throws -> PersistedProgress {
+        logger.info("Integrating progress for key \(self.key(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)) at \(rawProgress)%. performRemoteWork=\(performRemoteWork), didStartPlayback=\(didStartPlayback)")
+        
         let duration: Double?
         
         if let rawDuration, rawDuration.isFinite, rawDuration > 0 {
@@ -443,8 +445,7 @@ private extension PersistenceManager.ProgressSubsystem {
             currentTime = min(currentTime, duration)
         }
         
-        var progress: Percentage = rawProgress.isFinite ? rawProgress : 0
-        progress = min(1, max(0, progress))
+        let progress = rawProgress.isFinite ? min(1, max(0, rawProgress)) : 0
         
         if progress >= 1, let duration {
             currentTime = duration
@@ -455,10 +456,16 @@ private extension PersistenceManager.ProgressSubsystem {
         
         if let existing = self.entity(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) {
             if let identifier {
+                if existing.id != identifier {
+                    logger.info("Replacing existing progress identifier \(existing.id) with \(identifier)")
+                }
+                
                 existing.id = identifier
             }
             
             freshEntity = false
+            
+            logger.info("Updating existing progress entity \(existing.id) with progress \(progress) and currentTime \(currentTime)")
             
             existing.progress = progress
             existing.currentTime = currentTime
@@ -487,6 +494,8 @@ private extension PersistenceManager.ProgressSubsystem {
         } else {
             freshEntity = true
             
+            logger.info("Creating progress entity for key \(self.key(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)) with identifier \(identifier ?? "<generated>")")
+            
             updated = createEntity(id: identifier ?? UUID().uuidString,
                                    connectionID: connectionID,
                                    primaryID: primaryID,
@@ -501,6 +510,8 @@ private extension PersistenceManager.ProgressSubsystem {
         }
         
         guard performRemoteWork else {
+            logger.info("Skipping remote sync for progress entity \(updated.id) because performRemoteWork is disabled")
+            
             updated.status = .synchronized
             updated.hasBeenSynchronised = true
             
@@ -512,6 +523,8 @@ private extension PersistenceManager.ProgressSubsystem {
         }
         
         guard await OfflineMode.shared.isAvailable(updated.connectionID) else {
+            logger.info("Deferring remote sync for progress entity \(updated.id) because connection \(updated.connectionID) is offline")
+            
             if freshEntity {
                 updated.hasBeenSynchronised = false
             }
@@ -523,10 +536,12 @@ private extension PersistenceManager.ProgressSubsystem {
             throw APIClientError.offline
         }
         
+        logger.info("Syncing progress entity \(updated.id) to remote for connection \(connectionID)")
+        
         do {
             try await ABSClient[connectionID].batchUpdate(progress: [.init(persistedEntity: updated)])
         } catch {
-            logger.error("Failed to sync progress: \(error)")
+            logger.error("Failed to sync progress entity \(updated.id): \(error)")
             
             try modelContext.save()
             
@@ -537,6 +552,8 @@ private extension PersistenceManager.ProgressSubsystem {
         
         updated.status = .synchronized
         updated.hasBeenSynchronised = true
+        
+        logger.info("Successfully synced progress entity \(updated.id)")
         
         try modelContext.save()
         
