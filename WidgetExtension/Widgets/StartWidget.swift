@@ -188,7 +188,7 @@ struct StartWidgetContent: View {
                 ItemImage(item: nil, size: .regular, cornerRadius: cornerRadius)
             }
         }
-        .frame(width: 52)
+        .frame(width: 48)
     }
     
     @ViewBuilder
@@ -300,5 +300,17 @@ struct StartWidgetContent: View {
     StartWidget()
 } timeline: {
     StartWidgetTimelineEntry(item: Podcast.fixture, isDownloaded: false, isPlaying: false)
+    StartWidgetTimelineEntry(item: Podcast(id: .fixture,
+                                           name: "Very long multiline name with a lot of characters",
+                                           authors: [],
+                                           description: nil,
+                                           genres: [],
+                                           addedAt: .now,
+                                           released: nil,
+                                           explicit: false,
+                                           episodeCount: 0,
+                                           incompleteEpisodeCount: nil,
+                                           publishingType: nil),
+                             isDownloaded: false, isPlaying: false)
 }
 #endif
