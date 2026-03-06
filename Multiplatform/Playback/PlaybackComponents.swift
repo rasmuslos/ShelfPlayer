@@ -404,7 +404,10 @@ struct PlaybackRateButton: View {
             .padding(12)
             .contentTransition(.numericText())
             .contentShape(.rect(cornerRadius: 4))
-            .animation(.smooth, value: satellite.playbackRate)
+            .modify(if: viewModel.expansionAnimationCount == 0) {
+                $0
+                    .animation(.smooth, value: satellite.playbackRate)
+            }
         } primaryAction: {
             viewModel.cyclePlaybackSpeed()
         }
@@ -525,7 +528,10 @@ struct PlaybackSleepTimerButton: View {
                                 Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
                                     .fontDesign(.rounded)
                                     .contentTransition(.numericText())
-                                    .animation(viewModel.expansionAnimationCount > 0 ? Animation.smooth(duration: 0.1) : .smooth, value: remainingSleepTime)
+                                    .modify(if: viewModel.expansionAnimationCount == 0) {
+                                        $0
+                                            .animation(.smooth, value: remainingSleepTime)
+                                    }
                             } else {
                                 ProgressView()
                                     .scaleEffect(0.5)
