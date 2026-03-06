@@ -98,6 +98,13 @@ struct APIClientTests {
             return try await $0.waitForAll()
         }
     }
+    @Test func refreshJWTWithSingleAttemptRequest() async throws {
+        await MainActor.run {
+            credentialProvider.accessToken = nil
+        }
+        
+        let _ = try await client.response(APIRequest<MeResponse>(path: "api/me", method: .get, maxAttempts: 1))
+    }
     
     @Test func error() async throws {
         do {

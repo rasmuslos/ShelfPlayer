@@ -265,7 +265,7 @@ private extension APIClient {
         dispatchQueued()
     }
     @concurrent
-    nonisolated func perform(_ request: any APIRequestProtocol) async throws -> Decodable & Sendable {
+    nonisolated func perform(_ request: any APIRequestProtocol, didRetryAfterRefresh: Bool = false) async throws -> Decodable & Sendable {
         logger.info("Performing \(request.method.value, privacy: .public) \(request.path, privacy: .public)")
         
         #if DEBUG
@@ -312,11 +312,17 @@ private extension APIClient {
             
             return response
         } catch APIClientError.unauthorized {
+            if didRetryAfterRefresh {
+                logger.warning("Got 401 again after token refresh retry while performing \(request.method.value, privacy: .public) \(request.path, privacy: .public). Counting this as a failed attempt")
+                
+                await increaseAttempts(request.id)
+                return try await perform(request)
+            }
+            
             logger.warning("Got 401 while performing \(request.method.value, privacy: .public) \(request.path, privacy: .public). Attempting access token refresh")
-            await increaseAttempts(request.id)
             
             try await refreshAccessToken(currentToken: token)
-            return try await perform(request)
+            return try await perform(request, didRetryAfterRefresh: true)
         } catch APIClientError.notFound {
             logger.warning("Resource not found at \(request.path)")
             throw APIClientError.notFound
