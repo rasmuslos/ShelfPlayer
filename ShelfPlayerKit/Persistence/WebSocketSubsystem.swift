@@ -168,6 +168,9 @@ private final class SocketConnection {
         socket.on("user_updated") { [weak self] data, _ in
             self?.userUpdated(data)
         }
+        socket.on("user_item_progress_updated") { [weak self] data, _ in
+            self?.userItemProgressUpdated(data)
+        }
         
         RFNotification[.accessTokenExpired].subscribe { [weak self] _ in
             Task {
@@ -212,15 +215,35 @@ private final class SocketConnection {
         }
 
         for payload in decoded.mediaProgress {
-            logger.info("Socket \(self.connectionID) user_updated mediaProgress: \(String(describing: payload), privacy: .public)")
-            
-            Task {
-                await PersistenceManager.shared.progress.receivedProgressUpdate(payload, connectionID: connectionID)
-            }
+            receivedProgressUpdate(payload, event: "user_updated")
+        }
+    }
+    func userItemProgressUpdated(_ data: [Any]) {
+        guard let payload = data.first else {
+            logger.warning("Socket \(self.connectionID) received user_item_progress_updated without payload")
+            return
+        }
+        
+        guard let payloadData = try? JSONSerialization.data(withJSONObject: payload),
+              let decoded = try? JSONDecoder().decode(UserItemProgressUpdatedPayload.self, from: payloadData) else {
+            logger.warning("Socket \(self.connectionID) failed to decode user_item_progress_updated payload")
+            return
+        }
+        
+        receivedProgressUpdate(decoded.data, event: "user_item_progress_updated")
+    }
+    func receivedProgressUpdate(_ payload: ProgressPayload, event: String) {
+        logger.info("Socket \(self.connectionID) \(event, privacy: .public) progress: \(String(describing: payload), privacy: .public)")
+        
+        Task {
+            await PersistenceManager.shared.progress.receivedProgressUpdate(payload, connectionID: connectionID)
         }
     }
 }
 
 private struct UserUpdatedPayload: Decodable {
     let mediaProgress: [ProgressPayload]
+}
+private struct UserItemProgressUpdatedPayload: Decodable {
+    let data: ProgressPayload
 }
