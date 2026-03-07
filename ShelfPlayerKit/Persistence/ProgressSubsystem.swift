@@ -365,13 +365,23 @@ public extension PersistenceManager.ProgressSubsystem {
     }
     func receivedProgressUpdate(_ payload: ProgressPayload, connectionID: ItemIdentifier.ConnectionID) async {
         do {
+            let primaryID = payload.episodeId ?? payload.libraryItemId
+            let groupingID = payload.episodeId == nil ? nil : payload.libraryItemId
+            let payloadCurrentTime = payload.currentTime ?? 0
+            
+            if let existing = entity(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID),
+               abs(existing.currentTime - payloadCurrentTime) <= 7 {
+                logger.info("Ignoring received progress update for \(existing.id) because currentTime divergence is to small. (\(existing.currentTime) -> \(payloadCurrentTime)).")
+                return
+            }
+            
             let  _ = try await integrate(identifier: payload.id,
                                          connectionID: connectionID,
-                                         primaryID: payload.episodeId ?? payload.libraryItemId,
-                                         groupingID: payload.episodeId == nil ? nil : payload.libraryItemId,
+                                         primaryID: primaryID,
+                                         groupingID: groupingID,
                                          progress: payload.progress ?? 0,
                                          duration: payload.duration,
-                                         currentTime: payload.currentTime ?? 0,
+                                         currentTime: payloadCurrentTime,
                                          startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
                                          lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
                                          finishedAt: payload.finishedAt != nil ? Date(timeIntervalSince1970: Double(payload.finishedAt!) / 1000) : nil,

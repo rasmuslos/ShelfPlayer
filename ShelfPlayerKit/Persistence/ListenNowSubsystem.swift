@@ -18,23 +18,18 @@ extension PersistenceManager {
         private var updateTask = [ItemIdentifier.ItemType: Task<([Result], Date), Error>]()
         
         private var lastSingleCacheKey: String?
+        private var invalidateTask: Task<Void, Never>?
         private var updateSingleTask: Task<([PlayableItem], Date), Error>?
         
         init() {
             RFNotification[.progressEntityUpdated].subscribe { [weak self] _ in
-                Task {
-                    await self?.invalidate()
-                }
+                await self?.invalidate()
             }
             RFNotification[.invalidateProgressEntities].subscribe { [weak self] _ in
-                Task {
-                    await self?.invalidate()
-                }
+                await self?.invalidate()
             }
             RFNotification[.offlineModeChanged].subscribe { [weak self] _ in
-                Task {
-                    await self?.invalidate()
-                }
+                await self?.invalidate()
             }
         }
     }
@@ -55,6 +50,24 @@ public extension PersistenceManager.ListenNowSubsystem {
     }
     
     func invalidate() {
+        invalidateTask?.cancel()
+        
+        invalidateTask = Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(600))
+            
+            guard !Task.isCancelled else {
+                return
+            }
+            
+            await self?.performInvalidation()
+        }
+    }
+}
+
+private extension PersistenceManager.ListenNowSubsystem {
+    func performInvalidation() {
+        invalidateTask = nil
+        
         updateSingleTask = nil
         updateTask.removeAll()
         
@@ -205,7 +218,11 @@ private struct PlayableItemProgressActiveResolver: PersistenceManager.ListenNowS
         let entities = try await PersistenceManager.shared.progress.activeProgressEntities.sorted { $0.lastUpdate < $1.lastUpdate }
         let isOffline = await OfflineMode.shared.isEnabled
         
-        return NSString(string: "\(isOffline)_\(entities.reduce("") { $0 + $1.connectionID + $1.primaryID + ($1.groupingID ?? ".") })")
+        let key = entities.reduce(into: "") {
+            $0.append("\($1.connectionID)|\($1.primaryID)|\($1.groupingID ?? ".")|\(Int(($1.progress * 100)));")
+        }
+        
+        return NSString(string: "\(isOffline)_\(key)")
     }
     
     @concurrent
