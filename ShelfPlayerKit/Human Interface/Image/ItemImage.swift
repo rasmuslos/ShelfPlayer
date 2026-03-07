@@ -81,7 +81,7 @@ public struct ItemImage: View {
                 }
             } else {
                 ImagePlaceholder(itemID: itemID, cornerRadius: cornerRadius)
-                    .task {
+                    .onAppear {
                         reload()
                     }
             }
@@ -98,15 +98,13 @@ public struct ItemImage: View {
     
     private nonisolated func reload() {
         Task {
-            guard let data = await itemID?.data(size: size), let uiImage = UIImage(data: data) else {
+            guard let image = await itemID?.platformImage(size: size) else {
                 return
             }
             
-            let image = Image(uiImage: uiImage)
-            
             await MainActor.run {
                 withAnimation {
-                    self.image = image
+                    self.image = Image(uiImage: image)
                 }
             }
         }

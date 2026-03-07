@@ -11,7 +11,7 @@ import RFNotifications
 import ShelfPlayerKit
 
 extension AudioPlayer {
-    func didStartPlaying(endpointID: UUID, itemID: ItemIdentifier, chapters: [Chapter], at time: TimeInterval) {
+    func didStartPlaying(endpointID: UUID, itemID: ItemIdentifier, chapters: [Chapter], at time: TimeInterval) async {
         if current != nil && current?.id != endpointID {
             return
         }
@@ -23,7 +23,7 @@ extension AudioPlayer {
             logger.error("Failed to set audio session category: \(error)")
         }
         
-        RFNotification[.playbackItemChanged].dispatch(payload: (itemID, chapters, time))
+        await RFNotification[.playbackItemChanged].send(payload: (itemID, chapters, time))
         
         widgetManager.update(itemID: itemID)
     }
@@ -139,6 +139,7 @@ extension AudioPlayer {
             return
         }
         
+        await widgetManager.update(upNextQueueCount: upNextQueue.count)
         await RFNotification[.upNextQueueChanged].send(payload: upNextQueue)
     }
     func upNextStrategyDidChange(endpointID: UUID, strategy: ResolvedUpNextStrategy?) async {

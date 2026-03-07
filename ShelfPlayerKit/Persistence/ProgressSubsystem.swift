@@ -379,9 +379,6 @@ public extension PersistenceManager.ProgressSubsystem {
         } catch {
             logger.warning("Failed to integrate received progress update with ID \(payload.id): \(error)")
         }
-        
-        try? await Task.sleep(for: .seconds(2))
-        await RFNotification[.invalidateTransientPanels].send()
     }
     
     func delete(itemID: ItemIdentifier) async throws {

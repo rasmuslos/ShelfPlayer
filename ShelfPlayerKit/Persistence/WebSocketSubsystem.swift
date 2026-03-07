@@ -213,10 +213,8 @@ private final class SocketConnection {
             logger.warning("Socket \(self.connectionID) failed to decode user_updated payload")
             return
         }
-
-        for payload in decoded.mediaProgress {
-            receivedProgressUpdate(payload, event: "user_updated")
-        }
+        
+        receivedProgressUpdate(decoded.mediaProgress, event: "user_updated")
     }
     func userItemProgressUpdated(_ data: [Any]) {
         guard let payload = data.first else {
@@ -230,13 +228,18 @@ private final class SocketConnection {
             return
         }
         
-        receivedProgressUpdate(decoded.data, event: "user_item_progress_updated")
+        receivedProgressUpdate([decoded.data], event: "user_item_progress_updated")
     }
-    func receivedProgressUpdate(_ payload: ProgressPayload, event: String) {
+    func receivedProgressUpdate(_ payload: [ProgressPayload], event: String) {
         logger.info("Socket \(self.connectionID) \(event, privacy: .public) progress: \(String(describing: payload), privacy: .public)")
         
         Task.detached {
-            await PersistenceManager.shared.progress.receivedProgressUpdate(payload, connectionID: self.connectionID)
+            for payload in payload {
+                await PersistenceManager.shared.progress.receivedProgressUpdate(payload, connectionID: self.connectionID)
+            }
+            
+            try? await Task.sleep(for: .seconds(2))
+            await RFNotification[.invalidateTransientPanels].send()
         }
     }
 }
