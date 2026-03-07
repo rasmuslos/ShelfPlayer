@@ -15,6 +15,8 @@ final actor NowPlayingWidgetManager: Sendable {
     
     var item: PlayableItem?
     var chapter: Chapter?
+    var queueCount = 0
+    var upNextQueueCount = 0
     
     var isPlaying: Bool?
     var isBuffering: Bool?
@@ -45,6 +47,7 @@ final actor NowPlayingWidgetManager: Sendable {
         metadata[MPMediaItemPropertyArtist] = item.authors.formatted(.list(type: .and, width: .narrow))
         metadata[MPMediaItemPropertyReleaseDate] = item.released
         
+        updateQueueMetadata()
         updateTitle()
         updateArtwork()
     }
@@ -84,14 +87,19 @@ final actor NowPlayingWidgetManager: Sendable {
     }
     
     func update(queueCount: Int) {
-        metadata[MPNowPlayingInfoPropertyPlaybackQueueIndex] = 0
-        metadata[MPNowPlayingInfoPropertyPlaybackQueueCount] = queueCount
-        updateWidget()
+        self.queueCount = queueCount
+        updateQueueMetadata()
+    }
+    func update(upNextQueueCount: Int) {
+        self.upNextQueueCount = upNextQueueCount
+        updateQueueMetadata()
     }
     
     func invalidate() {
         item = nil
         chapter = nil
+        queueCount = 0
+        upNextQueueCount = 0
         
         isPlaying = false
         
@@ -103,6 +111,19 @@ final actor NowPlayingWidgetManager: Sendable {
 }
 
 private extension NowPlayingWidgetManager {
+    func updateQueueMetadata() {
+        let total = queueCount + upNextQueueCount + (item == nil ? 0 : 1)
+        
+        if total > 0 {
+            metadata[MPNowPlayingInfoPropertyPlaybackQueueIndex] = 0
+            metadata[MPNowPlayingInfoPropertyPlaybackQueueCount] = total
+        } else {
+            metadata[MPNowPlayingInfoPropertyPlaybackQueueIndex] = nil
+            metadata[MPNowPlayingInfoPropertyPlaybackQueueCount] = nil
+        }
+        
+        updateWidget()
+    }
     func updateTitle() {
         guard let item else {
             return

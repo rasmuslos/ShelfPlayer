@@ -50,6 +50,11 @@ final actor PlaybackReporter {
                 await self?.finalize(currentTime: nil)
             }
         }
+        
+        Task.detached {
+            try await Task.sleep(for: .seconds(6))
+            await RFNotification[.invalidateTransientPanels].send()
+        }
     }
     
     func didStartPlaying(at time: TimeInterval) {
@@ -195,7 +200,5 @@ private extension PlaybackReporter {
         } catch {
             logger.warning("Cannot update progress: \(error).")
         }
-        
-        await RFNotification[.invalidateTransientPanels].send()
     }
 }
