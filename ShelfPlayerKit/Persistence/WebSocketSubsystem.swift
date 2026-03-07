@@ -231,8 +231,6 @@ private final class SocketConnection {
         receivedProgressUpdate([decoded.data], event: "user_item_progress_updated")
     }
     func receivedProgressUpdate(_ payload: [ProgressPayload], event: String) {
-        logger.info("Socket \(self.connectionID) \(event, privacy: .public) progress: \(String(describing: payload), privacy: .public)")
-        
         Task.detached {
             for payload in payload {
                 await PersistenceManager.shared.progress.receivedProgressUpdate(payload, connectionID: self.connectionID)
