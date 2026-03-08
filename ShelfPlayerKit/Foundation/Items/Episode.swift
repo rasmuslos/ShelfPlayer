@@ -170,7 +170,7 @@ public extension Episode {
         
         return durationMapped.enumerated().compactMap { index, element -> Chapter? in
             let (match, timestamp) = element
-            let title = String(match.output.2)
+            let title = String(match.output.2).trimmingCharacters(in: .whitespacesAndNewlines)
             let endOffset: TimeInterval
             
             if index >= matches.count - 1 {
