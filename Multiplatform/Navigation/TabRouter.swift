@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayback
 
 struct TabRouter: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @Environment(Satellite.self) private var satellite
@@ -268,11 +269,15 @@ struct TabRouter: View {
             if isCompact, #available(iOS 26.1, *) {
                 $0
                     .tabViewBottomAccessory(isEnabled: isNowPlayingBarVisible) {
-                        if satellite.nowPlayingItemID != nil {
-                            PlaybackBottomBarPill()
-                        } else if let lastPlayedItemID {
-                            PlaybackPlaceholderBottomPill(itemID: lastPlayedItemID)
+                        Group {
+                            if satellite.nowPlayingItemID != nil {
+                                PlaybackBottomBarPill()
+                            } else if let lastPlayedItemID {
+                                PlaybackPlaceholderBottomPill(itemID: lastPlayedItemID)
+                            }
                         }
+                        // Alan dye is a fraud
+                        .foregroundStyle(colorScheme == .dark ? .white : .black)
                     }
             } else {
                 $0
