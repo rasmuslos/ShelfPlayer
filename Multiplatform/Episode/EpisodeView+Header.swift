@@ -83,7 +83,7 @@ private struct Title: View {
                     HStack(spacing: 4) {
                         Text(viewModel.episode.podcastName)
                         
-                        Label(ItemIdentifier.ItemType.podcast.viewLabel, systemImage: "chevron.right.circle")
+                        Label(ItemIdentifier.ItemType.podcast.viewLabel, systemImage: "chevron.right")
                             .labelStyle(.iconOnly)
                             .font(.caption2)
                     }

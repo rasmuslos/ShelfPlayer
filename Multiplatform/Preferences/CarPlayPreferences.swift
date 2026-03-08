@@ -56,20 +56,21 @@ struct CarPlayPreferences: View {
                     content()
                 }
             } label: { library in
-                Button {
-                    addLibraryToTabBar(library)
-                } label: {
-                    HStack(spacing: 0) {
-                        Text(library.name)
-                        
-                        Spacer(minLength: 8)
-                        
-                        Image(systemName: "plus.circle")
-                            .foregroundStyle(Color.accentColor)
+                if carPlayTabBarLibraries?.contains(library) != true {
+                    Button {
+                        addLibraryToTabBar(library)
+                    } label: {
+                        HStack(spacing: 0) {
+                            Text(library.name)
+                            
+                            Spacer(minLength: 8)
+                            
+                            Image(systemName: "plus.circle")
+                                .foregroundStyle(Color.accentColor)
+                        }
                     }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
-                .disabled(carPlayTabBarLibraries?.contains(library) ?? false)
             }
             
             Button("action.reset", role: .destructive) {

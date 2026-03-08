@@ -87,19 +87,18 @@ struct PlaybackBottomBarPill: View {
                     itemName
                 }
             }
+            .padding(.trailing, 8)
             
             if viewModel.isPillBackButtonVisible {
-                Spacer(minLength: 8)
-                
                 PlaybackBackwardButton()
                     .imageScale(.large)
+                    .padding(.trailing, 8)
             } else {
                 Spacer(minLength: 2)
             }
             
             PlaybackSmallTogglePlayButton()
                 .imageScale(.large)
-                .padding(.trailing, 8)
         }
         .contentShape(.rect)
         .padding(.horizontal, 16)
