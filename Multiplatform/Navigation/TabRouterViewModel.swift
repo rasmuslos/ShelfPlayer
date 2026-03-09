@@ -302,6 +302,12 @@ extension TabRouterViewModel {
             do {
                 let (sessions, bookmarks) = try await ABSClient[connectionID].authorize()
                 
+                do {
+                    try await PersistenceManager.shared.session.attemptSync(connectionID: connectionID, early: false)
+                } catch {
+                    self?.logger.warning("Failed to synchronize local playback sessions for \(connectionID, privacy: .public) before authorize: \(error, privacy: .public)")
+                }
+                
                 try await withThrowingTaskGroup(of: Void.self) {
                     $0.addTask { try await PersistenceManager.shared.progress.compareDatabase(against: sessions, connectionID: connectionID) }
                     $0.addTask { try await PersistenceManager.shared.bookmark.sync(bookmarks: bookmarks, connectionID: connectionID) }
@@ -370,48 +376,3 @@ extension TabRouterViewModel {
     }
 }
 #endif
-        
-//    func navigateIfRequired(withDelay: Bool) {
-//        if let navigateToWhenReadyTab {
-//            print(navigateToWhenReadyTab)
-//        }
-//        
-//        guard let to = navigateToWhenReady else { return }
-//
-//        let targetTab: TabValue
-//        switch library.type {
-//        case .audiobooks:
-//            targetTab = .audiobookHome(library)
-//        case .podcasts:
-//            targetTab = .podcastHome(library)
-//        }
-//
-//        let customWrapped: TabValue = .custom(targetTab)
-//        if tabValue != targetTab && tabValue != customWrapped {
-//            if customTabValues.contains(customWrapped) {
-//                tabValue = customWrapped
-//            } else {
-//                setCustomTabsActive(false)
-//                tabValue = targetTab
-//            }
-//            
-//            return
-//        }
-//
-//        guard ProgressViewModel.shared.importedConnectionIDs.contains(library.connectionID) else {
-//            if ProgressViewModel.shared.importFailedConnectionIDs.contains(library.id) {
-//                navigateToWhenReady = nil
-//            }
-//            return
-//        }
-//
-//        let payload = to
-//        Task {
-//            if withDelay {
-//                try? await Task.sleep(for: .seconds(0.5))
-//            }
-//            await RFNotification[._navigate].send(payload: payload)
-//        }
-//
-//        navigateToWhenReady = nil
-//    }

@@ -96,8 +96,6 @@ struct ShelfPlayer {
     private static var didOnlineHookRun = false
     static func initOnlineUIHook() {
         Task {
-            let logger = Self.logger
-            
             guard !didOnlineHookRun else {
                 return
             }
@@ -108,14 +106,6 @@ struct ShelfPlayer {
             AppShortcutProvider.updateAppShortcutParameters()
             
             await withTaskGroup {
-                $0.addTask {
-                    do {
-                        try await PersistenceManager.shared.session.attemptSync(early: false)
-                    } catch {
-                        logger.error("Failed to sync sessions: \(error)")
-                    }
-                }
-                
                 $0.addTask { await ContextProvider.updateUserContext() }
                 $0.addTask { await PlayMediaIntentHandler.donateListenNowIntents() }
                 
