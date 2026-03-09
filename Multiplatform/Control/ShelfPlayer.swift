@@ -65,6 +65,8 @@ struct ShelfPlayer {
             Task {
                 try await ShelfPlayer.invalidateCache()
             }
+            
+            Satellite.shared.present(.whatsNew)
         }
         
         Defaults[.lastBuild] = clientBuild
