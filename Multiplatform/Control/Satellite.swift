@@ -106,12 +106,6 @@ final class Satellite {
         #endif
         
         setupObservers()
-        
-        // MARK: What's New
-        
-        if WhatsNewSheet.shouldDisplay {
-            present(.whatsNew)
-        }
     }
     
     // MARK: General Purpose
