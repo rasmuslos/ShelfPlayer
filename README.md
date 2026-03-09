@@ -7,15 +7,33 @@
 
 ## Features
 
-* **Full content browsing**: Explore audiobooks, authors, narrators, series, podcasts, episodes, collections, and playlists.
-* **Multiple users and libraries**: Connect to multiple Audiobookshelf servers or user accounts simultaneously.
-* **System-level integration**: Supports Widgets, Siri, App Intents, and CarPlay.
-* **Global discovery**: "Listen Now" and universal search work across all connected libraries.
-* **Advanced playback tools**: Highly configurable playback speed and sleep timer.
-* **Daily listen tracking**: Accurate tracking of playback time, with optional daily goals.
-* **PDF viewer**: Built-in support for attached PDF documents.
-* **Offline access**: Automatic media downloads for seamless offline playback.
-* **Modern interface**: Clean, native design optimized for both iPhone and iPad.
+* **Unified audiobook and podcast app**: A single, native experience for audiobooks, podcasts, episodes, authors, narrators, series, collections, and playlists.
+* **Multi-server support**: Works with multiple Audiobookshelf servers and libraries at the same time.
+* **Flexible authentication**: Supports both username/password and OpenID sign-in.
+* **Custom request headers**: Additional HTTP headers can be configured for advanced setups.
+* **Listen Now**: Continue listening and discover content across connected libraries.
+* **Global and library search**: Fast search across books, podcasts, people, series, and episodes.
+* **Playback queues**: Includes both a main queue and an Up Next queue.
+* **Chapter navigation**: Chapter-level controls are available directly in playback views.
+* **Playback speed controls**: Combines quick presets with precise rate tuning.
+* **Configurable skip intervals**: Skip forward and backward durations can be tailored to personal preference.
+* **Sleep timer**: Supports both time-based and chapter-based timers, with Live Activity integration.
+* **AirPlay and media controls**: Native integration with AirPlay and Apple system media controls.
+* **Bookmarks with notes**: Save key moments with optional notes.
+* **Progress synchronization**: Listening progress and sessions stay in sync with Audiobookshelf.
+* **Listening history**: Detailed, item-level listening timelines are available.
+* **Daily listening tracking**: Tracks listening time with optional daily goals.
+* **Offline mode and downloads**: Downloaded content remains available when offline.
+* **Automatic convenience downloads**: Background downloads cover Listen Now, podcast, and series content.
+* **Collections and playlists**: Built-in tools for creating, editing, and organizing collections and playlists.
+* **PDF viewer**: Opens attached PDF documents in-app.
+* **Home Screen widgets**: Includes Start, Listen Now, and Listened Today widgets.
+* **Live Activities and Dynamic Island**: Sleep timer controls stay accessible on Lock Screen and Dynamic Island.
+* **Siri, App Intents, and Shortcuts**: Playback and automation workflows are fully integrated with Apple automation tools.
+* **CarPlay support**: Library browsing and playback controls are available in CarPlay.
+* **Spotlight integration**: Indexed content appears in system search with deep links back into the app.
+* **Home Screen quick actions**: Common playback and search actions are available from the app icon.
+* **Native iPhone and iPad interface**: Optimized layouts with customizable tabs, sorting, and filters.
 
 ## Download
 
