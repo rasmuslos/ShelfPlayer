@@ -264,10 +264,6 @@ private extension ShelfPlayer {
         async let isBuffering = AudioPlayer.shared.isBusy
         async let queue = AudioPlayer.shared.queue
         async let upNextQueue = AudioPlayer.shared.upNextQueue
-        async let currentTime = AudioPlayer.shared.currentTime
-        async let duration = AudioPlayer.shared.duration
-        async let chapterCurrentTime = AudioPlayer.shared.chapterCurrentTime
-        async let chapterDuration = AudioPlayer.shared.chapterDuration
         async let playbackRate = AudioPlayer.shared.playbackRate
         async let sleepTimer = AudioPlayer.shared.sleepTimer
         async let route = AudioPlayer.shared.route

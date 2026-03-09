@@ -87,7 +87,8 @@ struct PlaybackBottomBarPill: View {
                     itemName
                 }
             }
-            .padding(.trailing, 8)
+            
+            Spacer(minLength: 0)
             
             if viewModel.isPillBackButtonVisible {
                 PlaybackBackwardButton()

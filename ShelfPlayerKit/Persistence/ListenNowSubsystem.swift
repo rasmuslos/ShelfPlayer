@@ -127,11 +127,15 @@ private extension PersistenceManager.ListenNowSubsystem {
     
     func combineIntoSingle() async throws -> [PlayableItem] {
         updateSingleTask = .init {
-            let (audiobooks, series, episodes, podcasts) = try await (
+//            let (audiobooks, series, episodes, podcasts) = try await (
+//                results(itemType: .audiobook),
+//                results(itemType: .series),
+//                results(itemType: .episode),
+//                results(itemType: .podcast),
+//            )
+            let (audiobooks, episodes) = try await (
                 results(itemType: .audiobook),
-                results(itemType: .series),
                 results(itemType: .episode),
-                results(itemType: .podcast),
             )
          
             let items = combine([
