@@ -75,6 +75,19 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeSearch</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>quickAction.search.subtitle</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>quickAction.search</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>search</string>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
@@ -84,6 +97,10 @@
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string></string>
+			</array>
 			<key>UTTypeDescription</key>
 			<string>uti.item</string>
 			<key>UTTypeIconFiles</key>
@@ -92,26 +109,7 @@
 			<string>io.rfk.shelfPlayer.item</string>
 			<key>UTTypeTagSpecification</key>
 			<dict/>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string></string>
-			</array>
 		</dict>
 	</array>
-	<key>UIApplicationShortcutItems</key>
-	<array>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>search</string>
-			<key>UIApplicationShortcutItemIconType</key>
-			<string>UIApplicationShortcutIconTypeSearch</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>quickAction.search</string>
-			<key>UIApplicationShortcutItemSubtitle</key>
-			<string>quickAction.search.subtitle</string>
-		</dict>
-	</array>
-	<key>NSSupportsLiveActivities</key>
-	<true/>
 </dict>
 </plist>

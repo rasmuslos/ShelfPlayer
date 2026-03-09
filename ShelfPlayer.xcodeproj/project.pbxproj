@@ -36,7 +36,6 @@
 		3A17EB562E37581500AD6A18 /* CertificateEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A17EB552E37580400AD6A18 /* CertificateEditor.swift */; };
 		3A1B802D2D6F18D600D69B13 /* PlaybackComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1B802C2D6F18CC00D69B13 /* PlaybackComponents.swift */; };
 		3A1CCD752DE343A800B2EAA9 /* ListenedTodayLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1CCD742DE343A800B2EAA9 /* ListenedTodayLabel.swift */; };
-		3A2385C42E91106E00D0ABF9 /* ShelfPlayer.icon in Resources */ = {isa = PBXBuildFile; fileRef = 3A2385C32E91100D00D0ABF9 /* ShelfPlayer.icon */; };
 		3A262E992DA155A1002F927A /* OfflineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A262E982DA155A1002F927A /* OfflineView.swift */; };
 		3A27F0F12CA15E0F005DE87D /* TabRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A27F0F02CA15E08005DE87D /* TabRouter.swift */; };
 		3A2B93352B00D71B00638AE9 /* ProgressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2B93342B00D71B00638AE9 /* ProgressButton.swift */; };
@@ -62,6 +61,8 @@
 		3A5295242F06871800FA687B /* TabRouterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5295232F06871800FA687B /* TabRouterViewModel.swift */; };
 		3A5891152CD3F1EF005C3289 /* ItemMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5891142CD3F1E9005C3289 /* ItemMenu.swift */; };
 		3A5A4DB02B5EFB1800E72E8B /* AppIntentVocabulary.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3A5A4DB22B5EFB1800E72E8B /* AppIntentVocabulary.plist */; };
+		3A60E7D12F5F090400AACC57 /* ShelfPlayer.icon in Resources */ = {isa = PBXBuildFile; fileRef = 3A60E7CD2F5F090400AACC57 /* ShelfPlayer.icon */; };
+		3A60E7D22F5F091500AACC57 /* ShelfPlayer Development.icon in Resources */ = {isa = PBXBuildFile; fileRef = 3A60E7CE2F5F090400AACC57 /* ShelfPlayer Development.icon */; };
 		3A6370012EFC2620008BEC48 /* CustomizeLibraryPanelSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6370002EFC2617008BEC48 /* CustomizeLibraryPanelSheet.swift */; };
 		3A6370032EFC4CEE008BEC48 /* PodcastView+Footer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6370022EFC4CE9008BEC48 /* PodcastView+Footer.swift */; };
 		3A65DAFF2D770AC200332BF3 /* ShelfPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A65DAFE2D770AB900332BF3 /* ShelfPlayer.swift */; };
@@ -344,7 +345,6 @@
 		3A17EB552E37580400AD6A18 /* CertificateEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificateEditor.swift; sourceTree = "<group>"; };
 		3A1B802C2D6F18CC00D69B13 /* PlaybackComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackComponents.swift; sourceTree = "<group>"; };
 		3A1CCD742DE343A800B2EAA9 /* ListenedTodayLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenedTodayLabel.swift; sourceTree = "<group>"; };
-		3A2385C32E91100D00D0ABF9 /* ShelfPlayer.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = ShelfPlayer.icon; sourceTree = "<group>"; };
 		3A262E982DA155A1002F927A /* OfflineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineView.swift; sourceTree = "<group>"; };
 		3A2657EE2BA3402C000C62E3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		3A27A66D2AB7631900F80C92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -375,6 +375,8 @@
 		3A5891142CD3F1E9005C3289 /* ItemMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemMenu.swift; sourceTree = "<group>"; };
 		3A5A4DB12B5EFB1800E72E8B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = en; path = en.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		3A5A4DB32B5EFB1A00E72E8B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = de; path = de.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
+		3A60E7CD2F5F090400AACC57 /* ShelfPlayer.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = ShelfPlayer.icon; sourceTree = "<group>"; };
+		3A60E7CE2F5F090400AACC57 /* ShelfPlayer Development.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "ShelfPlayer Development.icon"; sourceTree = "<group>"; };
 		3A61F4172E59B7D20051D4E2 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Intents.strings; sourceTree = "<group>"; };
 		3A61F4182E59B7D20051D4E2 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ru; path = ru.lproj/AppIntentVocabulary.plist; sourceTree = "<group>"; };
 		3A6370002EFC2617008BEC48 /* CustomizeLibraryPanelSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizeLibraryPanelSheet.swift; sourceTree = "<group>"; };
@@ -625,8 +627,8 @@
 			isa = PBXGroup;
 			children = (
 				3A82864B2AEC0DD800384BC9 /* README.md */,
-				3A2385C32E91100D00D0ABF9 /* ShelfPlayer.icon */,
 				3AF6A5292B603FA000770A1E /* Configuration */,
+				3A60E7CF2F5F090400AACC57 /* AppIcons */,
 				3A0AE6A22AB623F400ACCD68 /* Multiplatform */,
 				3A6AAF462DE8C7280090C886 /* WidgetExtension */,
 				3A6EECA62DEC6D630000CAF2 /* ShelfPlayerKit */,
@@ -818,6 +820,15 @@
 				3A1507982AD4494300D7D6CF /* UINavigationController+Gesture.swift */,
 			);
 			path = UIKit;
+			sourceTree = "<group>";
+		};
+		3A60E7CF2F5F090400AACC57 /* AppIcons */ = {
+			isa = PBXGroup;
+			children = (
+				3A60E7CD2F5F090400AACC57 /* ShelfPlayer.icon */,
+				3A60E7CE2F5F090400AACC57 /* ShelfPlayer Development.icon */,
+			);
+			path = AppIcons;
 			sourceTree = "<group>";
 		};
 		3A6924A92D6B9670004E291E /* Collections */ = {
@@ -1310,11 +1321,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3A2385C42E91106E00D0ABF9 /* ShelfPlayer.icon in Resources */,
 				3AA94F8D2BB02DF90012E731 /* PrivacyInfo.xcprivacy in Resources */,
 				3A2BC1952AD8121400054727 /* Settings.bundle in Resources */,
 				3A792B972B6F9F53002A48E6 /* InfoPlist.xcstrings in Resources */,
+				3A60E7D12F5F090400AACC57 /* ShelfPlayer.icon in Resources */,
 				3A0AE6AA2AB623F500ACCD68 /* Assets.xcassets in Resources */,
+				3A60E7D22F5F091500AACC57 /* ShelfPlayer Development.icon in Resources */,
 				3A5A4DB02B5EFB1800E72E8B /* AppIntentVocabulary.plist in Resources */,
 				3AFF94882AF65CF500127AFF /* Localizable.xcstrings in Resources */,
 			);
@@ -1871,7 +1883,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3A6AAF602DE8D1BC0090C886 /* Multiplatform.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = ShelfPlayer;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "ShelfPlayer Development";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				DEVELOPMENT_ASSET_PATHS = "\"Multiplatform/Preview Assets.xcassets\"";
 				ENABLE_APP_SANDBOX = YES;
@@ -1883,8 +1895,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "2026 Rasmus Krämer EDV & ShelfPlayer contributors";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Grant access to connect to a Audiobookshelf-Instance inside your local network.";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play items from your library using Siri";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
@@ -1898,7 +1912,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer";
+				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = ShelfPlayer;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1925,8 +1939,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = ShelfPlayer;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.books";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "2026 Rasmus Krämer EDV & ShelfPlayer contributors";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Grant access to connect to a Audiobookshelf-Instance inside your local network.";
 				INFOPLIST_KEY_NSSiriUsageDescription = "Play items from your library using Siri";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
@@ -1940,7 +1956,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer";
+				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.${BUNDLE_ID_SUFFIX}";
 				PRODUCT_NAME = ShelfPlayer;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1999,7 +2015,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer.Widgets";
+				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.${BUNDLE_ID_SUFFIX}.Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
@@ -2025,7 +2041,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.shelfplayer.Widgets";
+				PRODUCT_BUNDLE_IDENTIFIER = "${BUNDLE_ID_PREFIX}.${BUNDLE_ID_SUFFIX}.Widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;

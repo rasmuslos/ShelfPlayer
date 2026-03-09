@@ -8,11 +8,11 @@
 	<string>$(TeamIdentifierPrefix)$(CFBundleIdentifier)</string>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.${BUNDLE_ID_PREFIX}.shelfplayer</string>
+		<string>group.${BUNDLE_ID_PREFIX}.${BUNDLE_ID_SUFFIX}</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)io.rfk.ShelfPlayer</string>
+		<string>$(AppIdentifierPrefix)io.rfk.${KEYCHAIN_GROUP_SUFFIX}</string>
 	</array>
 </dict>
 </plist>
