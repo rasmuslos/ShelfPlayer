@@ -28,7 +28,7 @@ extension PersistenceManager {
         
         func remove(itemID: ItemIdentifier) async {
             do {
-                try await attemptSync(early: true)
+                try await attemptSync(connectionID: itemID.connectionID, early: true)
             } catch {
                 logger.error("Sync failed while removing related sessions to itemID \(itemID): \(error)")
             }
@@ -110,7 +110,17 @@ public extension PersistenceManager.SessionSubsystem {
         try modelContext.save()
     }
     
+    func attemptSync(connectionID: ItemIdentifier.ConnectionID, early: Bool) async throws {
+        let sessions = try sessionsForSync(early: early)
+            .filter { $0.itemID.connectionID == connectionID }
+        
+        try await synchronize(sessions)
+    }
     func attemptSync(early: Bool) async throws {
+        try await synchronize(try sessionsForSync(early: early))
+    }
+    
+    private func sessionsForSync(early: Bool) throws -> [PersistedPlaybackSession] {
         let descriptor: FetchDescriptor<PersistedPlaybackSession>
         
         if early {
@@ -119,9 +129,12 @@ public extension PersistenceManager.SessionSubsystem {
             descriptor = FetchDescriptor<PersistedPlaybackSession>()
         }
         
-        // try modelContext.enumerate(descriptor) { session in
-        
-        let sessions = try modelContext.fetch(descriptor)
+        return try modelContext.fetch(descriptor)
+    }
+    private func synchronize(_ sessions: [PersistedPlaybackSession]) async throws {
+        guard !sessions.isEmpty else {
+            return
+        }
         
         for session in sessions {
             try await ABSClient[session.itemID.connectionID].createListeningSession(itemID: session.itemID, timeListened: session.timeListened, startTime: session.startTime, currentTime: session.currentTime, started: session.started, updated: session.lastUpdated)

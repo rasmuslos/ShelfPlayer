@@ -123,14 +123,6 @@ struct ContentView: View {
                 TabRouter()
             }
         }
-        .modify(if: tintColor != .shelfPlayer) {
-            $0
-                .tint(tintColor.color)
-        }
-        .modify(if: colorScheme != .system) {
-            $0
-                .preferredColorScheme(colorScheme == .light ? .light : .dark)
-        }
         .hapticFeedback(.error, trigger: satellite.notifyError)
         .hapticFeedback(.success, trigger: satellite.notifySuccess)
         .hapticFeedback(.error, trigger: PlaybackViewModel.shared.notifyError)
@@ -153,6 +145,14 @@ struct ContentView: View {
         }
         .modify {
             applyEnvironment($0)
+        }
+        .modify(if: tintColor != .shelfPlayer) {
+            $0
+                .tint(tintColor.color)
+        }
+        .modify(if: colorScheme != .system) {
+            $0
+                .preferredColorScheme(colorScheme == .light ? .light : .dark)
         }
         .onAppear {
             logger.info("ContentView::onAppear")
