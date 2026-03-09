@@ -479,7 +479,7 @@ private extension PersistenceManager.AuthorizationSubsystem {
     func updateToken(_ token: String, for connectionID: String, service: CFString) throws {
         let query = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrSynchronizable: kSecAttrSynchronizableAny,
+            kSecAttrSynchronizable: kCFBooleanFalse as Any,
             
             kSecAttrService: service,
             kSecAttrAccount: connectionID as CFString,
