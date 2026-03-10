@@ -51,7 +51,7 @@ public extension APIClient {
     }
     
     func authorize() async throws -> ([ProgressPayload], [BookmarkPayload]) {
-        let request = APIRequest<AuthorizationResponse>(path: "api/authorize", method: .post, bypassesOffline: true, bypassesScheduler: true)
+        let request = APIRequest<AuthorizationResponse>(path: "api/authorize", method: .post, ttl: 3, bypassesOffline: true, bypassesScheduler: true)
         let response = try await response(request)
         return (response.user.mediaProgress, response.user.bookmarks)
     }
@@ -60,6 +60,7 @@ public extension APIClient {
             path: "auth/refresh",
             method: .post,
             headers: ["x-refresh-token": refreshToken],
+            maxAttempts: 1,
             bypassesOffline: true,
             bypassesScheduler: true,
         ))

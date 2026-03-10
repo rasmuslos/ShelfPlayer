@@ -65,6 +65,7 @@ final class TabRouterViewModel: Sendable {
             self?.enableFirstPinnedTab()
         }
         
+        // 1
         RFNotification[.connectionsChanged].subscribe { [weak self] in
             Task {
                 self?.refresh()
@@ -98,7 +99,7 @@ final class TabRouterViewModel: Sendable {
                 
                 $0.addTask {
                     do {
-                        let libraries = try await ABSClient[connectionID].librariesBypassingSchedulerAndOfflineMode()
+                        let libraries = try await ABSClient[connectionID].libraries()
                         var results = [Library: ([TabValue], [TabValue])]()
                         
                         self.logger.info("Got libraries for connection: \(connectionID)")
@@ -113,7 +114,7 @@ final class TabRouterViewModel: Sendable {
                         }
                         
                         await self.synchronize(connectionID: connectionID)
-                        self.logger.info("Syncrhonized connection: \(connectionID)")
+                        self.logger.info("Synchronised connection: \(connectionID)")
                         
                         await self.didLoad(connectionID: connectionID, libraries: results)
                     } catch {
@@ -296,6 +297,8 @@ extension TabRouterViewModel {
         }
         
         activeUpdateTasks[connectionID] = .init { [weak self] in
+            self?.logger.info("Begin synchronising user data for \(connectionID, privacy: .public)")
+            
             let success: Bool
             let task = UIApplication.shared.beginBackgroundTask(withName: "synchronizeUserData")
             
@@ -328,6 +331,9 @@ extension TabRouterViewModel {
             }
             
             currentConnectionStatus[connectionID] = success
+            
+            try? await Task.sleep(for: .seconds(3))
+            
             activeUpdateTasks[connectionID] = nil
         }
     }
