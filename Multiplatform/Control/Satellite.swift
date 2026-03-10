@@ -64,6 +64,13 @@ final class Satellite {
     private(set) var notifySkipBackwards = false
     private(set) var notifySkipForwards = false
     
+    // MARK: Bookmark
+    
+    var isUpdatingBookmark = false
+    
+    var editBookmarkData: (at: UInt64, itemID: ItemIdentifier)?
+    var editBookmarkNote = ""
+    
     // MARK: Utility
     
     private(set) var totalLoading = 0
@@ -392,9 +399,49 @@ extension Satellite {
     }
 }
 
-// MARK: Miscellaneous
+// MARK: Bookmark
 
 extension Satellite {
+    func beginEditBookmark(at time: UInt64, from itemID: ItemIdentifier) {
+        Task {
+            startWorking(on: itemID)
+            
+            guard let note = try? await PersistenceManager.shared.bookmark.note(at: time, for: itemID) else {
+                endWorking(on: itemID, successfully: false)
+                return
+            }
+            
+            editBookmarkData = (time, itemID)
+            editBookmarkNote = note
+            
+            endWorking(on: itemID, successfully: nil)
+        }
+    }
+    func abortEditBookmark() {
+        editBookmarkData = nil
+        editBookmarkNote = ""
+        isUpdatingBookmark = false
+    }
+    func finalizeEditBookmark() {
+        Task {
+            guard let (time, itemID) = editBookmarkData else {
+                return
+            }
+            
+            isUpdatingBookmark = true
+            startWorking(on: itemID)
+            
+            do {
+                try await PersistenceManager.shared.bookmark.update(at: time, for: itemID, note: editBookmarkNote)
+                endWorking(on: itemID, successfully: true)
+            } catch {
+                endWorking(on: itemID, successfully: false)
+            }
+            
+            abortEditBookmark()
+        }
+    }
+    
     func deleteBookmark(at time: UInt64, from itemID: ItemIdentifier) {
         Task {
             startWorking(on: itemID)
@@ -836,9 +883,6 @@ extension Satellite {
                 }
                 
                 endWorking(on: itemID, successfully: true)
-            } catch APIClientError.offline {
-                let success = !OfflineMode.shared.isAvailable(itemID.connectionID)
-                endWorking(on: itemID, successfully: success)
             } catch {
                 endWorking(on: itemID, successfully: false)
             }
@@ -851,9 +895,6 @@ extension Satellite {
             do {
                 try await PersistenceManager.shared.progress.markAsListening(itemID)
                 endWorking(on: itemID, successfully: true)
-            } catch APIClientError.offline {
-                let success = !OfflineMode.shared.isAvailable(itemID.connectionID)
-                endWorking(on: itemID, successfully: success)
             } catch {
                 endWorking(on: itemID, successfully: false)
             }

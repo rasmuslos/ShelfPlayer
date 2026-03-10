@@ -21,6 +21,7 @@ struct BookmarksList: View {
         TimeRow(title: bookmark.note, time: time, isActive: false, isFinished: false) {
             satellite.start(itemID, at: time)
         }
+        .modifier(EditBookmarkSwipeAction(bookmark: bookmark))
     }
     
     var body: some View {
@@ -36,6 +37,30 @@ struct BookmarksList: View {
                 satellite.deleteBookmark(at: satellite.bookmarks[index].time, from: currentItemID)
             }
         }
+    }
+}
+
+struct EditBookmarkSwipeAction: ViewModifier {
+    @Environment(PlaybackViewModel.self) private var playbackViewModel
+    @Environment(Satellite.self) private var satellite
+    
+    let bookmark: Bookmark
+    
+    func body(content: Content) -> some View {
+        content
+            .swipeActions(edge: .leading) {
+                Button("action.edit", systemImage: "pencil") {
+                    Task {
+                        if playbackViewModel.isExpanded {
+                            playbackViewModel.toggleExpanded()
+                            try await Task.sleep(for: .seconds(1))
+                        }
+                        
+                        satellite.beginEditBookmark(at: bookmark.time, from: bookmark.itemID)
+                    }
+                }
+                .tint(.accentColor)
+            }
     }
 }
 

@@ -83,6 +83,13 @@ public extension PersistenceManager.BookmarkSubsystem {
             return Dictionary(try bookmarks(connectionID: libraryID.connectionID).map { ($0.primaryID, 1) }, uniquingKeysWith: +)
         }
     }
+    func note(at time: UInt64, for itemID: ItemIdentifier) async throws -> String {
+        guard let note = try bookmark(connectionID: itemID.connectionID, primaryID: itemID.primaryID, time: time)?.note else {
+            throw PersistenceError.missing
+        }
+        
+        return note
+    }
     
     func create(at time: UInt64, note: String, for itemID: ItemIdentifier) async throws {
         guard itemID.type == .audiobook else {
@@ -104,6 +111,24 @@ public extension PersistenceManager.BookmarkSubsystem {
         let bookmark = PersistedBookmark(connectionID: itemID.connectionID, primaryID: itemID.primaryID, time: time, note: note, created: createdOnServerAt ?? .now, status: createdOnServerAt == nil ? .pendingCreation : .synced)
         
         modelContext.insert(bookmark)
+        try modelContext.save()
+        
+        await RFNotification[.bookmarksChanged].send(payload: itemID)
+    }
+    func update(at time: UInt64, for itemID: ItemIdentifier, note: String) async throws {
+        guard let bookmark = try bookmark(connectionID: itemID.connectionID, primaryID: itemID.primaryID, time: time) else {
+            throw PersistenceError.missing
+        }
+        
+        bookmark.note = note
+        
+        do {
+            try await ABSClient[itemID.connectionID].updateBookmark(primaryID: bookmark.primaryID, time: bookmark.time, note: bookmark.note)
+            bookmark.status = .synced
+        } catch {
+            bookmark.status = .pendingUpdate
+        }
+        
         try modelContext.save()
         
         await RFNotification[.bookmarksChanged].send(payload: itemID)
@@ -135,48 +160,45 @@ public extension PersistenceManager.BookmarkSubsystem {
         await RFNotification[.bookmarksChanged].send(payload: itemID)
     }
     
-    func sync(bookmarks: [BookmarkPayload], connectionID: ItemIdentifier.ConnectionID) async throws {
-        logger.info("Syncronizing \(bookmarks.count) bookmarks for connection \(connectionID, privacy: .public)")
+    func sync(bookmarks remote: [BookmarkPayload], connectionID: ItemIdentifier.ConnectionID) async throws {
+        logger.info("Synchronizing \(remote.count) bookmarks for connection \(connectionID, privacy: .public)")
         
-        var bookmarks = bookmarks
+        var remote = remote
         
-        var pendingDeletion = [(primaryID: ItemIdentifier.PrimaryID, time: UInt64)]()
-        var pendingCreation = [(primaryID: ItemIdentifier.PrimaryID, time: UInt64, note: String)]()
-        var pendingUpdate = [(primaryID: ItemIdentifier.PrimaryID, time: UInt64, note: String)]()
-        
-        try modelContext.save()
+        var pendingDeletion = [PersistedBookmark]()
+        var pendingCreation = [PersistedBookmark]()
+        var pendingUpdate = [PersistedBookmark]()
         
         do {
-            try modelContext.transaction {
-                try modelContext.enumerate(FetchDescriptor<PersistedBookmark>(predicate: #Predicate {
-                    $0.connectionID == connectionID
-                })) { bookmark in
-                    try Task.checkCancellation()
-                    
-                    let time = Double(bookmark.time)
-                    
-                    guard let index = bookmarks.firstIndex(where: {
-                        $0.libraryItemId == bookmark.primaryID
-                        && $0.time == time
-                    }) else {
-                        if bookmark.status == .pendingCreation {
-                            pendingCreation.append((bookmark.primaryID, bookmark.time, bookmark.note))
-                        } else {
-                            modelContext.delete(bookmark)
-                        }
-                        
-                        return
+            let local = try modelContext.fetch(FetchDescriptor<PersistedBookmark>(predicate: #Predicate {
+                $0.connectionID == connectionID
+            }))
+            
+            for bookmark in local {
+                try Task.checkCancellation()
+                
+                let time = Double(bookmark.time)
+                
+                guard let index = remote.firstIndex(where: {
+                    $0.libraryItemId == bookmark.primaryID
+                    && $0.time == time
+                }) else {
+                    if bookmark.status == .pendingCreation {
+                        pendingCreation.append(bookmark)
+                    } else {
+                        modelContext.delete(bookmark)
                     }
                     
-                    let existing = bookmarks.remove(at: index)
-                    
-                    switch bookmark.status {
+                    continue
+                }
+                
+                let existing = remote.remove(at: index)
+                
+                switch bookmark.status {
                     case .deleted:
-                        pendingDeletion.append((bookmark.primaryID, bookmark.time))
-                        modelContext.delete(bookmark)
+                        pendingDeletion.append(bookmark)
                     case .pendingUpdate:
-                        pendingUpdate.append((bookmark.primaryID, bookmark.time, bookmark.note))
-                        bookmark.status = .synced
+                        pendingUpdate.append(bookmark)
                     default:
                         if bookmark.status == .pendingCreation {
                             logger.error("Bookmark is scheduled for creation but already exists. Updating local entity (primaryID: \(bookmark.primaryID, privacy: .public) at: \(bookmark.time) | \(bookmark.note))")
@@ -184,13 +206,14 @@ public extension PersistenceManager.BookmarkSubsystem {
                         
                         bookmark.note = existing.title
                         bookmark.status = .synced
-                    }
                 }
             }
             
+            logger.info("Computed bookmark changes: \(pendingCreation.count) to create, \(pendingUpdate.count) to update, \(pendingDeletion.count) to delete")
+            
             try Task.checkCancellation()
             
-            for bookmark in bookmarks {
+            for bookmark in remote {
                 let created = Date(timeIntervalSince1970: bookmark.createdAt / 1000)
                 let entity = PersistedBookmark(connectionID: connectionID, primaryID: bookmark.libraryItemId, time: UInt64(bookmark.time), note: bookmark.title, created: created, status: .synced)
                 
@@ -199,23 +222,32 @@ public extension PersistenceManager.BookmarkSubsystem {
             
             try Task.checkCancellation()
             
-            for (primaryID, time) in pendingDeletion {
-                try await ABSClient[connectionID].deleteBookmark(primaryID: primaryID, time: time)
+            for bookmark in pendingDeletion {
+                do {
+                    try await ABSClient[connectionID].deleteBookmark(primaryID: bookmark.primaryID, time: bookmark.time)
+                    modelContext.delete(bookmark)
+                } catch {
+                    logger.error("Failed to delete bookmark with primaryID: \(bookmark.primaryID) and time: \(bookmark.time)")
+                }
             }
             
-            for (primaryID, time, note) in pendingUpdate {
-                try await ABSClient[connectionID].updateBookmark(primaryID: primaryID, time: time, note: note)
+            for bookmark in pendingUpdate {
+                do {
+                    try await ABSClient[connectionID].updateBookmark(primaryID: bookmark.primaryID, time: bookmark.time, note: bookmark.note)
+                    bookmark.status = .synced
+                } catch {
+                    logger.error("Failed to update bookmark with primaryID: \(bookmark.primaryID) and time: \(bookmark.time)")
+                }
             }
             
-            for (primaryID, time, note) in pendingCreation {
-                let created = try await ABSClient[connectionID].createBookmark(primaryID: primaryID, time: time, note: note)
-                
-                if let bookmark = try modelContext.fetch(FetchDescriptor<PersistedBookmark>(predicate: #Predicate {
-                    $0.connectionID == connectionID
-                    && $0.primaryID == primaryID
-                    && $0.time == time
-                })).first {
+            for bookmark in pendingCreation {
+                do {
+                    let created = try await ABSClient[connectionID].createBookmark(primaryID: bookmark.primaryID, time: bookmark.time, note: bookmark.note)
+                    
                     bookmark.created = created
+                    bookmark.status = .synced
+                } catch {
+                    logger.error("Failed to create bookmark with primaryID: \(bookmark.primaryID) and time: \(bookmark.time)")
                 }
             }
             

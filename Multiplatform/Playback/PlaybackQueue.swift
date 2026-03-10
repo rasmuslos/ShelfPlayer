@@ -69,6 +69,7 @@ struct PlaybackQueue: View {
                                 }
                                 .id($0)
                                 .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
+                                .modifier(EditBookmarkSwipeAction(bookmark: $0))
                             }
                             .onDelete {
                                 guard let currentItemID = satellite.nowPlayingItemID else {

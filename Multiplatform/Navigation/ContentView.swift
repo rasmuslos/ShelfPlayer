@@ -125,8 +125,8 @@ struct ContentView: View {
         }
         .hapticFeedback(.error, trigger: satellite.notifyError)
         .hapticFeedback(.success, trigger: satellite.notifySuccess)
-        .hapticFeedback(.error, trigger: PlaybackViewModel.shared.notifyError)
-        .hapticFeedback(.success, trigger: PlaybackViewModel.shared.notifySuccess)
+        .hapticFeedback(.error, trigger: playbackViewModel.notifyError)
+        .hapticFeedback(.success, trigger: playbackViewModel.notifySuccess)
         .modifier(PlaybackContentModifier())
         .sheet(item: satellite.presentedSheet) {
             sheetContent(for: $0)

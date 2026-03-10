@@ -280,7 +280,7 @@ private extension TabRouterViewModel {
         
         let libraries = libraries.map(\.key)
         
-        connectionLibraries[connectionID] = libraries.sorted { $0.name < $1.name }
+        connectionLibraries[connectionID] = libraries.sorted { $0.index < $1.index }
         libraryLookup.merge(libraries.map { ($0.id, $0) }) {
             $1
         }
