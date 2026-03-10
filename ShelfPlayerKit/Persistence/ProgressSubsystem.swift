@@ -247,19 +247,15 @@ public extension PersistenceManager.ProgressSubsystem {
             }
             
             let remoteUpdated = Date(timeIntervalSince1970: Double(lastUpdate) / 1000)
+            let remoteCurrentTime = remotePayload.currentTime
             
-            let currentTime = remotePayload.currentTime
-            
-            if let currentTime, currentTime == 0, localEntity.currentTime >= 10 {
-                logger.info("Remote currentTime is zero while local \(localEntity.id) is at least 10 seconds ahead. Preferring local state.")
-                pendingServerUpdate[key] = localEntity
+            // considered equal
+            if let remoteCurrentTime, isEqual(localEntity.currentTime, rhs: remoteCurrentTime) {
                 continue
             }
             
-            if let currentTime, isEqual(localEntity.currentTime, rhs: currentTime) {
-                continue
-            } else if remoteUpdated < localEntity.lastUpdate {
-                logger.info("Local entity \(localEntity.id) is newer then remote.")
+            if remoteUpdated < localEntity.lastUpdate {
+                logger.info("Local entity \(localEntity.id) is newer then remote. (\(remoteUpdated) < \(localEntity.lastUpdate))")
                 pendingServerUpdate[key] = localEntity
             } else {
                 logger.info("Remote entity is newer then \(localEntity.id)")
