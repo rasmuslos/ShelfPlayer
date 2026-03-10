@@ -147,6 +147,10 @@ private final class SocketConnection {
         // https://github.com/advplyr/audiobookshelf/blob/master/server/SocketAuthority.js#L179
         // https://github.com/advplyr/audiobookshelf-app/blob/master/plugins/server.js#L85
         
+        // ToDo:
+        // - bookmarks changed
+        // - item changed
+        
         socket.on("init") { [weak self] _, _ in
             self?.logger.info("Connection \(self?.connectionID ?? "<nil>") authorized")
         }

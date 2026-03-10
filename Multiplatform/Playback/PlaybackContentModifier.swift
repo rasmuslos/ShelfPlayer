@@ -72,6 +72,12 @@ struct PlaybackContentModifier: ViewModifier {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     
+    var isEditBookmarkAlertPresented: Binding<Bool> {
+        .init {
+            satellite.editBookmarkData != nil
+        } set: { _ in }
+    }
+    
     func body(content: Content) -> some View {
         @Bindable var viewModel = viewModel
         @Bindable var satellite = satellite
@@ -88,6 +94,21 @@ struct PlaybackContentModifier: ViewModifier {
                     }
                     Button("playback.alert.createBookmark.action") {
                         viewModel.finalizeBookmarkCreation()
+                    }
+                    .keyboardShortcut(.defaultAction)
+                }
+            }
+            .alert("playback.alert.editBookmark", isPresented: isEditBookmarkAlertPresented) {
+                TextField("playback.alert.createBookmark.placeholder", text: $satellite.editBookmarkNote)
+                
+                if satellite.isUpdatingBookmark {
+                    ProgressView()
+                } else {
+                    Button("action.cancel", role: .cancel) {
+                        satellite.abortEditBookmark()
+                    }
+                    Button("action.edit") {
+                        satellite.finalizeEditBookmark()
                     }
                     .keyboardShortcut(.defaultAction)
                 }

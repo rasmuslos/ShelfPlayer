@@ -284,8 +284,12 @@ public extension PersistenceManager.ProgressSubsystem {
         }
         
         for (id, entity) in pendingServerDeletion {
-            try await ABSClient[connectionID].delete(progressID: id)
-            modelContext.delete(entity)
+            do {
+                try await ABSClient[connectionID].delete(progressID: id)
+                modelContext.delete(entity)
+            } catch {
+                logger.error("Failed to delete remote entity \(id): \(error)")
+            }
         }
         for id in remoteDuplicates {
             do {
@@ -540,7 +544,7 @@ private extension PersistenceManager.ProgressSubsystem {
             
             progressEntityDidUpdate(.init(persistedEntity: updated))
             
-            throw APIClientError.offline
+            return updated
         }
         
         logger.info("Syncing progress entity \(updated.id) to remote for connection \(connectionID)")
