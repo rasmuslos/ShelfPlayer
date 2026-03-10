@@ -155,9 +155,8 @@ public extension PersistenceManager.AuthorizationSubsystem {
         
         // Update
         
+        await OfflineMode.shared.forceEnable(reason: "Connection added")
         try await fetchConnections()
-        
-        await refreshOfflineAvailability()
         await RFNotification[.connectionsChanged].send()
     }
     
@@ -178,9 +177,8 @@ public extension PersistenceManager.AuthorizationSubsystem {
             kSecValueData: try JSONEncoder().encode(updated) as CFData,
         ] as! [String: Any] as CFDictionary)
         
+        await OfflineMode.shared.forceEnable(reason: "Connection updated")
         try await fetchConnections()
-        
-        await refreshOfflineAvailability()
         await RFNotification[.connectionsChanged].send()
     }
     func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, accessToken: String, refreshToken: String?) async throws {
@@ -192,8 +190,8 @@ public extension PersistenceManager.AuthorizationSubsystem {
             try storeToken(refreshToken, for: connectionID, service: refreshTokenService)
         }
         
+        await OfflineMode.shared.forceEnable(reason: "Connection updated")
         try await fetchConnections()
-        await refreshOfflineAvailability()
         await RFNotification[.connectionsChanged].send()
     }
     
@@ -219,9 +217,8 @@ public extension PersistenceManager.AuthorizationSubsystem {
             logger.error("Error removing connection from keychain: \(SecCopyErrorMessageString(identityStatus, nil)) & \(SecCopyErrorMessageString(passwordStatus, nil))")
         }
         
+        await OfflineMode.shared.forceEnable(reason: "Connection removed")
         try? await fetchConnections()
-        
-        await refreshOfflineAvailability()
         await RFNotification[.connectionsChanged].send()
     }
     
@@ -267,9 +264,6 @@ public extension PersistenceManager.AuthorizationSubsystem {
             }
         }
     }
-    func refreshOfflineAvailability() async {
-        await OfflineMode.shared.refreshAvailability()
-    }
     
     func handleURLSessionChallenge(_ challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
         guard challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodClientCertificate else {
@@ -305,12 +299,10 @@ public extension PersistenceManager.AuthorizationSubsystem {
     func scrambleAccessToken(connectionID: ItemIdentifier.ConnectionID) async throws {
         try updateToken("bazinga", for: connectionID, service: accessTokenService)
         try await fetchConnections()
-        await RFNotification[.connectionsChanged].send()
     }
     func scrambleRefreshToken(connectionID: ItemIdentifier.ConnectionID) async throws {
         try updateToken("bazinga", for: connectionID, service: refreshTokenService)
         try await fetchConnections()
-        await RFNotification[.connectionsChanged].send()
     }
     #endif
 }
@@ -400,7 +392,7 @@ extension PersistenceManager.AuthorizationSubsystem {
     func refreshAccessToken(for connectionID: String) async throws -> String {
         logger.info("Refreshing access token for \(connectionID, privacy: .public)")
         
-        let credentialProvider = try await AuthorizedAPIClientCredentialProvider(connectionID: connectionID)
+        let credentialProvider = try await AuthorizedAPIClientCredentialProvider(connectionID: connectionID, isRefreshProvider: true)
         let client = try await APIClient(connectionID: connectionID, credentialProvider: credentialProvider)
         
         let (accessToken, refreshToken): (String, String?)
