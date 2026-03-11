@@ -104,6 +104,13 @@ struct PlayButton: View {
             "play.fill"
         }
     }
+    private var foregroundColor: Color {
+        if background.isLight == true {
+            .black
+        } else {
+            .white
+        }
+    }
     
     @ViewBuilder
     var labelContent: some View {
@@ -112,6 +119,7 @@ struct PlayButton: View {
                 Group {
                     if isLoading {
                         ProgressView()
+                            .tint(foregroundColor)
                             .frame(height: 0)
                     } else {
                         Label(label, systemImage: icon)
@@ -156,7 +164,7 @@ struct PlayButton: View {
             satellite.start(item.id, origin: displayContext.origin)
         }
         .disabled(isLoading)
-        .foregroundColor((background.isLight ?? false) ? .black : .white)
+        .foregroundColor(foregroundColor)
         .animation(.smooth, value: color)
     }
     

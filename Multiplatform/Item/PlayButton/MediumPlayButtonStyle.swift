@@ -47,7 +47,7 @@ struct MediumPlayButtonStyle: PlayButtonStyle {
 #if DEBUG
 #Preview {
     VStack {
-        PlayButton(item: Audiobook.fixture)
+        PlayButton(item: Audiobook.placeholder)
             .playButtonSize(.medium)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
