@@ -401,16 +401,8 @@ extension PersistenceManager.AuthorizationSubsystem {
         
         do {
             (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
-        } catch APIClientError.cancelled {
-            logger.warning("Access token refresh for \(connectionID, privacy: .public) was cancelled. Treating this as offline and dispatching accessTokenExpired")
-            await RFNotification[.accessTokenExpired].send(payload: connectionID)
-            throw APIClientError.offline
-        } catch APIClientError.offline {
-            logger.warning("Access token refresh for \(connectionID, privacy: .public) failed because the server is offline or unreachable. Dispatching accessTokenExpired")
-            await RFNotification[.accessTokenExpired].send(payload: connectionID)
-            throw APIClientError.offline
-        } catch {
-            logger.error("Access token refresh for \(connectionID, privacy: .public) failed with non-recoverable error: \(error, privacy: .public). Removing stored tokens and dispatching accessTokenExpired")
+        } catch APIClientError.unauthorized {
+            logger.error("Access token refresh for \(connectionID, privacy: .public) failed with an 'unauthorized' error")
             
             do {
                 try removeToken(for: connectionID, service: accessTokenService)
@@ -426,7 +418,11 @@ extension PersistenceManager.AuthorizationSubsystem {
             
             await RFNotification[.accessTokenExpired].send(payload: connectionID)
             
-            throw error
+            throw APIClientError.unauthorized
+        } catch {
+            logger.warning("Access token refresh for \(connectionID, privacy: .public) failed with an unexpected error: \(error)")
+            await RFNotification[.accessTokenExpired].send(payload: connectionID)
+            throw APIClientError.offline
         }
         
         try updateToken(accessToken, for: connectionID, service: accessTokenService)

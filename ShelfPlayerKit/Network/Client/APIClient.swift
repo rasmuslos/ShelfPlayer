@@ -357,7 +357,7 @@ private extension APIClient {
                 throw APIClientError.notFound
             } else if !(200..<299).contains(httpResponse.statusCode) {
                 logger.error("Got invalid response code \(httpResponse.statusCode)")
-                throw APIClientError.invalidResponseCode
+                throw APIClientError.invalidResponseCode(httpResponse.statusCode)
             }
         }
         

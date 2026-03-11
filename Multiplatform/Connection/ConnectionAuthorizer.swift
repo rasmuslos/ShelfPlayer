@@ -41,6 +41,7 @@ struct ConnectionAuthorizer: View {
     @State private var password = ""
     @State private var verifier = String.random(length: 100)
     
+    @State private var error: Error?
     @State private var notifyError = false
     
     private let authenticationSessionPresentationContextProvider = AuthenticationSessionPresentationContextProvider()
@@ -67,8 +68,12 @@ struct ConnectionAuthorizer: View {
                         SecureField("connection.add.password", text: $password)
                             .textContentType(.password)
                         
-                        Button("connection.add.proceed") {
-                            authorize()
+                        if isLoading {
+                            ProgressView()
+                        } else {
+                            Button("connection.add.proceed") {
+                                authorize()
+                            }
                         }
                     case .openID:
                         Button("action.retry") {
@@ -99,11 +104,19 @@ struct ConnectionAuthorizer: View {
             }
             .pickerStyle(.inline)
         }
+        
+        if let error {
+            Section {
+                Text(error.localizedDescription)
+                    .foregroundStyle(.red)
+            }
+        }
     }
     
     func authorize() {
         Task {
             do {
+                error = nil
                 isLoading = true
                 
                 switch strategy {
@@ -115,6 +128,8 @@ struct ConnectionAuthorizer: View {
                         throw APIClientError.parseError
                 }
             } catch {
+                self.error = error
+                
                 notifyError.toggle()
                 isLoading = false
             }
@@ -153,6 +168,8 @@ struct ConnectionAuthorizer: View {
                         let (username, accessToken, refreshToken) = try await apiClient.openIDExchange(code: code, state: state, verifier: verifier)
                         callback(username, accessToken, refreshToken)
                     } catch {
+                        self.error = error
+                        
                         self.isLoading = false
                         self.notifyError.toggle()
                     }
