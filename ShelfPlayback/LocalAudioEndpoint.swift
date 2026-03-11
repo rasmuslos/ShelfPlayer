@@ -472,6 +472,8 @@ private extension LocalAudioEndpoint {
                 startTime = suggestedStartTime
             }
             
+            logger.info("Computed start time: \(startTime) (server suggested: \(suggestedStartTime), local entity: \(entity.currentTime) | \(entity.progress) | \(entity.lastUpdate)")
+            
             Defaults[.openPlaybackSessions].append(OpenPlaybackSessionPayload(sessionID: sessionID!, itemID: currentItemID))
         } catch {
             // Fall back to resolving and reporting locally
@@ -487,6 +489,8 @@ private extension LocalAudioEndpoint {
                 
                 startTime = max(currentTime, 0)
             }
+            
+            logger.info("Computed fallback start time: \(startTime) (local entity: \(entity.currentTime) | \(entity.progress) | \(entity.lastUpdate) | \(entity.isFinished)")
             
             sessionID = nil
         }
