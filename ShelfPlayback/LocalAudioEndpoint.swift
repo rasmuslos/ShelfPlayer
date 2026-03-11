@@ -61,7 +61,11 @@ final class LocalAudioEndpoint: AudioEndpoint {
     
     private(set) var isPlaying: Bool
     
-    private(set) var isBuffering: Bool
+    private(set) var isBuffering: Bool {
+        didSet {
+            updateBufferingCheckTaskSchedule()
+        }
+    }
     private(set) var activeOperationCount: Int {
         didSet {
             updateBufferingCheckTaskSchedule()

@@ -182,6 +182,8 @@ public extension PersistenceManager.AuthorizationSubsystem {
         await RFNotification[.connectionsChanged].send()
     }
     func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, accessToken: String, refreshToken: String?) async throws {
+        logger.info("Updating connection with new access token (has refresh token: \(refreshToken != nil))")
+        
         try? removeToken(for: connectionID, service: accessTokenService)
         try storeToken(accessToken, for: connectionID, service: accessTokenService)
         

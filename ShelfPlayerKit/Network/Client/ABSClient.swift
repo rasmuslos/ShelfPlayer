@@ -15,6 +15,11 @@ public final actor APIClientStore: Sendable {
     var storage: [ItemIdentifier.ConnectionID: Task<APIClient, Error>] = [:]
     
     private init() {
+        RFNotification[.offlineModeChanged].subscribe { [weak self] _ in
+            Task {
+                await self?.invalidate()
+            }
+        }
         RFNotification[.connectionsChanged].subscribe { [weak self] in
             Task {
                 await self?.invalidate()
