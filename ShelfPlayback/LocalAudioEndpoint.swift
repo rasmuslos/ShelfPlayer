@@ -95,6 +95,10 @@ final class LocalAudioEndpoint: AudioEndpoint {
     }
     private(set) var sleepTimer: SleepTimerConfiguration? {
         didSet {
+            if sleepTimer == nil && Defaults[.sleepTimerFadeOut] {
+                audioPlayer.volume = audioPlayerVolume
+            }
+            
             updateSleepTimerSchedule()
             
             Task {
@@ -509,8 +513,6 @@ private extension LocalAudioEndpoint {
             chapters = extracted
         }
         
-        await PersistenceManager.shared.download.addBlock(to: currentItemID)
-        
         self.audioTracks = audioTracks.sorted()
         self.chapters = chapters.sorted()
         
@@ -519,8 +521,13 @@ private extension LocalAudioEndpoint {
         do {
             try await seek(to: startTime, insideChapter: false)
         } catch {
+            activeOperationCount -= 1
             logger.error("Failed to seek to start time: \(error)")
+            UIApplication.shared.endBackgroundTask(task)
+            throw error
         }
+        
+        await PersistenceManager.shared.download.addBlock(to: currentItemID)
         
         await AudioPlayer.shared.didStartPlaying(endpointID: id, itemID: currentItemID, chapters: self.chapters, at: startTime)
         
@@ -666,11 +673,21 @@ private extension LocalAudioEndpoint {
     func updateSleepTimerSchedule() {
         guard let sleepTimer, case .interval(let date, _) = sleepTimer else {
             sleepTimeoutTimer?.invalidate()
+            
+            if Defaults[.sleepTimerFadeOut] {
+                audioPlayer.volume = audioPlayerVolume
+            }
+            
             return
         }
         
         guard isPlaying else {
             sleepTimeoutTimer?.invalidate()
+            
+            if Defaults[.sleepTimerFadeOut] {
+                audioPlayer.volume = audioPlayerVolume
+            }
+            
             return
         }
         
@@ -717,14 +734,13 @@ private extension LocalAudioEndpoint {
     
     func repopulateAudioPlayerQueue(start index: Int) async throws {
         audioPlayer.removeAllItems()
-        
-        let headers = try await ABSClient[currentItemID.connectionID].requestHeaders
+        let headers = try? await ABSClient[currentItemID.connectionID].requestHeaders
         
         // TODO: Provide Identity
         
-        for audioTrack in audioTracks[index..<audioTracks.endIndex] {
+        for audioTrack in audioTracks {
             let asset = AVURLAsset(url: audioTrack.resource, options: [
-                "AVURLAssetHTTPHeaderFieldsKey": headers,
+                "AVURLAssetHTTPHeaderFieldsKey": headers ?? [:],
             ])
             let playerItem = AVPlayerItem(asset: asset)
             
