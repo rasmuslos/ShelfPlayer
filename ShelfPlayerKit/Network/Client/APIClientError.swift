@@ -12,7 +12,7 @@ public enum APIClientError: Error {
     case serializeError
     
     case invalidItemType
-    case invalidResponseCode
+    case invalidResponseCode(Int)
     
     // MARK: New
     
@@ -22,4 +22,29 @@ public enum APIClientError: Error {
     
     case unauthorized
     case noAttemptsLeft
+}
+
+extension APIClientError: LocalizedError {
+    public var errorDescription: String? {
+        let description: String
+        
+        switch self {
+            case .invalidResponseCode(let code):
+                description = "APIClientError | Invalid response code \(code)"
+            case .offline:
+                description = "APIClientError | Offline"
+            case .notFound:
+                description = "APIClientError | Not Found"
+            case .cancelled:
+                description = "APIClientError | Cancelled"
+            case .unauthorized:
+                description = "APIClientError | Unauthorized"
+            case .noAttemptsLeft:
+                description = "APIClientError | No attempts left"
+            default:
+                return nil
+        }
+        
+        return "The operation could not be completed: \(description)"
+    }
 }
