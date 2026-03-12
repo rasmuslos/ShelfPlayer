@@ -111,34 +111,20 @@ public extension PersistenceManager.SessionSubsystem {
     }
     
     func attemptSync(connectionID: ItemIdentifier.ConnectionID, early: Bool) async throws {
-        let sessions = try sessionsForSync(early: early)
+        let sessions = try modelContext.fetch(FetchDescriptor<PersistedPlaybackSession>(predicate: #Predicate { $0._itemID.contains(connectionID) }))
             .filter { $0.itemID.connectionID == connectionID }
         
-        try await synchronize(sessions)
-    }
-    func attemptSync(early: Bool) async throws {
-        try await synchronize(try sessionsForSync(early: early))
-    }
-    
-    private func sessionsForSync(early: Bool) throws -> [PersistedPlaybackSession] {
-        let descriptor: FetchDescriptor<PersistedPlaybackSession>
-        
-        if early {
-            descriptor = FetchDescriptor<PersistedPlaybackSession>(predicate: #Predicate { $0.eligibleForEarlySync })
-        } else {
-            descriptor = FetchDescriptor<PersistedPlaybackSession>()
-        }
-        
-        return try modelContext.fetch(descriptor)
-    }
-    private func synchronize(_ sessions: [PersistedPlaybackSession]) async throws {
         guard !sessions.isEmpty else {
             return
         }
         
         for session in sessions {
-            try await ABSClient[session.itemID.connectionID].createListeningSession(itemID: session.itemID, timeListened: session.timeListened, startTime: session.startTime, currentTime: session.currentTime, started: session.started, updated: session.lastUpdated)
-            modelContext.delete(session)
+            do {
+                try await ABSClient[session.itemID.connectionID].createListeningSession(itemID: session.itemID, timeListened: session.timeListened, startTime: session.startTime, currentTime: session.currentTime, started: session.started, updated: session.lastUpdated)
+                modelContext.delete(session)
+            } catch {
+                logger.error("Failed to synchronize session: \(session.id)")
+            }
         }
         
         try modelContext.save()
