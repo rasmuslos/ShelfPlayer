@@ -344,6 +344,8 @@ extension LocalAudioEndpoint {
             audioPlayer.play()
         }
         
+        await playbackReporter.update(currentTime: time, isSeeking: true)
+        
         activeOperationCount -= 1
     }
     
@@ -1019,7 +1021,7 @@ private extension LocalAudioEndpoint {
                     }
                     
                     if let currentTime = currentTime {
-                        await playbackReporter.update(currentTime: currentTime)
+                        await playbackReporter.update(currentTime: currentTime, isSeeking: false)
                     }
                     
                     await AudioPlayer.shared.currentTimesDidChange(endpointID: id, itemCurrentTime: currentTime, chapterCurrentTime: chapterCurrentTime)
