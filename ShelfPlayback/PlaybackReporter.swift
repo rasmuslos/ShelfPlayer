@@ -57,11 +57,6 @@ final actor PlaybackReporter {
         }
     }
     
-    func didStartPlaying(at time: TimeInterval) {
-        self.currentTime = time
-        update()
-    }
-    
     func update(duration: TimeInterval) {
         self.duration = duration
     }
@@ -102,7 +97,7 @@ final actor PlaybackReporter {
         
         isFinished = true
         
-        if let currentTime {
+        if let currentTime, currentTime.isFinite, currentTime > 20 {
             self.currentTime = currentTime
         }
         
@@ -118,7 +113,7 @@ final actor PlaybackReporter {
             }
         }
         
-        if let sessionID, let duration, let currentTime, await OfflineMode.shared.isAvailable(itemID.connectionID) {
+        if let sessionID, let duration, let currentTime = self.currentTime, await OfflineMode.shared.isAvailable(itemID.connectionID) {
             do {
                 try await ABSClient[itemID.connectionID].closeSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: 0)
                 Defaults[.openPlaybackSessions].removeAll { $0.itemID == itemID && $0.sessionID == sessionID }
