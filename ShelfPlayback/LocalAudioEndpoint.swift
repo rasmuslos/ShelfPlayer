@@ -993,11 +993,14 @@ private extension LocalAudioEndpoint {
                     
                     // MARK: Current time
                     
-                    if activeAudioTrackIndex >= 0 {
+                    if activeAudioTrackIndex >= 0, audioPlayer.currentItem != nil, isPlaying {
                         let audioTrack = audioTracks[activeAudioTrackIndex]
                         let seconds = audioPlayer.currentTime().seconds
+                        let offsetIncluded = audioTrack.offset + seconds
                         
-                        currentTime = audioTrack.offset + seconds
+                        if offsetIncluded.isFinite, offsetIncluded >= 0 {
+                            currentTime = offsetIncluded
+                        }
                     }
                     
                     // MARK: Chapter

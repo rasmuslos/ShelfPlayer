@@ -155,6 +155,11 @@ private extension PlaybackReporter {
             return
         }
         
+        guard currentTime.isFinite, duration.isFinite else {
+            logger.warning("Skipping progress update because currentTime/duration are not finite (currentTime=\(currentTime), duration=\(duration))")
+            return
+        }
+        
         let timeListened: TimeInterval
         
         if let delta = lastTimeSpendListeningCalculation?.distance(to: .now) {
