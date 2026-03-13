@@ -118,10 +118,9 @@ public extension Episode {
         }
     }
     
-    nonisolated(unsafe) static let chapterRegex = /^\s*\(?(\d{1,2}:(?:\d{2}:)?\d{2})\)?\s*(.*)$/
+    nonisolated(unsafe) static let chapterRegex = /^\s*\(?(\d{1,2}:(?:\d{2}:)?\d{2})\)?:?\s*(.*)$/
         .anchorsMatchLineEndings()
-    nonisolated(unsafe) static let chapterTimestampRegex = /^\s*\(?(\d{1,2}:(?:\d{2}:)?\d{2})\)?/
-        .anchorsMatchLineEndings()
+    nonisolated(unsafe) static let chapterTimestampRegex = /(\d{1,2}:(?:\d{2}:)?\d{2})/
     
     static func parseChapterTimestamp(_ timestamp: String) -> TimeInterval? {
         let parts = timestamp.split(separator: ":").compactMap { Int($0) }
