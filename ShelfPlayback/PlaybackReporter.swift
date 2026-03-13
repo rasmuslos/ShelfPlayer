@@ -61,7 +61,7 @@ final actor PlaybackReporter {
         self.duration = duration
     }
     func update(currentTime: TimeInterval, isSeeking: Bool) {
-        guard currentTime > 10 || isSeeking else {
+        guard currentTime.isFinite, currentTime > 10 || isSeeking else {
             logger.info("Dropping progress sync update because it is < 10s and not seeking.")
             return
         }

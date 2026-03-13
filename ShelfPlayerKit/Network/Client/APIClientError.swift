@@ -30,21 +30,21 @@ extension APIClientError: LocalizedError {
         
         switch self {
             case .invalidResponseCode(let code):
-                description = "APIClientError | Invalid response code \(code)"
+                description = "Invalid response code '\(code)'"
             case .offline:
-                description = "APIClientError | Offline"
+                description = "Offline"
             case .notFound:
-                description = "APIClientError | Not Found"
+                description = "Not Found"
             case .cancelled:
-                description = "APIClientError | Cancelled"
+                description = "Cancelled"
             case .unauthorized:
-                description = "APIClientError | Unauthorized"
+                description = "Unauthorized"
             case .noAttemptsLeft:
-                description = "APIClientError | No attempts left"
+                description = "Maximum amount of attempts exceeded"
             default:
                 return nil
         }
         
-        return "The operation could not be completed: \(description)"
+        return "The networking-operation could not be completed: \(description)"
     }
 }
