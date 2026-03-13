@@ -58,4 +58,11 @@ struct EpisodeDescription: View {
         .border(.red)
         .previewEnvironment()
 }
+#Preview {
+    ForEach(Episode.fixture.chapters ?? []) {
+        Text($0.title)
+        Text($0.startOffset.description)
+        Text($0.endOffset.description)
+    }
+}
 #endif
