@@ -106,6 +106,13 @@ private extension SpotlightIndexer {
     func shouldRun() -> Bool {
         let path = NWPathMonitor().currentPath
         
+        if let lastCompletionDate = Defaults[.spotlightIndexCompletionDate] {
+            if Date.now.timeIntervalSince(lastCompletionDate) < 60 * 60 * 24 * 7 {
+                logger.info("SpotlightIndexer: Skipping run, last run was less than 1 week ago.")
+                return false
+            }
+        }
+        
         guard !path.isExpensive && !path.isConstrained else {
             return false
         }
@@ -127,10 +134,7 @@ private extension SpotlightIndexer {
         
         guard let next = candidates.first else {
             logger.info("Spotlight Indexer finished.")
-            
-            if Defaults[.spotlightIndexCompletionDate] == nil {
-                Defaults[.spotlightIndexCompletionDate] = .now
-            }
+            Defaults[.spotlightIndexCompletionDate] = .now
             
             return false
         }
