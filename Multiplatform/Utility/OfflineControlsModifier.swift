@@ -9,6 +9,8 @@ import SwiftUI
 import ShelfPlayback
 
 struct OfflineControlsModifier: ViewModifier {
+    let timeout: TimeInterval = 21
+    
     let startOfflineTimeout: Bool
     
     @State private var offlineTimeout: Task<Void, Never>?
@@ -27,7 +29,7 @@ struct OfflineControlsModifier: ViewModifier {
                         } label: {
                             Text("navigation.sync.failed.offline")
                             + Text(verbatim: " ")
-                            + Text(.now.advanced(by: 8), style: .relative)
+                            + Text(.now.advanced(by: timeout + 1), style: .relative)
                         }
                         .opacity(offlineTimeout == nil ? 0 : 1)
                     }
@@ -54,7 +56,7 @@ struct OfflineControlsModifier: ViewModifier {
                 if startOfflineTimeout {
                     offlineTimeout = .init {
                         do {
-                            try await Task.sleep(for: .seconds(7))
+                            try await Task.sleep(for: .seconds(timeout))
                             try Task.checkCancellation()
                             
                             OfflineMode.shared.forceEnable()
