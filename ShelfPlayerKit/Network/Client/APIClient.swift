@@ -265,7 +265,7 @@ private extension APIClient {
         dispatchQueued()
     }
     @concurrent
-    nonisolated func perform(_ request: any APIRequestProtocol, didRetryAfterRefresh: Bool = false) async throws -> Decodable & Sendable {
+    nonisolated func perform(_ request: any APIRequestProtocol, previousError: Error? = nil) async throws -> Decodable & Sendable {
         logger.info("Performing \(request.method.value, privacy: .public) \(request.path, privacy: .public)")
         
         #if DEBUG
@@ -281,7 +281,12 @@ private extension APIClient {
         
         guard await hasAttemptsLeft(request) else {
             await markAsUnavailableAndInvalidateRequests(reason: "Request \(request.method.value) \(request.path) exhausted all \(request.maxAttempts) attempts")
-            throw APIClientError.noAttemptsLeft
+            
+            guard let previousError else {
+                throw APIClientError.noAttemptsLeft
+            }
+            
+            throw previousError
         }
         
         if !request.bypassesOffline, await !OfflineMode.shared.isAvailable(connectionID) {
@@ -312,20 +317,26 @@ private extension APIClient {
             
             return response
         } catch APIClientError.unauthorized {
-            if didRetryAfterRefresh {
+            if case .unauthorized = (previousError as? APIClientError) {
                 logger.warning("Got 401 again after token refresh retry while performing \(request.method.value, privacy: .public) \(request.path, privacy: .public). Counting this as a failed attempt")
                 
                 await increaseAttempts(request.id)
-                return try await perform(request)
+                return try await perform(request, previousError: APIClientError.unauthorized)
             }
             
             logger.warning("Got 401 while performing \(request.method.value, privacy: .public) \(request.path, privacy: .public). Attempting access token refresh")
             
             try await refreshAccessToken(currentToken: token)
-            return try await perform(request, didRetryAfterRefresh: true)
+            return try await perform(request, previousError: APIClientError.unauthorized)
         } catch APIClientError.notFound {
             logger.warning("Resource not found at \(request.path)")
             throw APIClientError.notFound
+        } catch APIClientError.serializeError, APIClientError.parseError, APIClientError.invalidItemType {
+            logger.warning("Obscure error while performing \(request.path)... Aborting")
+            throw APIClientError.serializeError
+        } catch APIClientError.invalidResponseCode(let code) {
+            logger.warning("Invalid response code \(code) for \(request.path)")
+            throw APIClientError.invalidResponseCode(code)
         } catch URLError.cancelled {
             logger.warning("Cancelled request to \(request.path)")
             throw APIClientError.cancelled
@@ -333,7 +344,7 @@ private extension APIClient {
             logger.warning("Failed to perform request \(request.path, privacy: .public): \(error, privacy: .public)")
             
             await increaseAttempts(request.id)
-            return try await perform(request)
+            return try await perform(request, previousError: error)
         }
     }
     
@@ -505,3 +516,4 @@ private final class CheckedContinuationBox<T: Sendable>: @unchecked Sendable {
         lock.unlock()
     }
 }
+

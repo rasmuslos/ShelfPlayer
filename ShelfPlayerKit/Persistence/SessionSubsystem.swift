@@ -122,6 +122,9 @@ public extension PersistenceManager.SessionSubsystem {
             do {
                 try await ABSClient[session.itemID.connectionID].createListeningSession(itemID: session.itemID, timeListened: session.timeListened, startTime: session.startTime, currentTime: session.currentTime, started: session.started, updated: session.lastUpdated)
                 modelContext.delete(session)
+            } catch APIClientError.invalidResponseCode(let code) {
+                logger.warning("Server responded with an invalid response \(code) code while syncing session. Deleting \(session.id)")
+                modelContext.delete(session)
             } catch {
                 logger.error("Failed to synchronize session: \(session.id)")
             }
