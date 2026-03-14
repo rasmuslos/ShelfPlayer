@@ -48,6 +48,13 @@ struct ConnectionAddSheet: View {
                     viewModel.verify()
                 }
                 
+                if let error = viewModel.error {
+                    Section {
+                        Text(error.localizedDescription)
+                            .foregroundStyle(.red)
+                    }
+                }
+                
                 #if DEBUG
                 CertificateEditor(identity: $viewModel.identity)
                     .disabled(hasValidEndpoint)
@@ -108,19 +115,15 @@ private final class ViewModel: Sendable {
     var url: URL?
     var version: String?
     
-    #if DEBUG
-    var headers = [HeaderShadow]([
-        
-    ])
-    #else
     var headers = [HeaderShadow]()
-    #endif
     var identity: SecIdentity?
     
     var username = ""
     var strategies: [AuthorizationStrategy]?
     
     var knownConnections = [PersistenceManager.AuthorizationSubsystem.KnownConnection]()
+    
+    var error: Error?
     
     var isLoading = false
     var notifyError = false
@@ -139,6 +142,8 @@ private final class ViewModel: Sendable {
     }
     
     func validateEndpoint() async {
+        error = nil
+
         while endpoint.last == "/" {
             endpoint.removeLast()
         }
@@ -171,6 +176,8 @@ private final class ViewModel: Sendable {
             }
         } catch {
             withAnimation {
+                self.error = error
+                
                 version = nil
                 isLoading = false
                 

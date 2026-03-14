@@ -394,13 +394,17 @@ extension PersistenceManager.AuthorizationSubsystem {
     func refreshAccessToken(for connectionID: String) async throws -> String {
         logger.info("Refreshing access token for \(connectionID, privacy: .public)")
         
+        guard let currentRefreshToken = try? token(for: connectionID, service: refreshTokenService) else {
+            throw APIClientError.unauthorized
+        }
+        
         let credentialProvider = try await AuthorizedAPIClientCredentialProvider(connectionID: connectionID, isRefreshProvider: true)
         let client = try await APIClient(connectionID: connectionID, credentialProvider: credentialProvider)
         
         let (accessToken, refreshToken): (String, String?)
         
         do {
-            (accessToken, refreshToken) = try await client.refresh(refreshToken: token(for: connectionID, service: refreshTokenService))
+            (accessToken, refreshToken) = try await client.refresh(refreshToken: currentRefreshToken)
         } catch APIClientError.unauthorized {
             logger.error("Access token refresh for \(connectionID, privacy: .public) failed with an 'unauthorized' error")
             
