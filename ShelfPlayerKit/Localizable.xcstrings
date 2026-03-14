@@ -3650,7 +3650,50 @@
       }
     },
     "intent.start ${item}" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spiele ${item}"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play ${item}"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écouter ${item}"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Воспроизвести ${item}"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela ${item}"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відтворити ${item}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "播放 ${item}"
+          }
+        }
+      }
     },
     "intent.start.audiobook" : {
       "localizations" : {
@@ -3832,100 +3875,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "播放 ${podcast}中的单集"
-          }
-        }
-      }
-    },
-    "intent.start.withoutPlaybackSession" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ohne Hörsitzung"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Without playback session"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sans session de lecture"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Без сессии воспроизведения"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utan uppspelnings-session"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Без сесії відтворення"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无播放会话"
-          }
-        }
-      }
-    },
-    "intent.start.withoutPlaybackSession.description" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wiedergabe starten, ohne eine Audiobookshelf-Hörsitzung zu erstellen. ShelfPlayer erstellt eine Offline-Sitzung und synchronisiert sie, sobald eine Verbindung besteht. Nützlich für Offline-Szenarien"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start playback without creating a Audiobookshelf listening session. ShelfPlayer will create an offline one and sync it once connected. Useful for offline scenarios"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lancez la lecture sans créer de session d'écoute Audiobookshelf. ShelfPlayer en créera une hors ligne et la synchronisera une fois connecté. Utile pour les situations hors ligne."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Начинает воспроизведение без создания соответствующей сессии на сервере Audiobookshelf. ShelfPlayer сделает локальную копию и сихронизирует прогресс при восстановлении подключения. Полезно для сценариев без сети"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Börja spela utan att skapa en Audiobookshelf-session. ShelfPlayer skapar en offline och synkar den vid anslutning. Användbart för offline-scenarion."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Розпочніть відтворення без створення сеансу прослуховування Audiobookshelf. ShelfPlayer створить сеанс прослуховування офлайн та синхронізує його після підключення. Корисно для офлайн-сценаріїв."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开始播放时不会创建 Audiobookshelf 的聆听会话。ShelfPlayer 会创建一个离线会话，并在连接后进行同步。适用于离线场景。"
           }
         }
       }
