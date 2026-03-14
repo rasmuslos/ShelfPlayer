@@ -42,7 +42,7 @@ extension APIClientError: LocalizedError {
             case .noAttemptsLeft:
                 description = "Maximum amount of attempts exceeded"
             default:
-                return nil
+                description = "Unexpected error. Please open an issue on GitHub and include the debug logs."
         }
         
         return "The networking-operation could not be completed: \(description)"
