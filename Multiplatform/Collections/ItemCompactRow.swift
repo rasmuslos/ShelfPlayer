@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayback
 
 struct ItemCompactRow: View {
+    @Default(.itemImageStatusPercentageText) private var itemImageStatusPercentageText
     @Environment(Satellite.self) private var satellite
     
     let itemID: ItemIdentifier
@@ -174,8 +175,14 @@ struct ItemCompactRow: View {
                     DownloadButton(itemID: itemID, progressVisibility: .row)
                         .labelStyle(.iconOnly)
                 } else if let progress = progress?.progress {
-                    CircleProgressIndicator(progress: progress, invertColors: download?.status == .completed)
-                        .frame(width: 16)
+                        if itemImageStatusPercentageText {
+                            Text(progress, format: .percent.notation(.compactName))
+                                .font(.caption)
+                                .fontWeight(.heavy)
+                        } else {
+                            CircleProgressIndicator(progress: progress, invertColors: false)
+                                .frame(width: 16)
+                        }
                 } else if let podcast = item as? Podcast, let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
                     Text(incompleteEpisodeCount, format: .number)
                         .font(.caption)
@@ -246,8 +253,10 @@ struct ItemCompactRow: View {
 
 #if DEBUG
 #Preview {
-    ItemCompactRow(item: Audiobook.fixture)
-        .previewEnvironment()
+    List {
+        ItemCompactRow(item: Audiobook.fixture)
+    }
+    .previewEnvironment()
 }
 
 #Preview {
