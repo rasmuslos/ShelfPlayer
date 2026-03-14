@@ -39,3 +39,9 @@ public extension Episode {
         type: .regular,
         index: .init(season: nil, episode: "placeholder"))
 }
+
+public extension ItemIdentifier {
+    var isPlaceholder: Bool {
+        primaryID == "placeholder"
+    }
+}

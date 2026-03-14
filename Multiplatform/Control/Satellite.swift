@@ -122,7 +122,7 @@ final class Satellite {
     }
 
     public func isLoading(observing itemID: ItemIdentifier) -> Bool {
-        totalLoading > 0 || busy[itemID] ?? 0 > 0 || itemID.primaryID == "placeholder"
+        totalLoading > 0 || busy[itemID] ?? 0 > 0 || itemID.isPlaceholder
     }
     
     private func startWorking(on itemID: ItemIdentifier) {

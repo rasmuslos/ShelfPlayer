@@ -129,12 +129,18 @@ struct PlayButton: View {
                 }
                 .padding(.trailing, 8)
                 
-                Text(label)
-                    .contentTransition(.opacity)
-                
-                if let remaining {
-                    Text(verbatim: "•")
-                    Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
+                Group {
+                    Text(label)
+                        .contentTransition(.opacity)
+                    
+                    if let remaining {
+                        Text(verbatim: "•")
+                        Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
+                    }
+                }
+                .modify(if: item.id.isPlaceholder) {
+                    $0
+                        .redacted(reason: .placeholder)
                 }
             }
             .animation(.smooth, value: label)

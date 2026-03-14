@@ -54,4 +54,13 @@ struct MediumPlayButtonStyle: PlayButtonStyle {
     .background(.accent)
     .previewEnvironment()
 }
+#Preview {
+    VStack {
+        PlayButton(item: Audiobook.fixture)
+            .playButtonSize(.medium)
+    }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(.accent)
+    .previewEnvironment()
+}
 #endif
