@@ -48,7 +48,13 @@ public extension APIClient {
     }
     
     func createListeningSession(itemID: ItemIdentifier, timeListened: TimeInterval, startTime: TimeInterval, currentTime: TimeInterval, started: Date, updated: Date) async throws {
-        let (item, status, userID) = try await (item(itemID: itemID), status(), me().0)
+        let (item, status, userID) = try await (
+            try await response(APIRequest<ItemPayload>(path: "api/items/\(itemID.apiItemID)", method: .get, query: [
+                URLQueryItem(name: "expanded", value: "1"),
+            ], bypassesOffline: true)),
+            status(),
+            me().0
+        )
         
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -94,7 +100,7 @@ public extension APIClient {
             startedAt: Double(UInt64(started.timeIntervalSince1970 * 1000)),
             updatedAt: Double(UInt64(updated.timeIntervalSince1970 * 1000)))
         
-        let _ = try await response(APIRequest<EmptyResponse>(path: "api/session/local", method: .post, body: session, maxAttempts: 2))
+        let _ = try await response(APIRequest<EmptyResponse>(path: "api/session/local", method: .post, body: session, maxAttempts: 1, bypassesOffline: true))
     }
     
     func syncSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {

@@ -40,7 +40,7 @@ public extension APIClient {
                                    lastUpdate: Int64($0.lastUpdate.timeIntervalSince1970) * 1000,
                                    startedAt: Int64($0.startedAt?.timeIntervalSince1970 ?? 0) * 1000,
                                    finishedAt: Int64($0.finishedAt?.timeIntervalSince1970 ?? 0) * 1000)
-        }))
+        }, bypassesOffline: true))
     }
     
     func delete(progressID: String) async throws {
