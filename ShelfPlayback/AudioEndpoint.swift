@@ -50,6 +50,9 @@ protocol AudioEndpoint: Identifiable, Sendable {
     func setVolume(_ volume: Percentage) async
     func setPlaybackRate(_ rate: Percentage) async
     
+    func beginSeeking(_ forwards: Bool) async
+    func endSeeking() async
+    
     func setSleepTimer(_ configuration: SleepTimerConfiguration?) async
     
     func skip(queueIndex index: Int) async
