@@ -365,6 +365,13 @@ extension LocalAudioEndpoint {
         updatePeriodicObserver()
     }
     
+    func beginSeeking(_ forwards: Bool) async {
+        audioPlayer.rate = forwards ? 3 : -3
+    }
+    func endSeeking() async {
+        audioPlayer.rate = Float(playbackRate)
+    }
+    
     func setSleepTimer(_ configuration: SleepTimerConfiguration?) {
         sleepTimer = configuration
     }

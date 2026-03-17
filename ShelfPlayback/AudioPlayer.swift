@@ -26,8 +26,11 @@ public final actor AudioPlayer: Sendable {
     var sleepTimerDidExpireAt: (SleepTimerConfiguration, Date)?
     
     init() {
-        addRemoteCommandTargets()
         setupObservers()
+        
+        Task {
+            await addRemoteCommandTargets()
+        }
     }
     
     public static let shared = AudioPlayer()
@@ -263,6 +266,13 @@ public extension AudioPlayer {
         }
     }
     
+    func beginSeeking(_ forwards: Bool) async {
+        await current?.beginSeeking(forwards)
+    }
+    func endSeeking() async {
+        await current?.endSeeking()
+    }
+    
     func setSleepTimer(_ configuration: SleepTimerConfiguration?) async {
         await current?.setSleepTimer(configuration)
     }
@@ -401,7 +411,8 @@ private extension AudioPlayer {
             }
         }
     }
-    nonisolated func addRemoteCommandTargets() {
+    @MainActor
+    func addRemoteCommandTargets() {
         let commandCenter = MPRemoteCommandCenter.shared()
         
         commandCenter.playCommand.isEnabled = true
@@ -452,39 +463,46 @@ private extension AudioPlayer {
             return .success
         }
         
-        commandCenter.previousTrackCommand.addTarget { _ in
-            Task {
-                try await self.skip(forwards: false)
-            }
-            
-            return .success
-        }
+        commandCenter.previousTrackCommand.isEnabled = false
+        commandCenter.nextTrackCommand.isEnabled = false
         commandCenter.nextTrackCommand.addTarget { _ in
             Task {
-                try await self.skip(forwards: true)
+                await self.advance()
             }
             
             return .success
         }
         
+        commandCenter.seekBackwardCommand.isEnabled = true
         commandCenter.seekBackwardCommand.addTarget { event in
-            guard (event as? MPSeekCommandEvent)?.type == .beginSeeking else {
-                return .success
+            guard let event = event as? MPSeekCommandEvent else {
+                return .commandFailed
             }
-
+            
+            let type = event.type
+            
             Task {
-                try await self.skip(forwards: false)
+                switch type {
+                    case .beginSeeking: await self.beginSeeking(false)
+                    default: await self.endSeeking()
+                }
             }
 
             return .success
         }
+        commandCenter.seekForwardCommand.isEnabled = true
         commandCenter.seekForwardCommand.addTarget { event in
-            guard (event as? MPSeekCommandEvent)?.type == .beginSeeking else {
-                return .success
+            guard let event = event as? MPSeekCommandEvent else {
+                return .commandFailed
             }
-
+            
+            let type = event.type
+            
             Task {
-                try await self.skip(forwards: true)
+                switch type {
+                    case .beginSeeking: await self.beginSeeking(true)
+                    default: await self.endSeeking()
+                }
             }
 
             return .success
