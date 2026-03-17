@@ -62,7 +62,7 @@ struct StatusOverlay: View {
                                                 }
                                         } else if progress < 1 {
                                             Group {
-                                                if itemImageStatusPercentageText || true {
+                                                if itemImageStatusPercentageText {
                                                     Text(verbatim: "\(Int(progress * 100))")
                                                         .font(.system(size: fontSize))
                                                         .fontWeight(.heavy)
