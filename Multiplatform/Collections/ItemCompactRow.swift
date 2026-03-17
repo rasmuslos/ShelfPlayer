@@ -175,14 +175,14 @@ struct ItemCompactRow: View {
                     DownloadButton(itemID: itemID, progressVisibility: .row)
                         .labelStyle(.iconOnly)
                 } else if let progress = progress?.progress {
-                        if itemImageStatusPercentageText {
-                            Text(progress, format: .percent.notation(.compactName))
-                                .font(.caption)
-                                .fontWeight(.heavy)
-                        } else {
-                            CircleProgressIndicator(progress: progress, invertColors: false)
-                                .frame(width: 16)
-                        }
+                    if itemImageStatusPercentageText {
+                        Text(progress, format: .percent.notation(.compactName))
+                            .font(.caption)
+                            .fontWeight(.heavy)
+                    } else {
+                        CircleProgressIndicator(progress: progress, invertColors: false)
+                            .frame(width: 16)
+                    }
                 } else if let podcast = item as? Podcast, let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
                     Text(incompleteEpisodeCount, format: .number)
                         .font(.caption)

@@ -322,12 +322,20 @@ extension LocalAudioEndpoint {
         if index != activeAudioTrackIndex {
             let playerItems = audioPlayer.items()
             
-            if playerItems.count > index && index > activeAudioTrackIndex {
-                for surplusIndex in 1..<(index - activeAudioTrackIndex) {
-                    audioPlayer.remove(playerItems[surplusIndex])
-                }
+            if activeAudioTrackIndex >= 0, index > activeAudioTrackIndex {
+                let relativeIndex = index - activeAudioTrackIndex
                 
-                audioPlayer.advanceToNextItem()
+                if relativeIndex < playerItems.count {
+                    if relativeIndex > 0 {
+                        for surplusIndex in 1..<relativeIndex {
+                            audioPlayer.remove(playerItems[surplusIndex])
+                        }
+                        
+                        audioPlayer.advanceToNextItem()
+                    }
+                } else {
+                    try await repopulateAudioPlayerQueue(start: index)
+                }
             } else {
                 try await repopulateAudioPlayerQueue(start: index)
             }
@@ -742,9 +750,15 @@ private extension LocalAudioEndpoint {
         audioPlayer.removeAllItems()
         let headers = try? await ABSClient[currentItemID.connectionID].requestHeaders
         
+        guard !audioTracks.isEmpty else {
+            return
+        }
+        
+        let startIndex = min(max(index, 0), audioTracks.count - 1)
+        
         // TODO: Provide Identity
         
-        for audioTrack in audioTracks {
+        for audioTrack in audioTracks[startIndex...] {
             let asset = AVURLAsset(url: audioTrack.resource, options: [
                 "AVURLAssetHTTPHeaderFieldsKey": headers ?? [:],
             ])
