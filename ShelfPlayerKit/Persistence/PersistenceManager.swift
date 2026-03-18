@@ -115,6 +115,8 @@ public final class PersistenceManager: Sendable {
         await item.invalidate()
         
         try await keyValue.remove(cluster: "storedTabValues")
+        
+        try await download.invalidateStatusCache()
     }
 }
 

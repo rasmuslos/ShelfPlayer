@@ -25,6 +25,8 @@ typealias PersistedChapter = SchemaV2.PersistedChapter
 private let ASSET_ATTEMPT_LIMIT = 3
 private let ACTIVE_TASK_LIMIT = 4
 
+private let CACHED_DOWNLOAD_STATUS_CLUSTER = "downloadStatusCache"
+
 extension PersistenceManager {
     @ModelActor
     public final actor DownloadSubsystem {
@@ -734,6 +736,12 @@ public extension PersistenceManager.DownloadSubsystem {
     func remove(_ itemID: ItemIdentifier) async throws {
         logger.info("Removing download: \(itemID)")
         
+        do {
+            try await invalidateStatusCache()
+        } catch {
+            logger.error("Failed to remove download cache key value cluster")
+        }
+        
         guard itemID.type != .podcast else {
             guard let podcast = persistedPodcast(for: itemID) else {
                 throw PersistenceError.missing
@@ -811,9 +819,6 @@ public extension PersistenceManager.DownloadSubsystem {
         do {
             try modelContext.delete(model: PersistedAudiobook.self)
             
-            // try modelContext.delete(model: PersistedEpisode.self)
-            // try modelContext.delete(model: PersistedPodcast.self)
-            
             for episode in try episodes() {
                 do {
                     try await remove(episode.id)
@@ -821,6 +826,9 @@ public extension PersistenceManager.DownloadSubsystem {
                     logger.error("Failed to remove episode \(episode.id): \(error)")
                 }
             }
+            
+             try modelContext.delete(model: PersistedEpisode.self)
+             try modelContext.delete(model: PersistedPodcast.self)
             
             try modelContext.delete(model: PersistedAsset.self)
             try modelContext.delete(model: PersistedChapter.self)
@@ -836,6 +844,10 @@ public extension PersistenceManager.DownloadSubsystem {
         }
         
         await RFNotification[.downloadStatusChanged].send(payload: nil)
+    }
+    
+    func invalidateStatusCache() async throws {
+        try await PersistenceManager.shared.keyValue.remove(cluster: CACHED_DOWNLOAD_STATUS_CLUSTER)
     }
     
     func addBlock(to itemID: ItemIdentifier) {
@@ -950,7 +962,7 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         Key(identifier: "assetFailedAttempts_\(assetID)", cluster: "assetFailedAttempts_\(itemID.description)", isCachePurgeable: false)
     }
     static func cachedDownloadStatus(itemID: ItemIdentifier) -> Key<DownloadStatus> {
-        Key(identifier: "downloadStatus_\(itemID)", cluster: "downloadStatusCache", isCachePurgeable: false)
+        Key(identifier: "downloadStatus_\(itemID)", cluster: CACHED_DOWNLOAD_STATUS_CLUSTER, isCachePurgeable: false)
     }
     
     static func coverURLCache(itemID: ItemIdentifier, size: ImageSize) -> Key<URL> {
