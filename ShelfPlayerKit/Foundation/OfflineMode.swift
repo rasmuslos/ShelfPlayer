@@ -3,7 +3,7 @@ import OSLog
 
 @Observable @MainActor
 public final class OfflineMode: Sendable {
-    nonisolated public static let availabilityTimeout: TimeInterval = 2.5
+    nonisolated public static let availabilityTimeout: TimeInterval = 4
     
     private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "OfflineMode")
     
