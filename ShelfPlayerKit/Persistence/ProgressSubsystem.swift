@@ -190,7 +190,15 @@ public extension PersistenceManager.ProgressSubsystem {
         let entities = try modelContext
             .fetch(FetchDescriptor<PersistedProgress>(predicate: #Predicate { $0.connectionID == connectionID }))
             .map { (key(primaryID: $0.primaryID, groupingID: $0.groupingID, connectionID: $0.connectionID), $0) }
-        let local = Dictionary(uniqueKeysWithValues: entities)
+        let local = Dictionary(entities) {
+            logger.warning("Found duplicate local progress entities for the same key")
+
+            let lhs = $0.lastUpdate
+            let rhs = $1.lastUpdate
+            
+            modelContext.delete(lhs > rhs ? $1 : $0)
+            return lhs > rhs ? $0 : $1
+        }
         let localSet = Set(local.keys)
         
         try Task.checkCancellation()
@@ -578,3 +586,4 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         Key(identifier: "hideFromContinueListening_\(connectionID)", cluster: "hideFromContinueListening", isCachePurgeable: true)
     }
 }
+

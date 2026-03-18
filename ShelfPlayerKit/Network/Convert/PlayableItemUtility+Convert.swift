@@ -22,14 +22,14 @@ extension PlayableItem.AudioFile {
             return nil
         }
         
-        var ext = track.metadata!.ext
+        var ext = track.metadata?.ext
         
-        if ext.starts(with: ".") {
-            ext.removeFirst()
+        if ext?.starts(with: ".") == true {
+            ext?.removeFirst()
         }
         
         self.init(ino: ino,
-                  fileExtension: ext,
+                  fileExtension: ext ?? "mp3",
                   offset: track.startOffset,
                   duration: track.duration)
     }
