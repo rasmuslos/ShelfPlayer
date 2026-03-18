@@ -416,7 +416,7 @@ public extension PersistenceManager.DownloadSubsystem {
             
             return Episode(downloaded: episode)
         } else {
-            let audiobookType = ItemIdentifier.ItemType.episode.rawValue
+            let audiobookType = ItemIdentifier.ItemType.audiobook.rawValue
             var audiobookDescriptor = FetchDescriptor<PersistedAudiobook>(predicate: #Predicate {
                 $0._id.contains(primaryID)
                 && $0._id.contains(connectionID)
