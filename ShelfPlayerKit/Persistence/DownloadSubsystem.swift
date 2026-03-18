@@ -713,6 +713,7 @@ public extension PersistenceManager.DownloadSubsystem {
                 
                 modelContext.insert(model)
             }
+            
             try modelContext.save()
             
             busy.remove(itemID)
@@ -739,7 +740,7 @@ public extension PersistenceManager.DownloadSubsystem {
         do {
             try await invalidateStatusCache()
         } catch {
-            logger.error("Failed to remove download cache key value cluster")
+            logger.error("Failed to remove download cache key value cluster for \(itemID): \(error)")
         }
         
         guard itemID.type != .podcast else {
@@ -747,19 +748,42 @@ public extension PersistenceManager.DownloadSubsystem {
                 throw PersistenceError.missing
             }
             
-            let episodes = try episodes(from: itemID)
-            
-            for episode in episodes {
-                try await remove(episode.id)
+            do {
+                let episodes = try episodes(from: itemID)
+                
+                for episode in episodes {
+                    do {
+                        try await remove(episode.id)
+                    } catch {
+                        logger.error("Failed to remove episode \(episode.id) while removing podcast \(itemID): \(error)")
+                    }
+                }
+            } catch {
+                logger.error("Failed to fetch podcast episodes for \(itemID): \(error)")
             }
             
-            try await removeAssets(assets(for: itemID))
+            do {
+                let podcastAssets = try assets(for: itemID)
+                
+                do {
+                    try await removeAssets(podcastAssets)
+                } catch {
+                    logger.error("Failed to remove podcast assets for \(itemID): \(error)")
+                }
+            } catch {
+                logger.error("Failed to fetch podcast assets for \(itemID): \(error)")
+            }
             
             for coverSize in ImageSize.allCases {
-                try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID, size: coverSize), nil)
+                do {
+                    try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID, size: coverSize), nil)
+                } catch {
+                    logger.error("Failed to clear podcast cover cache for \(itemID) (\(coverSize.base)): \(error)")
+                }
             }
             
             modelContext.delete(podcast)
+            
             try modelContext.save()
             
             return
@@ -779,46 +803,73 @@ public extension PersistenceManager.DownloadSubsystem {
         
         busy.insert(itemID)
         
+        if let model: any PersistentModel = persistedAudiobook(for: itemID) ?? persistedEpisode(for: itemID) {
+            modelContext.delete(model)
+        } else {
+            logger.error("Tried to delete non-existent model for \(itemID)")
+        }
+        
         do {
-            if let model: any PersistentModel = persistedAudiobook(for: itemID) ?? persistedEpisode(for: itemID) {
-                modelContext.delete(model)
-            } else {
-                logger.error("Tried to delete non-existent model for \(itemID)")
-            }
-            
             try modelContext.delete(model: SchemaV2.PersistedChapter.self, where: #Predicate { $0._itemID == itemID.description })
-            
+        } catch {
+            logger.error("Failed to delete chapters for \(itemID): \(error)")
+        }
+        
+        do {
             let assets = try assets(for: itemID)
             
-            try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
-            try await PersistenceManager.shared.keyValue.remove(cluster: "assetFailedAttempts_\(itemID.description)")
-            
-            for coverSize in ImageSize.allCases {
-                try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID, size: coverSize), nil)
-            }
-            
-            if !assets.isEmpty {
+            do {
                 try await removeAssets(assets)
+            } catch {
+                logger.error("Failed to remove assets for \(itemID): \(error)")
             }
-            
+        } catch {
+            logger.error("Failed to fetch assets for \(itemID): \(error)")
+        }
+        
+        do {
+            try await PersistenceManager.shared.keyValue.set(.cachedDownloadStatus(itemID: itemID), nil)
+        } catch {
+            logger.error("Failed to clear cached download status for \(itemID): \(error)")
+        }
+        
+        do {
+            try await PersistenceManager.shared.keyValue.remove(cluster: "assetFailedAttempts_\(itemID.description)")
+        } catch {
+            logger.error("Failed to clear asset attempt cluster for \(itemID): \(error)")
+        }
+        
+        for coverSize in ImageSize.allCases {
+            do {
+                try await PersistenceManager.shared.keyValue.set(.coverURLCache(itemID: itemID, size: coverSize), nil)
+            } catch {
+                logger.error("Failed to clear cover cache for \(itemID) (\(coverSize.base)): \(error)")
+            }
+        }
+        
+        do {
             try modelContext.save()
-            
-            await RFNotification[.downloadStatusChanged].send(payload: (itemID, .none))
-            
+        } catch {
             busy.remove(itemID)
-            
+            throw error
+        }
+        
+        await RFNotification[.downloadStatusChanged].send(payload: (itemID, .none))
+        
+        do {
             try await removeEmptyPodcasts()
         } catch {
-            logger.error("Error removing download: \(error)")
-            busy.remove(itemID)
-            
-            throw error
+            logger.error("Failed to remove empty podcasts after removing \(itemID): \(error)")
         }
     }
     func removeAll() async throws {
         do {
             try modelContext.delete(model: PersistedAudiobook.self)
-            
+        } catch {
+            logger.error("Failed to remove persisted audiobooks: \(error)")
+        }
+        
+        do {
             for episode in try episodes() {
                 do {
                     try await remove(episode.id)
@@ -826,14 +877,32 @@ public extension PersistenceManager.DownloadSubsystem {
                     logger.error("Failed to remove episode \(episode.id): \(error)")
                 }
             }
-            
-             try modelContext.delete(model: PersistedEpisode.self)
-             try modelContext.delete(model: PersistedPodcast.self)
-            
+        } catch {
+            logger.error("Failed to enumerate persisted episodes for removal: \(error)")
+        }
+        
+        do {
+            try modelContext.delete(model: PersistedEpisode.self)
+        } catch {
+            logger.error("Failed to remove persisted episodes: \(error)")
+        }
+        
+        do {
+            try modelContext.delete(model: PersistedPodcast.self)
+        } catch {
+            logger.error("Failed to remove persisted podcasts: \(error)")
+        }
+        
+        do {
             try modelContext.delete(model: PersistedAsset.self)
+        } catch {
+            logger.error("Failed to remove persisted assets: \(error)")
+        }
+        
+        do {
             try modelContext.delete(model: PersistedChapter.self)
         } catch {
-            logger.error("Failed to remove all downloads: \(error)")
+            logger.error("Failed to remove persisted chapters: \(error)")
         }
         
         do {
@@ -969,4 +1038,3 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         Key(identifier: "coverURL_\(itemID)_\(size)", cluster: "coverURLCache", isCachePurgeable: false)
     }
 }
-
