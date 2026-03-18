@@ -17,15 +17,24 @@ struct LoadingView: View {
     }
     
     struct Inner: View {
-        let symbols = ["pc", "server.rack", "cpu", "memorychip", "hourglass", "zzz"]
-        
         var body: some View {
-            ContentUnavailableView("loading", systemImage: symbols.randomElement()!)
-                .symbolEffect(.pulse)
+            VStack(spacing: 0) {
+                ProgressView()
+                    .tint(.secondary)
+                    .scaleEffect(2)
+                    .frame(width: 40, height: 40)
+                    .padding(.bottom, 8)
+                
+                Text("loading")
+                    .font(.caption.smallCaps())
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
 
 #Preview {
     LoadingView()
+        .tint(.red)
 }
