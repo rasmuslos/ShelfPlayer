@@ -48,7 +48,9 @@ extension SeriesView {
                 VStack(spacing: 16) {
                     ZStack {
                         ForEach(0..<amountVisible, id: \.hashValue) { index in
-                            ItemImage(item: viewModel.lazyLoader.items[index], size: .regular)
+                            let item = viewModel.lazyLoader.items.indices.contains(index) ? viewModel.lazyLoader.items[index] : nil
+                            
+                            ItemImage(item: item, size: .regular)
                                 .zIndex(zIndex(for: index))
                                 .padding(.horizontal, 70)
                                 .scaleEffect(scale(for: index))

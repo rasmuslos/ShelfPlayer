@@ -446,18 +446,28 @@ private extension AudioPlayer {
         
         commandCenter.changePlaybackPositionCommand.isEnabled = true
         commandCenter.changePlaybackPositionCommand.addTarget { [unowned self] event in
+            self.logger.info("MP-Command: changePlaybackPosition triggered")
+            
             if Defaults[.lockSeekBar] {
+                self.logger.error("MP-Command: changePlaybackPosition failed: seek bar is locked")
+                
                 return .commandFailed
             }
             
             guard let changePlaybackPositionCommandEvent = event as? MPChangePlaybackPositionCommandEvent else {
+                self.logger.error("MP-Command: changePlaybackPosition failed: invalid event type")
+                
                 return .commandFailed
             }
             
             let positionTime = changePlaybackPositionCommandEvent.positionTime
             
             Task {
-                try await seek(to: positionTime, insideChapter: true)
+                do {
+                    try await seek(to: positionTime, insideChapter: true)
+                } catch {
+                    self.logger.error("MP-Command: changePlaybackPosition failed: \(error)")
+                }
             }
             
             return .success
@@ -475,13 +485,22 @@ private extension AudioPlayer {
         
         commandCenter.seekBackwardCommand.isEnabled = true
         commandCenter.seekBackwardCommand.addTarget { event in
+            self.logger.info("MP-Command: seekBackward triggered")
+            
             guard let event = event as? MPSeekCommandEvent else {
+                self.logger.error("MP-Command: seekBackward failed: invalid event type")
+                
                 return .commandFailed
             }
             
             let type = event.type
             
             Task {
+                guard await self.current != nil else {
+                    self.logger.error("MP-Command: seekBackward failed: no active endpoint")
+                    return
+                }
+                
                 switch type {
                     case .beginSeeking: await self.beginSeeking(false)
                     default: await self.endSeeking()
@@ -492,13 +511,22 @@ private extension AudioPlayer {
         }
         commandCenter.seekForwardCommand.isEnabled = true
         commandCenter.seekForwardCommand.addTarget { event in
+            self.logger.info("MP-Command: seekForward triggered")
+            
             guard let event = event as? MPSeekCommandEvent else {
+                self.logger.error("MP-Command: seekForward failed: invalid event type")
+                
                 return .commandFailed
             }
             
             let type = event.type
             
             Task {
+                guard await self.current != nil else {
+                    self.logger.error("MP-Command: seekForward failed: no active endpoint")
+                    return
+                }
+                
                 switch type {
                     case .beginSeeking: await self.beginSeeking(true)
                     default: await self.endSeeking()
@@ -512,7 +540,13 @@ private extension AudioPlayer {
         commandCenter.skipBackwardCommand.preferredIntervals = [NSNumber(value: Defaults[.skipBackwardsInterval])]
         commandCenter.skipBackwardCommand.addTarget { _ in
             Task {
-                try await self.skip(forwards: false)
+                self.logger.info("MP-Command: skipBackward triggered")
+                
+                do {
+                    try await self.skip(forwards: false)
+                } catch {
+                    self.logger.error("MP-Command: skipBackward failed: \(error)")
+                }
             }
             
             return .success
@@ -521,7 +555,13 @@ private extension AudioPlayer {
         commandCenter.skipForwardCommand.preferredIntervals = [NSNumber(value: Defaults[.skipForwardsInterval])]
         commandCenter.skipForwardCommand.addTarget { _ in
             Task {
-                try await self.skip(forwards: true)
+                self.logger.info("MP-Command: skipForward triggered")
+                
+                do {
+                    try await self.skip(forwards: true)
+                } catch {
+                    self.logger.error("MP-Command: skipForward failed: \(error)")
+                }
             }
             
             return .success
@@ -570,4 +610,3 @@ private extension AudioPlayer {
         MPRemoteCommandCenter.shared().changePlaybackRateCommand.supportedPlaybackRates = Defaults[.playbackRates].map { NSNumber(value: $0) }
     }
 }
-

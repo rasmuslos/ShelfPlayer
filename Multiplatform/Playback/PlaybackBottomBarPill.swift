@@ -94,8 +94,6 @@ struct PlaybackBottomBarPill: View {
                 PlaybackBackwardButton()
                     .imageScale(.large)
                     .padding(.trailing, 8)
-            } else {
-                Spacer(minLength: 2)
             }
             
             PlaybackSmallTogglePlayButton()

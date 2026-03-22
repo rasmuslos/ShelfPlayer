@@ -176,6 +176,7 @@ struct PlaybackTogglePlayButton: View {
             }
         }
         .accessibilityRemoveTraits(.isImage)
+        .id("\(isLoading) \(satellite.isBuffering) \(satellite.nowPlayingItemID?.description ?? "-")")
     }
 }
 struct PlaybackSmallTogglePlayButton: View {
