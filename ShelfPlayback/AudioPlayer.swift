@@ -474,10 +474,26 @@ private extension AudioPlayer {
         }
         
         commandCenter.previousTrackCommand.isEnabled = false
+        commandCenter.previousTrackCommand.addTarget { _ in
+            Task {
+                do {
+                    try await self.skip(forwards: false)
+                } catch {
+                    self.logger.error("MP-Command: previousTrack failed: \(error)")
+                }
+            }
+            
+            return .success
+        }
+        
         commandCenter.nextTrackCommand.isEnabled = false
         commandCenter.nextTrackCommand.addTarget { _ in
             Task {
-                await self.advance()
+                do {
+                    try await self.skip(forwards: true)
+                } catch {
+                    self.logger.error("MP-Command: nextTrack failed: \(error)")
+                }
             }
             
             return .success
