@@ -129,12 +129,7 @@ public extension PersistenceManager.CustomizationSubsystem {
         }
         
         public static func available(for libraryType: LibraryMediaType) -> [Self] {
-            switch libraryType {
-                case .audiobooks:
-                    [.tabBar, .library]
-                case .podcasts:
-                    [.tabBar]
-            }
+            [.tabBar, .library]
         }
     }
 }

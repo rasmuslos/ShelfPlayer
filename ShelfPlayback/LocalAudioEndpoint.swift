@@ -480,16 +480,17 @@ private extension LocalAudioEndpoint {
             let suggestedStartTime: TimeInterval
             (audioTracks, chapters, suggestedStartTime, sessionID) = try await ABSClient[currentItemID.connectionID].startPlaybackSession(itemID: currentItemID)
             
-            let delta = abs(entity.currentTime - suggestedStartTime)
+            let entityCurrentTime = entity.isFinished ? 0 : entity.currentTime
+            let delta = abs(entityCurrentTime - suggestedStartTime)
             
             if delta > 60 {
-                logger.warning("Server suggested a playback start time of \(suggestedStartTime), but our local state indicates \(entity.currentTime). This may cause playback to skip or rewind. Using whichever is greater.")
-                startTime = max(entity.currentTime, suggestedStartTime)
+                logger.warning("Server suggested a playback start time of \(suggestedStartTime), but our local state indicates \(entityCurrentTime). This may cause playback to skip or rewind. Using whichever is greater.")
+                startTime = max(entityCurrentTime, suggestedStartTime)
             } else {
                 startTime = suggestedStartTime
             }
             
-            logger.info("Computed start time: \(startTime) (server suggested: \(suggestedStartTime), local entity: \(entity.currentTime) | \(entity.progress) | \(entity.lastUpdate)")
+            logger.info("Computed start time: \(startTime) (server suggested: \(suggestedStartTime), local entity: \(entityCurrentTime) | \(entity.progress) | \(entity.lastUpdate)")
             
             Defaults[.openPlaybackSessions].append(OpenPlaybackSessionPayload(sessionID: sessionID!, itemID: currentItemID))
         } catch {
