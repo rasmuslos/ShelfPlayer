@@ -27,9 +27,7 @@ struct PodcastView: View {
                 .listRowSeparator(.hidden)
                 .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             
-            if viewModel.episodes.isEmpty {
-                ProgressView()
-            } else {
+            if !viewModel.episodes.isEmpty {
                 HStack {
                     Menu {
                         ForEach(viewModel.seasons, id: \.hashValue) { season in
@@ -67,6 +65,8 @@ struct PodcastView: View {
                             Spacer(minLength: 0)
                             
                             Text("item.related.podcast.episodes.all")
+                                .font(.footnote)
+                                .foregroundStyle(Color.accentColor)
                         }
                     }
                 }
@@ -80,6 +80,7 @@ struct PodcastView: View {
             Footer()
         }
         .listStyle(.plain)
+        .navigationLinkIndicatorVisibility(.hidden)
         .ignoresSafeArea(edges: .top)
         .modify(if: zoom) {
             $0

@@ -111,6 +111,7 @@ extension PersistenceManager {
                 
                 return Dictionary(uniqueKeysWithValues: mapped)
             } catch {
+                logger.warning("Failed to fetch key-value entities for cluster \(cluster, privacy: .public): \(error, privacy: .public)")
                 return [:]
             }
         }

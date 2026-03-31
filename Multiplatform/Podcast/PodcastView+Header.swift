@@ -151,7 +151,7 @@ private struct Additional: View {
             Spacer()
         }
         .font(.footnote)
-        .foregroundStyle(.thickMaterial)
+        .foregroundStyle(.regularMaterial)
         .colorScheme(isLight ? .dark : .light)
     }
 }
@@ -174,10 +174,10 @@ private struct CompactPresentation: View {
     var body: some View {
         VStack(spacing: 0) {
             ItemImage(item: viewModel.podcast, size: .regular, contrastConfiguration: nil)
-                .frame(width: 240)
+                .frame(width: 200)
                 .shadow(radius: 16)
             
-            VStack(spacing: 4) {
+            VStack(spacing: 8) {
                 Title(largeFont: false, alignment: .center)
             }
             .padding(.top, 16)
@@ -192,7 +192,7 @@ private struct CompactPresentation: View {
                 .padding(.top, 16)
         }
         .padding(.top, 140)
-        .padding(.bottom, 12)
+        .padding(.bottom, 16)
         .padding(.horizontal, 20)
     }
 }

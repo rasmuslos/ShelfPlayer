@@ -141,6 +141,7 @@ public extension AudioPlayer {
             do {
                 current = try await LocalAudioEndpoint(item)
             } catch {
+                logger.warning("Failed to start audio player item \(item.itemID, privacy: .public): \(error, privacy: .public)")
                 await self.stop()
                 throw error
             }

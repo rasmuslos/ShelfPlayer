@@ -22,11 +22,11 @@ struct PlaybackTitle: View {
             Menu {
                 PlaybackMenuActions()
             } label: {
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 4) {
                     if let currentItem = satellite.nowPlayingItem {
                         if showTertiarySupplements, let episode = currentItem as? Episode, let releaseDate = episode.releaseDate {
                             Text(releaseDate, style: .date)
-                                .font(.caption.smallCaps())
+                                .font(.subheadline.smallCaps())
                                 .foregroundStyle(.tertiary)
                         }
                         
@@ -37,7 +37,6 @@ struct PlaybackTitle: View {
                             .modify(if: currentItem.id.type == .audiobook ) {
                                 $0
                             }
-                            .padding(.bottom, 4)
                         
                         Text(currentItem.authors, format: .list(type: .and, width: .short))
                             .id(currentItem.authors)

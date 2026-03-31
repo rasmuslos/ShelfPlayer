@@ -144,7 +144,7 @@ private extension CarPlayListenNowController {
     
     func makeOfflineRow(offlineEnabled: Bool) -> CPListItem {
         let row = CPListItem(
-            text: String(localized: offlineEnabled ? "navigation.offline.disable" : "navigation.offline.enable"),
+            text: offlineEnabled ? String(localized: "navigation.offline.disable") : String(localized: "navigation.offline.enable"),
             detailText: nil,
             image: UIImage(systemName: offlineEnabled ? "network.slash" : "network")
         )

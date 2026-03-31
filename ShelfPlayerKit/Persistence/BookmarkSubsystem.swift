@@ -105,6 +105,7 @@ public extension PersistenceManager.BookmarkSubsystem {
         do {
             createdOnServerAt = try await ABSClient[itemID.connectionID].createBookmark(primaryID: itemID.primaryID, time: time, note: note)
         } catch {
+            logger.warning("Failed to create bookmark on the server for \(itemID, privacy: .public) at \(time, privacy: .public). Saving locally as pending: \(error, privacy: .public)")
             createdOnServerAt = nil
         }
         
@@ -126,6 +127,7 @@ public extension PersistenceManager.BookmarkSubsystem {
             try await ABSClient[itemID.connectionID].updateBookmark(primaryID: bookmark.primaryID, time: bookmark.time, note: bookmark.note)
             bookmark.status = .synced
         } catch {
+            logger.warning("Failed to update bookmark on the server for \(itemID, privacy: .public) at \(time, privacy: .public). Saving locally as pending: \(error, privacy: .public)")
             bookmark.status = .pendingUpdate
         }
         
@@ -141,6 +143,7 @@ public extension PersistenceManager.BookmarkSubsystem {
             try await ABSClient[itemID.connectionID].deleteBookmark(primaryID: itemID.primaryID, time: time)
             deleteLocalBookmark = true
         } catch {
+            logger.warning("Failed to delete bookmark on the server for \(itemID, privacy: .public) at \(time, privacy: .public). Keeping local entry: \(error, privacy: .public)")
             deleteLocalBookmark = false
         }
         

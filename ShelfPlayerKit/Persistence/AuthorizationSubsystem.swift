@@ -48,6 +48,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
             do {
                 return try modelContext.fetch(descriptor).map { .init(id: UUID().uuidString, host: $0.host, username: $0.user) }
             } catch {
+                logger.warning("Failed to fetch known connections: \(error, privacy: .public)")
                 return []
             }
         }

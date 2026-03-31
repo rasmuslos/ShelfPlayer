@@ -29,6 +29,7 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
             
             return await INPlayMediaMediaItemResolutionResult.successes(with: convertSortedArray(items))
         } catch {
+            logger.warning("Failed to resolve media items for Siri playback intent: \(error, privacy: .public)")
             return [INPlayMediaMediaItemResolutionResult.unsupported(forReason: .serviceUnavailable)]
         }
     }
@@ -68,6 +69,7 @@ final class PlayMediaIntentHandler: NSObject, INPlayMediaIntentHandling {
                     return .init(code: .failureUnknownMediaType, userActivity: nil)
             }
         } catch {
+            logger.warning("Failed to handle Siri playback intent for \(itemID, privacy: .public): \(error, privacy: .public)")
             return .init(code: .failure, userActivity: nil)
         }
         

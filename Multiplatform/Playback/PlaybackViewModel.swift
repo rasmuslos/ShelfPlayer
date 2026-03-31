@@ -270,7 +270,7 @@ final class PlaybackViewModel {
             
             if isExpanded {
                 toggleExpanded()
-                try await Task.sleep(for: .seconds(1))
+                try await Task.sleep(for: .seconds(0.6))
             }
             
             bookmarkNote = ""

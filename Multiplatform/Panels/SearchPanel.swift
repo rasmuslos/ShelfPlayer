@@ -141,7 +141,7 @@ final class SearchViewModel {
             #endif
             
             do {
-                try await Task.sleep(for: .seconds(0.4))
+                try await Task.sleep(for: .seconds(1.2))
                 try Task.checkCancellation()
             } catch {
                 self.logger.error("Failed to sleep: \(error)")
@@ -164,18 +164,18 @@ final class SearchViewModel {
             
             do {
                 switch scope {
-                case .library:
-                    guard let library = self.library else {
-                        throw APIClientError.notFound
-                    }
-                    
-                    let grouped = try await ABSClient[library.id.connectionID].items(in: library.id, search: search)
-                    let part = grouped.4 + grouped.5
-                    let presort = grouped.0 + grouped.1 + grouped.2 + grouped.3 + part
-                    
-                    result = presort.sorted { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
-                case .global:
-                    result = try await ShelfPlayerKit.globalSearch(query: search, includeOnlineSearchResults: true)
+                    case .library:
+                        guard let library = self.library else {
+                            throw APIClientError.notFound
+                        }
+                        
+                        let grouped = try await ABSClient[library.id.connectionID].items(in: library.id, search: search)
+                        let part = grouped.4 + grouped.5
+                        let presort = grouped.0 + grouped.1 + grouped.2 + grouped.3 + part
+                        
+                        result = presort.sorted { $0.name.levenshteinDistanceScore(to: search) > $1.name.levenshteinDistanceScore(to: search) }
+                    case .global:
+                        result = try await ShelfPlayerKit.globalSearch(query: search, includeOnlineSearchResults: true)
                 }
             } catch {
                 self.logger.error("Failed to search: \(error)")

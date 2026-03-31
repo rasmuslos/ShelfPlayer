@@ -53,7 +53,7 @@ struct EditBookmarkSwipeAction: ViewModifier {
                     Task {
                         if playbackViewModel.isExpanded {
                             playbackViewModel.toggleExpanded()
-                            try await Task.sleep(for: .seconds(1))
+                            try await Task.sleep(for: .seconds(0.6))
                         }
                         
                         satellite.beginEditBookmark(at: bookmark.time, from: bookmark.itemID)

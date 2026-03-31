@@ -364,6 +364,7 @@ extension Satellite {
                     do {
                         try await PersistenceManager.shared.download.remove(itemID)
                     } catch {
+                        logger.warning("Failed to remove download before starting playback for \(itemID, privacy: .public): \(error, privacy: .public)")
                         notifyError.toggle()
                     }
                     
@@ -435,6 +436,7 @@ extension Satellite {
                 try await PersistenceManager.shared.bookmark.update(at: time, for: itemID, note: editBookmarkNote)
                 endWorking(on: itemID, successfully: true)
             } catch {
+                logger.warning("Failed to update bookmark at \(time, privacy: .public) for \(itemID, privacy: .public): \(error, privacy: .public)")
                 endWorking(on: itemID, successfully: false)
             }
             
@@ -459,6 +461,7 @@ extension Satellite {
 
                 endWorking(on: itemID, successfully: true)
             } catch {
+                logger.warning("Failed to delete bookmark at \(time, privacy: .public) for \(itemID, privacy: .public): \(error, privacy: .public)")
                 endWorking(on: itemID, successfully: false)
             }
         }
@@ -482,40 +485,12 @@ extension Satellite {
 
     func play() {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
-
             await AudioPlayer.shared.play()
-
-            do {
-                try await PlayIntent().donate()
-            } catch {
-                logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
-            }
-
-            endWorking(on: currentItemID, successfully: nil)
         }
     }
     func pause() {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
-
             await AudioPlayer.shared.pause()
-
-            do {
-                try await PauseIntent().donate()
-            } catch {
-                logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
-            }
-
-            endWorking(on: currentItemID, successfully: nil)
         }
     }
     func togglePlaying() {
@@ -531,8 +506,6 @@ extension Satellite {
             guard let currentItemID = nowPlayingItemID else {
                 return
             }
-
-            startWorking(on: currentItemID)
 
             do {
                 try await AudioPlayer.shared.skip(forwards: forwards)
@@ -550,10 +523,9 @@ extension Satellite {
                 } catch {
                     logger.error("Failed to donate skip intent: \(error)")
                 }
-
-                endWorking(on: currentItemID, successfully: nil)
             } catch {
-                endWorking(on: currentItemID, successfully: false)
+                logger.warning("Failed to skip item \(currentItemID, privacy: .public): \(error, privacy: .public)")
+                notifyError.toggle()
             }
         }
     }
@@ -563,15 +535,12 @@ extension Satellite {
                 return
             }
 
-            startWorking(on: currentItemID)
-
             do {
                 try await AudioPlayer.shared.seek(to: time, insideChapter: insideChapter)
-                endWorking(on: currentItemID, successfully: true)
-
                 completion()
             } catch {
-                endWorking(on: currentItemID, successfully: false)
+                logger.warning("Failed to seek item \(currentItemID, privacy: .public) to \(time, privacy: .public): \(error, privacy: .public)")
+                notifyError.toggle()
             }
         }
     }
@@ -640,6 +609,7 @@ extension Satellite {
 
                 endWorking(on: itemID, successfully: true)
             } catch {
+                logger.warning("Failed to start playback for \(itemID, privacy: .public): \(error, privacy: .public)")
                 endWorking(on: itemID, successfully: false)
             }
         }
@@ -664,6 +634,7 @@ extension Satellite {
                 try await AudioPlayer.shared.queue([.init(itemID: itemID, origin: .unknown)])
                 endWorking(on: itemID, successfully: true)
             } catch {
+                logger.warning("Failed to queue item \(itemID, privacy: .public): \(error, privacy: .public)")
                 endWorking(on: itemID, successfully: false)
             }
         }
@@ -679,6 +650,7 @@ extension Satellite {
 
                 notifySuccess.toggle()
             } catch {
+                logger.warning("Failed to queue \(itemIDs.count, privacy: .public) item(s): \(error, privacy: .public)")
                 notifyError.toggle()
             }
 
@@ -690,12 +662,6 @@ extension Satellite {
 
     func setPlaybackRate(_ rate: Percentage) {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
-
             await AudioPlayer.shared.setPlaybackRate(rate)
 
             do {
@@ -703,19 +669,13 @@ extension Satellite {
             } catch {
                 logger.error("Failed to donate SetPlaybackRateIntent: \(error)")
             }
-
-            endWorking(on: currentItemID, successfully: true)
+            
+            notifySuccess.toggle()
         }
     }
 
     func setSleepTimer(_ configuration: SleepTimerConfiguration?) {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
-
             await AudioPlayer.shared.setSleepTimer(configuration)
 
             do {
@@ -728,23 +688,17 @@ extension Satellite {
                     default:
                         break
                 }
+                
+                notifySuccess.toggle()
             } catch {
                 logger.error("Failed to donate SetSleepTimerIntent: \(error)")
             }
 
             resolveRemainingSleepTime()
-
-            endWorking(on: currentItemID, successfully: true)
         }
     }
     func extendSleepTimer() {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
-
             await AudioPlayer.shared.extendSleepTimer()
 
             do {
@@ -752,8 +706,8 @@ extension Satellite {
             } catch {
                 logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
             }
-
-            endWorking(on: currentItemID, successfully: true)
+            
+            notifySuccess.toggle()
         }
     }
     func setSleepTimerToChapter(_ chapter: Chapter) {
@@ -762,7 +716,6 @@ extension Satellite {
                 return
             }
 
-            startWorking(on: currentItemID)
             let chapters = await AudioPlayer.shared.chapters
 
             guard let index = chapters.firstIndex(of: chapter),
@@ -781,89 +734,54 @@ extension Satellite {
             } catch {
                 logger.error("Failed to donate ExtendSleepTimerIntent: \(error)")
             }
-
-            endWorking(on: currentItemID, successfully: true)
+            
+            notifySuccess.toggle()
         }
     }
 
     func skip(queueIndex index: Int) {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
             await AudioPlayer.shared.skip(queueIndex: index)
-            endWorking(on: currentItemID, successfully: true)
+            notifySuccess.toggle()
         }
     }
     func skip(upNextQueueIndex index: Int) {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
             await AudioPlayer.shared.skip(upNextQueueIndex: index)
-            endWorking(on: currentItemID, successfully: true)
+            notifySuccess.toggle()
         }
     }
 
     func move(queueIndex: IndexSet, to: Int) {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
             await AudioPlayer.shared.move(queueIndex: queueIndex, to: to)
-            endWorking(on: currentItemID, successfully: true)
+            notifySuccess.toggle()
         }
     }
 
     func remove(queueIndex index: Int) {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
             await AudioPlayer.shared.remove(queueIndex: index)
-            endWorking(on: currentItemID, successfully: true)
+            notifySuccess.toggle()
         }
     }
     func remove(upNextQueueIndex index: Int) {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
             await AudioPlayer.shared.remove(upNextQueueIndex: index)
-            endWorking(on: currentItemID, successfully: true)
+            notifySuccess.toggle()
         }
     }
 
     func clearQueue() {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
             await AudioPlayer.shared.clearQueue()
-            endWorking(on: currentItemID, successfully: true)
+            notifySuccess.toggle()
         }
     }
     func clearUpNextQueue() {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
-                return
-            }
-
-            startWorking(on: currentItemID)
             await AudioPlayer.shared.clearUpNextQueue()
-            endWorking(on: currentItemID, successfully: true)
+            notifySuccess.toggle()
         }
     }
 }
@@ -884,6 +802,7 @@ extension Satellite {
                 
                 endWorking(on: itemID, successfully: true)
             } catch {
+                logger.warning("Failed to mark \(itemID, privacy: .public) as finished: \(error, privacy: .public)")
                 endWorking(on: itemID, successfully: false)
             }
         }
@@ -896,6 +815,7 @@ extension Satellite {
                 try await PersistenceManager.shared.progress.markAsListening(itemID)
                 endWorking(on: itemID, successfully: true)
             } catch {
+                logger.warning("Failed to mark \(itemID, privacy: .public) as unfinished: \(error, privacy: .public)")
                 endWorking(on: itemID, successfully: false)
             }
         }
@@ -908,6 +828,7 @@ extension Satellite {
                 try await PersistenceManager.shared.progress.delete(itemID: itemID)
                 endWorking(on: itemID, successfully: true)
             } catch {
+                logger.warning("Failed to delete progress for \(itemID, privacy: .public): \(error, privacy: .public)")
                 endWorking(on: itemID, successfully: false)
             }
         }
@@ -960,6 +881,7 @@ extension Satellite {
 
                 notifySuccess.toggle()
             } catch {
+                logger.warning("Failed to remove download for \(itemID, privacy: .public): \(error, privacy: .public)")
                 notifyError.toggle()
             }
         }
@@ -996,6 +918,7 @@ private extension Satellite {
 
                 self.nowPlayingItem = item
             } catch {
+                logger.warning("Failed to resolve now playing item \(currentItemID, privacy: .public): \(error, privacy: .public)")
                 self.notifyError.toggle()
             }
         }
@@ -1013,6 +936,7 @@ private extension Satellite {
                     self.bookmarks = bookmarks
                 }
             } catch {
+                logger.warning("Failed to load bookmarks for \(itemID, privacy: .public): \(error, privacy: .public)")
                 withAnimation {
                     self.bookmarks = []
                 }

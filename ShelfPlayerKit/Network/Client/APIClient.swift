@@ -76,11 +76,18 @@ public final actor APIClient: Sendable {
         func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge) async -> (URLSession.AuthChallengeDisposition, URLCredential?) {
             await PersistenceManager.shared.authorization.handleURLSessionChallenge(challenge)
         }
-        public func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) async -> URLRequest? {
+//        func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest) async -> URLRequest? {
+//            if let path = task.originalRequest?.url?.pathComponents, path.count == 3 && path[1] == "auth" && path[2] == "openid" {
+//                nil
+//            } else {
+//                request
+//            }
+//        }
+        func urlSession(_ session: URLSession, task: URLSessionTask, willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest, completionHandler: @escaping (URLRequest?) -> Void) {
             if let path = task.originalRequest?.url?.pathComponents, path.count == 3 && path[1] == "auth" && path[2] == "openid" {
-                nil
+                completionHandler(nil)
             } else {
-                request
+                completionHandler(request)
             }
         }
     }
@@ -259,6 +266,7 @@ private extension APIClient {
             let response = try await perform(request)
             responseSubject.send((id, (response, nil)))
         } catch {
+            logger.warning("Queued request failed for \(request.method.value, privacy: .public) \(request.path, privacy: .public): \(error, privacy: .public)")
             responseSubject.send((id, (nil, error)))
         }
         
@@ -516,4 +524,3 @@ private final class CheckedContinuationBox<T: Sendable>: @unchecked Sendable {
         lock.unlock()
     }
 }
-

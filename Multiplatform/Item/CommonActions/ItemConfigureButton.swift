@@ -15,7 +15,7 @@ struct ItemConfigureButton: View {
     let itemID: ItemIdentifier
     
     var body: some View {
-        Button("item.configure", systemImage: "wrench.and.screwdriver.fill") {
+        Button("item.configure", systemImage: "gearshape.fill") {
             satellite.present(.configureGrouping(itemID))
         }
         .matchedTransitionSource(id: "configure-grouping", in: namespace!)

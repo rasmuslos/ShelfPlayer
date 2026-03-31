@@ -18,7 +18,7 @@ struct PlayableItemSwipeActionsModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .swipeActions(edge: .leading) {
-                QueueButton(itemID: itemID, hideLast: true)
+                QueueButton(itemID: itemID)
                     .labelStyle(.iconOnly)
                     .tint(tintColor.accent)
             }

@@ -14,7 +14,7 @@ import BackgroundTasks
 import ShelfPlayback
 
 struct ShelfPlayer {
-    static let logger = Logger(subsystem: "io.rfk.ShelfPlayer", category: "Hooks")
+    static nonisolated let logger = Logger(subsystem: "io.rfk.ShelfPlayer", category: "Hooks")
     
     // MARK: Hooks
     
@@ -144,13 +144,18 @@ struct ShelfPlayer {
             do {
                 try FileManager.default.moveItem(at: $0, to: targetURL)
             } catch {
+                logger.warning("Failed to move coordinated log archive to \(targetURL.lastPathComponent, privacy: .public): \(error, privacy: .public)")
                 moveError = error
             }
         }
         
-        if let error = error ?? moveError {
-            await logger.error("Failed to create zip log archive: \(error)")
+        if let error {
+            logger.error("Failed to create zip log archive: \(error)")
             throw error
+        }
+        
+        if let moveError {
+            throw moveError
         }
         
         return targetURL

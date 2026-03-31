@@ -42,8 +42,13 @@ struct PodcastLibraryPanel: View {
             if !tabs.isEmpty {
                 ForEach(Array(tabs.enumerated()), id: \.element) { (index, row) in
                     NavigationLink(value: NavigationDestination.tabValue(row)) {
-                        Label(row.label, systemImage: row.image)
-                            .foregroundStyle(.primary)
+                        Label {
+                            Text(row.label)
+                                .foregroundStyle(.primary)
+                        } icon: {
+                            Image(systemName: row.image)
+                                .foregroundStyle(Color.accentColor)
+                        }
                     }
                     .listRowSeparator(index == 0 ? .hidden : .automatic, edges: .top)
                 }

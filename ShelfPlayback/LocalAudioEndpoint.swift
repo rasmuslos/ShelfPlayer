@@ -867,6 +867,7 @@ private extension LocalAudioEndpoint {
         do {
             try await start()
         } catch {
+            logger.warning("Failed to start playback for next queued item \(nextItem.itemID, privacy: .public): \(error, privacy: .public)")
             await AudioPlayer.shared.stop(endpointID: id)
         }
     }

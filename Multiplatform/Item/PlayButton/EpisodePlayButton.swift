@@ -35,6 +35,7 @@ struct EpisodePlayButton: View {
     private var label: String {
         func formatDuration() -> String {
             episode.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute], maximumUnitCount: 1))
+                .lowercased()
         }
         
         if let isFinished = tracker.isFinished, isFinished {
@@ -42,9 +43,13 @@ struct EpisodePlayButton: View {
         } else if let progress, progress <= 0 {
             return formatDuration()
         } else if isPlaying, satellite.duration > 0 {
-            return (satellite.duration - satellite.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+            return (satellite.duration - satellite.currentTime)
+                .formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+                .lowercased()
         } else if let currentTime = tracker.currentTime, let progress, progress > 0 {
-            return ((self.tracker.duration ?? episode.duration) - currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+            return ((self.tracker.duration ?? episode.duration) - currentTime)
+                .formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+                .lowercased()
         } else {
             return formatDuration()
         }
@@ -96,7 +101,7 @@ struct EpisodePlayButton: View {
             .padding(.trailing, 4)
            
             Rectangle()
-                .fill(.gray.opacity(0.25))
+                .fill(.gray.opacity(0.44))
                 .overlay(alignment: .leading) {
                     if let progress {
                         Rectangle()
@@ -115,7 +120,8 @@ struct EpisodePlayButton: View {
                 .lineLimit(1)
                 .contentTransition(.numericText(countsDown: true))
         }
-        .font(.caption2)
+        .bold()
+        .font(.caption)
     }
     
     var body: some View {
@@ -125,9 +131,9 @@ struct EpisodePlayButton: View {
             text()
                 .opacity(highlighted ? 0 : 1)
                 .padding(.vertical, 6)
-                .padding(.horizontal, 12)
-                .background(highlighted ? .white : .secondary.opacity(0.25))
-                .foregroundStyle(highlighted ? .black : .primary)
+                .padding(.horizontal, 10)
+                .background(highlighted ? .white : .secondary.opacity(0.12))
+                .foregroundStyle(highlighted ? .black : .accentColor)
                 .modify(if: highlighted) {
                     $0
                         .reverseMask {

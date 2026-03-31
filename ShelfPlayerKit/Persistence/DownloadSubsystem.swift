@@ -178,6 +178,7 @@ private extension PersistenceManager.DownloadSubsystem {
             
             return status
         } catch {
+            logger.warning("Failed to fetch download status for \(itemID, privacy: .public): \(error, privacy: .public)")
             return .none
         }
     }
@@ -201,6 +202,7 @@ private extension PersistenceManager.DownloadSubsystem {
             
             try finishedDownloading(asset: asset)
         } catch {
+            logger.warning("Failed to finalize download task \(taskIdentifier, privacy: .public): \(error, privacy: .public)")
             assetDownloadFailed(taskIdentifier: taskIdentifier)
         }
     }
@@ -539,6 +541,7 @@ public extension PersistenceManager.DownloadSubsystem {
                 $0._itemID == itemID.description
             })).map { .init(id: $0.index, startOffset: $0.startOffset, endOffset: $0.endOffset, title: $0.name) }
         } catch {
+            logger.warning("Failed to fetch persisted chapters for \(itemID, privacy: .public): \(error, privacy: .public)")
             return []
         }
     }
@@ -850,6 +853,7 @@ public extension PersistenceManager.DownloadSubsystem {
         do {
             try modelContext.save()
         } catch {
+            logger.warning("Failed to save removal state for \(itemID, privacy: .public): \(error, privacy: .public)")
             busy.remove(itemID)
             throw error
         }

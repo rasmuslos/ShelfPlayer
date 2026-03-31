@@ -130,6 +130,7 @@ private extension AudiobookViewModel {
                     self.presentedPDF = data
                 }
             } catch {
+                self.logger.warning("Failed to load supplementary PDF \(pdf.ino, privacy: .public) for \(audiobookID, privacy: .public): \(error, privacy: .public)")
                 withAnimation {
                     loadingPDF = false
                     notifyError.toggle()
@@ -168,6 +169,7 @@ private extension AudiobookViewModel {
                         
                         return (author, audiobooks)
                     } catch {
+                        self.logger.warning("Failed to load related audiobooks for author \(author, privacy: .public): \(error, privacy: .public)")
                         return nil
                     }
                 }
@@ -216,6 +218,7 @@ private extension AudiobookViewModel {
                         
                         return (series, audiobooks)
                     } catch {
+                        self.logger.warning("Failed to load related audiobooks for series \(series.name, privacy: .public): \(error, privacy: .public)")
                         return nil
                     }
                 }
@@ -256,6 +259,7 @@ private extension AudiobookViewModel {
                         
                         return (narrator, audiobooks)
                     } catch {
+                        self.logger.warning("Failed to load related audiobooks for narrator \(narrator, privacy: .public): \(error, privacy: .public)")
                         return nil
                     }
                 }

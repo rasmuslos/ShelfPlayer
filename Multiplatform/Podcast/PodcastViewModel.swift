@@ -264,11 +264,13 @@ private extension PodcastViewModel {
     }
     
     func fetchEpisodes() async {
-        #if DEBUG && false
-        self.episodes = .init(repeating: .fixture, count: 1)
-
-        updateVisible()
-        return
+        #if DEBUG
+        if podcast.id.libraryID == "fixture" {
+            self.episodes = .init(repeating: .fixture, count: 1)
+            updateVisible()
+            
+            return
+        }
         #endif
         
         do {

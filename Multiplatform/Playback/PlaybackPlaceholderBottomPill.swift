@@ -46,6 +46,10 @@ struct PlaybackPlaceholderBottomPill: View {
                 }
                 
                 Spacer(minLength: 0)
+                
+                if satellite.isLoading(observing: itemID) {
+                    ProgressView()
+                }
             }
             .contentShape(.rect)
             .padding(.horizontal, 16)

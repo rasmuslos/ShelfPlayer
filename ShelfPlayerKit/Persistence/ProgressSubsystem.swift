@@ -86,6 +86,7 @@ extension PersistenceManager.ProgressSubsystem {
         do {
             try await ABSClient[entity.connectionID].delete(progressID: entity.id)
         } catch {
+            logger.warning("Failed to delete progress \(entity.id, privacy: .public) on the server. Marking tombstone locally: \(error, privacy: .public)")
             entity.status = .tombstone
         }
         
@@ -586,4 +587,3 @@ private extension PersistenceManager.KeyValueSubsystem.Key {
         Key(identifier: "hideFromContinueListening_\(connectionID)", cluster: "hideFromContinueListening", isCachePurgeable: true)
     }
 }
-

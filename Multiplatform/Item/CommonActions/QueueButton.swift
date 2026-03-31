@@ -17,7 +17,6 @@ struct QueueButton: View {
     let itemID: ItemIdentifier
     
     var short: Bool = false
-    var hideLast: Bool = false
     
     var body: some View {
         Button(short ? "playback.queue.add.short" : "playback.queue.add", systemImage: Self.systemImage) {

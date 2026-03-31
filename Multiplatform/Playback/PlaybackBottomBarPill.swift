@@ -18,16 +18,36 @@ struct PlaybackBottomBarPill: View {
     
     var decorative = false
     
-    private var nowPlayingItemName: String {
-        satellite.nowPlayingItem?.name ?? "loading"
+    private var itemName: String {
+        if let chapter = satellite.chapter, satellite.nowPlayingItemID?.type == .audiobook {
+            chapter.title
+        } else {
+            satellite.nowPlayingItem?.name ?? String(localized: "loading")
+        }
+    }
+    private var itemSubtitle: [String] {
+        var parts = [String]()
+        
+        if let audiobook = satellite.nowPlayingItem as? Audiobook {
+            parts.append(audiobook.name)
+            
+            if !audiobook.authors.isEmpty {
+                parts.append(audiobook.authors.formatted(.list(type: .and, width: .narrow)))
+            }
+        } else if let episode = satellite.nowPlayingItem as? Episode {
+            parts.append(episode.podcastName)
+            
+            if let releaseDate = episode.releaseDate {
+                parts.append(releaseDate.formatted(date: .abbreviated, time: .omitted))
+            }
+            if let chapter = satellite.chapter {
+                parts.append(chapter.title)
+            }
+        }
+        
+        return parts
     }
     
-    @ViewBuilder
-    private var itemName: some View {
-        Text(nowPlayingItemName)
-            .lineLimit(1)
-            .id(nowPlayingItemName + "_nowPlaying_collapsed_name")
-    }
     @ViewBuilder
     private var image: some View {
         ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: viewModel.PILL_IMAGE_CORNER_RADIUS)
@@ -63,43 +83,30 @@ struct PlaybackBottomBarPill: View {
             .id((satellite.nowPlayingItemID?.description ?? "qkwndoiqind") + "_nowPlaying_image_collapsed")
             
             VStack(alignment: .leading, spacing: 0) {
-                if let episode = satellite.nowPlayingItem as? Episode, let releaseDate = episode.releaseDate {
-                    Text(releaseDate, style: .date)
-                        .font(.caption.smallCaps())
-                        .foregroundStyle(.tertiary)
-                    
-                    if let chapter = satellite.chapter {
-                        Text(verbatim: chapter.title + " • " + episode.podcastName)
-                            .lineLimit(1)
-                            .id(nowPlayingItemName + "_nowPlaying_collapsed_chapter")
-                    } else {
-                        itemName
-                    }
-                } else if let chapter = satellite.chapter {
-                    itemName
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                    
-                    Text(chapter.title)
+                Text(itemName)
+                    .lineLimit(1)
+                
+                if !itemSubtitle.isEmpty {
+                    Text(itemSubtitle.joined(separator: " • "))
+                        .foregroundStyle(.secondary)
                         .lineLimit(1)
-                        .id(chapter.title + "_nowPlaying_collapsed_chapter")
-                } else {
-                    itemName
                 }
             }
+            .id((satellite.nowPlayingItem?.name ?? "wngrwghrgg") + "_nowPlaying_collapsed_name")
             
             Spacer(minLength: 0)
             
             if viewModel.isPillBackButtonVisible {
                 PlaybackBackwardButton()
-                    .imageScale(.large)
-                    .padding(.trailing, 8)
+                    .bold()
+                    .padding(.trailing, 4)
             }
             
             PlaybackSmallTogglePlayButton()
-                .imageScale(.large)
+                .font(.system(size: 20))
         }
         .contentShape(.rect)
+        .font(.system(size: 15))
         .padding(.horizontal, 16)
         .id((satellite.nowPlayingItemID?.description ?? "wejjfnwioejf") + "_nowPlaying_bottom_pill")
     }
@@ -138,7 +145,7 @@ struct PlaybackBottomBarPill: View {
                     }
                 }
             }
-            .id(nowPlayingItemName + "_nowPlaying_collapsed")
+            .id((satellite.nowPlayingItem?.name ?? "wngrwghrgg") + "_nowPlaying_collapsed")
         }
     }
 }

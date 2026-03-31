@@ -156,7 +156,7 @@ struct PlayButton: View {
         Menu {
             ControlGroup {
                 QueuePlayButton(itemID: item.id)
-                QueueButton(itemID: item.id, short: true, hideLast: true)
+                QueueButton(itemID: item.id, short: true)
             }
             
             ProgressButton(itemID: item.id, tint: false)

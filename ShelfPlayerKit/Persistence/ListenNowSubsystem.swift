@@ -243,6 +243,7 @@ private struct PlayableItemProgressActiveResolver: PersistenceManager.ListenNowS
                 
                 resolved.append(.init(item: item, timestamp: entity.lastUpdate, relevance: 70))
             } catch {
+                PersistenceManager.ListenNowSubsystem.logger.warning("Failed to resolve listen now entity \(entity.primaryID, privacy: .public): \(error, privacy: .public)")
                 throw error
             }
         }
@@ -265,6 +266,7 @@ private struct PlayableItemProgressActiveResolver: PersistenceManager.ListenNowS
             PersistenceManager.ListenNowSubsystem.logger.warning("Failed to resolve listen now entity because offline: \(primaryID)")
             return nil
         } catch {
+            PersistenceManager.ListenNowSubsystem.logger.warning("Failed to resolve listen now entity \(primaryID, privacy: .public): \(error, privacy: .public)")
             throw error
         }
     }

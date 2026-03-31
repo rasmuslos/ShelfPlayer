@@ -100,7 +100,7 @@ private struct RowLabel: View {
                     satellite.start(episode.id, origin: displayContext.origin)
                 } label: {
                     ItemImage(item: episode, size: .small)
-                        .frame(width: 92)
+                        .frame(width: 80)
                         .overlay {
                             if satellite.isLoading(observing: episode.id) {
                                 ZStack {
@@ -120,23 +120,21 @@ private struct RowLabel: View {
                 .padding(.trailing, 8)
             }
             
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(episode.name)
                     .lineLimit(2)
-                    .bold()
-                    .font(.callout)
+                    .font(.headline)
                 
                 if let description = episode.descriptionText {
                     Text(description)
+                        .font(.subheadline)
                         .lineLimit(context.lineLimit)
                         .multilineTextAlignment(.leading)
-                        .font(.caption)
                         .foregroundStyle(.secondary)
-                        .padding(.top, 4)
                 }
                 
                 EpisodeItemActions(episode: episode, context: context)
-                    .padding(.top, 8)
+                    .padding(.top, context == .podcast ? 2 : 0)
             }
             
             Spacer(minLength: 0)
@@ -165,17 +163,6 @@ struct EpisodeItemActions: View {
                         .fixedSize()
                 }
             
-            Group {
-                if episode.type == .trailer {
-                    Label("item.trailer", systemImage: "movieclapper.fill")
-                } else if episode.type == .bonus {
-                    Label("item.bonus", systemImage: "fireworks")
-                }
-            }
-            .imageScale(.small)
-            .font(.caption2)
-            .labelStyle(.iconOnly)
-            
             if !context.isActionDateHidden, let releaseDate = episode.releaseDate {
                 Group {
                     if context.usesShortDateStyle {
@@ -184,20 +171,33 @@ struct EpisodeItemActions: View {
                         Text(releaseDate, style: .date)
                     }
                 }
-                .font(.caption2)
+                .font(.footnote.smallCaps())
                 .foregroundStyle(.secondary)
             }
             
             Spacer(minLength: 4)
             
+            Group {
+                if episode.type == .trailer {
+                    Label("item.trailer", systemImage: "movieclapper.fill")
+                } else if episode.type == .bonus {
+                    Label("item.bonus", systemImage: "fireworks")
+                }
+            }
+            .imageScale(.small)
+            .font(.caption)
+            .labelStyle(.iconOnly)
+            
             if let status = download.status {
                 switch status {
-                case .downloading:
-                    DownloadButton(itemID: episode.id, progressVisibility: .episode)
-                case .completed:
-                    Image(systemName: "arrow.down")
-                        .font(.system(size: 10))
-                        .foregroundStyle(.secondary)
+                    case .downloading:
+                        DownloadButton(itemID: episode.id, progressVisibility: .episode)
+                    case .completed:
+                        Image(systemName: "arrow.down")
+                            .font(.caption)
+                            .symbolVariant(.circle.fill)
+                            .symbolRenderingMode(.multicolor)
+                            .foregroundStyle(.secondary.opacity(0.6))
                 default:
                     EmptyView()
                 }
@@ -220,10 +220,7 @@ struct EpisodeItemActions: View {
 
 private extension EpisodeList.PresentationContext {
     var usesShortDateStyle: Bool {
-        switch self {
-            case .podcast: false
-            default: true
-        }
+        true
     }
     var isHighlighted: Bool {
         switch self {
