@@ -96,7 +96,7 @@ private struct PodcastDescription: View {
             } label: {
                 HStack {
                     Text(description)
-                        .font(.callout)
+                        .font(.subheadline)
                         .lineLimit(3)
                     
                     Spacer()
@@ -177,7 +177,7 @@ private struct CompactPresentation: View {
                 .frame(width: 200)
                 .shadow(radius: 16)
             
-            VStack(spacing: 8) {
+            VStack(spacing: 4) {
                 Title(largeFont: false, alignment: .center)
             }
             .padding(.top, 16)

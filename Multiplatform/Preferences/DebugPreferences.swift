@@ -23,7 +23,8 @@ struct DebugPreferences: View {
                         Spacer(minLength: 0)
                         
                         Image(systemName: "lifepreserver")
-                            .font(.system(size: 92))
+                            .font(.largeTitle)
+                            .imageScale(.large)
                         
                         Spacer(minLength: 0)
                     }

@@ -15,7 +15,7 @@ struct WhatsNewSheet: View {
     private func row(systemImage: String, headline: String, text: String) -> some View {
         HStack(alignment: .top, spacing: 0) {
             Image(systemName: systemImage)
-                .font(.system(size: 44))
+                .font(.largeTitle)
                 .symbolRenderingMode(.monochrome)
                 .foregroundStyle(Color.accentColor)
                 .frame(width: 60)

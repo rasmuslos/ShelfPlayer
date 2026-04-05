@@ -84,10 +84,12 @@ struct PlaybackBottomBarPill: View {
             
             VStack(alignment: .leading, spacing: 0) {
                 Text(itemName)
+                    .font(.subheadline)
                     .lineLimit(1)
                 
                 if !itemSubtitle.isEmpty {
                     Text(itemSubtitle.joined(separator: " • "))
+                        .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
@@ -103,10 +105,9 @@ struct PlaybackBottomBarPill: View {
             }
             
             PlaybackSmallTogglePlayButton()
-                .font(.system(size: 20))
+                .font(.title3)
         }
         .contentShape(.rect)
-        .font(.system(size: 15))
         .padding(.horizontal, 16)
         .id((satellite.nowPlayingItemID?.description ?? "wejjfnwioejf") + "_nowPlaying_bottom_pill")
     }

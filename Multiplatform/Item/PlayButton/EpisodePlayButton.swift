@@ -132,7 +132,7 @@ struct EpisodePlayButton: View {
                 .opacity(highlighted ? 0 : 1)
                 .padding(.vertical, 6)
                 .padding(.horizontal, 10)
-                .background(highlighted ? .white : .secondary.opacity(0.12))
+                .background(highlighted ? .white : .secondary.opacity(0.2))
                 .foregroundStyle(highlighted ? .black : .accentColor)
                 .modify(if: highlighted) {
                     $0

@@ -607,7 +607,9 @@ struct PlaybackActions: View {
         }
         .buttonStyle(.plain)
         .labelStyle(.iconOnly)
-        .font(.system(size: 17, weight: .bold, design: .rounded))
+        .font(.headline)
+        .fontWeight(.bold)
+        .fontDesign(.rounded)
         .geometryGroup()
         .compositingGroup()
     }
