@@ -474,7 +474,7 @@ private extension AudioPlayer {
             return .success
         }
         
-        commandCenter.previousTrackCommand.isEnabled = false
+        commandCenter.previousTrackCommand.isEnabled = true
         commandCenter.previousTrackCommand.addTarget { _ in
             Task {
                 do {
@@ -487,7 +487,7 @@ private extension AudioPlayer {
             return .success
         }
         
-        commandCenter.nextTrackCommand.isEnabled = false
+        commandCenter.nextTrackCommand.isEnabled = true
         commandCenter.nextTrackCommand.addTarget { _ in
             Task {
                 do {
