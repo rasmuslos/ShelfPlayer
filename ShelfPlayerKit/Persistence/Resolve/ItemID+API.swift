@@ -1,12 +1,11 @@
 //
-//  Untitled.swift
+//  ItemID+API.swift
 //  ShelfPlayerKit
 //
 //  Created by Rasmus Krämer on 26.11.24.
 //
 
 import Foundation
-
 
 extension ItemIdentifier {
     var pathComponent: String {
@@ -16,7 +15,7 @@ extension ItemIdentifier {
             primaryID
         }
     }
-    
+
     var apiItemID: String {
         if let groupingID {
             groupingID

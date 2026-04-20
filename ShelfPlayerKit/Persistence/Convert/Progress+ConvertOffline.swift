@@ -1,11 +1,9 @@
 //
-//  Progress+Convert.swift
+//  Progress+ConvertOffline.swift
 //  ShelfPlayerKit
 //
 //  Created by Rasmus Krämer on 23.12.24.
 //
-
-
 
 extension ProgressEntity {
     init(persistedEntity: PersistedProgress) {

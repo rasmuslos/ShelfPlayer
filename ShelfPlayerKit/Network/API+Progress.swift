@@ -1,8 +1,6 @@
 //
-//  Progress.swift
+//  API+Progress.swift
 //  ShelfPlayerKit
-//
-//  Created by Rasmus Krämer on 26.11.24.
 //
 
 import Foundation
@@ -20,7 +18,7 @@ public extension APIClient {
         let _ = try await response(APIRequest<EmptyResponse>(path: "api/me/progress/batch/update", method: .patch, body: progress.map {
             let itemID: String
             let episodeID: String?
-            
+
             if let groupingID = $0.groupingID {
                 itemID = groupingID
                 episodeID = $0.primaryID
@@ -28,7 +26,7 @@ public extension APIClient {
                 itemID = $0.primaryID
                 episodeID = nil
             }
-            
+
             return ProgressPayload(id: $0.id,
                                    libraryItemId: itemID,
                                    episodeId: episodeID,
@@ -42,17 +40,18 @@ public extension APIClient {
                                    finishedAt: Int64($0.finishedAt?.timeIntervalSince1970 ?? 0) * 1000)
         }, bypassesOffline: true))
     }
-    
+
     func delete(progressID: String) async throws {
         let _ = try await response(APIRequest<EmptyResponse>(path: "api/me/progress/\(progressID)", method: .delete))
     }
-    
+
     func listeningSessions(page: Int, pageSize: Int) async throws -> [SessionPayload] {
         try await response(APIRequest<SessionsResponse>(path: "api/me/listening-sessions", method: .get, query: [
             URLQueryItem(name: "page", value: "\(page)"),
             URLQueryItem(name: "itemsPerPage", value: "\(pageSize)"),
         ], ttl: 12)).sessions
     }
+
     func listeningSessions(from itemID: ItemIdentifier, page: Int, pageSize: Int) async throws -> [SessionPayload] {
         try await response(APIRequest<SessionsResponse>(path: "api/me/item/listening-sessions/\(itemID.pathComponent)", method: .get, query: [
             URLQueryItem(name: "page", value: "\(page)"),
@@ -60,4 +59,3 @@ public extension APIClient {
         ], ttl: 12)).sessions
     }
 }
-

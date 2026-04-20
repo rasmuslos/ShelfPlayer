@@ -1,6 +1,6 @@
 //
 //  PersistenceManager.swift
-//  Audiobooks
+//  ShelfPlayerKit
 //
 //  Created by Rasmus Krämer on 02.10.23.
 //
@@ -9,113 +9,108 @@ import Foundation
 import SwiftData
 import Intents
 import AppIntents
-import RFNotifications
 
 public final class PersistenceManager: Sendable {
     public let modelContainer: ModelContainer
-    
-    public let keyValue: KeyValueSubsystem
+
     public let authorization: AuthorizationSubsystem
-    
+
     public let progress: ProgressSubsystem
     public let session: SessionSubsystem
-    
+
     public let download: DownloadSubsystem
     public let convenienceDownload: ConvenienceDownloadSubsystem
-    
+
     public let item: ItemSubsystem
     public let bookmark: BookmarkSubsystem
-    
+
     public let listenNow: ListenNowSubsystem
     public let customization: CustomizationSubsystem
-    
+    public let homeCustomization: HomeCustomizationSubsystem
+
     public let webSocket: WebSocketSubsystem
-    
+
     private init() {
-        let schema = Schema(versionedSchema: SchemaV2.self)
-        
-        let modelConfiguration = ModelConfiguration("ShelfPlayerUpdated",
+        let schema = Schema(versionedSchema: ShelfPlayerSchema.self)
+
+        let modelConfiguration = ModelConfiguration("ShelfPlayer",
                            schema: schema,
                            isStoredInMemoryOnly: false,
                            allowsSave: true,
                            groupContainer: ShelfPlayerKit.enableCentralized ? .identifier(ShelfPlayerKit.groupContainer) : .none,
                            cloudKitDatabase: .none)
-        
-        #if DEBUG
-        // try! FileManager.default.removeItem(at: modelConfiguration.url)
-        #endif
-        
+
         modelContainer = try! ModelContainer(for: schema, migrationPlan: nil, configurations: [
             modelConfiguration,
         ])
-        
-        keyValue = .init(modelContainer: modelContainer)
+
         authorization = .init(modelContainer: modelContainer)
-        
+
         progress = .init(modelContainer: modelContainer)
         session = .init(modelContainer: modelContainer)
-        
+
         download = .init(modelContainer: modelContainer)
         convenienceDownload = .init()
-        
-        item = .init()
+
+        item = .init(modelContainer: modelContainer)
         bookmark = .init(modelContainer: modelContainer)
-        
+
         listenNow = .init()
-        customization = .init()
-        
+        customization = .init(modelContainer: modelContainer)
+        homeCustomization = .init(modelContainer: modelContainer)
+
         webSocket = .init()
     }
-    
+
     public func remove(itemID: ItemIdentifier) async {
         await bookmark.remove(itemID: itemID)
         await progress.remove(itemID: itemID)
         await session.remove(itemID: itemID)
-        
+
         try? await download.remove(itemID)
         await convenienceDownload.remove(itemID: itemID, configurationID: nil)
-        
-        await keyValue.remove(itemID: itemID)
-        
+
+        await item.removePersistedData(itemID: itemID)
+
         let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: ItemEntity.self, identifier: itemID)))
         let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: AudiobookEntity.self, identifier: itemID)))
-        
+
         try? await INInteraction.delete(with: itemID.description)
-        
+
         NSUserActivity.deleteSavedUserActivities(withPersistentIdentifiers: [itemID.description]) {}
-        
+
         await ResolveCache.shared.flush()
     }
     public func remove(connectionID: ItemIdentifier.ConnectionID) async {
         await bookmark.remove(connectionID: connectionID)
         await progress.remove(connectionID: connectionID)
         await session.remove(connectionID: connectionID)
-        
+
         await download.remove(connectionID: connectionID)
         await convenienceDownload.purge(connectionID: connectionID)
-        
+
         await authorization.remove(connectionID: connectionID)
-        await keyValue.remove(connectionID: connectionID)
-        
+
         await ResolveCache.shared.flush()
     }
     public func removeAllDownloads() async throws {
         try await download.removeAll()
         await convenienceDownload.purge()
     }
-    
+
     public func refreshItem(itemID: ItemIdentifier) async throws {
         await ResolveCache.shared.invalidate(itemID: itemID)
-        try await keyValue.purgeCached(itemID: itemID)
+        await item.purgeCachedData(itemID: itemID)
         await item.invalidate()
     }
     public func invalidateCache() async throws {
-        try await keyValue.purgeCached()
+        await item.purgeCachedData()
         await listenNow.invalidate()
         await item.invalidate()
-        
-        try await keyValue.remove(cluster: "storedTabValues")
-        
+
+        await customization.purgeAll()
+        await homeCustomization.purgeAll()
+
         try await download.invalidateStatusCache()
     }
 }
@@ -123,13 +118,13 @@ public final class PersistenceManager: Sendable {
 enum PersistenceError: Error {
     case missing
     case existing
-    
+
     case busy
     case blocked
-    
+
     case unsupportedItemType
     case unsupportedDownloadCodec
-    
+
     case serverNotFound
     case keychainInsertFailed
     case keychainRetrieveFailed

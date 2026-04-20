@@ -1,8 +1,6 @@
 //
 //  SkipOptionsProvider.swift
-//  ShelfPlayer
-//
-//  Created by Rasmus Krämer on 19.06.25.
+//  ShelfPlayerKit
 //
 
 import Foundation

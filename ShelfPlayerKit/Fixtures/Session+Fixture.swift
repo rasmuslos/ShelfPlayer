@@ -1,8 +1,6 @@
 //
 //  Session+Fixture.swift
-//  ShelfPlayer
-//
-//  Created by Rasmus Krämer on 20.11.25.
+//  ShelfPlayerKit
 //
 
 #if DEBUG

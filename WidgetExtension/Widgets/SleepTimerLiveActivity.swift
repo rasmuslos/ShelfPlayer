@@ -1,6 +1,6 @@
 //
-//  WidgetExtensionAttributes.swift
-//  ShelfPlayer
+//  SleepTimerLiveActivity.swift
+//  WidgetExtension
 //
 //  Created by Rasmus Krämer on 28.06.25.
 //
@@ -12,7 +12,9 @@ import ShelfPlayerKit
 
 private struct Actions: View {
     let state: SleepTimerLiveActivityAttributes.ContentState
-    
+
+    private var tintColor: Color { AppSettings.shared.tintColor.color }
+
     var body: some View {
         HStack(spacing: 8) {
             Group {
@@ -30,13 +32,13 @@ private struct Actions: View {
                             Button("sleepTimer.cancel", systemImage: "xmark", intent: CancelSleepTimerIntent())
                                 .tint(.white)
                         }
-                        
+
                         Button("increase", systemImage: "plus", intent: SetSleepTimerIntent(amount: chapters + 1, type: .chapters))
                     }
-                    .tint(Defaults[.tintColor].color)
+                    .tint(tintColor)
                 } else {
                     Button("sleepTimer.extend", systemImage: "plus", intent: ExtendSleepTimerIntent())
-                        .tint(Defaults[.tintColor].color)
+                        .tint(tintColor)
                     Button("sleepTimer.cancel", systemImage: "xmark", intent: CancelSleepTimerIntent())
                         .tint(.white)
                 }
@@ -53,10 +55,10 @@ struct SleepTimerLiveActivity: Widget {
         if isStale {
             .gray
         } else {
-            Defaults[.tintColor].color
+            AppSettings.shared.tintColor.color
         }
     }
-    
+
     @ViewBuilder
     private func time(state: SleepTimerLiveActivityAttributes.ContentState, isStale: Bool, fixedWidth: Bool) -> some View {
         Group {
@@ -79,22 +81,20 @@ struct SleepTimerLiveActivity: Widget {
                     }
                 }
             } else if let chapters = state.chapters {
-                Text("chapters")
-                    .font(.body)
-                + Text(verbatim: " ")
-                + Text(chapters, format: .number)
+                Text("\(Text("chapters")) \(chapters)")
             }
         }
         .lineLimit(1)
         .fontDesign(.rounded)
         .foregroundStyle(color(isStale: isStale))
     }
-    
+
     @ViewBuilder
     private func leadingLabel(isStale: Bool) -> some View {
         Label("sleepTimer", systemImage: "moon.zzz")
             .foregroundStyle(color(isStale: isStale))
     }
+
     @ViewBuilder
     private func progressView(attributes: SleepTimerLiveActivityAttributes, state: SleepTimerLiveActivityAttributes.ContentState, isStale: Bool) -> some View {
         if state.isPlaying {
@@ -117,15 +117,15 @@ struct SleepTimerLiveActivity: Widget {
                 .labelStyle(.iconOnly)
         }
     }
-    
+
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: SleepTimerLiveActivityAttributes.self) { context in
             HStack(alignment: .bottom, spacing: 0) {
                 Actions(state: context.state)
                     .font(.largeTitle)
-                
+
                 Spacer(minLength: 12)
-                
+
                 time(state: context.state, isStale: context.isStale, fixedWidth: false)
                     .font(.largeTitle)
             }

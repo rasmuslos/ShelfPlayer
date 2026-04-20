@@ -1,0 +1,84 @@
+//
+//  HomeSection.swift
+//  ShelfPlayerKit
+//
+//  Created by Rasmus Krämer on 19.04.26.
+//
+
+import Foundation
+
+public enum HomeSectionKind: Codable, Hashable, Sendable {
+    // Server-driven rows (from ABSClient.home(for:)).
+    // The associated `id` matches `HomeRow.id` returned by the server.
+    case serverRow(id: String)
+
+    // Client-derived sections.
+    case listenNow
+    case upNext
+    /// Next unplayed episode per recently-played podcast in the current scope.
+    case nextUpPodcasts
+    case downloadedAudiobooks
+    case downloadedEpisodes
+    case bookmarks
+
+    public var stableID: String {
+        switch self {
+        case .serverRow(let id): "server::\(id)"
+        case .listenNow: "client::listenNow"
+        case .upNext: "client::upNext"
+        case .nextUpPodcasts: "client::nextUpPodcasts"
+        case .downloadedAudiobooks: "client::downloadedAudiobooks"
+        case .downloadedEpisodes: "client::downloadedEpisodes"
+        case .bookmarks: "client::bookmarks"
+        }
+    }
+
+    public var isClientDerived: Bool {
+        if case .serverRow = self { false } else { true }
+    }
+}
+
+public struct HomeSection: Codable, Identifiable, Hashable, Sendable {
+    public let id: UUID
+    public var kind: HomeSectionKind
+
+    /// When non-nil, the section is resolved against this library instead of
+    /// the enclosing scope's library. Used in pinned-tab start pages to
+    /// aggregate content across libraries.
+    public var libraryID: LibraryIdentifier?
+
+    public var isHidden: Bool
+
+    public init(id: UUID = UUID(),
+                kind: HomeSectionKind,
+                libraryID: LibraryIdentifier? = nil,
+                isHidden: Bool = false) {
+        self.id = id
+        self.kind = kind
+        self.libraryID = libraryID
+        self.isHidden = isHidden
+    }
+}
+
+public enum HomeScope: Hashable, Sendable {
+    /// The start page of a specific library.
+    case library(LibraryIdentifier)
+    /// A pinned-tab start page, keyed by a stable pinned-tab id.
+    case pinned(String)
+
+    public var key: String {
+        switch self {
+        case .library(let libraryID): "library::\(libraryID.id)"
+        case .pinned(let pinnedID): "pinned::\(pinnedID)"
+        }
+    }
+
+    /// The library used to resolve a section when the section itself does not
+    /// carry an override. For pinned scopes no implicit library exists.
+    public var implicitLibraryID: LibraryIdentifier? {
+        switch self {
+        case .library(let libraryID): libraryID
+        case .pinned: nil
+        }
+    }
+}

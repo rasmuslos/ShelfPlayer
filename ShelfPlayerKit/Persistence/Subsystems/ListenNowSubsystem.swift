@@ -1,0 +1,288 @@
+//
+//  ListenNowSubsystem.swift
+//  ShelfPlayerKit
+//
+//  Created by Rasmus Krämer on 21.06.25.
+//
+
+import Combine
+import Foundation
+import OSLog
+
+extension PersistenceManager {
+    public final actor ListenNowSubsystem: Sendable {
+        public final class EventSource: @unchecked Sendable {
+            public let itemsChanged = PassthroughSubject<Void, Never>()
+
+            init() {}
+        }
+
+        fileprivate static let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ListenNow")
+
+        let lifetime: TimeInterval = 60 * 3
+
+        private let cache = NSCache<NSString, NSArray>()
+        private var updateTask = [ItemIdentifier.ItemType: Task<([Result], Date), Error>]()
+
+        private var lastSingleCacheKey: String?
+        private var invalidationSubscription: AnyCancellable?
+        private var updateSingleTask: Task<([PlayableItem], Date), Error>?
+        public nonisolated let events = EventSource()
+
+        init() {
+            Task {
+                await setupInvalidationSubscription()
+            }
+        }
+
+        private func setupInvalidationSubscription() {
+            invalidationSubscription = Publishers.Merge3(
+                PersistenceManager.shared.progress.events.entityUpdated.map { _ in () },
+                PersistenceManager.shared.progress.events.invalidateEntities.map { _ in () },
+                OfflineMode.events.changed.map { _ in () }
+            )
+            .debounce(for: .milliseconds(600), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                Self.scheduleInvalidation(for: self)
+            }
+        }
+
+        private nonisolated static func scheduleInvalidation(for subsystem: ListenNowSubsystem?) {
+            guard let subsystem else {
+                return
+            }
+
+            Task { [subsystem] in
+                await subsystem.performInvalidation()
+            }
+        }
+    }
+}
+
+public extension PersistenceManager.ListenNowSubsystem {
+    var current: [PlayableItem] {
+        get async throws {
+            if let (items, timestamp) = try? await updateSingleTask?.value, timestamp.distance(to: .now) < lifetime {
+                items
+            } else {
+                try await combineIntoSingle()
+            }
+        }
+    }
+    func current(itemType type: ItemIdentifier.ItemType) async throws -> [Item] {
+        try await results(itemType: type).map(\.item)
+    }
+
+    func invalidate() {
+        performInvalidation()
+    }
+}
+
+private extension PersistenceManager.ListenNowSubsystem {
+    func performInvalidation() {
+        updateSingleTask = nil
+        updateTask.removeAll()
+
+        Task {
+            let _ = try? await current
+        }
+    }
+}
+
+// MARK: Scheduler
+
+private extension PersistenceManager.ListenNowSubsystem {
+    func results(itemType type: ItemIdentifier.ItemType) async throws -> [Result] {
+        if let (items, timestamp) = try? await updateTask[type]?.value, timestamp.distance(to: .now) < lifetime {
+            return items
+        } else {
+            return try await update(type: type)
+        }
+    }
+    func update(type: ItemIdentifier.ItemType) async throws -> [Result] {
+        let task = Task {
+            (try await resolve(), Date.now)
+        }
+        updateTask[type] = task
+
+        return try await task.value.0
+    }
+}
+
+// MARK: Resolve
+
+private extension PersistenceManager.ListenNowSubsystem {
+    @concurrent
+    nonisolated func resolve() async throws -> [Result] {
+        var resolvers = [any ListenNowResolver]()
+
+        resolvers.append(PlayableItemProgressActiveResolver())
+
+        let results = try await withThrowingTaskGroup(returning: [[Result]].self) {
+            for resolver in resolvers {
+                $0.addTask {
+                    do {
+                        return try await self.resolve(resolver)
+                    } catch {
+                        Self.logger.error("Failed to resolve listen now items for \(resolver.id): \(error)")
+                        throw error
+                    }
+                }
+            }
+
+            return try await $0.reduce(into: []) {
+                $0.append($1)
+            }
+        }
+
+        return combine(results)
+    }
+
+    func combineIntoSingle() async throws -> [PlayableItem] {
+        let task = Task {
+            let (audiobooks, episodes) = try await (
+                results(itemType: .audiobook),
+                results(itemType: .episode),
+            )
+
+            let items = combine([
+                audiobooks,
+                episodes,
+            ]).compactMap {
+                $0.item as? PlayableItem
+            }
+
+            let cacheKey = items.reduce("") { $0 + $1.id.description }
+
+            if lastSingleCacheKey != cacheKey {
+                await MainActor.run {
+                    events.itemsChanged.send()
+                }
+            }
+            lastSingleCacheKey = cacheKey
+
+            return (items, Date.now)
+        }
+        updateSingleTask = task
+
+        return try await task.value.0
+    }
+
+    nonisolated func combine(_ input: [[Result]]) -> [Result] {
+        let keyed = input.reduce([]) {
+            $0 + $1.map { ($0.item.id, $0) }
+        }
+        let result = Dictionary(keyed) {
+            $0.timestamp > $1.timestamp ? $0 : $1
+        }
+
+        let merged = result.map { $1 }
+
+        return merged.sorted {
+            $0.timestamp > $1.timestamp
+        }
+    }
+
+    protocol ListenNowResolver: Sendable, Hashable {
+        var id: String { get }
+
+        @concurrent
+        nonisolated func resolve() async throws -> [Result]
+        @concurrent
+        nonisolated func cacheIdentifier() async throws -> NSString
+    }
+    struct Result: Sendable {
+        let item: Item
+        let timestamp: Date
+        let relevance: Percentage
+
+        init(item: Item, timestamp: Date, relevance: Percentage) {
+            self.item = item
+            self.timestamp = timestamp
+            self.relevance = relevance
+        }
+    }
+}
+
+// MARK: Cache
+
+private extension PersistenceManager.ListenNowSubsystem {
+    func resolve(_ resolver: any ListenNowResolver) async throws -> [Result] {
+        let cacheKey = try await resolver.cacheIdentifier()
+
+        if let cached = cache.object(forKey: cacheKey) as? [Result] {
+            return cached
+        }
+
+        let result = try await resolver.resolve()
+
+        cache.setObject(result as NSArray, forKey: cacheKey)
+        return result
+    }
+}
+
+// MARK: Resolvers
+
+private struct PlayableItemProgressActiveResolver: PersistenceManager.ListenNowSubsystem.ListenNowResolver {
+    var id: String {
+        "playable-item-progress-active"
+    }
+    @concurrent
+    nonisolated func cacheIdentifier() async throws -> NSString {
+        let entities = try await PersistenceManager.shared.progress.activeProgressEntities.sorted { $0.lastUpdate < $1.lastUpdate }
+        let isOffline = await OfflineMode.shared.isEnabled
+
+        let key = entities.reduce(into: "") {
+            $0.append("\($1.connectionID)|\($1.primaryID)|\($1.groupingID ?? ".")|\(Int(($1.progress * 100)));")
+        }
+
+        return NSString(string: "\(isOffline)_\(key)")
+    }
+
+    @concurrent
+    nonisolated func resolve() async throws -> [PersistenceManager.ListenNowSubsystem.Result] {
+        let entities = try await PersistenceManager.shared.progress.activeProgressEntities
+
+        var resolved = [PersistenceManager.ListenNowSubsystem.Result]()
+
+        for entity in entities {
+            do {
+                guard let item = try await Self.resolve(primaryID: entity.primaryID, groupingID: entity.groupingID, connectionID: entity.connectionID) else {
+                    continue
+                }
+
+                resolved.append(.init(item: item, timestamp: entity.lastUpdate, relevance: 70))
+            } catch is CancellationError {
+                break
+            } catch {
+                PersistenceManager.ListenNowSubsystem.logger.warning("Failed to resolve listen now entity \(entity.primaryID, privacy: .public): \(error, privacy: .public)")
+                continue
+            }
+        }
+
+        return resolved
+    }
+    @concurrent
+    nonisolated static func resolve(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) async throws -> Item? {
+        do {
+            let item = try await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+
+            if await !OfflineMode.shared.isAvailable(connectionID) {
+                guard await PersistenceManager.shared.download.status(of: item.id) == .completed else {
+                    return nil
+                }
+            }
+
+            return item
+        } catch APIClientError.offline {
+            return nil
+        } catch APIClientError.notFound {
+            return nil
+        } catch APIClientError.cancelled {
+            return nil
+        } catch {
+            PersistenceManager.ListenNowSubsystem.logger.warning("Failed to resolve listen now entity \(primaryID, privacy: .public): \(error, privacy: .public)")
+            throw error
+        }
+    }
+}

@@ -1,6 +1,6 @@
 //
 //  DisplayContext+Origin.swift
-//  ShelfPlayer
+//  ShelfPlayback
 //
 //  Created by Rasmus Krämer on 13.07.25.
 //

@@ -1,6 +1,6 @@
 //
 //  AudioRoute.swift
-//  ShelfPlayerKit
+//  ShelfPlayback
 //
 //  Created by Rasmus Krämer on 02.03.25.
 //
@@ -11,12 +11,12 @@ import AVKit
 public struct AudioRoute: Sendable {
     let name: String
     let port: AVAudioSession.Port
-    
+
     init(name: String, port: AVAudioSession.Port) {
         self.name = name
         self.port = port
     }
-    
+
     public var icon: String {
         if name.localizedStandardContains("AirPods Max") {
             "airpods.max"

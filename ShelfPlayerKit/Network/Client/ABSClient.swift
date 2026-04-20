@@ -1,10 +1,9 @@
 //
 //  ABSClient.swift
-//  ShelfPlayer
-//
-//  Created by Rasmus Krämer on 28.07.25.
+//  ShelfPlayerKit
 //
 
+import Combine
 import Foundation
 @preconcurrency import Security
 import OSLog
@@ -13,37 +12,53 @@ public let ABSClient = APIClientStore.shared
 
 public final actor APIClientStore: Sendable {
     var storage: [ItemIdentifier.ConnectionID: Task<APIClient, Error>] = [:]
-    
+    nonisolated(unsafe) private var observerSubscriptions = Set<AnyCancellable>()
+
     private init() {
-        RFNotification[.offlineModeChanged].subscribe { [weak self] _ in
-            Task {
-                await self?.invalidate()
+        setupObservers()
+    }
+
+    private nonisolated func setupObservers() {
+        OfflineMode.events.changed
+            .sink { [weak self] _ in
+                Self.scheduleInvalidation(for: self)
             }
+            .store(in: &observerSubscriptions)
+        PersistenceManager.shared.authorization.events.connectionsChanged
+            .sink { [weak self] in
+                Self.scheduleInvalidation(for: self)
+            }
+            .store(in: &observerSubscriptions)
+    }
+
+    private nonisolated static func scheduleInvalidation(for store: APIClientStore?) {
+        guard let store else {
+            return
         }
-        RFNotification[.connectionsChanged].subscribe { [weak self] in
-            Task {
-                await self?.invalidate()
-            }
+
+        Task { [store] in
+            await store.invalidate()
         }
     }
-    
+
     func client(for connectionID: ItemIdentifier.ConnectionID, ensureAvailabilityEstablished: Bool = true) async throws -> APIClient {
         if ensureAvailabilityEstablished {
             await OfflineMode.shared.ensureAvailabilityEstablished()
         }
-        
+
         if storage[connectionID] == nil {
             storage[connectionID] = .init {
                 try await APIClient(connectionID: connectionID, credentialProvider: AuthorizedAPIClientCredentialProvider(connectionID: connectionID))
             }
         }
-        
+
         return try await storage[connectionID]!.value
     }
-    
+
     func invalidate() {
         storage.removeAll(keepingCapacity: true)
     }
+
     public func flushClientCache() async {
         for client in storage.values {
             try? await client.value.flush()
@@ -57,6 +72,6 @@ public extension APIClientStore {
             try await client(for: connectionID)
         }
     }
-    
+
     static let shared = APIClientStore()
 }

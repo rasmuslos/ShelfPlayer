@@ -2,8 +2,6 @@
 //  AudiobookSection+Convert.swift
 //  ShelfPlayerKit
 //
-//  Created by Rasmus Krämer on 26.11.24.
-//
 
 import Foundation
 

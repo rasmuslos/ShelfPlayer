@@ -1,7 +1,14 @@
+//
+//  LibraryStore.swift
+//  ShelfPlayerKit
+//
+//  Created by Rasmus Krämer on 01.06.25.
+//
+
+import Combine
 import Foundation
-import SwiftUI
 import OSLog
-import ShelfPlayback
+import SwiftUI
 
 @Observable @MainActor
 public final class LibraryStore {
@@ -9,16 +16,21 @@ public final class LibraryStore {
 
     private(set) public var libraries: [Library] = []
     private(set) public var groupedLibraries: [ItemIdentifier.ConnectionID: [Library]] = [:]
+    private var observerSubscriptions = Set<AnyCancellable>()
 
     private init() {
         update()
 
-        RFNotification[.offlineModeChanged].subscribe { [weak self] _ in
-            self?.update()
-        }
-        RFNotification[.connectionsChanged].subscribe { [weak self] in
-            self?.update()
-        }
+        OfflineMode.events.changed
+            .sink { [weak self] _ in
+                self?.update()
+            }
+            .store(in: &observerSubscriptions)
+        PersistenceManager.shared.authorization.events.connectionsChanged
+            .sink { [weak self] in
+                self?.update()
+            }
+            .store(in: &observerSubscriptions)
     }
 
     public nonisolated func update() {
@@ -30,7 +42,7 @@ public final class LibraryStore {
                         self.groupedLibraries = [:]
                     }
                 }
-                
+
                 return
             }
 
@@ -38,10 +50,10 @@ public final class LibraryStore {
                 for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
                     $0.addTask { try? await ABSClient[connectionID].libraries() }
                 }
-                
+
                 return await $0.compactMap { $0 }.reduce([], +)
             }
-            
+
             await MainActor.run {
                 withAnimation {
                     self.libraries = libraries

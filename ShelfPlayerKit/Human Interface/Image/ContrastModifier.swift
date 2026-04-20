@@ -1,25 +1,22 @@
 //
 //  ContrastModifier.swift
-//  ShelfPlayer
-//
-//  Created by Rasmus Krämer on 10.07.25.
+//  ShelfPlayerKit
 //
 
 import SwiftUI
-import RFNotifications
 
 struct ContrastModifier: ViewModifier {
     @Environment(\.library) private var library
-    
+
     let itemID: ItemIdentifier?
     let cornerRadius: CGFloat
     let configuration: ItemImage.ContrastConfiguration?
-    
+
     private var libraryType: LibraryMediaType? {
         if let itemID {
             switch itemID.type {
-                case .audiobook, .narrator, .author, .series: .audiobooks
-                case .podcast, .episode, .collection, .playlist: .podcasts
+            case .audiobook, .narrator, .author, .series: .audiobooks
+            case .podcast, .episode, .collection, .playlist: .podcasts
             }
         } else if let library {
             library.id.type
@@ -27,7 +24,7 @@ struct ContrastModifier: ViewModifier {
             nil
         }
     }
-    
+
     func body(content: Content) -> some View {
         if let configuration {
             switch libraryType {

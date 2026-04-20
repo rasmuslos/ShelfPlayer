@@ -1,6 +1,6 @@
 //
-//  QueueItem.swift
-//  ShelfPlayerKit
+//  AudioPlayerItem.swift
+//  ShelfPlayback
 //
 //  Created by Rasmus Krämer on 21.02.25.
 //
@@ -10,23 +10,23 @@ import ShelfPlayerKit
 
 public struct AudioPlayerItem: Sendable {
     public let itemID: ItemIdentifier
-    
+
     let origin: PlaybackOrigin
-    
+
     public init(itemID: ItemIdentifier, origin: PlaybackOrigin) {
         self.itemID = itemID
         self.origin = origin
     }
-    
+
     public enum PlaybackOrigin: Sendable {
         case series(ItemIdentifier)
         case podcast(ItemIdentifier)
-        
+
         case collection(ItemIdentifier)
-        
+
         case upNextQueue
         case carPlay
-        
+
         case unknown
     }
 }

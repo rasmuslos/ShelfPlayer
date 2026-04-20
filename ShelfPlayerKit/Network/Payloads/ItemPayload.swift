@@ -1,8 +1,6 @@
 //
-//  AudiobookshelfClient+Item.swift
-//  Audiobooks
-//
-//  Created by Rasmus Krämer on 03.10.23.
+//  ItemPayload.swift
+//  ShelfPlayerKit
 //
 
 import Foundation
@@ -10,47 +8,46 @@ import Foundation
 struct ItemPayload: Codable, Sendable {
     let id: String
     let libraryId: String?
-    
+
     let path: String?
     let mediaType: String?
     let type: String?
-    
+
     let addedAt: Double?
     let updatedAt: Double?
     let createdAt: Double?
-    
+
     let size: Int64?
-    
-    // Both are have exactly the same use case, wtf?
+
     var books: [ItemPayload]?
     let items: [ItemPayload]?
     let playlistItems: [PlaylistItemPayload]?
-    
+
     let series: [ItemPayload]?
     let libraryItems: [ItemPayload]?
-    
+
     let numEpisodes: Int?
     let numEpisodesIncomplete: Int?
-    
+
     var recentEpisode: EpisodePayload?
-    
+
     let isLocal: Bool?
-    
+
     let name: String?
     let description: String?
     let numBooks: Int?
     let imagePath: String?
-    
+
     let media: MediaPayload?
-    
+
     let startTime: Double?
     let audioTracks: [AudiobookshelfAudioTrack]?
     let chapters: [ChapterPayload]?
-    
+
     let collapsedSeries: CollapsedSeriesPayload?
-    
+
     let libraryFiles: [LibraryFile]?
-    
+
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(String.self, forKey: .id)
@@ -79,9 +76,7 @@ struct ItemPayload: Codable, Sendable {
         self.chapters = try container.decodeIfPresent([ChapterPayload].self, forKey: .chapters)
         self.collapsedSeries = try container.decodeIfPresent(CollapsedSeriesPayload.self, forKey: .collapsedSeries)
         self.libraryFiles = try container.decodeIfPresent([LibraryFile].self, forKey: .libraryFiles)
-        
-        // This is bullshit:
-        
+
         do {
             self.items = try container.decodeIfPresent([ItemPayload].self, forKey: .items)
             self.playlistItems = nil
@@ -95,10 +90,10 @@ struct ItemPayload: Codable, Sendable {
 struct LibraryFile: Codable, Sendable {
     let ino: String
     let metadata: MetadataPayload
-    
+
     let fileType: String
     let isSupplementary: Bool?
-    
+
     struct MetadataPayload: Codable, Sendable {
         public let ext: String
         public let filename: String
@@ -108,51 +103,53 @@ struct LibraryFile: Codable, Sendable {
 struct EpisodePayload: Codable, Sendable {
     let id: String?
     let libraryId: String?
-    
+
     let podcastId: String?
     let libraryItemId: String?
-    
+
     let index: Int?
     let season: String?
     let episode: String?
     let title: String?
     let description: String?
-    
+
     let episodeType: String?
-    
+
     let pubDate: String?
     let publishedAt: Double?
     let addedAt: Double?
     let updatedAt: Double?
-    
+
     let size: Int64?
     let duration: Double?
-    
+
     let audioFile: PodcastAudioFile?
     let audioTrack: AudiobookshelfAudioTrack?
-    
+
     let podcast: AudiobookshelfItemPodcast?
     let libraryItem: AudiobookshelfItemPodcast?
-    
+
     let chapters: [ChapterPayload]?
-    
+
     struct PodcastAudioFile: Codable, Sendable {
         let duration: Double?
         let codec: String?
         let channelLayout: String?
-        
+
         let metadata: PodcastMetadata?
     }
+
     struct PodcastMetadata: Codable, Sendable {
         let size: Double?
     }
+
     struct AudiobookshelfItemPodcast: Codable, Sendable {
         let id: String
         let libraryItemId: String
         let author: String?
         let coverPath: String?
         let metadata: MetadataPayload
-        
+
         let numAudioFiles: Int?
     }
 }
@@ -171,76 +168,71 @@ struct CollapsedSeriesPayload: Codable, Sendable {
 struct MediaPayload: Codable, Sendable {
     let tags: [String]?
     let coverPath: String?
-    
+
     let numTracks: Int?
     let numAudioFiles: Int?
     let numChapters: Int?
     let numMissingParts: Int?
     let numInvalidAudioFiles: Int?
-    
+
     let duration: Double?
-    
+
     let tracks: [AudiobookshelfAudioTrack]?
     let episodes: [EpisodePayload]?
-    
+
     let chapters: [ChapterPayload]?
     let metadata: MetadataPayload
-    
+
     let audioFiles: [AudioFilePayload]?
 }
 
 struct MetadataPayload: Codable, Sendable {
     // MARK: Shared
-    
+
     let title: String?
-    
+
     let description: String?
     let releaseDate: String?
-    
+
     let genres: [String]
-    
+
     let explicit: Bool?
     let language: String?
-    
+
     // MARK: Book
-    
+
     let subtitle: String?
     let publishedYear: String?
     let publisher: String?
-    
-    // undocumented
+
     let descriptionPlain: String?
-    
+
     let isbn: String?
     let asin: String?
-    // undocumented
     let abridged: Bool?
-    
+
     // MARK: Book mini
-    
+
     let authorName: String?
     let seriesName: String?
     let narratorName: String?
-    
+
     // MARK: Book maxi
-    
+
     let authors: [AudiobookshelfItemAuthor]?
     let narrators: [String]?
     let series: [AudiobookshelfItemSeries]?
-    
+
     // MARK: Podcast
-    
+
     let author: String?
-    
+
     let feedUrl: String?
     let imageUrl: String?
     let itunesPageUrl: String?
-    
-    // let itunesId: Int?
-    // let itunesArtistId: Int?
-    
+
     let type: String?
-    
+
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.title = try container.decodeIfPresent(String.self, forKey: .title)
@@ -266,8 +258,7 @@ struct MetadataPayload: Codable, Sendable {
         self.imageUrl = try container.decodeIfPresent(String.self, forKey: .imageUrl)
         self.itunesPageUrl = try container.decodeIfPresent(String.self, forKey: .itunesPageUrl)
         self.type = try container.decodeIfPresent(String.self, forKey: .type)
-        
-        // this is truly stupid... The field is either of type series or an empty array
+
         if let seriesArray = try? container.decodeIfPresent([AudiobookshelfItemSeries].self, forKey: .series) {
             self.series = seriesArray
         } else if let seriesDict = try? container.decodeIfPresent(AudiobookshelfItemSeries.self, forKey: .series) {
@@ -283,6 +274,7 @@ struct AudiobookshelfItemSeries: Codable, Sendable {
     let name: String?
     let sequence: String?
 }
+
 struct AudiobookshelfItemAuthor: Codable, Sendable {
     let id: String?
     let name: String?
@@ -291,17 +283,17 @@ struct AudiobookshelfItemAuthor: Codable, Sendable {
 struct AudiobookshelfAudioTrack: Codable, Sendable {
     let index: Int?
     let ino: String?
-    
+
     let startOffset: Double
     let duration: Double
-    
+
     let contentUrl: String
-    
+
     let mimeType: String
     let codec: String?
-    
+
     let metadata: AudioTrackMetadata?
-    
+
     struct AudioTrackMetadata: Codable, Sendable {
         let ext: String
     }

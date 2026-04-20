@@ -1,8 +1,6 @@
 //
 //  ImageSize.swift
-//  ShelfPlayer
-//
-//  Created by Rasmus Krämer on 25.12.25.
+//  ShelfPlayerKit
 //
 
 import Foundation
@@ -16,17 +14,17 @@ public enum ImageSize: Int, Identifiable, Equatable, Codable, Sendable, CaseIter
     case small
     case regular
     case large
-    
+
     public var id: Int {
         rawValue
     }
-    
+
     var width: Int {
         get async {
             #if canImport(UIKit)
             if await UIDevice.current.userInterfaceIdiom == .pad {
                 base * 2
-            } else if Defaults[.ultraHighQuality] {
+            } else if AppSettings.shared.ultraHighQuality {
                 base * 2
             } else {
                 base
@@ -34,17 +32,17 @@ public enum ImageSize: Int, Identifiable, Equatable, Codable, Sendable, CaseIter
             #endif
         }
     }
-    
+
     public var base: Int {
         switch self {
-            case .tiny:
-                220
-            case .small:
-                320
-            case .regular:
-                600
-            case .large:
-                1000
+        case .tiny:
+            220
+        case .small:
+            320
+        case .regular:
+            600
+        case .large:
+            1000
         }
     }
 }

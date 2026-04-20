@@ -1,6 +1,6 @@
 //
 //  WidgetItemButton.swift
-//  ShelfPlayer
+//  WidgetExtension
 //
 //  Created by Rasmus Krämer on 01.06.25.
 //
@@ -12,10 +12,10 @@ import ShelfPlayerKit
 struct WidgetItemButton: View {
     let item: Item?
     let isPlaying: Bool?
-    
+
     let entity: ItemEntity?
     let progress: Percentage?
-    
+
     private var intent: (any AppIntent)? {
         if let isPlaying {
             if isPlaying {
@@ -29,6 +29,7 @@ struct WidgetItemButton: View {
             nil
         }
     }
+
     private var label: LocalizedStringKey? {
         if let isPlaying {
             if isPlaying {
@@ -42,6 +43,7 @@ struct WidgetItemButton: View {
             "play"
         }
     }
+
     private var systemImage: String? {
         if isPlaying == true {
             "pause.fill"
@@ -49,7 +51,7 @@ struct WidgetItemButton: View {
             "play.fill"
         }
     }
-    
+
     var body: some View {
         Group {
             if let intent, let label, let systemImage {
@@ -57,7 +59,7 @@ struct WidgetItemButton: View {
                     ZStack {
                         Image(systemName: "arrow.trianglehead.counterclockwise.rotate.90")
                             .hidden()
-                        
+
                         Label(label, systemImage: systemImage)
                     }
                 }

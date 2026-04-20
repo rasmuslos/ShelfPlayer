@@ -1,13 +1,13 @@
 //
 //  PlaybackReporter.swift
-//  ShelfPlayerKit
+//  ShelfPlayback
 //
 //  Created by Rasmus Krämer on 27.02.25.
 //
 
+import Combine
 import Foundation
 import OSLog
-import RFNotifications
 import ShelfPlayerKit
 
 #if canImport(UIKit)
@@ -16,47 +16,48 @@ import UIKit
 
 final actor PlaybackReporter {
     nonisolated let logger = Logger(subsystem: "io.rfk.shelfplayerKit", category: "PlaybackReporter")
-    
+
     private let itemID: ItemIdentifier
-    
+
     private let sessionID: String?
     private var localSessionID: UUID?
-    
+
     private var startTime: TimeInterval
-    
+
     private var duration: TimeInterval?
     private var currentTime: TimeInterval?
-    
+
     private var lastTimeSpendListeningCalculation: Date?
     private var accumulatedTimeSpendListening: TimeInterval = 0
-    
+
     private var lastUpdate: Date
     private var isFinished: Bool
-    
+
     private(set) var accumulatedServerReportedTimeListening: TimeInterval = 0
-    
+    nonisolated(unsafe) private var finalizeSubscription: AnyCancellable?
+
     init(itemID: ItemIdentifier, startTime: TimeInterval, sessionID: String?) {
         self.sessionID = sessionID
         self.itemID = itemID
-        
+
         self.startTime = startTime
-        
+
         lastUpdate = .now.advanced(by: -27)
-        
+
         isFinished = false
-        
-        RFNotification[.finalizePlaybackReporting].subscribe { [weak self] in
-            Task {
-                await self?.finalize(currentTime: nil)
+
+        finalizeSubscription = PlaybackLifecycleEventSource.shared.finalizeReporting
+            .sink { [weak self] _ in
+                guard let self else {
+                    return
+                }
+
+                Task {
+                    await self.finalize(currentTime: nil)
+                }
             }
-        }
-        
-        Task.detached {
-            try await Task.sleep(for: .seconds(6))
-            await RFNotification[.invalidateTransientPanels].send()
-        }
     }
-    
+
     func update(duration: TimeInterval) {
         self.duration = duration
     }
@@ -65,17 +66,17 @@ final actor PlaybackReporter {
             logger.info("Dropping progress sync update because it is < 10s and not seeking.")
             return
         }
-        
+
         self.currentTime = currentTime
         updateIfNeeded()
     }
-    
+
     func didChangePlayState(isPlaying: Bool) {
         if isPlaying {
             if let lastTimeSpendListeningCalculation {
                 logger.warning("Time spent listening is not accurate | current: \(Date().timeIntervalSince(lastTimeSpendListeningCalculation)) accumulated: \(self.accumulatedTimeSpendListening)")
             }
-            
+
             lastTimeSpendListeningCalculation = .now
         } else {
             if let delta = lastTimeSpendListeningCalculation?.distance(to: .now) {
@@ -85,26 +86,26 @@ final actor PlaybackReporter {
                 logger.warning("Could not calculate time spent listening")
             }
         }
-        
+
         update()
     }
-    
+
     func finalize(currentTime: TimeInterval?) async {
         guard !isFinished else {
             logger.warning("Attempt to finalize playback reporter after being already finalized")
             return
         }
-        
+
         isFinished = true
-        
+
         if let currentTime, currentTime.isFinite, currentTime > 20 {
             self.currentTime = currentTime
         }
-        
+
         await update(force: true)
-        
+
         let task = await UIApplication.shared.beginBackgroundTask(withName: "PlaybackReporter::finalize")
-        
+
         if let localSessionID {
             do {
                 try await PersistenceManager.shared.session.closeLocalPlaybackSession(sessionID: localSessionID)
@@ -112,30 +113,30 @@ final actor PlaybackReporter {
                 logger.error("Failed to close local playback session: \(error)")
             }
         }
-        
+
         if let sessionID, let duration, let currentTime = self.currentTime, await OfflineMode.shared.isAvailable(itemID.connectionID) {
             do {
                 try await ABSClient[itemID.connectionID].closeSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: 0)
-                Defaults[.openPlaybackSessions].removeAll { $0.itemID == itemID && $0.sessionID == sessionID }
+                AppSettings.shared.openPlaybackSessions.removeAll { $0.itemID == itemID && $0.sessionID == sessionID }
             } catch {
                 logger.error("Failed to close session: \(error)")
             }
         }
-        
+
         Task {
             await PersistenceManager.shared.convenienceDownload.pruneFinishedDownloads()
         }
-        
+
         await UIApplication.shared.endBackgroundTask(task)
     }
 }
 
 private extension PlaybackReporter {
     func updateIfNeeded() {
-        guard lastUpdate.distance(to: .now) > 30  else {
+        guard lastUpdate.distance(to: .now) > 30 else {
             return
         }
-        
+
         update()
     }
     func update() {
@@ -144,50 +145,48 @@ private extension PlaybackReporter {
         }
     }
     func update(force: Bool = false) async {
-        // No async operations here
-        
         guard (!isFinished || force) else {
             logger.warning("Attempt to update playback reporter after finalized")
             return
         }
-        
+
         guard let duration, let currentTime else {
             return
         }
-        
+
         guard currentTime.isFinite, duration.isFinite else {
             logger.warning("Skipping progress update because currentTime/duration are not finite (currentTime=\(currentTime), duration=\(duration))")
             return
         }
-        
+
         let timeListened: TimeInterval
-        
+
         if let delta = lastTimeSpendListeningCalculation?.distance(to: .now) {
             timeListened = accumulatedTimeSpendListening + delta
             lastTimeSpendListeningCalculation = .now
         } else {
             timeListened = accumulatedTimeSpendListening
         }
-        
+
         accumulatedTimeSpendListening = 0
         lastUpdate = .now
-        
-        // Async operations (suspension) begins here
-        
+
         var updateLocalSession = true
-        
+
         do {
             if let sessionID, await OfflineMode.shared.isAvailable(itemID.connectionID) {
                 try await ABSClient[itemID.connectionID].syncSession(sessionID: sessionID, currentTime: currentTime, duration: duration, timeListened: timeListened)
                 updateLocalSession = false
-                
+
                 accumulatedServerReportedTimeListening += timeListened
-                await RFNotification[.cachedTimeSpendListeningChanged].send()
+                await MainActor.run {
+                    PersistenceManager.shared.session.events.cachedTimeSpendListeningChanged.send()
+                }
             }
         } catch {
             logger.warning("Failed to update session: \(error). Update local session instead.")
         }
-        
+
         if updateLocalSession {
             do {
                 if let localSessionID {
@@ -199,7 +198,7 @@ private extension PlaybackReporter {
                 logger.warning("Failed to update local session: \(error).")
             }
         }
-        
+
         do {
             try await PersistenceManager.shared.progress.update(itemID, currentTime: currentTime, duration: duration)
         } catch {

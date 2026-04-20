@@ -1,8 +1,6 @@
 //
 //  Collection+Convert.swift
-//  ShelfPlayer
-//
-//  Created by Rasmus Krämer on 13.07.25.
+//  ShelfPlayerKit
 //
 
 import Foundation
@@ -18,7 +16,7 @@ extension ItemCollection {
                 nil
             }
         } ?? []
-        
+
         self.init(id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId!, connectionID: connectionID, type: type.itemType),
                   name: payload.name!,
                   description: payload.description,

@@ -1,8 +1,6 @@
 //
 //  Podcast+Fixture.swift
-//  Audiobooks
-//
-//  Created by Rasmus Krämer on 08.10.23.
+//  ShelfPlayerKit
 //
 
 import Foundation
@@ -20,7 +18,6 @@ public extension Podcast {
         explicit: true,
         episodeCount: 7,
         incompleteEpisodeCount: 4,
-        publishingType: .episodic
-    )
+        publishingType: .episodic)
 }
 #endif

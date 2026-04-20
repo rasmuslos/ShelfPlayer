@@ -1,8 +1,6 @@
 //
-//  Bookmark.swift
+//  API+Bookmark.swift
 //  ShelfPlayerKit
-//
-//  Created by Rasmus Krämer on 27.11.24.
 //
 
 import Foundation
@@ -13,17 +11,17 @@ public extension APIClient {
             "title": note,
             "time": time,
         ], maxAttempts: 1))
-        
+
         return Date(timeIntervalSince1970: payload.createdAt / 1000)
     }
-    
+
     func updateBookmark(primaryID: ItemIdentifier.PrimaryID, time: UInt64, note: String) async throws {
         let _ = try await response(APIRequest<EmptyResponse>(path: "api/me/item/\(primaryID)/bookmark", method: .patch, body: [
             "title": note,
             "time": time,
         ]))
     }
-    
+
     func deleteBookmark(primaryID: ItemIdentifier.PrimaryID, time: UInt64) async throws {
         let _ = try await response(APIRequest<EmptyResponse>(path: "api/me/item/\(primaryID)/bookmark/\(time)", method: .delete))
     }

@@ -1,8 +1,6 @@
 //
 //  ImageLoader.swift
-//  ShelfPlayer
-//
-//  Created by Rasmus Krämer on 10.07.25.
+//  ShelfPlayerKit
 //
 
 import Foundation
@@ -17,43 +15,62 @@ public typealias PlatformImage = UIImage
 public final actor ImageLoader {
     let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ImageLoader")
     public let cachePath = ShelfPlayerKit.cacheDirectoryURL.appending(path: "Images")
-    
+
     var cached = [ImageRequest: Task<Data, Error>]()
-    
+
     func data(for request: ImageRequest) async throws -> Data {
         if cached[request] == nil {
             cached[request] = Task {
                 try await dataTask(for: request)
             }
         }
-        
+
         return try await cached[request]!.value
     }
-    
+
+    private nonisolated(unsafe) let platformImageCache = NSCache<ImageRequest, PlatformImage>()
+
     nonisolated func platformImage(for request: ImageRequest) async -> PlatformImage? {
+        if let cached = platformImageCache.object(forKey: request) {
+            return cached
+        }
+
         guard let data = try? await data(for: request) else {
             return nil
         }
-        
-        return UIImage(data: data)
+
+        guard let image = UIImage(data: data) else {
+            return nil
+        }
+
+        platformImageCache.setObject(image, forKey: request)
+        return image
+    }
+
+    nonisolated func cachedPlatformImage(for request: ImageRequest) -> PlatformImage? {
+        platformImageCache.object(forKey: request)
     }
 }
 
 public extension ImageLoader {
     static let shared = ImageLoader()
-    
+
     func purge() {
+        platformImageCache.removeAllObjects()
+
         do {
             try FileManager.default.removeItem(at: cachePath)
         } catch {
             logger.error("Failed to purge image cache: \(error)")
         }
     }
+
     func purge(itemID: ItemIdentifier) async {
         for size in ImageSize.allCases {
             let request = ImageRequest(itemID: itemID, size: size)
             cached[request] = nil
-            
+            platformImageCache.removeObject(forKey: request)
+
             do {
                 try await FileManager.default.removeItem(at: cacheURL(for: request))
             } catch {
@@ -64,70 +81,73 @@ public extension ImageLoader {
 }
 
 private extension ImageLoader {
-    @concurrent
     nonisolated func dataTask(for request: ImageRequest) async throws -> Data {
         let cacheURL = await cacheURL(for: request)
-        
+
         if FileManager.default.fileExists(atPath: cacheURL.relativePath), let data = try? Data(contentsOf: cacheURL) {
             return data
         }
-        
+
         logger.info("No cached image for \(request.itemID) \(request.size.base). Fetching from server.")
-        
+
         let result: Data
-        
+
         #if DEBUG
         if request.itemID.libraryID == "fixture" {
             let (result, _) = try await URLSession.shared.data(from: URL(string: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlkgSqLF2q_KEp4inENCWmpyVniMG8einhTw&s")!)
-            
+
             return result
         }
         #endif
-        
+
         if let url = await PersistenceManager.shared.download.cover(for: request.itemID, size: request.size), let data = try? Data(contentsOf: url) {
             result = data
         } else {
             result = try await ABSClient[request.itemID.connectionID].cover(from: request.itemID, width: request.size.width)
         }
-        
+
         do {
             try await FileManager.default.createDirectory(at: directoryURL(for: request), withIntermediateDirectories: true)
             try result.write(to: cacheURL)
         } catch {
             logger.error("Failed to cache image: \(error)")
         }
-        
+
         return result
     }
-    
+
     func directoryURL(for request: ImageRequest) -> URL {
         cachePath
             .appending(path: request.itemID.connectionID.urlSafe)
             .appending(path: request.itemID.libraryID)
             .appending(path: "\(request.itemID.primaryID)_\(request.itemID.groupingID ?? "-")")
     }
+
     func cacheURL(for request: ImageRequest) async -> URL {
         await directoryURL(for: request)
             .appending(path: "\(request.size.width)")
     }
 }
 
-public final class ImageRequest: Sendable, Hashable {
+public final class ImageRequest: NSObject, Sendable {
     let itemID: ItemIdentifier
     let size: ImageSize
-    
+
     init(itemID: ItemIdentifier, size: ImageSize) {
         self.itemID = itemID
         self.size = size
     }
-    
-    public func hash(into hasher: inout Hasher) {
+
+    public override var hash: Int {
+        var hasher = Hasher()
         hasher.combine(itemID)
         hasher.combine(size)
+        return hasher.finalize()
     }
-    
-    public static func == (lhs: ImageRequest, rhs: ImageRequest) -> Bool {
-        lhs.itemID == rhs.itemID && lhs.size == rhs.size
+
+    public override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? ImageRequest else { return false }
+        return itemID == other.itemID && size == other.size
     }
 }
 
@@ -135,7 +155,12 @@ public extension ItemIdentifier {
     func data(size: ImageSize) async -> Data? {
         try? await ImageLoader.shared.data(for: .init(itemID: self, size: size))
     }
+
     func platformImage(size: ImageSize) async -> PlatformImage? {
         await ImageLoader.shared.platformImage(for: .init(itemID: self, size: size))
+    }
+
+    func cachedPlatformImage(size: ImageSize) -> PlatformImage? {
+        ImageLoader.shared.cachedPlatformImage(for: .init(itemID: self, size: size))
     }
 }

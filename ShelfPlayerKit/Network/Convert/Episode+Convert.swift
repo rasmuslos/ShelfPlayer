@@ -1,12 +1,9 @@
 //
 //  Episode+Convert.swift
-//  Audiobooks
-//
-//  Created by Rasmus Krämer on 08.10.23.
+//  ShelfPlayerKit
 //
 
 import Foundation
-
 
 extension Episode {
     convenience init?(payload: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
@@ -17,9 +14,9 @@ extension Episode {
               let podcastTitle = media.metadata.title else {
             return nil
         }
-        
+
         let addedAt = payload.addedAt ?? 0
-        
+
         self.init(
             id: .init(primaryID: id, groupingID: payload.id, libraryID: payload.libraryId!, connectionID: connectionID, type: .episode),
             name: title,
@@ -33,13 +30,14 @@ extension Episode {
             type: .parse(string: recentEpisode.episodeType),
             index: .init(season: recentEpisode.season, episode: recentEpisode.episode ?? String(recentEpisode.index ?? 0)))
     }
+
     convenience init?(episode: EpisodePayload, item: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
         var item = item
         item.recentEpisode = episode
-        
+
         self.init(payload: item, connectionID: connectionID)
     }
-    
+
     convenience init(episode: EpisodePayload, podcastName: String? = nil, libraryID: ItemIdentifier.LibraryID, fallbackIndex: Int, connectionID: ItemIdentifier.ConnectionID) {
         self.init(
             id: .init(primaryID: episode.id!, groupingID: episode.libraryItemId, libraryID: libraryID, connectionID: connectionID, type: .episode),

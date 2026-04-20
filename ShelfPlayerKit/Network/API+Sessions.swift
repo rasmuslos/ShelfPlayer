@@ -1,25 +1,20 @@
 //
-//  File.swift
-//  
-//
-//  Created by Rasmus Krämer on 05.04.24.
+//  API+Sessions.swift
+//  ShelfPlayerKit
 //
 
 import Foundation
 
 public extension APIClient {
     func startPlaybackSession(itemID: ItemIdentifier) async throws -> ([PlayableItem.AudioTrack], [Chapter], TimeInterval, String) {
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        
         var path = "api/items"
-        
+
         if let groupingID = itemID.groupingID {
             path.append("/\(groupingID)/play/\(itemID.primaryID)")
         } else {
             path.append("/\(itemID.primaryID)/play")
         }
-        
+
         let response = try await response(APIRequest<ItemPayload>(path: path, method: .post, body: [
             "deviceInfo": [
                 "deviceId": ShelfPlayerKit.clientID,
@@ -34,19 +29,19 @@ public extension APIClient {
                 "audio/mp4",
                 "audio/aac",
                 "audio/x-aiff",
-            ]
+            ],
         ], maxAttempts: 2))
-        
+
         guard let tracks = response.audioTracks, let chapters = response.chapters else {
             throw APIClientError.notFound
         }
-        
+
         let startTime = response.startTime ?? 0
         let playbackSessionID = response.id
-        
+
         return (tracks.map { .init(track: $0, base: host) }, chapters.map(Chapter.init), startTime, playbackSessionID)
     }
-    
+
     func createListeningSession(itemID: ItemIdentifier, timeListened: TimeInterval, startTime: TimeInterval, currentTime: TimeInterval, started: Date, updated: Date) async throws {
         let (item, status, userID) = try await (
             try await response(APIRequest<ItemPayload>(path: "api/items/\(itemID.apiItemID)", method: .get, query: [
@@ -55,15 +50,15 @@ public extension APIClient {
             status(),
             me().0
         )
-        
+
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        
+
         let dayOfWeekFormatter = DateFormatter()
         dayOfWeekFormatter.locale = Locale(identifier: "en_US_POSIX")
         dayOfWeekFormatter.dateFormat = "EEEE"
-        
+
         let session = SessionPayload(
             id: UUID().uuidString,
             userId: userID,
@@ -99,10 +94,10 @@ public extension APIClient {
             currentTime: currentTime,
             startedAt: Double(UInt64(started.timeIntervalSince1970 * 1000)),
             updatedAt: Double(UInt64(updated.timeIntervalSince1970 * 1000)))
-        
+
         let _ = try await response(APIRequest<EmptyResponse>(path: "api/session/local", method: .post, body: session, maxAttempts: 1, bypassesOffline: true))
     }
-    
+
     func syncSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
         let _ = try await response(APIRequest<EmptyResponse>(path: "api/session/\(sessionID)/sync", method: .post, body: [
             "duration": duration,
@@ -110,6 +105,7 @@ public extension APIClient {
             "timeListened": timeListened,
         ], maxAttempts: 1))
     }
+
     func closeSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {
         let _ = try await response(APIRequest<EmptyResponse>(path: "api/session/\(sessionID)/close", method: .post, body: [
             "duration": duration,
@@ -117,6 +113,7 @@ public extension APIClient {
             "timeListened": timeListened,
         ], maxAttempts: 2))
     }
+
     func deleteSession(sessionID: String) async throws {
         let _ = try await response(APIRequest<EmptyResponse>(path: "api/session/\(sessionID)", method: .delete))
     }

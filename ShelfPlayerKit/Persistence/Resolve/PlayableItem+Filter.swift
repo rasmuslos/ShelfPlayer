@@ -7,12 +7,11 @@
 
 import Foundation
 
-
 public extension PlayableItem {
     func isIncluded(in filter: ItemFilter) async -> Bool {
         let included: Bool
         let entity = await PersistenceManager.shared.progress[id]
-        
+
         switch filter {
         case .all:
             included = true
@@ -23,7 +22,7 @@ public extension PlayableItem {
         case .notFinished:
             included = !entity.isFinished
         }
-        
+
         return included
     }
 }

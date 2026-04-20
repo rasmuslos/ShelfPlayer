@@ -1,12 +1,11 @@
 //
-//  Episode+Convert.swift
-//  Audiobooks
+//  Episode+ConvertOffline.swift
+//  ShelfPlayerKit
 //
 //  Created by Rasmus Krämer on 08.10.23.
 //
 
 import Foundation
-
 
 extension Episode {
     convenience init(downloaded episode: PersistedEpisode) {

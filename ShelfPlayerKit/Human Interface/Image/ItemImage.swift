@@ -1,50 +1,54 @@
 //
 //  ItemImage.swift
-//  Audiobooks
-//
-//  Created by Rasmus Krämer on 03.10.23.
+//  ShelfPlayerKit
 //
 
 import SwiftUI
-import RFNotifications
 
 public struct ItemImage: View {
-    @Default(.forceAspectRatio) private var forceAspectRatio
-    
     let itemID: ItemIdentifier?
     let size: ImageSize
-    
+
     let cornerRadius: CGFloat
     let aspectRatio: AspectRatioPolicy
     let contrastConfiguration: ContrastConfiguration?
-    
+
+    private var aspectRatioPolicy: AspectRatioPolicy {
+        if AppSettings.shared.forceAspectRatio && aspectRatio == .none {
+            return .squareFit
+        }
+
+        return aspectRatio
+    }
+
+    @State private var image: Image?
+
     public init(itemID: ItemIdentifier?, size: ImageSize, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, contrastConfiguration: ContrastConfiguration? = .init()) {
         self.itemID = itemID
         self.size = size
-        
+
         self.cornerRadius = cornerRadius
         self.aspectRatio = aspectRatio
         self.contrastConfiguration = contrastConfiguration
+
+        if let itemID, let cached = itemID.cachedPlatformImage(size: size) {
+            _image = State(initialValue: Image(uiImage: cached))
+        }
     }
+
     public init(item: Item?, size: ImageSize, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, contrastConfiguration: ContrastConfiguration? = .init()) {
         self.itemID = item?.id
         self.size = size
-        
+
         self.cornerRadius = cornerRadius
         self.aspectRatio = aspectRatio
         self.contrastConfiguration = contrastConfiguration
-    }
-    
-    private var aspectRatioPolicy: AspectRatioPolicy {
-        if forceAspectRatio && aspectRatio == .none {
-            return .squareFit
+
+        if let itemID = item?.id, let cached = itemID.cachedPlatformImage(size: size) {
+            _image = State(initialValue: Image(uiImage: cached))
         }
-        
-        return aspectRatio
     }
-    
-    @State private var image: Image? = nil
-    
+
     public var body: some View {
         ZStack {
             if let image {
@@ -67,7 +71,7 @@ public struct ItemImage: View {
                                     image
                                         .resizable()
                                         .blur(radius: 25)
-                                    
+
                                     image
                                         .resizable()
                                         .scaledToFit()
@@ -87,21 +91,21 @@ public struct ItemImage: View {
             }
         }
         .universalContentShape(.rect(cornerRadius: cornerRadius))
-        .onReceive(RFNotification[.reloadImages].publisher()) { itemID in
+        .onReceive(AppEventSource.shared.reloadImages) { itemID in
             if let itemID, self.itemID != itemID {
                 return
             }
-            
+
             reload()
         }
     }
-    
-    private nonisolated func reload() {
+
+    private func reload() {
         Task {
             guard let image = await itemID?.platformImage(size: size) else {
                 return
             }
-            
+
             await MainActor.run {
                 withAnimation {
                     self.image = Image(uiImage: image)
@@ -109,22 +113,22 @@ public struct ItemImage: View {
             }
         }
     }
-    
+
     public enum AspectRatioPolicy {
         case square
         case squareFit
         case none
     }
-    
+
     public struct ContrastConfiguration {
         var shadowRadius: CGFloat = 4
         var shadowOpacity: CGFloat = 0.3
-        
+
         var borderOpacity: CGFloat = 0.4
         var borderThickness: CGFloat = 1
-        
+
         public init() {}
-        
+
         public init(shadowRadius: CGFloat? = nil, shadowOpacity: CGFloat? = nil) {
             if let shadowRadius {
                 self.shadowRadius = shadowRadius
@@ -133,7 +137,7 @@ public struct ItemImage: View {
                 self.shadowOpacity = shadowOpacity
             }
         }
-        
+
         public init(borderOpacity: CGFloat? = nil, borderThickness: CGFloat? = nil) {
             if let borderOpacity {
                 self.borderOpacity = borderOpacity
@@ -149,9 +153,9 @@ public struct ItemImage: View {
 #Preview {
     ItemImage(item: Audiobook.fixture, size: .large)
 }
+
 #Preview {
     ItemImage(item: Audiobook.fixture, size: .small)
         .frame(width: 40)
 }
 #endif
-

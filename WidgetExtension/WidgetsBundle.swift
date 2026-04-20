@@ -1,6 +1,6 @@
 //
 //  WidgetsBundle.swift
-//  Widgets
+//  WidgetExtension
 //
 //  Created by Rasmus Krämer on 29.05.25.
 //
@@ -14,10 +14,10 @@ import ShelfPlayerKit
 struct WidgetsBundle: WidgetBundle {
     var body: some Widget {
         StartWidget()
-        
+
         ListenedTodayWidget()
         ListenNowWidget()
-        
+
         SleepTimerLiveActivity()
     }
 }

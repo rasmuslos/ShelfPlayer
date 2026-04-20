@@ -1,0 +1,588 @@
+//
+//  ProgressSubsystem.swift
+//  ShelfPlayerKit
+//
+//  Created by Rasmus Krämer on 23.12.24.
+//
+
+import Combine
+import Foundation
+import OSLog
+import SwiftData
+
+typealias PersistedProgress = ShelfPlayerSchema.PersistedProgress
+
+extension PersistenceManager {
+    public final actor ProgressSubsystem: ModelActor {
+        public final class EventSource: @unchecked Sendable {
+            public let entityUpdated = PassthroughSubject<(connectionID: String, primaryID: String, groupingID: String?, ProgressEntity?), Never>()
+            public let invalidateCache = PassthroughSubject<String?, Never>()
+            public let invalidateEntities = PassthroughSubject<String?, Never>()
+
+            init() {}
+        }
+
+        public let modelExecutor: any SwiftData.ModelExecutor
+        public let modelContainer: SwiftData.ModelContainer
+
+        let logger: Logger
+        let signposter: OSSignposter
+        public nonisolated let events = EventSource()
+
+        init(modelContainer: SwiftData.ModelContainer) {
+            let modelContext = ModelContext(modelContainer)
+
+            self.modelExecutor = DefaultSerialModelExecutor(modelContext: modelContext)
+            self.modelContainer = modelContainer
+
+            logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "Progress")
+            signposter = .init(logger: logger)
+        }
+    }
+}
+
+extension PersistenceManager.ProgressSubsystem {
+    func entity(_ id: String) -> PersistedProgress? {
+        try? modelContext.fetch(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+            $0.id == id
+        })).first
+    }
+    func entity(_ itemID: ItemIdentifier) -> PersistedProgress? {
+        entity(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID)
+    }
+    func entity(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> PersistedProgress? {
+        let fetchDescriptor = FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+            $0.connectionID == connectionID
+            && $0.primaryID == primaryID
+            && $0.groupingID == groupingID
+        })
+
+        do {
+            let entities = try modelContext.fetch(fetchDescriptor).filter { $0.status != .tombstone }
+
+            if !entities.isEmpty {
+                if entities.count != 1 {
+                    logger.error("Found \(entities.count) douplicate entities for")
+
+                    var sorted = entities.sorted { $0.lastUpdate > $1.lastUpdate }
+                    sorted.removeFirst()
+
+                    for entity in sorted {
+                        Task {
+                            try await delete(entity)
+                        }
+                    }
+                }
+
+                return entities.first
+            }
+        } catch {
+            logger.error("Error fetching progress: \(error)")
+        }
+
+        return nil
+    }
+    func createEntity(id: String, connectionID: ItemIdentifier.ConnectionID, primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, progress: Double, duration: Double?, currentTime: Double, startedAt: Date?, lastUpdate: Date, finishedAt: Date?, status: PersistedProgress.SyncStatus) -> PersistedProgress {
+        let entity = PersistedProgress(id: id, connectionID: connectionID, primaryID: primaryID, groupingID: groupingID, progress: progress, duration: duration, currentTime: currentTime, startedAt: startedAt, lastUpdate: lastUpdate, finishedAt: finishedAt, status: status)
+
+        modelContext.insert(entity)
+
+        return entity
+    }
+    func delete(_ entity: PersistedProgress) async throws {
+        logger.info("Deleting progress entity \(entity.id).")
+
+        do {
+            try await ABSClient[entity.connectionID].delete(progressID: entity.id)
+        } catch {
+            logger.warning("Failed to delete progress \(entity.id, privacy: .public) on the server. Marking tombstone locally: \(error, privacy: .public)")
+            entity.status = .tombstone
+        }
+
+        modelContext.delete(entity)
+        try modelContext.save()
+
+        let payload = (entity.connectionID, entity.primaryID, entity.groupingID, nil as ProgressEntity?)
+
+        events.entityUpdated.send(payload)
+    }
+
+    func remove(itemID: ItemIdentifier) {
+        let primaryID = itemID.primaryID
+        let groupingID = itemID.groupingID
+        let connectionID = itemID.connectionID
+
+        do {
+            try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+                $0.primaryID == primaryID
+                && $0.groupingID == groupingID
+                && $0.connectionID == connectionID
+            })
+            try modelContext.save()
+        } catch {
+            logger.error("Failed to remove progress entities related to itemID \(itemID): \(error)")
+        }
+    }
+    func remove(connectionID: ItemIdentifier.ConnectionID) {
+        do {
+            try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+                $0.connectionID == connectionID
+            })
+            try modelContext.save()
+        } catch {
+            logger.error("Failed to remove progress entities related to connection \(connectionID): \(error)")
+        }
+    }
+
+    nonisolated func progressEntityDidUpdate(_ entity: ProgressEntity) {
+        Task { @MainActor in
+            events.entityUpdated.send((entity.connectionID, entity.primaryID, entity.groupingID, entity))
+        }
+    }
+}
+
+public extension PersistenceManager.ProgressSubsystem {
+    var totalCount: Int {
+        (try? modelContext.fetchCount(FetchDescriptor<PersistedProgress>())) ?? 0
+    }
+
+    nonisolated func hiddenFromContinueListening(connectionID: ItemIdentifier.ConnectionID) async -> Set<String> {
+        // Hidden-from-continue-listening data is no longer stored in key-value store
+        []
+    }
+
+    var activeProgressEntities: [ProgressEntity] {
+        get throws {
+            try modelContext.fetch(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+                $0.progress > 0 && $0.progress < 1
+            })).map(ProgressEntity.init)
+        }
+    }
+    var recentlyFinishedEntities: [ProgressEntity] {
+        get throws {
+            let cutoff = Date.now.advanced(by: -60 * 60 * 24 * 7)
+
+            return try modelContext.fetch(FetchDescriptor<PersistedProgress>(predicate: #Predicate {
+                if let finishedAt = $0.finishedAt {
+                    return finishedAt > cutoff
+                } else {
+                    return false
+                }
+            })).map(ProgressEntity.init)
+        }
+    }
+
+    func compareDatabase(against payload: [ProgressPayload], connectionID: ItemIdentifier.ConnectionID) async throws {
+        var remoteDuplicates = [String]()
+
+        let keyedPayload = payload.map {
+            if let episodeID = $0.episodeId {
+                (key(primaryID: episodeID, groupingID: $0.libraryItemId, connectionID: connectionID), $0)
+            } else {
+                (key(primaryID: $0.libraryItemId, groupingID: nil, connectionID: connectionID), $0)
+            }
+        }
+        let remote = Dictionary(keyedPayload) {
+            logger.warning("Found duplicate progress payload with same primary and grouping ID")
+
+            guard let lhs = $0.lastUpdate else {
+                return $1
+            }
+
+            guard let rhs = $1.lastUpdate else {
+                return $0
+            }
+
+            remoteDuplicates.append(lhs > rhs ? $1.id : $0.id)
+            return lhs > rhs ? $0 : $1
+        }
+        let remoteSet = Set(remote.keys)
+
+        try Task.checkCancellation()
+
+        let entities = try modelContext
+            .fetch(FetchDescriptor<PersistedProgress>(predicate: #Predicate { $0.connectionID == connectionID }))
+            .map { (key(primaryID: $0.primaryID, groupingID: $0.groupingID, connectionID: $0.connectionID), $0) }
+        let local = Dictionary(entities) {
+            logger.warning("Found duplicate local progress entities for the same key")
+
+            let lhs = $0.lastUpdate
+            let rhs = $1.lastUpdate
+
+            modelContext.delete(lhs > rhs ? $1 : $0)
+            return lhs > rhs ? $0 : $1
+        }
+        let localSet = Set(local.keys)
+
+        try Task.checkCancellation()
+
+        let localOnly = localSet.subtracting(remoteSet)
+        let remoteOnly = remoteSet.subtracting(localSet)
+        let common = localSet.intersection(remoteSet)
+
+        logger.info("Comparing \(local.count) local progress entities against \(remote.count) remote progress payloads. Found \(localOnly.count) local-only, \(remoteOnly.count) remote-only, and \(common.count) common keys.")
+
+        try Task.checkCancellation()
+
+        var pendingServerUpdate = [String: PersistedProgress]()
+        var pendingServerDeletion = [String: PersistedProgress]()
+
+        var pendingLocalUpdate = [ProgressPayload]()
+        var pendingLocalDeletion = [PersistedProgress.ID]()
+
+        for key in localOnly {
+            let entity = local[key]!
+
+            if entity.status == .desynchronized {
+                pendingServerUpdate[key] = entity
+            } else {
+                if entity.hasBeenSynchronised {
+                    pendingLocalDeletion.append(entity.id)
+                } else {
+                    pendingServerUpdate[key] = entity
+                }
+            }
+        }
+
+        for key in remoteOnly {
+            let payload = remote[key]!
+            pendingLocalUpdate.append(payload)
+        }
+
+        for key in common {
+            let localEntity = local[key]!
+            let remotePayload = remote[key]!
+
+            if localEntity.duration == nil, let duration = remotePayload.duration, duration.isFinite, duration > 0 {
+                localEntity.duration = duration
+            }
+
+            guard localEntity.status != .tombstone else {
+                pendingServerDeletion[remotePayload.id] = localEntity
+                continue
+            }
+
+            guard let lastUpdate = remotePayload.lastUpdate else {
+                pendingServerUpdate[key] = localEntity
+                continue
+            }
+
+            let remoteUpdated = Date(timeIntervalSince1970: Double(lastUpdate) / 1000)
+            let remoteCurrentTime = remotePayload.currentTime
+
+            if let remoteCurrentTime, isEqual(localEntity.currentTime, rhs: remoteCurrentTime) {
+                continue
+            }
+
+            if remoteUpdated < localEntity.lastUpdate {
+                logger.info("Local entity \(localEntity.id) is newer then remote. (\(remoteUpdated) < \(localEntity.lastUpdate))")
+                pendingServerUpdate[key] = localEntity
+            } else {
+                logger.info("Remote entity is newer then \(localEntity.id)")
+                pendingLocalUpdate.append(remotePayload)
+            }
+        }
+
+        try Task.checkCancellation()
+
+        logger.info("Computed changes: \(pendingServerUpdate.count) remote updates, \(pendingServerDeletion.count) remote deletions, \(pendingLocalUpdate.count) local updates, \(pendingLocalDeletion.count) local deletions (\(remoteDuplicates.count) duplicates)")
+
+        if !pendingServerUpdate.isEmpty {
+            try await ABSClient[connectionID].batchUpdate(progress: pendingServerUpdate.values.map { .init(persistedEntity: $0) })
+        }
+        for entity in pendingServerUpdate {
+            entity.value.status = .synchronized
+            entity.value.hasBeenSynchronised = true
+        }
+
+        for (id, entity) in pendingServerDeletion {
+            do {
+                try await ABSClient[connectionID].delete(progressID: id)
+                modelContext.delete(entity)
+            } catch {
+                logger.error("Failed to delete remote entity \(id): \(error)")
+            }
+        }
+        for id in remoteDuplicates {
+            do {
+                try await ABSClient[connectionID].delete(progressID: id)
+
+                try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+                    $0.id == id
+                })
+            } catch {
+                logger.warning("Failed to delete remote duplicate \(id): \(error)")
+            }
+        }
+
+        pendingServerUpdate.forEach {
+            $1.status = .synchronized
+        }
+
+        let pendingDeletionIDs = local.values.filter { $0.status == .tombstone }.map(\.id)
+        try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+            pendingDeletionIDs.contains($0.id)
+        })
+
+        try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+            pendingLocalDeletion.contains($0.id)
+        })
+
+        for payload in pendingLocalUpdate {
+            let entity = try await integrate(identifier: payload.id,
+                                             connectionID: connectionID,
+                                             primaryID: payload.episodeId ?? payload.libraryItemId,
+                                             groupingID: payload.episodeId == nil ? nil : payload.libraryItemId,
+                                             progress: payload.progress ?? 0,
+                                             duration: payload.duration,
+                                             currentTime: payload.currentTime ?? 0,
+                                             startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
+                                             lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
+                                             finishedAt: payload.finishedAt != nil ? Date(timeIntervalSince1970: Double(payload.finishedAt!) / 1000) : nil,
+                                             performRemoteWork: false)
+
+            entity.status = .synchronized
+        }
+
+        try modelContext.save()
+    }
+
+    func markAsCompleted(_ itemID: ItemIdentifier) async throws {
+        logger.info("Marking progress as completed for item \(itemID).")
+
+        let _ = try await integrate(identifier: nil,
+                                         connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID,
+                                         progress: 1, duration: nil, currentTime: 0, startedAt: .now, lastUpdate: .now, finishedAt: .now)
+    }
+    func markAsListening(_ itemID: ItemIdentifier) async throws {
+        logger.info("Marking progress as listening for item \(itemID).")
+
+        let _ = try await integrate(identifier: nil,
+                                         connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID,
+                                         progress: 0, duration: nil, currentTime: 0, startedAt: nil, lastUpdate: .now, finishedAt: nil)
+    }
+
+    func update(_ itemID: ItemIdentifier, currentTime: Double, duration: Double) async throws {
+        logger.info("Playback update for item \(itemID).")
+
+        let progress: Percentage
+
+        if duration > 0 && duration.isFinite && currentTime.isFinite {
+            progress = (currentTime / duration)
+        } else {
+            progress = 0
+        }
+
+        let _ = try await integrate(identifier: nil,
+                                         connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID,
+                                         progress: progress, duration: duration, currentTime: currentTime, startedAt: .now, lastUpdate: .now, finishedAt: nil, didStartPlayback: true)
+    }
+    func receivedProgressUpdate(_ payload: ProgressPayload, connectionID: ItemIdentifier.ConnectionID) async {
+        do {
+            let primaryID = payload.episodeId ?? payload.libraryItemId
+            let groupingID = payload.episodeId == nil ? nil : payload.libraryItemId
+            let payloadCurrentTime = payload.currentTime ?? 0
+
+            if let existing = entity(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID),
+               abs(existing.currentTime - payloadCurrentTime) <= 7 {
+                logger.info("Ignoring received progress update for \(existing.id) because currentTime divergence is to small. (\(existing.currentTime) -> \(payloadCurrentTime)).")
+                return
+            }
+
+            let _ = try await integrate(identifier: payload.id,
+                                         connectionID: connectionID,
+                                         primaryID: primaryID,
+                                         groupingID: groupingID,
+                                         progress: payload.progress ?? 0,
+                                         duration: payload.duration,
+                                         currentTime: payloadCurrentTime,
+                                         startedAt: payload.startedAt != nil ? Date(timeIntervalSince1970: Double(payload.startedAt!) / 1000) : nil,
+                                         lastUpdate: payload.lastUpdate != nil ? Date(timeIntervalSince1970: Double(payload.lastUpdate!) / 1000) : .now,
+                                         finishedAt: payload.finishedAt != nil ? Date(timeIntervalSince1970: Double(payload.finishedAt!) / 1000) : nil,
+                                         performRemoteWork: false)
+        } catch {
+            logger.warning("Failed to integrate received progress update with ID \(payload.id): \(error)")
+        }
+    }
+
+    func delete(itemID: ItemIdentifier) async throws {
+        if let entity = entity(itemID) {
+            try await delete(entity)
+        }
+    }
+
+    subscript(_ itemID: ItemIdentifier) -> ProgressEntity {
+        if let entity = entity(itemID) {
+            .init(persistedEntity: entity)
+        } else {
+            .init(id: UUID().uuidString, connectionID: itemID.connectionID, primaryID: itemID.primaryID, groupingID: itemID.groupingID, progress: 0, duration: nil, currentTime: 0, startedAt: nil, lastUpdate: .now, finishedAt: nil)
+        }
+    }
+
+    func flush() async throws {
+        guard await !OfflineMode.shared.isEnabled else {
+            throw APIClientError.offline
+        }
+
+        await OfflineMode.shared.forceEnable()
+
+        try modelContext.delete(model: PersistedProgress.self)
+        try modelContext.save()
+
+        await OfflineMode.shared.refreshAvailability()
+    }
+}
+
+private extension PersistenceManager.ProgressSubsystem {
+    private func key(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) -> String {
+        "\(connectionID)-\(primaryID)-\(groupingID ?? "_")"
+    }
+
+    func integrate(identifier: String?,
+                   connectionID: ItemIdentifier.ConnectionID,
+                   primaryID: ItemIdentifier.PrimaryID,
+                   groupingID: ItemIdentifier.GroupingID?,
+                   progress rawProgress: Percentage,
+                   duration rawDuration: Double?,
+                   currentTime rawCurrentTime: Double,
+                   startedAt: Date?,
+                   lastUpdate: Date,
+                   finishedAt: Date?,
+                   didStartPlayback: Bool = false,
+                   performRemoteWork: Bool = true) async throws -> PersistedProgress {
+        logger.info("Integrating progress for key \(self.key(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)) at \(rawProgress)%. performRemoteWork=\(performRemoteWork), didStartPlayback=\(didStartPlayback)")
+
+        let duration: Double?
+
+        if let rawDuration, rawDuration.isFinite, rawDuration > 0 {
+            duration = rawDuration
+        } else {
+            duration = nil
+        }
+
+        var currentTime = rawCurrentTime.isFinite ? max(0, rawCurrentTime) : 0
+
+        if let duration {
+            currentTime = min(currentTime, duration)
+        }
+
+        let progress = rawProgress.isFinite ? min(1, max(0, rawProgress)) : 0
+
+        if progress >= 1, let duration {
+            currentTime = duration
+        }
+
+        let updated: PersistedProgress
+        let freshEntity: Bool
+
+        if let existing = self.entity(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) {
+            if let identifier {
+                if existing.id != identifier {
+                    logger.info("Replacing existing progress identifier \(existing.id) with \(identifier)")
+                }
+
+                existing.id = identifier
+            }
+
+            freshEntity = false
+
+            logger.info("Updating existing progress entity \(existing.id) with progress \(progress) and currentTime \(currentTime)")
+
+            existing.progress = progress
+            existing.currentTime = currentTime
+
+            if let duration, duration > 0 {
+                existing.duration = duration
+            }
+            if progress >= 1, let duration = existing.duration {
+                existing.currentTime = duration
+            }
+
+            if didStartPlayback {
+                if existing.startedAt == nil {
+                    existing.startedAt = startedAt
+                }
+            } else {
+                existing.startedAt = startedAt
+            }
+
+            existing.finishedAt = finishedAt
+            existing.lastUpdate = lastUpdate
+
+            existing.status = .desynchronized
+
+            updated = existing
+        } else {
+            freshEntity = true
+
+            logger.info("Creating progress entity for key \(self.key(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)) with identifier \(identifier ?? "<generated>")")
+
+            updated = createEntity(id: identifier ?? UUID().uuidString,
+                                   connectionID: connectionID,
+                                   primaryID: primaryID,
+                                   groupingID: groupingID,
+                                   progress: progress,
+                                   duration: duration,
+                                   currentTime: currentTime,
+                                   startedAt: startedAt,
+                                   lastUpdate: lastUpdate,
+                                   finishedAt: finishedAt,
+                                   status: .desynchronized)
+        }
+
+        guard performRemoteWork else {
+            logger.info("Skipping remote sync for progress entity \(updated.id) because performRemoteWork is disabled")
+
+            updated.status = .synchronized
+            updated.hasBeenSynchronised = true
+
+            try modelContext.save()
+
+            progressEntityDidUpdate(.init(persistedEntity: updated))
+
+            return updated
+        }
+
+        guard await OfflineMode.shared.isAvailable(updated.connectionID) else {
+            logger.info("Deferring remote sync for progress entity \(updated.id) because connection \(updated.connectionID) is offline")
+
+            if freshEntity {
+                updated.hasBeenSynchronised = false
+            }
+
+            try modelContext.save()
+
+            progressEntityDidUpdate(.init(persistedEntity: updated))
+
+            return updated
+        }
+
+        logger.info("Syncing progress entity \(updated.id) to remote for connection \(connectionID)")
+
+        do {
+            try await ABSClient[connectionID].batchUpdate(progress: [.init(persistedEntity: updated)])
+        } catch {
+            logger.error("Failed to sync progress entity \(updated.id): \(error)")
+
+            try modelContext.save()
+
+            progressEntityDidUpdate(.init(persistedEntity: updated))
+
+            throw error
+        }
+
+        updated.status = .synchronized
+        updated.hasBeenSynchronised = true
+
+        logger.info("Successfully synced progress entity \(updated.id)")
+
+        try modelContext.save()
+
+        progressEntityDidUpdate(.init(persistedEntity: updated))
+
+        return updated
+    }
+    func isEqual(_ lhs: TimeInterval, rhs: TimeInterval) -> Bool {
+        lhs.distance(to: rhs) < .ulpOfOne
+    }
+}

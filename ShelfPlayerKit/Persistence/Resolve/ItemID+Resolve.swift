@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 public extension ItemIdentifier {
     var resolved: Item {
         get async throws {

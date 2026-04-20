@@ -1,8 +1,6 @@
 //
-//  PlayableItem+Convert.swift
-//  Audiobooks
-//
-//  Created by Rasmus Krämer on 09.10.23.
+//  PlayableItemUtility+Convert.swift
+//  ShelfPlayerKit
 //
 
 import Foundation
@@ -21,19 +19,20 @@ extension PlayableItem.AudioFile {
         guard let ino = track.ino else {
             return nil
         }
-        
+
         var ext = track.metadata?.ext
-        
+
         if ext?.starts(with: ".") == true {
             ext?.removeFirst()
         }
-        
+
         self.init(ino: ino,
                   fileExtension: ext ?? "mp3",
                   offset: track.startOffset,
                   duration: track.duration)
     }
 }
+
 extension PlayableItem.AudioTrack {
     init(track: AudiobookshelfAudioTrack, base: URL) {
         self.init(offset: track.startOffset,

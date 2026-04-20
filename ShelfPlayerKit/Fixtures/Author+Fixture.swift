@@ -1,8 +1,6 @@
 //
 //  Author+Fixture.swift
-//  Audiobooks
-//
-//  Created by Rasmus Krämer on 05.10.23.
+//  ShelfPlayerKit
 //
 
 import Foundation
@@ -15,7 +13,7 @@ public extension Person {
         description: nil,
         addedAt: Date(),
         bookCount: 420)
-    
+
     static let authorFixture = Person(
         id: .init(primaryID: "fixture-author", groupingID: nil, libraryID: "fixture", connectionID: "fixture", type: .author),
         name: "George Orwell",

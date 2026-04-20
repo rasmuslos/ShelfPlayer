@@ -11,7 +11,7 @@ public enum DownloadStatus: Int, Identifiable, Equatable, Codable, Hashable, Sen
     case none
     case downloading
     case completed
-    
+
     public var id: Int {
         rawValue
     }

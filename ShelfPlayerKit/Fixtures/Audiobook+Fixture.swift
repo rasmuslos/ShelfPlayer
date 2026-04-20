@@ -1,8 +1,6 @@
 //
-//  Item+Fixture.swift
-//  Audiobooks
-//
-//  Created by Rasmus Krämer on 03.10.23.
+//  Audiobook+Fixture.swift
+//  ShelfPlayerKit
 //
 
 import Foundation

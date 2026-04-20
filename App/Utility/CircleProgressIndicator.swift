@@ -1,0 +1,48 @@
+//
+//  CircleProgressIndicator.swift
+//  ShelfPlayer
+//
+//  Created by Rasmus Krämer on 03.02.24.
+//
+
+import SwiftUI
+import ShelfPlayback
+
+struct CircleProgressIndicator: View {
+    private var tintColor: TintColor { AppSettings.shared.tintColor }
+
+    let progress: Percentage
+    let invertColors: Bool
+
+    var body: some View {
+        if progress < 0 {
+            EmptyView()
+        } else {
+            ZStack {
+                if progress >= 1 {
+                    Circle()
+                        .fill(Color.accentColor.quaternary)
+
+                    Label(1.formatted(.percent.notation(.compactName)), systemImage: "checkmark")
+                        .labelStyle(.iconOnly)
+                        .font(.caption)
+                        .foregroundStyle(invertColors ? tintColor.color : tintColor.accent)
+                } else {
+                    Circle()
+                        .fill(Color.accentColor.quaternary)
+                        .stroke(Color.accentColor.secondary, lineWidth: 1)
+
+                    GeometryReader { proxy in
+                        Circle()
+                            .inset(by: proxy.size.width / 4)
+                            .trim(from: 0, to: CGFloat(progress))
+                            .stroke(invertColors ? tintColor.color : tintColor.accent, style: StrokeStyle(lineWidth: proxy.size.width / 2))
+                            .rotationEffect(.degrees(-90))
+                            .animation(.spring, value: progress)
+                    }
+                    .padding(2)
+                }
+            }
+        }
+    }
+}

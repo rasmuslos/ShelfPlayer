@@ -1,8 +1,6 @@
 //
-//  ShortcutProvider.swift
-//  ShelfPlayer
-//
-//  Created by Rasmus Krämer on 31.05.25.
+//  AppShortcutProvider.swift
+//  ShelfPlayerKit
 //
 
 import Foundation
@@ -12,14 +10,9 @@ public struct AppShortcutProvider: AppShortcutsProvider {
     public static var shortcutTileColor: ShortcutTileColor {
         .yellow
     }
-    
+
     @AppShortcutsBuilder
     public static var appShortcuts: [AppShortcut] {
-        /*
-        AppShortcut(intent: StartIntent(), phrases: [
-            "Play \(\.$item) using \(.applicationName)",
-        ], shortTitle: "intent.start", systemImageName: "play.square")
-         */
         AppShortcut(intent: StartAudiobookIntent(), phrases: [
             "Play \(\.$target) using \(.applicationName)",
         ], shortTitle: "intent.start.audiobook", systemImageName: "bookmark.square")
@@ -27,7 +20,7 @@ public struct AppShortcutProvider: AppShortcutsProvider {
             "Play \(\.$podcast) using \(.applicationName)",
             "Play \(\.$podcast) episodes using \(.applicationName)",
         ], shortTitle: "intent.start.podcast", systemImageName: "play.square.stack")
-        
+
         AppShortcut(intent: PlayIntent(), phrases: [
             "Resume \(.applicationName)",
             "Resume playback with \(.applicationName)",
@@ -38,11 +31,11 @@ public struct AppShortcutProvider: AppShortcutsProvider {
             "Pause \(.applicationName) playback",
             "Stop playing \(.applicationName)",
         ], shortTitle: "intent.pause", systemImageName: "pause.fill")
-        
+
         AppShortcut(intent: CreateBookmarkIntent(), phrases: [
             "Create a bookmark using \(.applicationName)",
         ], shortTitle: "intent.createBookmark", systemImageName: "bookmark")
-        
+
         AppShortcut(intent: SkipBackwardsIntent(), phrases: [
             "Backwards using \(.applicationName)",
             "Skip backwards using \(.applicationName)",
@@ -51,7 +44,7 @@ public struct AppShortcutProvider: AppShortcutsProvider {
             "Forwards using \(.applicationName)",
             "Skip forwards using \(.applicationName)",
         ], shortTitle: "intent.skip.forwards", systemImageName: "arrow.trianglehead.clockwise.rotate.90")
-        
+
         AppShortcut(intent: SetSleepTimerIntent(), phrases: [
             "Set \(.applicationName) sleep timer",
             "Set a sleep timer using \(.applicationName)",
@@ -60,7 +53,7 @@ public struct AppShortcutProvider: AppShortcutsProvider {
             "Set \(.applicationName) playback speed",
             "Set \(.applicationName) playback rate",
         ], shortTitle: "intent.setPlaybackRate", systemImageName: "percent")
-        
+
         AppShortcut(intent: CheckForDownloadsIntent(), phrases: [
             "Search for new downloads using \(.applicationName)",
             "Check for new downloads using \(.applicationName)",

@@ -1,6 +1,6 @@
 //
 //  WidgetBackground.swift
-//  WidgetsExtension
+//  WidgetExtension
 //
 //  Created by Rasmus Krämer on 02.06.25.
 //
@@ -10,8 +10,9 @@ import ShelfPlayerKit
 
 struct WidgetBackground: View {
     @Environment(\.colorScheme) private var colorScheme
-    @Default(.tintColor) private var tintColor
-    
+
+    private var tintColor: TintColor { AppSettings.shared.tintColor }
+
     var body: some View {
         if colorScheme == .light {
             Rectangle()

@@ -1,6 +1,6 @@
 //
-//  Widgets.swift
-//  Widgets
+//  ListenedTodayWidget.swift
+//  WidgetExtension
 //
 //  Created by Rasmus Krämer on 29.05.25.
 //
@@ -28,56 +28,58 @@ struct ListenedTodayWidgetProvider: TimelineProvider {
     func placeholder(in context: Context) -> ListenedTodayTimelineEntry {
         ListenedTodayTimelineEntry(totalToday: nil)
     }
+
     func getSnapshot(in context: Context, completion: @escaping (ListenedTodayTimelineEntry) -> Void) {
         Task {
             completion(await getCurrent())
         }
     }
+
     func getTimeline(in context: Context, completion: @escaping (Timeline<ListenedTodayTimelineEntry>) -> Void) {
         Task {
             let timeline = Timeline(entries: [
                 await getCurrent(),
                 ListenedTodayTimelineEntry(date: tomorrowMidnight, totalToday: 0),
             ], policy: .atEnd)
-            
+
             completion(timeline)
         }
     }
-    
+
     private func getCurrent() async -> ListenedTodayTimelineEntry {
         let empty = ListenedTodayTimelineEntry(totalToday: 0)
-        
-        guard let current = Defaults[.listenedTodayWidgetValue] else {
+
+        guard let current = AppSettings.shared.listenedTodayWidgetValue else {
             return empty
         }
-        
+
         guard tomorrowMidnight.distance(to: current.updated) < 0 else {
-            Defaults[.listenedTodayWidgetValue] = nil
+            AppSettings.shared.listenedTodayWidgetValue = nil
             return empty
         }
-        
+
         return .init(totalToday: current.total)
     }
 }
 
 struct ListenedTodayTimelineEntry: TimelineEntry {
     var date: Date = .now
-    
+
     let totalToday: Int?
-    var target = 30 // Defaults[.listenTimeTarget]
-    
+    var target: Int = AppSettings.shared.listenTimeTarget
+
     var percentage: Percentage {
         guard let totalToday else {
             return 0
         }
-        
+
         return min(1, max(0, Double(totalToday) / Double(target)))
     }
 }
 
 private struct ListenedTodayWidgetContent: View {
     let entry: ListenedTodayTimelineEntry
-    
+
     var body: some View {
         Gauge(value: entry.percentage, in: 0...1) {
             Text(entry.target, format: .number)

@@ -1,8 +1,6 @@
 //
 //  Collection+Fixture.swift
-//  ShelfPlayer
-//
-//  Created by Rasmus Krämer on 16.07.25.
+//  ShelfPlayerKit
 //
 
 import Foundation

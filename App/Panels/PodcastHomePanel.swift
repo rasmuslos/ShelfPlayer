@@ -1,0 +1,212 @@
+//
+//  PodcastHomePanel.swift
+//  ShelfPlayer
+//
+//  Created by Rasmus Krämer on 23.04.24.
+//
+
+import SwiftUI
+import ShelfPlayback
+
+struct PodcastHomePanel: View {
+    @Environment(\.library) private var library
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.homeScope) private var injectedScope
+
+    @State private var episodeRowsByID = [String: HomeRow<Episode>]()
+    @State private var podcastRowsByID = [String: HomeRow<Podcast>]()
+
+    @State private var sections: [HomeSection] = []
+
+    @State private var didFail = false
+    @State private var isLoading = false
+
+    private var effectiveScope: HomeScope? {
+        if let injectedScope { return injectedScope }
+        if let library { return .library(library.id) }
+        return nil
+    }
+
+    private var visibleSections: [HomeSection] {
+        sections.filter { !$0.isHidden }
+    }
+
+    private var hasContent: Bool {
+        !episodeRowsByID.isEmpty || !podcastRowsByID.isEmpty
+    }
+
+    var body: some View {
+        Group {
+            if !hasContent && visibleSections.allSatisfy({ $0.kind.isClientDerived == false }) {
+                if didFail {
+                    ErrorView()
+                } else if isLoading {
+                    LoadingView()
+                } else {
+                    EmptyCollectionView()
+                }
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 16) {
+                        ForEach(visibleSections) { section in
+                            PodcastHomeSectionRow(
+                                section: section,
+                                fallbackLibraryID: library?.id,
+                                episodeRowsByID: episodeRowsByID,
+                                podcastRowsByID: podcastRowsByID
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        .navigationTitle(library?.name ?? String(localized: "error.unavailable"))
+        .largeTitleDisplayMode()
+        .hapticFeedback(.error, trigger: didFail)
+        .toolbar {
+            if horizontalSizeClass == .compact {
+                ListenNowSheetToggle.toolbarItem()
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    CompactLibraryPicker(customizeHomeLibraryType: .podcasts)
+                }
+            }
+        }
+        .modifier(PlaybackSafeAreaPaddingModifier())
+        .task {
+            guard !hasContent && sections.isEmpty else { return }
+            await reloadSections()
+            fetchItems()
+        }
+        .refreshable {
+            await reloadSections()
+            fetchItems()
+            ListenedTodayTracker.shared.refresh()
+        }
+        .onReceive(PlaybackLifecycleEventSource.shared.finalizeReporting) { _ in
+            fetchItems()
+        }
+        .onReceive(PersistenceManager.shared.homeCustomization.events.invalidateSections) { changed in
+            if changed == effectiveScope {
+                Task { await reloadSections() }
+            }
+        }
+    }
+}
+
+private extension PodcastHomePanel {
+    func reloadSections() async {
+        guard let scope = effectiveScope else { return }
+        let loaded = await PersistenceManager.shared.homeCustomization.sections(for: scope, libraryType: .podcasts)
+        withAnimation {
+            sections = loaded
+        }
+    }
+
+    func fetchItems() {
+        Task {
+            withAnimation {
+                didFail = false
+                isLoading = true
+            }
+
+            await fetchRemoteItems()
+
+            withAnimation {
+                isLoading = false
+            }
+        }
+    }
+
+    func fetchRemoteItems() async {
+        guard let library else {
+            return
+        }
+
+        do {
+            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[library.id.connectionID].home(for: library.id.libraryID)
+            let episodes = await HomeRow.prepareForPresentation(home.1, connectionID: library.id.connectionID)
+
+            withAnimation {
+                self.episodeRowsByID = Dictionary(uniqueKeysWithValues: episodes.map { ($0.id, $0) })
+                self.podcastRowsByID = Dictionary(uniqueKeysWithValues: home.0.map { ($0.id, $0) })
+            }
+        } catch {
+            withAnimation {
+                didFail = true
+            }
+        }
+    }
+}
+
+// MARK: - Row
+
+private struct PodcastHomeSectionRow: View {
+    let section: HomeSection
+    let fallbackLibraryID: LibraryIdentifier?
+    let episodeRowsByID: [String: HomeRow<Episode>]
+    let podcastRowsByID: [String: HomeRow<Podcast>]
+
+    private var resolvedLibraryID: LibraryIdentifier? {
+        section.libraryID ?? fallbackLibraryID
+    }
+
+    var body: some View {
+        switch section.kind {
+        case .serverRow(let id):
+            if let row = episodeRowsByID[id], !row.entities.isEmpty {
+                VStack(alignment: .leading, spacing: 0) {
+                    RowTitle(title: row.localizedLabel)
+                        .padding(.bottom, 12)
+                        .padding(.horizontal, 20)
+
+                    if row.id == "continue-listening" {
+                        EpisodeFeaturedGrid(episodes: row.entities)
+                    } else {
+                        EpisodeGrid(episodes: row.entities)
+                    }
+                }
+            } else if let row = podcastRowsByID[id], !row.entities.isEmpty {
+                VStack(alignment: .leading, spacing: 0) {
+                    RowTitle(title: row.localizedLabel)
+                        .padding(.bottom, 12)
+                        .padding(.horizontal, 20)
+                    PodcastHGrid(podcasts: row.entities)
+                }
+            }
+        case .listenNow:
+            if let libraryID = resolvedLibraryID {
+                ListenNowRow(libraryID: libraryID, title: section.kind.defaultLocalizedTitle)
+            }
+        case .upNext:
+            if let libraryID = resolvedLibraryID {
+                UpNextRow(libraryID: libraryID, title: section.kind.defaultLocalizedTitle)
+            }
+        case .nextUpPodcasts:
+            if let libraryID = resolvedLibraryID, libraryID.type == .podcasts {
+                NextUpPodcastsRow(libraryID: libraryID, title: section.kind.defaultLocalizedTitle)
+            }
+        case .downloadedAudiobooks:
+            if let libraryID = resolvedLibraryID, libraryID.type == .audiobooks {
+                DownloadedAudiobooksRow(libraryID: libraryID, title: section.kind.defaultLocalizedTitle)
+            }
+        case .downloadedEpisodes:
+            if let libraryID = resolvedLibraryID, libraryID.type == .podcasts {
+                DownloadedEpisodesRow(libraryID: libraryID, title: section.kind.defaultLocalizedTitle)
+            }
+        case .bookmarks:
+            if let libraryID = resolvedLibraryID {
+                BookmarksRow(libraryID: libraryID, title: section.kind.defaultLocalizedTitle)
+            }
+        }
+    }
+}
+
+#if DEBUG
+#Preview {
+    NavigationStack {
+        PodcastHomePanel()
+    }
+    .previewEnvironment()
+}
+#endif
