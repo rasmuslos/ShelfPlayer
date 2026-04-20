@@ -21,11 +21,17 @@ public struct ShelfPlayerKitPackage: AppIntentsPackage {}
 // MARK: Configuration
 
 public extension ShelfPlayerKit {
-    #if DEBUG
-    static let groupContainer = "group.io.rfk.shelfPlayer.development"
-    #else
-    static let groupContainer = "group.io.rfk.shelfplayer"
-    #endif
+    static let groupContainer: String = {
+        if let identifier = Bundle.main.object(forInfoDictionaryKey: "AppGroupIdentifier") as? String, !identifier.isEmpty {
+            return identifier
+        }
+
+        #if DEBUG
+        return "group.io.rfk.shelfPlayer.development"
+        #else
+        return "group.io.rfk.shelfplayer"
+        #endif
+    }()
 
     #if ENABLE_CENTRALIZED
     static nonisolated(unsafe) var enableCentralized = true

@@ -14,10 +14,6 @@ struct ShelfPlayerApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     init() {
-        #if !ENABLE_CENTRALIZED
-        ShelfPlayerKit.enableCentralized = false
-        #endif
-
         ShelfPlayer.launchHook()
 
         let environment = ProcessInfo.processInfo.environment

@@ -8,9 +8,4 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 
-MARKETING_VERSION = 1.0.0
-
 ENTITLEMENT_BASE = Entitlements
-
-WIDGETS_CODE_SIGN_ENTITLEMENTS = WidgetExtension/$(ENTITLEMENT_BASE).entitlements
-APP_CODE_SIGN_ENTITLEMENTS = App/$(ENTITLEMENT_BASE).entitlements

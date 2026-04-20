@@ -11,9 +11,16 @@
 #include "Base.xcconfig"
 
 DEVELOPMENT_TEAM = ABC123456
-BUNDLE_ID_PREFIX = change.me
 
-// The "ENABLE_CENTRALIZED" flag is used to enable features that require a shared app group "group.io.rfk.shelfplayer", as well as, a paid developer account. Change ShelfPlayerKit+Utility#15 (the app group, which is defined for you as `group.${BUNDLE_ID_PREFIX}.shelfplayer` in the relevant entitlements) if you enabled this flag.
+BUNDLE_ID_PREFIX = change.me
+BUNDLE_ID_SUFFIX = shelfplayer.development
+
+KEYCHAIN_GROUP_SUFFIX = ShelfPlayer.development
+
+// The "ENABLE_CENTRALIZED" flag enables features that require a shared app group
+// (group.$(BUNDLE_ID_PREFIX).$(BUNDLE_ID_SUFFIX), derived automatically from the
+// values above via Info.plist injection) and a paid developer account (needed to
+// provision app groups, iCloud, Siri, and CarPlay). Leave it off on free accounts.
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG
 // SWIFT_ACTIVE_COMPILATION_CONDITIONS = ENABLE_CENTRALIZED DEBUG
 

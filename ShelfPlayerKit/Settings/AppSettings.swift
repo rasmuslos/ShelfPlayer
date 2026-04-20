@@ -317,13 +317,9 @@ public final class AppSettings: @unchecked Sendable {
     // MARK: - Init
 
     private init() {
-        #if DEBUG
-        let groupContainer = "group.io.rfk.shelfPlayer.development"
-        #else
-        let groupContainer = "group.io.rfk.shelfplayer"
-        #endif
-
-        suite = UserDefaults(suiteName: groupContainer) ?? .standard
+        suite = ShelfPlayerKit.enableCentralized
+            ? (UserDefaults(suiteName: ShelfPlayerKit.groupContainer) ?? .standard)
+            : .standard
 
         // Load persisted values (didSet does NOT fire during init)
 
