@@ -11,6 +11,7 @@ import ShelfPlayback
 struct ListenNowSheet: View {
     @Environment(Satellite.self) private var satellite
     @Environment(OfflineMode.self) private var offlineMode
+    @Environment(ConnectionStore.self) private var connectionStore
 
     @Bindable private var settings = AppSettings.shared
 
@@ -20,6 +21,18 @@ struct ListenNowSheet: View {
     var body: some View {
         NavigationStack {
             List {
+                if !offlineMode.isEnabled {
+                    Section {
+                        ForEach(connectionStore.connections) { connection in
+                            NavigationLink {
+                                StatisticsView(connectionID: connection.id)
+                            } label: {
+                                Label("statistics", systemImage: "chart.bar.fill")
+                            }
+                        }
+                    }
+                }
+
                 if listenNowItems.isEmpty {
                     if isLoading {
                         LoadingView.Inner()
