@@ -25,10 +25,6 @@ final class AudiobookViewModel: Sendable {
     var presentedPDF: Data?
 
     var toolbarVisible: Bool
-    var bookmarksVisible: Bool
-    var chaptersVisible: Bool
-    var sessionsVisible: Bool
-    var supplementaryPDFsVisible: Bool
 
     private(set) var chapters: [Chapter]
     private(set) var supplementaryPDFs: [PlayableItem.SupplementaryPDF]
@@ -53,10 +49,6 @@ final class AudiobookViewModel: Sendable {
         self.audiobook = audiobook
 
         toolbarVisible = false
-        bookmarksVisible = false
-        chaptersVisible = false
-        sessionsVisible = false
-        supplementaryPDFsVisible = false
 
         chapters = []
         supplementaryPDFs = []

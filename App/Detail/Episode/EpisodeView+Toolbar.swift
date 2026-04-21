@@ -44,11 +44,13 @@ extension EpisodeView {
                         ProgressButton(itemID: viewModel.episode.id)
                             .labelStyle(.iconOnly)
 
+                        DownloadButton(itemID: viewModel.episode.id, progressVisibility: .toolbar)
+                            .labelStyle(.iconOnly)
+
                         Menu {
                             ControlGroup {
                                 ItemShareButton(item: viewModel.episode)
                                 ItemCollectionMembershipEditButton(itemID: viewModel.episode.id)
-                                DownloadButton(itemID: viewModel.episode.id)
                             }
 
                             Divider()

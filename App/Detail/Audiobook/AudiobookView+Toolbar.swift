@@ -88,8 +88,6 @@ extension AudiobookView {
                             ControlGroup {
                                 ItemShareButton(item: viewModel.audiobook)
                                 ItemCollectionMembershipEditButton(itemID: viewModel.audiobook.id)
-
-                                DownloadButton(itemID: viewModel.audiobook.id)
                             }
 
                             Divider()

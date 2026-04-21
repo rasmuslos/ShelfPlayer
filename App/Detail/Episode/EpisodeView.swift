@@ -33,12 +33,10 @@ struct EpisodeView: View {
 
             Footer()
 
-            DisclosureGroup("timeline", isExpanded: $viewModel.sessionsVisible) {
-                Timeline(sessionLoader: viewModel.sessionLoader, item: viewModel.episode)
-                    .padding(.top, 8)
-                    .padding(.horizontal, 20)
+            SubpageLink("timeline") {
+                TimelinePage()
+                    .environment(viewModel)
             }
-            .disclosureGroupStyle(BetterDisclosureGroupStyle())
             .padding(.top, 12)
         }
         .contentMargins(.top, 8, for: .scrollContent)

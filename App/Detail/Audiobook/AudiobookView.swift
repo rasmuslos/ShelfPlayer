@@ -9,7 +9,6 @@ import SwiftUI
 import ShelfPlayback
 
 struct AudiobookView: View {
-    @Environment(\.defaultMinListRowHeight) private var minimumHeight
     @Environment(\.library) private var library
 
     @State private var viewModel: AudiobookViewModel
@@ -35,53 +34,34 @@ struct AudiobookView: View {
 
                 divider
 
-                if viewModel.bookmarks.count > 0 {
-                    DisclosureGroup("item.bookmarks \(viewModel.bookmarks.count)", isExpanded: $viewModel.bookmarksVisible) {
-                        List {
-                            BookmarksList(itemID: viewModel.audiobook.id, bookmarks: viewModel.bookmarks)
+                VStack(spacing: 0) {
+                    if viewModel.bookmarks.count > 0 {
+                        SubpageLink("item.bookmarks \(viewModel.bookmarks.count)") {
+                            BookmarksPage()
+                                .environment(viewModel)
                         }
-                        .listStyle(.plain)
-                        .frame(height: minimumHeight * CGFloat(viewModel.bookmarks.count))
                     }
-                    .disclosureGroupStyle(BetterDisclosureGroupStyle())
-                    .padding(.bottom, 16)
-                }
 
-                if viewModel.chapters.count > 1 {
-                    DisclosureGroup("item.chapters \(viewModel.chapters.count)", isExpanded: $viewModel.chaptersVisible) {
-                        List {
-                            ChaptersList(itemID: viewModel.audiobook.id, chapters: viewModel.chapters)
+                    if viewModel.chapters.count > 1 {
+                        SubpageLink("item.chapters \(viewModel.chapters.count)") {
+                            ChaptersPage()
+                                .environment(viewModel)
                         }
-                        .listStyle(.plain)
-                        .frame(height: minimumHeight * CGFloat(viewModel.chapters.count))
                     }
-                    .disclosureGroupStyle(BetterDisclosureGroupStyle())
-                    .padding(.bottom, 16)
-                }
 
-                DisclosureGroup("timeline", isExpanded: $viewModel.sessionsVisible) {
-                    Timeline(sessionLoader: viewModel.sessionLoader, item: viewModel.audiobook)
-                        .padding(.top, 8)
-                        .padding(.horizontal, 20)
+                    SubpageLink("timeline") {
+                        TimelinePage()
+                            .environment(viewModel)
+                    }
+
+                    if !viewModel.supplementaryPDFs.isEmpty {
+                        SubpageLink("item.documents") {
+                            DocumentsPage()
+                                .environment(viewModel)
+                        }
+                    }
                 }
-                .disclosureGroupStyle(BetterDisclosureGroupStyle())
                 .padding(.bottom, 16)
-
-                if !viewModel.supplementaryPDFs.isEmpty {
-                    DisclosureGroup("item.documents", isExpanded: $viewModel.supplementaryPDFsVisible) {
-                        List {
-                            ForEach(viewModel.supplementaryPDFs, id: \.ino) { pdf in
-                                Button(pdf.name) {
-                                    viewModel.presentPDF(pdf)
-                                }
-                            }
-                        }
-                        .listStyle(.plain)
-                        .disabled(viewModel.loadingPDF)
-                        .frame(height: minimumHeight * CGFloat(viewModel.supplementaryPDFs.count))
-                    }
-                    .disclosureGroupStyle(BetterDisclosureGroupStyle())
-                }
 
                 VStack(spacing: 12) {
                     ForEach(viewModel.sameSeries, id: \.0.hashValue) { (series, audiobooks) in

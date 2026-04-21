@@ -18,7 +18,6 @@ final class EpisodeViewModel {
     var library: Library!
 
     var toolbarVisible = false
-    var sessionsVisible = false
 
     let sessionLoader: SessionLoader
 
