@@ -31,7 +31,7 @@ public struct SessionPayload: Sendable, Codable, Identifiable {
     let date: String?
     let dayOfWeek: String?
 
-    public let serverVersion: String
+    public let serverVersion: String?
     public let timeListening: Double?
 
     public let startTime: Double

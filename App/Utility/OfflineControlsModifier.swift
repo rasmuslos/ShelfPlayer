@@ -19,18 +19,23 @@ struct OfflineControlsModifier: ViewModifier {
         content
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 12) {
-                    if !startOfflineTimeout {
-                        Button("navigation.offline.enable", systemImage: "network.slash") {
-                            OfflineMode.shared.forceEnable()
+                    Group {
+                        if offlineTimeout == nil {
+                            Button("navigation.offline.enable", systemImage: "network.slash") {
+                                OfflineMode.shared.forceEnable()
+                            }
+                        } else {
+                            Button {
+                                OfflineMode.shared.forceEnable()
+                            } label: {
+                                Text("\(Text("navigation.sync.failed.offline")) \(Text(.now.advanced(by: timeout + 1), style: .relative))")
+                            }
+                            .opacity(offlineTimeout == nil ? 0 : 1)
                         }
-                    } else {
-                        Button {
-                            OfflineMode.shared.forceEnable()
-                        } label: {
-                            Text("\(Text("navigation.sync.failed.offline")) \(Text(.now.advanced(by: timeout + 1), style: .relative))")
-                        }
-                        .opacity(offlineTimeout == nil ? 0 : 1)
                     }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .buttonSizing(.flexible)
 
                     Menu {
                         LibraryPicker()
@@ -48,7 +53,9 @@ struct OfflineControlsModifier: ViewModifier {
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
+                    .buttonSizing(.flexible)
                 }
+                .padding(.horizontal, 20)
             }
             .onAppear {
                 if startOfflineTimeout {

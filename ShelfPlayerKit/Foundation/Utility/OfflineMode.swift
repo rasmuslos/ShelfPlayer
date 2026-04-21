@@ -17,7 +17,7 @@ public final class OfflineMode: Sendable {
         init() {}
     }
 
-    nonisolated public static let availabilityTimeout: TimeInterval = 15
+    nonisolated public static let availabilityTimeout: TimeInterval = 5
     public nonisolated static let events = EventSource()
 
     private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "OfflineMode")

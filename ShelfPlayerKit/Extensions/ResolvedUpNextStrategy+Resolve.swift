@@ -19,7 +19,17 @@ extension ResolvedUpNextStrategy {
                 (_, episodes) = try await ABSClient[podcastID.connectionID].podcast(with: podcastID)
             }
 
-            return await Podcast.filterSort(episodes, podcastID: podcastID).filter { $0.id != itemID }
+            let sorted = await Podcast.filterSort(episodes, podcastID: podcastID)
+
+            guard let itemID else {
+                return sorted
+            }
+
+            guard let index = sorted.firstIndex(where: { $0.id == itemID }) else {
+                throw ResolveError.missingCutoff
+            }
+
+            return Array(sorted[(index + 1)...])
 
         case .collection(let collectionID):
             guard let collection = try await collectionID.resolved as? ItemCollection else {

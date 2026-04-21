@@ -122,6 +122,7 @@ struct MigrationView: View {
     }
 }
 
+#if DEBUG
 #Preview("In Progress") {
     MigrationView(migrationState: .constant(.inProgress(0.4)))
         .previewEnvironment()
@@ -136,3 +137,4 @@ struct MigrationView: View {
     MigrationView(migrationState: .constant(.available))
         .previewEnvironment()
 }
+#endif

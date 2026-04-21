@@ -15,7 +15,7 @@ The project uses **XcodeGen** to generate the Xcode project from `project.yml`.
 xcodegen generate
 
 # Build from command line
-xcodebuild -scheme ShelfPlayer -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 16'
+xcodebuild -scheme ShelfPlayer -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
 
 ### First-time setup
@@ -80,9 +80,25 @@ Item (base)
 - All "backend" code (networking, persistence, data models) belongs in the relevant frameworks (ShelfPlayerKit, ShelfPlayback), not in the app target
 - The app target contains only SwiftUI views, ViewModels, and navigation
 
-## No Tests
+## Tests
 
-There is no test target. The project uses SwiftUI `#Preview` blocks and fixture data in `ShelfPlayerKit/Fixtures/`.
+```bash
+# Run unit tests (ShelfPlayerKit integration tests against https://audiobooks.dev demo:demo)
+xcodebuild test -scheme ShelfPlayer -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  -only-testing:ShelfPlayerKitTests ENABLE_USER_SCRIPT_SANDBOXING=NO
+
+# Run UI tests
+xcodebuild test -scheme ShelfPlayer -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  -only-testing:ShelfPlayerUITests ENABLE_USER_SCRIPT_SANDBOXING=NO
+
+# Run all tests
+xcodebuild test -scheme ShelfPlayer -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  ENABLE_USER_SCRIPT_SANDBOXING=NO
+```
+
+- **ShelfPlayerKitTests**: Swift Testing-based unit tests that hit the live demo server at `https://audiobooks.dev` (credentials: `demo`/`demo`). Tests cover API client auth, library fetching, search, and ItemIdentifier logic.
+- **ShelfPlayerUITests**: XCTest-based UI tests for connection flow, navigation, and content browsing.
+- Fixture data for previews lives in `ShelfPlayerKit/Fixtures/`.
 
 ## Localization
 

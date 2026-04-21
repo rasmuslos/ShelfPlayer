@@ -92,7 +92,11 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
     }
 
     public func _typecast(_ data: Data) throws -> R {
-        try JSONDecoder().decode(R.self, from: data)
+        do {
+            return try JSONDecoder().decode(R.self, from: data)
+        } catch is DecodingError {
+            throw APIClientError.parseError
+        }
     }
 
     public func typecast(decodable: any Decodable) throws -> R {
