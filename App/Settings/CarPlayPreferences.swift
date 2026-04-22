@@ -23,7 +23,7 @@ struct CarPlayPreferences: View {
 
     var body: some View {
         List {
-            SettingsPageHeader(title: "preferences.carPlay", systemImage: "car.fill", color: .green, subtitle: "preferences.carPlay.tabBar.footer")
+            SettingsPageHeader(title: "preferences.carPlay", systemImage: "car.fill", color: .green)
 
             if showTabBarLimitWarning {
                 Section {

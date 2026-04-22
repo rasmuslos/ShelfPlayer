@@ -17,6 +17,8 @@ struct HomeCustomizationView: View {
 
     @State private var sections: [HomeSection] = []
     @State private var isLoading = true
+    @State private var collectionPickerType: ItemCollection.CollectionType?
+
     private var isPinnedScope: Bool {
         if case .pinned = scope { true } else { false }
     }
@@ -31,6 +33,16 @@ struct HomeCustomizationView: View {
 
         let present = Set(sections.map(\.kind.stableID))
         return all.filter { !present.contains($0.stableID) }
+    }
+
+    /// Collection types that can still be pinned. We always allow adding
+    /// more — a user may want multiple collection rows.
+    private var addableCollectionTypes: [ItemCollection.CollectionType] {
+        switch libraryType {
+        case .audiobooks: [.collection]
+        case .podcasts: [.playlist]
+        case nil: [.collection, .playlist]
+        }
     }
 
     var body: some View {
@@ -54,7 +66,7 @@ struct HomeCustomizationView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                if !availableKindsToAdd.isEmpty {
+                if !availableKindsToAdd.isEmpty || !addableCollectionTypes.isEmpty {
                     Section {
                         ForEach(availableKindsToAdd, id: \.stableID) { kind in
                             HStack(spacing: 12) {
@@ -71,6 +83,26 @@ struct HomeCustomizationView: View {
                             .contentShape(.rect)
                             .onTapGesture {
                                 add(kind)
+                            }
+                        }
+
+                        ForEach(addableCollectionTypes, id: \.self) { type in
+                            HStack(spacing: 12) {
+                                Image(systemName: "plus.circle.fill")
+                                    .foregroundStyle(.white, .green)
+                                    .font(.title3)
+                                Image(systemName: type == .collection ? "rectangle.stack.fill" : "music.note.list")
+                                    .foregroundStyle(Color.accentColor)
+                                    .frame(width: 22)
+                                Text(type == .collection
+                                     ? String(localized: "home.customization.addCollection")
+                                     : String(localized: "home.customization.addPlaylist"))
+                                    .foregroundStyle(.primary)
+                                Spacer(minLength: 0)
+                            }
+                            .contentShape(.rect)
+                            .onTapGesture {
+                                collectionPickerType = type
                             }
                         }
                     } header: {
@@ -96,6 +128,14 @@ struct HomeCustomizationView: View {
                 }
             }
         }
+        .sheet(item: $collectionPickerType) { type in
+            NavigationStack {
+                CollectionSectionPicker(type: type) { itemID in
+                    addCollection(type: type, itemID: itemID)
+                    collectionPickerType = nil
+                }
+            }
+        }
         .onChange(of: sections) {
             guard !isLoading else { return }
             persist()
@@ -107,6 +147,20 @@ struct HomeCustomizationView: View {
 
     private func add(_ kind: HomeSectionKind) {
         sections.append(.init(kind: kind, libraryID: scope.implicitLibraryID))
+    }
+
+    private func addCollection(type: ItemCollection.CollectionType, itemID: ItemIdentifier) {
+        let kind: HomeSectionKind = switch type {
+        case .collection: .collection(itemID: itemID.description)
+        case .playlist: .playlist(itemID: itemID.description)
+        }
+        // Don't add if the same collection is already pinned.
+        guard !sections.contains(where: { $0.kind.stableID == kind.stableID }) else { return }
+
+        let override: LibraryIdentifier? = isPinnedScope
+            ? LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(itemID)
+            : scope.implicitLibraryID
+        sections.append(.init(kind: kind, libraryID: override))
     }
 
     private func moveSections(from source: IndexSet, to destination: Int) {
@@ -234,6 +288,110 @@ private struct HomeSectionLibraryPicker: View {
         }
         .navigationTitle("home.customization.libraryPicker.title")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// MARK: - Collection picker
+
+/// Lets the user pick one of their collections or playlists to pin as a home
+/// section. Enumerates libraries via `LibraryEnumerator` and lazy-loads the
+/// items of the chosen library when tapped.
+private struct CollectionSectionPicker: View {
+    let type: ItemCollection.CollectionType
+    let onPick: (ItemIdentifier) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        List {
+            LibraryEnumerator { name, content in
+                Section(name) { content() }
+            } label: { library in
+                if library.id.type == expectedLibraryType {
+                    NavigationLink {
+                        CollectionSectionPickerList(library: library, type: type, onPick: { id in
+                            onPick(id)
+                            dismiss()
+                        })
+                    } label: {
+                        Text(library.name)
+                            .foregroundStyle(.primary)
+                    }
+                }
+            }
+        }
+        .navigationTitle(type == .collection
+                         ? String(localized: "home.customization.addCollection")
+                         : String(localized: "home.customization.addPlaylist"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("action.cancel") { dismiss() }
+            }
+        }
+    }
+
+    /// Collections live in audiobook libraries; playlists in podcast libraries
+    /// (per the server's enum mapping in `Library.swift`).
+    private var expectedLibraryType: LibraryMediaType {
+        switch type {
+        case .collection: .audiobooks
+        case .playlist: .podcasts
+        }
+    }
+}
+
+private struct CollectionSectionPickerList: View {
+    let library: Library
+    let type: ItemCollection.CollectionType
+    let onPick: (ItemIdentifier) -> Void
+
+    @State private var lazyLoader: LazyLoadHelper<ItemCollection, Void?>
+
+    init(library: Library, type: ItemCollection.CollectionType, onPick: @escaping (ItemIdentifier) -> Void) {
+        self.library = library
+        self.type = type
+        self.onPick = onPick
+        _lazyLoader = .init(initialValue: .collections(type))
+    }
+
+    var body: some View {
+        List {
+            if lazyLoader.items.isEmpty {
+                if lazyLoader.failed {
+                    ErrorView()
+                } else if lazyLoader.working {
+                    LoadingView()
+                } else {
+                    EmptyCollectionView()
+                }
+            } else {
+                ForEach(lazyLoader.items) { collection in
+                    Button {
+                        onPick(collection.id)
+                    } label: {
+                        HStack {
+                            Text(collection.name)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.tertiary)
+                        }
+                        .contentShape(.rect)
+                    }
+                    .buttonStyle(.plain)
+                    .onAppear {
+                        lazyLoader.performLoadIfRequired(collection)
+                    }
+                }
+            }
+        }
+        .navigationTitle(library.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            lazyLoader.library = library
+            lazyLoader.initialLoad()
+        }
     }
 }
 

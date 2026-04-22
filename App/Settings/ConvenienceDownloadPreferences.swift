@@ -56,6 +56,7 @@ struct ConvenienceDownloadPreferences: View {
             }
         }
         .navigationTitle("preferences.convenienceDownload")
+        .navigationBarTitleDisplayMode(.inline)
         .hapticFeedback(.error, trigger: notifyError)
         .task {
             loadConfigurations()

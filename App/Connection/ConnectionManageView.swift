@@ -108,7 +108,7 @@ struct ConnectionManageView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
-                    Button("action.edit") {
+                    Button("connection.editHeaders") {
                         satellite.present(.editConnection(connection.id))
                     }
                     Button("connection.reauthorize") {

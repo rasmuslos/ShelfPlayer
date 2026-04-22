@@ -89,6 +89,12 @@ public extension PersistenceManager.BookmarkSubsystem {
             return Dictionary(try bookmarks(connectionID: libraryID.connectionID).map { ($0.primaryID, 1) }, uniquingKeysWith: +)
         }
     }
+    /// Count of all non-deleted bookmarks across every connection/library.
+    var totalCount: Int {
+        get throws {
+            try modelContext.fetch(FetchDescriptor<PersistedBookmark>()).filter { $0.status != .deleted }.count
+        }
+    }
     func note(at time: UInt64, for itemID: ItemIdentifier) async throws -> String {
         guard let note = try bookmark(connectionID: itemID.connectionID, primaryID: itemID.primaryID, time: time)?.note else {
             throw PersistenceError.missing

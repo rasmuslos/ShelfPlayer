@@ -16,8 +16,7 @@ struct LibraryVisibilityPreferences: View {
             SettingsPageHeader(
                 title: "preferences.hiddenLibraries",
                 systemImage: "eye.slash.fill",
-                color: .gray,
-                subtitle: "preferences.hiddenLibraries.footer"
+                color: .gray
             )
 
             Section {

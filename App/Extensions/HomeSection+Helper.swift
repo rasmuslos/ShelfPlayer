@@ -44,6 +44,10 @@ extension HomeSectionKind {
             String(localized: "home.section.downloadedEpisodes")
         case .bookmarks:
             String(localized: "home.section.bookmarks")
+        case .collection:
+            String(localized: "home.section.collection")
+        case .playlist:
+            String(localized: "home.section.playlist")
         }
     }
 
@@ -82,6 +86,10 @@ extension HomeSectionKind {
             "arrow.down.circle.fill"
         case .bookmarks:
             "bookmark.fill"
+        case .collection:
+            "rectangle.stack.fill"
+        case .playlist:
+            "music.note.list"
         }
     }
 

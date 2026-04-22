@@ -20,6 +20,12 @@ public enum HomeSectionKind: Codable, Hashable, Sendable {
     case downloadedAudiobooks
     case downloadedEpisodes
     case bookmarks
+    /// Renders the items of a specific user collection as a home row. The
+    /// associated string is the collection's `ItemIdentifier.description`.
+    case collection(itemID: String)
+    /// Renders the items of a specific user playlist as a home row. The
+    /// associated string is the playlist's `ItemIdentifier.description`.
+    case playlist(itemID: String)
 
     public var stableID: String {
         switch self {
@@ -30,6 +36,8 @@ public enum HomeSectionKind: Codable, Hashable, Sendable {
         case .downloadedAudiobooks: "client::downloadedAudiobooks"
         case .downloadedEpisodes: "client::downloadedEpisodes"
         case .bookmarks: "client::bookmarks"
+        case .collection(let itemID): "client::collection::\(itemID)"
+        case .playlist(let itemID): "client::playlist::\(itemID)"
         }
     }
 

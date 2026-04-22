@@ -60,6 +60,8 @@ struct PlaybackRatePickerCard: View {
     @State private var isDragging = false
     @State private var notifyGroupingSave = false
     @State private var notifyGroupingError = false
+    @State private var storedGroupingRate: Double?
+    @State private var lastNearestPreset: Double?
 
     private let minRate: Double = 0.1
     private let maxRate: Double = 4.0
@@ -71,6 +73,14 @@ struct PlaybackRatePickerCard: View {
 
     private var hasChanged: Bool {
         abs(satellite.playbackRate - defaultRate) > 0.001
+    }
+
+    private var effectiveGroupingDefault: Double {
+        storedGroupingRate ?? defaultRate
+    }
+
+    private var canSaveGroupingDefault: Bool {
+        grouping != nil && abs(satellite.playbackRate - effectiveGroupingDefault) > 0.001
     }
 
     private enum GroupingKind {
@@ -98,11 +108,6 @@ struct PlaybackRatePickerCard: View {
     private func snappedRate(_ rate: Double) -> Double {
         let clamped = max(minRate, min(maxRate, rate))
         return (clamped / step).rounded() * step
-    }
-
-    private func isMajorTick(_ rate: Double) -> Bool {
-        let rounded = (rate * 10).rounded()
-        return Int(rounded) % 5 == 0
     }
 
     var body: some View {
@@ -135,12 +140,19 @@ struct PlaybackRatePickerCard: View {
         .onTapGesture {} // prevent passthrough
         .hapticFeedback(.success, trigger: notifyGroupingSave)
         .hapticFeedback(.error, trigger: notifyGroupingError)
+        .task(id: grouping?.id) {
+            if let grouping {
+                storedGroupingRate = await PersistenceManager.shared.item.playbackRate(for: grouping.id)
+            } else {
+                storedGroupingRate = nil
+            }
+        }
     }
 
     @ViewBuilder
     private var groupingDefaultControl: some View {
         ZStack {
-            if hasChanged, let grouping {
+            if canSaveGroupingDefault, let grouping {
                 Button {
                     setAsGroupingDefault(itemID: grouping.id)
                 } label: {
@@ -159,7 +171,7 @@ struct PlaybackRatePickerCard: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .animation(.spring(response: 0.45, dampingFraction: 0.65), value: hasChanged)
+        .animation(.spring(response: 0.45, dampingFraction: 0.65), value: canSaveGroupingDefault)
         .animation(.spring(response: 0.45, dampingFraction: 0.65), value: grouping?.id)
     }
 
@@ -190,6 +202,11 @@ struct PlaybackRatePickerCard: View {
     @ViewBuilder
     private var rateDisplay: some View {
         HStack(alignment: .firstTextBaseline, spacing: 0) {
+            Image(decorative: "xsign")
+                .font(.system(size: 40, weight: .regular))
+                .padding(.trailing, 4)
+                .hidden()
+
             Text(satellite.playbackRate, format: .playbackRate.hideX())
                 .font(.system(size: 96, weight: .bold))
                 .contentTransition(.numericText(value: satellite.playbackRate))
@@ -208,17 +225,11 @@ struct PlaybackRatePickerCard: View {
     private var ruler: some View {
         GeometryReader { geo in
             let width = geo.size.width
-            let centerX = width / 2
-            let tickCount = Int(((maxRate - minRate) / step).rounded()) + 1
-            let currentIndex = CGFloat(satellite.playbackRate - minRate) / CGFloat(step)
-            let activeIndex = Int(currentIndex.rounded())
-            let offsetX = centerX - currentIndex * tickSpacing - tickSpacing / 2
+            let tickHeight: CGFloat = 40
+            let labelSpacing: CGFloat = 6
+            let labelHeight: CGFloat = 14
 
-            let maxBarHeight: CGFloat = 40
-            let baseMajorHeight: CGFloat = 20
-            let baseMinorHeight: CGFloat = 12
-
-            VStack(spacing: 6) {
+            VStack(spacing: labelSpacing) {
                 Image(systemName: "arrowtriangle.down.fill")
                     .font(.system(size: 9))
                     .foregroundStyle(.primary)
@@ -226,64 +237,25 @@ struct PlaybackRatePickerCard: View {
                     .scaleEffect(isDragging ? 1.25 : 1)
                     .animation(.spring(response: 0.3, dampingFraction: 0.55), value: isDragging)
 
-                HStack(spacing: 0) {
-                    ForEach(0..<tickCount, id: \.self) { index in
-                        let rate = minRate + Double(index) * step
-                        let major = isMajorTick(rate)
-                        let distance = abs(index - activeIndex)
-
-                        let height: CGFloat = {
-                            switch distance {
-                                case 0: return maxBarHeight
-                                case 1: return maxBarHeight * 0.55
-                                case 2: return major ? baseMajorHeight + 2 : baseMinorHeight + 4
-                                default: return major ? baseMajorHeight : baseMinorHeight
-                            }
-                        }()
-
-                        let opacity: Double = {
-                            switch distance {
-                                case 0: return 1.0
-                                case 1: return 0.75
-                                default: return major ? 0.85 : 0.35
-                            }
-                        }()
-
-                        VStack(spacing: 6) {
-                            Rectangle()
-                                .fill(.primary.opacity(opacity))
-                                .frame(width: 1.5, height: height)
-                                .frame(height: maxBarHeight, alignment: .bottom)
-                                .animation(.spring(response: 0.35, dampingFraction: 0.7), value: activeIndex)
-
-                            Group {
-                                if major {
-                                    Text(rate, format: .playbackRate.hideX())
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                        .fixedSize()
-                                } else {
-                                    Color.clear
-                                }
-                            }
-                            .frame(height: 14)
-                        }
-                        .frame(width: tickSpacing)
+                RulerCanvas(rate: satellite.playbackRate,
+                            minRate: minRate,
+                            maxRate: maxRate,
+                            step: step,
+                            tickSpacing: tickSpacing,
+                            tickHeight: tickHeight,
+                            labelSpacing: labelSpacing,
+                            labelHeight: labelHeight)
+                    .frame(width: width, height: tickHeight + labelSpacing + labelHeight)
+                    .mask(alignment: .leading) {
+                        LinearGradient(stops: [
+                            .init(color: .clear, location: 0),
+                            .init(color: .black, location: 0.1),
+                            .init(color: .black, location: 0.9),
+                            .init(color: .clear, location: 1)
+                        ], startPoint: .leading, endPoint: .trailing)
+                        .frame(width: width)
                     }
-                }
-                .frame(width: width, alignment: .leading)
-                .geometryGroup()
-                .offset(x: offsetX)
-                .animation(isDragging ? nil : .spring(response: 0.4, dampingFraction: 0.75), value: satellite.playbackRate)
-                .mask(alignment: .leading) {
-                    LinearGradient(stops: [
-                        .init(color: .clear, location: 0),
-                        .init(color: .black, location: 0.1),
-                        .init(color: .black, location: 0.9),
-                        .init(color: .clear, location: 1)
-                    ], startPoint: .leading, endPoint: .trailing)
-                    .frame(width: width)
-                }
+                    .animation(isDragging ? nil : .spring(response: 0.4, dampingFraction: 0.75), value: satellite.playbackRate)
             }
             .frame(width: width, height: geo.size.height, alignment: .top)
             .contentShape(.rect)
@@ -344,14 +316,16 @@ struct PlaybackRatePickerCard: View {
             .scrollClipDisabled()
             .onAppear {
                 if let nearest = nearestPreset {
+                    lastNearestPreset = nearest
                     scrollProxy.scrollTo(nearest, anchor: .center)
                 }
             }
-            .onChange(of: satellite.playbackRate) {
-                if let nearest = nearestPreset {
-                    withAnimation(.smooth) {
-                        scrollProxy.scrollTo(nearest, anchor: .center)
-                    }
+            .onChange(of: satellite.playbackRate) { _, rate in
+                let nearest = presets.min(by: { abs($0 - rate) < abs($1 - rate) })
+                guard let nearest, nearest != lastNearestPreset else { return }
+                lastNearestPreset = nearest
+                withAnimation(.smooth) {
+                    scrollProxy.scrollTo(nearest, anchor: .center)
                 }
             }
         }
@@ -368,9 +342,77 @@ struct PlaybackRatePickerCard: View {
         Task {
             do {
                 try await PersistenceManager.shared.item.setPlaybackRate(rate, for: itemID)
+                storedGroupingRate = rate
                 notifyGroupingSave.toggle()
             } catch {
                 notifyGroupingError.toggle()
+            }
+        }
+    }
+}
+
+private struct RulerCanvas: View, Animatable {
+    var rate: Double
+    let minRate: Double
+    let maxRate: Double
+    let step: Double
+    let tickSpacing: CGFloat
+    let tickHeight: CGFloat
+    let labelSpacing: CGFloat
+    let labelHeight: CGFloat
+
+    var animatableData: Double {
+        get { rate }
+        set { rate = newValue }
+    }
+
+    var body: some View {
+        Canvas(rendersAsynchronously: false) { context, size in
+            let centerX = size.width / 2
+            let tickCount = Int(((maxRate - minRate) / step).rounded()) + 1
+            let currentIndex = (rate - minRate) / step
+            let offsetX = centerX - CGFloat(currentIndex) * tickSpacing - tickSpacing / 2
+
+            let baseMajorHeight: CGFloat = 20
+            let baseMinorHeight: CGFloat = 12
+            let labelY = tickHeight + labelSpacing + labelHeight / 2
+
+            for index in 0..<tickCount {
+                let tickX = offsetX + CGFloat(index) * tickSpacing + tickSpacing / 2
+                if tickX < -8 || tickX > size.width + 8 { continue }
+
+                let rateValue = minRate + Double(index) * step
+                let major = (Int((rateValue * 10).rounded()) % 5) == 0
+                let fracDistance = abs(Double(index) - currentIndex)
+
+                let height: CGFloat
+                let opacity: Double
+
+                if fracDistance < 1 {
+                    let t = fracDistance
+                    height = tickHeight - (tickHeight - tickHeight * 0.55) * CGFloat(t)
+                    opacity = 1.0 - 0.25 * t
+                } else if fracDistance < 2 {
+                    let t = fracDistance - 1
+                    let start: CGFloat = tickHeight * 0.55
+                    let end: CGFloat = major ? baseMajorHeight + 2 : baseMinorHeight + 4
+                    height = start + (end - start) * CGFloat(t)
+                    let endOpacity = major ? 0.85 : 0.35
+                    opacity = 0.75 + (endOpacity - 0.75) * t
+                } else {
+                    height = major ? baseMajorHeight : baseMinorHeight
+                    opacity = major ? 0.85 : 0.35
+                }
+
+                let barRect = CGRect(x: tickX - 0.75, y: tickHeight - height, width: 1.5, height: height)
+                context.fill(Path(barRect), with: .color(.primary.opacity(opacity)))
+
+                if major {
+                    let text = Text(rateValue, format: .playbackRate.hideX())
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    context.draw(text, at: CGPoint(x: tickX, y: labelY), anchor: .center)
+                }
             }
         }
     }

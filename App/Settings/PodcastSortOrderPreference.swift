@@ -25,7 +25,7 @@ struct PodcastSortOrderPreference<Content: View>: View {
 
                 Image(systemName: "chevron.up.chevron.down")
                     .imageScale(.small)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.gray)
             }
             .contentShape(.rect)
         }
@@ -40,5 +40,11 @@ struct PodcastSortOrderPreference<Content: View>: View {
         PodcastSortOrderPreference {
             Label($0, systemImage: $1)
         }
+        Picker("Test", selection: .constant(1)) {
+            ForEach(1..<5) {
+                Text("Option \($0)")
+            }
+        }
     }
+    .foregroundStyle(.primary)
 }

@@ -1582,6 +1582,17 @@
         }
       }
     },
+    "connection.editHeaders" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Headers"
+          }
+        }
+      }
+    },
     "connection.knownConnections" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3134,6 +3145,40 @@
         }
       }
     },
+    "home.customization.addCollection" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sammlung hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Collection"
+          }
+        }
+      }
+    },
+    "home.customization.addPlaylist" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist hinzufügen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Playlist"
+          }
+        }
+      }
+    },
     "home.customization.addSection" : {
       "localizations" : {
         "de" : {
@@ -3328,6 +3373,23 @@
         }
       }
     },
+    "home.section.collection" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sammlung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collection"
+          }
+        }
+      }
+    },
     "home.section.downloadedAudiobooks" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3392,6 +3454,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Next Episodes"
+          }
+        }
+      }
+    },
+    "home.section.playlist" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist"
           }
         }
       }

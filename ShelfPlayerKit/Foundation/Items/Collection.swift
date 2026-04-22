@@ -36,9 +36,11 @@ public final class ItemCollection: Item, @unchecked Sendable {
 // MARK: - Collection Type
 
 public extension ItemCollection {
-    enum CollectionType: Codable, Sendable {
+    enum CollectionType: Codable, Hashable, Identifiable, Sendable {
         case collection
         case playlist
+
+        public var id: Self { self }
 
         public var itemType: ItemIdentifier.ItemType {
             switch self {

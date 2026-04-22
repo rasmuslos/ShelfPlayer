@@ -19,8 +19,7 @@ struct DebugPreferences: View {
             SettingsPageHeader(
                 title: "preferences.support",
                 systemImage: "lifepreserver.fill",
-                color: .red,
-                subtitle: "preferences.support.subtitle"
+                color: .red
             )
 
             Section {
