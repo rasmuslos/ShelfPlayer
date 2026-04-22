@@ -26,7 +26,7 @@ public enum TintColor: Identifiable, Codable, CaseIterable, Sendable {
     public var color: Color {
         switch self {
         case .shelfPlayer:
-            Color(red: 1, green: 0.8, blue: 0)
+            Color.accentColor
         case .yellow:
                 .yellow
         case .purple:
