@@ -71,8 +71,6 @@ enum DefaultsMigrator {
         // Double settings
         let doubleKeys = [
             "defaultPlaybackRate",
-            "playbackRateAdjustmentUp",
-            "playbackRateAdjustmentDown",
             "sleepTimerExtendInterval",
         ]
 

@@ -14,9 +14,6 @@ struct PlaybackRateEditor: View {
     @State private var playbackRates: [Double] = AppSettings.shared.playbackRates
     @State private var defaultPlaybackRate: Double = AppSettings.shared.defaultPlaybackRate
 
-    @State private var playbackRateAdjustmentUp: Double = AppSettings.shared.playbackRateAdjustmentUp
-    @State private var playbackRateAdjustmentDown: Double = AppSettings.shared.playbackRateAdjustmentDown
-
     @State private var newValue: Percentage = 1
 
     @ViewBuilder
@@ -54,7 +51,7 @@ struct PlaybackRateEditor: View {
                 }
 
                 Button("preferences.playbackRate.add", systemImage: "plus") {
-                    guard !playbackRates.contains(newValue) else {
+                    guard !isDuplicate(newValue) else {
                         return
                     }
 
@@ -63,18 +60,7 @@ struct PlaybackRateEditor: View {
                     save()
                 }
                 .labelStyle(.titleOnly)
-            }
-
-            Section {
-                Stepper(value: $playbackRateAdjustmentUp, in: 0.05...0.5, step: 0.05) {
-                    Text("preferences.playbackRate.adjust.up \(playbackRateAdjustmentUp.formatted(.playbackRate))")
-                }
-                .onChange(of: playbackRateAdjustmentUp) { settings.playbackRateAdjustmentUp = playbackRateAdjustmentUp }
-
-                Stepper(value: $playbackRateAdjustmentDown, in: 0.05...0.5, step: 0.05) {
-                    Text("preferences.playbackRate.adjust.down \(playbackRateAdjustmentDown.formatted(.playbackRate))")
-                }
-                .onChange(of: playbackRateAdjustmentDown) { settings.playbackRateAdjustmentDown = playbackRateAdjustmentDown }
+                .disabled(isDuplicate(newValue))
             }
 
             Section {
@@ -86,13 +72,9 @@ struct PlaybackRateEditor: View {
                 Button("action.reset", role: .destructive) {
                     playbackRates = [0.9, 1, 1.3, 1.6, 2]
                     defaultPlaybackRate = 1
-                    playbackRateAdjustmentUp = 0.1
-                    playbackRateAdjustmentDown = 0.1
 
                     settings.playbackRates = playbackRates
                     settings.defaultPlaybackRate = defaultPlaybackRate
-                    settings.playbackRateAdjustmentUp = playbackRateAdjustmentUp
-                    settings.playbackRateAdjustmentDown = playbackRateAdjustmentDown
                 }
             }
         }
@@ -104,6 +86,10 @@ struct PlaybackRateEditor: View {
     private func save() {
         settings.playbackRates = playbackRates
         settings.defaultPlaybackRate = defaultPlaybackRate
+    }
+
+    private func isDuplicate(_ value: Double) -> Bool {
+        playbackRates.contains(where: { abs($0 - value) < 0.001 })
     }
 }
 

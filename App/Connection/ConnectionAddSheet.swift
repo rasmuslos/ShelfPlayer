@@ -99,7 +99,7 @@ struct ConnectionAddSheet: View {
                         viewModel.verify()
                     }
                     .controlSize(.large)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.glassProminent)
                     .buttonSizing(.flexible)
                     .disabled(viewModel.endpoint.count < 8)
                     .padding(.horizontal)
@@ -144,6 +144,10 @@ struct ConnectionAddSheet: View {
     @ViewBuilder
     private var authorizationStep: some View {
         Form {
+            if let strategies = viewModel.strategies, let apiClient = viewModel.apiClient {
+                ConnectionAuthorizer(strategies: strategies, isLoading: $viewModel.isLoading, username: $viewModel.username, showButton: false, authorizeTrigger: $authorizeTrigger, apiClient: apiClient, callback: viewModel.storeConnection)
+            }
+            
             if let version = viewModel.version {
                 Section {
                     HStack(spacing: 8) {
@@ -157,10 +161,6 @@ struct ConnectionAddSheet: View {
                     OutdatedServerRow(version: viewModel.version)
                 }
             }
-
-            if let strategies = viewModel.strategies, let apiClient = viewModel.apiClient {
-                ConnectionAuthorizer(strategies: strategies, isLoading: $viewModel.isLoading, username: $viewModel.username, showButton: false, authorizeTrigger: $authorizeTrigger, apiClient: apiClient, callback: viewModel.storeConnection)
-            }
         }
         .formStyle(.grouped)
         .scrollDismissesKeyboard(.interactively)
@@ -173,7 +173,7 @@ struct ConnectionAddSheet: View {
                     authorizeTrigger = true
                 }
                 .controlSize(.large)
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.glassProminent)
                 .buttonSizing(.flexible)
                 .padding(.horizontal)
                 .padding(.bottom, 8)

@@ -56,7 +56,7 @@ struct WhatsNewSheet: View {
             Button("action.proceed") {
                 satellite.dismissSheet()
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.glassProminent)
             .controlSize(.extraLarge)
             .buttonSizing(.flexible)
             .padding(.top, 8)

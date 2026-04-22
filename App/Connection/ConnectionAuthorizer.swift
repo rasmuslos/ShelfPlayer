@@ -111,7 +111,7 @@ struct ConnectionAuthorizer: View {
                             authorize()
                         }
                         .controlSize(.large)
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.glassProminent)
                         .buttonSizing(.flexible)
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets())

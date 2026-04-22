@@ -104,14 +104,6 @@ public final class AppSettings: @unchecked Sendable {
         didSet { suite.set(defaultPlaybackRate, forKey: "defaultPlaybackRate") }
     }
 
-    public var playbackRateAdjustmentUp: Double = 0.1 {
-        didSet { suite.set(playbackRateAdjustmentUp, forKey: "playbackRateAdjustmentUp") }
-    }
-
-    public var playbackRateAdjustmentDown: Double = 0.1 {
-        didSet { suite.set(playbackRateAdjustmentDown, forKey: "playbackRateAdjustmentDown") }
-    }
-
     public var sleepTimerIntervals: [Double] = [5, 10, 15, 20, 25, 30, 45, 60, 75, 90].map { Double($0) * 60 } {
         didSet { encodeCodable(sleepTimerIntervals, forKey: "sleepTimerIntervals") }
     }
@@ -347,8 +339,6 @@ public final class AppSettings: @unchecked Sendable {
 
         if let val: [Double] = decodeCodable(forKey: "playbackRates") { playbackRates = val }
         defaultPlaybackRate = suite.object(forKey: "defaultPlaybackRate") as? Double ?? 1
-        playbackRateAdjustmentUp = suite.object(forKey: "playbackRateAdjustmentUp") as? Double ?? 0.1
-        playbackRateAdjustmentDown = suite.object(forKey: "playbackRateAdjustmentDown") as? Double ?? 0.1
 
         if let val: [Double] = decodeCodable(forKey: "sleepTimerIntervals") { sleepTimerIntervals = val }
         sleepTimerExtendInterval = suite.object(forKey: "sleepTimerExtendInterval") as? Double ?? 1200

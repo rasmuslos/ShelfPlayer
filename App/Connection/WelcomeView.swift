@@ -54,7 +54,7 @@ struct WelcomeView: View {
                     satellite.present(.addConnection)
                 }
                 .controlSize(.large)
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.glassProminent)
                 .buttonSizing(.flexible)
                 .padding(.horizontal)
                 .padding(.bottom, 8)

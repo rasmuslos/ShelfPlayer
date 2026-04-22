@@ -67,7 +67,7 @@ struct MigrationView: View {
                     Button("preferences.support", systemImage: "lifepreserver") {
                         satellite.present(.debugPreferences)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.glass)
                     .controlSize(.extraLarge)
                     .buttonSizing(.flexible)
                     .padding(.horizontal, 20)
@@ -75,7 +75,7 @@ struct MigrationView: View {
                     Button("migration.retry") {
                         startMigration()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.glassProminent)
                     .controlSize(.extraLarge)
                     .buttonSizing(.flexible)
                     .padding(.horizontal, 20)

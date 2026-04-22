@@ -91,14 +91,14 @@ struct ReauthorizeConnectionSheet: View {
                                 }
                             }
                             .controlSize(.large)
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.glass)
                             .buttonSizing(.flexible)
                             .foregroundStyle(.red)
                             Button("connection.add.proceed") {
                                 authorizeTrigger = true
                             }
                             .controlSize(.large)
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.glassProminent)
                             .buttonSizing(.flexible)
                         }
                     }

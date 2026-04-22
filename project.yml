@@ -126,11 +126,11 @@ targets:
       - target: ShelfPlayback
       - target: ShelfPlayerMigration
       - target: ShelfPlayerWidgets
-    postCompileScripts:
+    postBuildScripts:
       - name: Set build number from git commit count
         script: |
           BUILD_NUMBER=$(git -C "$SRCROOT" rev-list --count HEAD)
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$TARGET_BUILD_DIR/$INFOPLIST_PATH"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$BUILT_PRODUCTS_DIR/$INFOPLIST_PATH"
         basedOnDependencyAnalysis: false
     settings:
       base:
@@ -175,11 +175,11 @@ targets:
       - WidgetExtension
     dependencies:
       - target: ShelfPlayerKit
-    postCompileScripts:
+    postBuildScripts:
       - name: Set build number from git commit count
         script: |
           BUILD_NUMBER=$(git -C "$SRCROOT" rev-list --count HEAD)
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$TARGET_BUILD_DIR/$INFOPLIST_PATH" 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string $BUILD_NUMBER" "$TARGET_BUILD_DIR/$INFOPLIST_PATH"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$BUILT_PRODUCTS_DIR/$INFOPLIST_PATH"
         basedOnDependencyAnalysis: false
     settings:
       base:

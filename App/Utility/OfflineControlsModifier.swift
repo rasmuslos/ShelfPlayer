@@ -33,7 +33,7 @@ struct OfflineControlsModifier: ViewModifier {
                             .opacity(offlineTimeout == nil ? 0 : 1)
                         }
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.glass)
                     .controlSize(.large)
                     .buttonSizing(.flexible)
 
@@ -51,7 +51,7 @@ struct OfflineControlsModifier: ViewModifier {
                     } label: {
                         Text("navigation.library.select")
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.glassProminent)
                     .controlSize(.large)
                     .buttonSizing(.flexible)
                 }

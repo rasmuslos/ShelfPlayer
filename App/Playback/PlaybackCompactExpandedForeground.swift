@@ -109,14 +109,10 @@ struct PlaybackCompactExpandedForeground: View {
                 .modifier(PlaybackDragGestureCatcher(height: height))
 
                 if viewModel.isRatePickerVisible {
-                    Spacer()
-
                     PlaybackRatePickerCard(isPresented: $viewModel.isRatePickerVisible)
-                        .padding(.vertical, 24)
-                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .transition(.move(edge: .bottom).combined(with: .opacity))
-
-                    Spacer()
                 } else {
                     PlaybackQueue()
                         .padding(.vertical, 12)
