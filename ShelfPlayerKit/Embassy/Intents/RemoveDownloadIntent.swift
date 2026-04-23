@@ -10,7 +10,9 @@ public struct RemoveDownloadIntent: AppIntent {
     public static let title: LocalizedStringResource = "intent.removeDownload"
     public static let description = IntentDescription("intent.removeDownload.description")
 
-    @Parameter(title: "intent.entity.item", description: "intent.entity.item.description")
+    @Parameter(title: "intent.entity.item",
+               description: "intent.entity.item.description",
+               requestValueDialog: IntentDialog("Which downloaded item would you like to remove?"))
     public var item: ItemEntity
 
     public init() {}

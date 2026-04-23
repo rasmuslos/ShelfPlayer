@@ -12,7 +12,8 @@ public struct CreateBookmarkIntent: AudioPlaybackIntent {
 
     @AppDependency private var audioPlayer: IntentAudioPlayer
 
-    @Parameter(title: "intent.createBookmark.note")
+    @Parameter(title: "intent.createBookmark.note",
+               requestValueDialog: IntentDialog("What should the bookmark note say?"))
     public var note: String?
 
     public init() {}

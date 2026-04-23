@@ -10,7 +10,9 @@ public struct DownloadIntent: AppIntent {
     public static let title: LocalizedStringResource = "intent.download"
     public static let description = IntentDescription("intent.download.description")
 
-    @Parameter(title: "intent.entity.item", description: "intent.entity.item.description")
+    @Parameter(title: "intent.entity.item",
+               description: "intent.entity.item.description",
+               requestValueDialog: IntentDialog("Which item would you like to download?"))
     public var item: ItemEntity
 
     public init() {}

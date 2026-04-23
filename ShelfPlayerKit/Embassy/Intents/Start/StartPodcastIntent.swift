@@ -18,7 +18,10 @@ public struct StartPodcastIntent: AudioPlaybackIntent {
         self.podcast = await .init(podcast: podcast)
     }
 
-    @Parameter(title: "intent.entity.item.podcast", description: "intent.entity.item.description", optionsProvider: PodcastEntityOptionsProvider())
+    @Parameter(title: "intent.entity.item.podcast",
+               description: "intent.entity.item.description",
+               requestValueDialog: IntentDialog("Which podcast?"),
+               optionsProvider: PodcastEntityOptionsProvider())
     public var podcast: PodcastEntity
 
     public static var parameterSummary: some ParameterSummary {

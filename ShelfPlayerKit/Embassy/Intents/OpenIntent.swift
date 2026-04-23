@@ -12,7 +12,9 @@ public struct OpenIntent: AppIntent {
 
     public static let openAppWhenRun: Bool = true
 
-    @Parameter(title: "intent.entity.item", description: "intent.entity.item.description")
+    @Parameter(title: "intent.entity.item",
+               description: "intent.entity.item.description",
+               requestValueDialog: IntentDialog("Which item would you like to open?"))
     public var item: ItemEntity
 
     public init() {}

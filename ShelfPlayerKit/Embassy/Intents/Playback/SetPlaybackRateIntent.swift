@@ -12,7 +12,10 @@ public struct SetPlaybackRateIntent: AudioPlaybackIntent {
 
     @AppDependency private var audioPlayer: IntentAudioPlayer
 
-    @Parameter(title: "intent.setPlaybackRate.rate", controlStyle: .stepper, inclusiveRange: (1, 800))
+    @Parameter(title: "intent.setPlaybackRate.rate",
+               controlStyle: .stepper,
+               inclusiveRange: (1, 800),
+               requestValueDialog: IntentDialog("What playback speed, as a percentage?"))
     public var rate: Percentage
 
     public init() {}

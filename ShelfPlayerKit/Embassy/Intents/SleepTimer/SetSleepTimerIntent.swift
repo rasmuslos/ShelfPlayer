@@ -12,10 +12,14 @@ public struct SetSleepTimerIntent: AudioPlaybackIntent {
 
     @AppDependency private var audioPlayer: IntentAudioPlayer
 
-    @Parameter(title: "intent.setSleepTimer.amount", controlStyle: .field, inclusiveRange: (0, 43_200))
+    @Parameter(title: "intent.setSleepTimer.amount",
+               controlStyle: .field,
+               inclusiveRange: (0, 43_200),
+               requestValueDialog: IntentDialog("How long?"))
     public var amount: Int
 
-    @Parameter(title: "intent.setSleepTimer.type")
+    @Parameter(title: "intent.setSleepTimer.type",
+               requestValueDialog: IntentDialog("In what units? Seconds, minutes, hours, or chapters?"))
     public var type: IntentSleepTimerType
 
     public init() {}

@@ -12,7 +12,10 @@ public struct StartIntent: AudioPlaybackIntent {
 
     @AppDependency private var audioPlayer: IntentAudioPlayer
 
-    @Parameter(title: "intent.entity.item", description: "intent.entity.item.description", optionsProvider: ItemEntityOptionsProvider())
+    @Parameter(title: "intent.entity.item",
+               description: "intent.entity.item.description",
+               requestValueDialog: IntentDialog("What would you like to play?"),
+               optionsProvider: ItemEntityOptionsProvider())
     public var item: ItemEntity
 
     public init() {}

@@ -10,10 +10,13 @@ public struct SetFinishedIntent: AppIntent {
     public static let title: LocalizedStringResource = "intent.setFinished"
     public static let description = IntentDescription("intent.setFinished.description")
 
-    @Parameter(title: "intent.entity.item", description: "intent.entity.item.description")
+    @Parameter(title: "intent.entity.item",
+               description: "intent.entity.item.description",
+               requestValueDialog: IntentDialog("Which item?"))
     public var item: ItemEntity
 
-    @Parameter(title: "intent.setFinished.finished")
+    @Parameter(title: "intent.setFinished.finished",
+               requestValueDialog: IntentDialog("Mark as finished or unfinished?"))
     public var finished: Bool
 
     public init() {}

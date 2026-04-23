@@ -12,7 +12,10 @@ public struct SkipBackwardsIntent: AudioPlaybackIntent {
 
     @AppDependency private var audioPlayer: IntentAudioPlayer
 
-    @Parameter(title: "intent.skip.interval", controlStyle: .field, inclusiveRange: (0, 108_000))
+    @Parameter(title: "intent.skip.interval",
+               controlStyle: .field,
+               inclusiveRange: (0, 108_000),
+               requestValueDialog: IntentDialog("How many seconds?"))
     public var interval: TimeInterval?
 
     public init() {}
