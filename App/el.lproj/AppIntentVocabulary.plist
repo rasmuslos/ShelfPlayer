@@ -9,8 +9,8 @@
 			<string>INPlayMediaIntent</string>
 			<key>IntentExamples</key>
 			<array>
-				<string>Riproduci l&apos;audiolibro 1984 con ShelfPlayer</string>
-				<string>Riproduci l&apos;episodio &quot;Industrial society and its future&quot; con ShelfPlayer</string>
+				<string>Αναπαραγωγή του ηχογραφημένου βιβλίου 1984 με το ShelfPlayer</string>
+				<string>Αναπαραγωγή του επεισοδίου &quot;Industrial society and its future&quot; με το ShelfPlayer</string>
 			</array>
 		</dict>
 	</array>

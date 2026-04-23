@@ -134,7 +134,7 @@ struct PlayButton: View {
                         .contentTransition(.opacity)
 
                     if let remaining {
-                        Text(verbatim: "\u{2022}")
+                        Text(verbatim: "•")
                         Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
                     }
                 }

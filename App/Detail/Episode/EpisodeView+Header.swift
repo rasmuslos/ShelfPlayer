@@ -29,11 +29,11 @@ extension EpisodeView {
                     }
 
                     if viewModel.episode.type == .trailer {
-                        Text("·")
+                        Text(verbatim: "•")
                         Text("item.trailer")
                         Image(systemName: "movieclapper.fill")
                     } else if viewModel.episode.type == .bonus {
-                        Text("·")
+                        Text(verbatim: "•")
                         Text("item.bonus")
                         Image(systemName: "fireworks")
                     }

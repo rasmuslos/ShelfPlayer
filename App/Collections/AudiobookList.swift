@@ -134,7 +134,7 @@ struct AudiobookList: View {
                                     Text(audiobook.authors, format: .list(type: .and, width: .short))
 
                                     if !audiobook.narrators.isEmpty {
-                                        Text(verbatim:  " \u{2022} ")
+                                        Text(verbatim:  " • ")
                                         Text(audiobook.narrators, format: .list(type: .and, width: .short))
                                     }
                                 }
@@ -145,7 +145,7 @@ struct AudiobookList: View {
                         .foregroundStyle(.secondary)
 
                         if !additional.isEmpty {
-                            Text(additional.joined(separator: " \u{2022} "))
+                            Text(additional.joined(separator: " • "))
                                 .lineLimit(1)
                                 .font(.caption.smallCaps())
                                 .foregroundStyle(.secondary)

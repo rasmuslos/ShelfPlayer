@@ -42,7 +42,8 @@ private struct SectionInner<Label: View>: View {
                         isLoading = false
                     }
             } else {
-                Image(systemName: "exclamationmark.triangle")
+                SwiftUI.Label("error.libraryLoadFailed", systemImage: "exclamationmark.triangle")
+                    .foregroundStyle(.secondary)
             }
         } else {
             ForEach(libraries) {

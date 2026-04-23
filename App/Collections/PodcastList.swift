@@ -40,7 +40,7 @@ private struct PodcastRow: View {
             return nil
         }
 
-        return result.joined(separator: " \u{2022} ")
+        return result.joined(separator: " • ")
     }
 
     var body: some View {

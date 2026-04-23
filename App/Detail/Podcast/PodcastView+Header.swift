@@ -134,14 +134,14 @@ private struct Additional: View {
             }
 
             if let publishingType = viewModel.podcast.publishingType {
-                Text(verbatim: "\u{2022}")
+                Text(verbatim: "•")
                     .accessibilityHidden(true)
 
                 Text(publishingType.label)
             }
 
             if viewModel.podcast.genres.count > 0 {
-                Text(verbatim: "\u{2022}")
+                Text(verbatim: "•")
                     .accessibilityHidden(true)
 
                 Text(viewModel.podcast.genres, format: .list(type: .and, width: .narrow))

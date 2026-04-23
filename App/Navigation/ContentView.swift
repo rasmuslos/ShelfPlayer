@@ -211,6 +211,9 @@ struct ContentView: View {
                 AppEventSource.shared.scenePhaseDidChange.send(false)
             }
         }
+        .onOpenURL { url in
+            URLSchemeHandler.handle(url)
+        }
         .onContinueUserActivity(CSQueryContinuationActionType) {
             guard let query = $0.userInfo?[CSSearchQueryString] as? String else {
                 logger.warning("Received a malformed query to set the global search from Spotlight")

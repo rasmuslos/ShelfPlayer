@@ -1,392 +1,596 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "CFBundleDisplayName" : {
-      "comment" : "Bundle display name",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ShelfPlayer"
+  "sourceLanguage": "en",
+  "strings": {
+    "CFBundleDisplayName": {
+      "comment": "Bundle display name",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "ShelfPlayer"
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ShelfPlayer"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ShelfPlayer"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ShelfPlayer"
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ShelfPlayer"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "CFBundleName" : {
-      "comment" : "Bundle name",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ShelfPlayer"
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "ShelfPlayer"
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ShelfPlayer"
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ShelfPlayer"
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ShelfPlayer"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "ShelfPlayer"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "NSHumanReadableCopyright" : {
-      "comment" : "Copyright (human-readable)",
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "2026 Rasmus Krämer EDV & ShelfPlayer contributors"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "2025 Rasmus Krämer et les contributeurs de ShelfPlayer"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "2025 Расмус Крамер та співавтори ShelfPlayer"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "2025 Rasmus Krämer & ShelfPlayer contributors"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         }
       }
     },
-    "NSLocalNetworkUsageDescription" : {
-      "comment" : "Privacy - Local Network Usage Description",
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Genehmige den Zugriff, um eine Verbindung zu einer Instanz im lokalen Netzwerk herzustellen."
+    "CFBundleName": {
+      "comment": "Bundle name",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Grant access to connect to a Audiobookshelf-Instance inside your local network."
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accordez l’accès pour se connecter à une instance d’Audiobookshelf dans votre réseau local."
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Разрешить доступ для подключения к Audiobookshelf в локальной сети."
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tillåt åtkomst för att ansluta till en Audiobookshelf på ditt lokala nätverk."
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Надайте дозвіл на підключення до Audiobookshelf-Instance у вашій локальній мережі."
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "授权本地网络访问权限以让 ShelfPlayer 可连接局域网中的 Audiobookshelf 实例。"
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer"
           }
         }
       }
     },
-    "NSMicrophoneUsageDescription" : {
-      "comment" : "Privacy - Microphone Usage Description",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "ShelfPlayer does not use the microphone"
+    "NSMicrophoneUsageDescription": {
+      "comment": "Privacy - Microphone Usage Description",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer verwendet das Mikrofon nicht"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Το ShelfPlayer δεν χρησιμοποιεί το μικρόφωνο"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer does not use the microphone"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer n'utilise pas le microphone"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer non utilizza il microfono"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer gebruikt de microfoon niet"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer не использует микрофон"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer använder inte mikrofonen"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer не використовує мікрофон"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ShelfPlayer 不使用麦克风"
           }
         }
       }
     },
-    "NSSiriUsageDescription" : {
-      "comment" : "Privacy - Siri Usage Description",
-      "extractionState" : "extracted_with_value",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Spiele deine Hörbücher oder Episoden mit Siri"
+    "NSSiriUsageDescription": {
+      "comment": "Privacy - Siri Usage Description",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steuere die Wiedergabe mit Siri, erstelle Lesezeichen und mehr."
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Use Siri to control playback, create bookmarks, and more."
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Χρησιμοποιήστε το Siri για τον έλεγχο της αναπαραγωγής, τη δημιουργία σελιδοδεικτών και άλλα."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Lisez des éléments de votre bibliothèque avec Siri"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use Siri to control playback, create bookmarks, and more."
           }
         },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Воспроизвести объекты из библиотеки с помощью Siri"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utilisez Siri pour contrôler la lecture, créer des signets et plus encore."
           }
         },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Spela objekt från ditt bibliotek med hjälp av Siri"
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa Siri per controllare la riproduzione, creare segnalibri e molto altro."
           }
         },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Відтворюйте вміст своєї бібліотеки за допомогою Siri"
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gebruik Siri om de weergave te bedienen, bladwijzers te maken en meer."
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "使用 Siri 播放您的资料库中的项目"
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Используйте Siri для управления воспроизведением, создания закладок и других действий."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Använd Siri för att styra uppspelningen, skapa bokmärken och mer."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Керуйте відтворенням за допомогою Siri, створюйте закладки тощо."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 Siri 控制播放、创建书签等。"
           }
         }
       }
     },
-    "quickAction.search" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suche"
+    "Shelf Player": {
+      "comment": "An alternative app name used by Siri.",
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf Player"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search"
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf Player"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rechercher"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf Player"
           }
         },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Поиск"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf Player"
           }
         },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sök"
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf Player"
           }
         },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пошук"
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf Player"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜索"
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf Player"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf Player"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf Player"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf Player"
           }
         }
       }
     },
-    "quickAction.search.subtitle" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suche in alle Bibliotheken"
+    "quickAction.search": {
+      "comment": "A title for the search quick action.",
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suche"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search all libraries"
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αναζήτηση"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rechercher dans toutes les bibliothèques"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search"
           }
         },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Искать по всем библиотекам"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher"
           }
         },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sök alla bibliotek"
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca"
           }
         },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Пошук у всіх бібліотеках"
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoeken"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜索所有库"
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поиск"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sök"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пошук"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索"
           }
         }
       }
     },
-    "Shelf Player" : {
-
+    "quickAction.search.subtitle": {
+      "comment": "A subtitle for the search quick action.",
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suche in alle Bibliotheken"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αναζήτηση σε όλες τις βιβλιοθήκες"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search all libraries"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher dans toutes les bibliothèques"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca in tutte le librerie"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoek in alle bibliotheken"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Искать по всем библиотекам"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sök alla bibliotek"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пошук у всіх бібліотеках"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索所有库"
+          }
+        }
+      }
     },
-    "shelfplayer" : {
-
+    "shelfplayer": {
+      "comment": "The custom URL scheme used by the app.",
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shelfplayer"
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shelfplayer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shelfplayer"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shelfplayer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shelfplayer"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shelfplayer"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shelfplayer"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shelfplayer"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shelfplayer"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "shelfplayer"
+          }
+        }
+      }
     },
-    "uti.item" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Objekt"
+    "uti.item": {
+      "comment": "A description of the item Uniform Type Identifier.",
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objekt"
           }
         },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Item"
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Στοιχείο"
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Élément"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Item"
           }
         },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Объект"
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Élément"
           }
         },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Objekt"
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elemento"
           }
         },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Елемент"
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Item"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "项目"
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Объект"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objekt"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Елемент"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "项目"
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.1"
 }

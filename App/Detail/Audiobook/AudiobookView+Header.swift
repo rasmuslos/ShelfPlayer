@@ -127,7 +127,7 @@ private struct Title: View {
 
                 Group {
                     if !viewModel.audiobook.narrators.isEmpty || viewModel.audiobook.explicit || viewModel.audiobook.abridged {
-                        Text(verbatim: " \u{2022} ")
+                        Text(verbatim: " • ")
                             .accessibilityHidden(true)
                     }
 

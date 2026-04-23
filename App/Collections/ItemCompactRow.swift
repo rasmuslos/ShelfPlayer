@@ -68,7 +68,7 @@ struct ItemCompactRow: View {
             parts.append(episode.duration.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .hour])))
         }
 
-        return parts.isEmpty ? nil : parts.joined(separator: " \u{2022} ")
+        return parts.isEmpty ? nil : parts.joined(separator: " • ")
     }
     private var subtitle: String? {
         var parts = [String]()
@@ -101,7 +101,7 @@ struct ItemCompactRow: View {
             }
         }
 
-        return parts.isEmpty ? nil : parts.joined(separator: " \u{2022} ")
+        return parts.isEmpty ? nil : parts.joined(separator: " • ")
     }
 
     var imageCornerRadius: CGFloat {

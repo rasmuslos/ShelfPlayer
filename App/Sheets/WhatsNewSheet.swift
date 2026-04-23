@@ -40,7 +40,7 @@ struct WhatsNewSheet: View {
         ScrollView {
             VStack {
                 Text(verbatim: "What's New")
-                Text("in \(Text(verbatim: "ShelfPlayer").foregroundStyle(Color.accentColor))")
+                Text("in \(Text("ShelfPlayer").foregroundStyle(Color.accentColor))")
             }
             .bold()
             .font(.largeTitle)

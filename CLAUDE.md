@@ -103,3 +103,5 @@ xcodebuild test -scheme ShelfPlayer -destination 'platform=iOS Simulator,name=iP
 ## Localization
 
 The app supports multiple languages. Localized strings are in `.xcstrings` files. See `Localization.md` for contributing translations.
+
+**Do not modify `.xcstrings` files unless specifically tasked to.** Xcode manages these files automatically when source code references new localized strings, and manual edits can clobber translations or auto-generated metadata.

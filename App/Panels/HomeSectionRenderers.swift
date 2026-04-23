@@ -95,7 +95,7 @@ struct ListenNowRow: View {
                 AudiobookRow(title: title, small: false, audiobooks: audiobooks)
             }
             if !episodes.isEmpty {
-                HomeRowContainer(title: audiobooks.isEmpty ? title : "\(title) \u{2022} \(String(localized: "item.episodes"))") {
+                HomeRowContainer(title: audiobooks.isEmpty ? title : "\(title) • \(String(localized: "item.episodes"))") {
                     EpisodeFeaturedGrid(episodes: episodes)
                 }
             }
@@ -264,60 +264,66 @@ struct BookmarksRow: View {
     let libraryID: LibraryIdentifier?
     let title: String
 
-    @State private var count: Int = 0
-
-    @ViewBuilder
-    private var rowContent: some View {
-        HStack {
-            Text(count > 0
-                 ? "home.section.bookmarks.count \(count)"
-                 : "home.section.bookmarks.empty")
-                .foregroundStyle(.secondary)
-            Spacer()
-            if count > 0, libraryID != nil {
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(.tertiary)
-            }
-        }
-        .padding(.horizontal, 20)
-    }
+    @State private var audiobooks: [Audiobook] = []
 
     var body: some View {
-        // Always render when configured — an empty-state message is more
-        // useful than a vanishing row, and lets the user confirm the section
-        // is actually pinned. Podcast-only libraries don't have bookmarks
-        // (bookmarks are audiobook-only) so they still hide.
+        // Podcast-only libraries don't have bookmarks (bookmarks are
+        // audiobook-only) so they still hide entirely.
         Group {
-            if let libraryID {
-                if libraryID.type == .audiobooks {
-                    NavigationLink {
-                        AudiobookBookmarksPanel()
-                            .environment(\.library, Library(id: libraryID.libraryID, connectionID: libraryID.connectionID, name: title, type: libraryID.type, index: 0))
-                    } label: {
-                        HomeRowContainer(title: title) { rowContent }
+            if let libraryID, libraryID.type == .podcasts {
+                EmptyView()
+            } else if audiobooks.isEmpty {
+                HomeRowContainer(title: title) {
+                    HStack {
+                        Text("home.section.bookmarks.empty")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                        Spacer()
                     }
-                    .buttonStyle(.plain)
-                    .disabled(count == 0)
-                } else {
-                    EmptyView()
+                    .padding(.horizontal, 20)
                 }
             } else {
-                HomeRowContainer(title: title) { rowContent }
+                AudiobookRow(title: title, small: false, audiobooks: audiobooks)
             }
         }
         .task(id: libraryID) { await load() }
+        .onReceive(PersistenceManager.shared.bookmark.events.changed) { _ in
+            Task { await load() }
+        }
     }
 
     private func load() async {
+        // Collect bookmarked audiobook identifiers (primaryID / connectionID
+        // pairs), optionally filtering by the current library.
+        var identifiers: [(primaryID: String, connectionID: String)] = []
+
         if let libraryID {
             guard libraryID.type == .audiobooks else { return }
             guard let dict = try? await PersistenceManager.shared.bookmark[libraryID] else { return }
-            let total = dict.values.reduce(0, +)
-            withAnimation { count = total }
+            // Sort by bookmark count desc so the busiest books lead the row.
+            let sorted = dict.sorted { $0.value > $1.value }
+            identifiers = sorted.map { ($0.key, libraryID.connectionID) }
         } else {
-            guard let total = try? await PersistenceManager.shared.bookmark.totalCount else { return }
-            withAnimation { count = total }
+            guard let all = try? await PersistenceManager.shared.bookmark.all else { return }
+            // Unique by (connectionID, primaryID) preserving first-seen order.
+            var seen = Set<String>()
+            for entry in all {
+                let key = "\(entry.connectionID)::\(entry.primaryID)"
+                if seen.insert(key).inserted {
+                    identifiers.append((entry.primaryID, entry.connectionID))
+                }
+            }
         }
+
+        var resolved: [Audiobook] = []
+        for id in identifiers {
+            if let book = try? await ResolveCache.shared.resolve(primaryID: id.primaryID, groupingID: nil, connectionID: id.connectionID) as? Audiobook {
+                if let libraryID, book.id.libraryID != libraryID.libraryID { continue }
+                resolved.append(book)
+            }
+        }
+
+        withAnimation { audiobooks = resolved }
     }
 }
 
@@ -362,13 +368,25 @@ struct PinnedCollectionRow: View {
                         placeholder(textKey: "home.section.collection.empty")
                     }
                 }
-            } else if didFail {
-                HomeRowContainer(title: fallbackTitle) {
-                    placeholder(textKey: "home.section.collection.unavailable")
-                }
             } else {
-                // Brief pre-resolve window — keep quiet to avoid a flash.
-                EmptyView()
+                // Always visible — either a "loading" or "unavailable" state.
+                // EmptyView() here would look identical to "the section
+                // vanished", which is exactly the feedback we're trying to
+                // avoid for an explicitly-pinned collection.
+                HomeRowContainer(title: fallbackTitle) {
+                    if didFail {
+                        placeholder(textKey: "home.section.collection.unavailable")
+                    } else {
+                        HStack(spacing: 8) {
+                            ProgressView()
+                            Text("loading")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 20)
+                    }
+                }
             }
         }
         .task(id: itemID) { await load() }
@@ -390,10 +408,14 @@ struct PinnedCollectionRow: View {
 
     private func load() async {
         do {
-            let resolved = try await ResolveCache.shared.resolve(itemID) as? ItemCollection
-            withAnimation {
-                collection = resolved
-                didFail = resolved == nil
+            let item = try await ResolveCache.shared.resolve(itemID)
+            if let collection = item as? ItemCollection {
+                withAnimation {
+                    self.collection = collection
+                    self.didFail = false
+                }
+            } else {
+                withAnimation { didFail = true }
             }
         } catch {
             withAnimation { didFail = true }

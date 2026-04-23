@@ -88,7 +88,7 @@ struct PlaybackBottomBarPill: View {
                 MarqueeText(text: itemName, font: .subheadline, controller: marqueeController)
 
                 if !itemSubtitle.isEmpty {
-                    MarqueeText(text: itemSubtitle.joined(separator: " \u{2022} "), font: .caption, foregroundStyle: .init(.secondary), controller: marqueeController)
+                    MarqueeText(text: itemSubtitle.joined(separator: " • "), font: .caption, foregroundStyle: .init(.secondary), controller: marqueeController)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
