@@ -5,11 +5,8 @@
 //  Created by Rasmus Krämer on 23.04.24.
 //
 
-import OSLog
 import SwiftUI
 import ShelfPlayback
-
-private let audiobookHomeLogger = Logger(subsystem: "io.rfk.shelfPlayer", category: "AudiobookHomePanel")
 
 struct AudiobookHomePanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -51,7 +48,7 @@ struct AudiobookHomePanel: View {
                 }
             } else {
                 ScrollView {
-                    VStack(spacing: 16) {
+                    LazyVStack(spacing: 16) {
                         ForEach(visibleSections) { section in
                             AudiobookHomeSectionRow(
                                 section: section,
@@ -100,12 +97,8 @@ struct AudiobookHomePanel: View {
 
 private extension AudiobookHomePanel {
     func reloadSections() async {
-        guard let scope = effectiveScope else {
-            audiobookHomeLogger.warning("reloadSections: effectiveScope is nil, skipping")
-            return
-        }
+        guard let scope = effectiveScope else { return }
         let loaded = await PersistenceManager.shared.homeCustomization.sections(for: scope, libraryType: .audiobooks)
-        audiobookHomeLogger.info("reloadSections: scope=\(scope.key, privacy: .public) loaded \(loaded.count) sections: \(loaded.map { $0.kind.stableID }.joined(separator: ","), privacy: .public)")
         withAnimation {
             sections = loaded
         }

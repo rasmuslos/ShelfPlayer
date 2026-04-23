@@ -22,7 +22,7 @@ public enum IntentError: Error, CustomLocalizedStringResourceConvertible {
         case .invalidItemType:
             "intent.error.invalidItemType"
         default:
-            "intent.error"
+            "intent.error.generic"
         }
     }
 }

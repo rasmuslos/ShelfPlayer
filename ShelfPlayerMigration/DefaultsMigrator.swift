@@ -7,20 +7,33 @@
 
 import Foundation
 import OSLog
+import ShelfPlayerKit
 
 enum DefaultsMigrator {
     private static let logger = Logger(subsystem: "io.rfk.shelfPlayerMigration", category: "DefaultsMigrator")
 
     static func migrate() {
-        let oldSuite = UserDefaults(suiteName: MigrationManager.oldGroupContainer) ?? .standard
-        let newSuite = UserDefaults.standard
+        // The old app stored some keys in the shared group container
+        // (`Defaults.Key(..., suite: .shared)`) and others in the bundle's
+        // `UserDefaults.standard` (the Defaults library's default suite when no
+        // suite is specified). Read from both, preferring the group container.
+        // The standard fallback recovers values when the new bundle ID matches
+        // the old one (true for release builds: `io.rfk.shelfplayer`).
+        let oldGroupSuite = UserDefaults(suiteName: MigrationManager.oldGroupContainer)
+        let standardSuite = UserDefaults.standard
 
-        // Bool settings
+        // Write to the same suite AppSettings reads from.
+        let newSuite = ShelfPlayerKit.suite
+
+        func read(_ key: String) -> Any? {
+            oldGroupSuite?.object(forKey: key) ?? standardSuite.object(forKey: key)
+        }
+
         let boolKeys = [
             "removeFinishedDownloads",
             "forceAspectRatio",
             "groupAudiobooksInSeries",
-"enableChapterTrack",
+            "enableChapterTrack",
             "enableSmartRewind",
             "generateUpNextQueue",
             "sleepTimerFadeOut",
@@ -45,15 +58,16 @@ enum DefaultsMigrator {
             "durationToggled",
             "carPlayShowOtherLibraries",
             "enableHapticFeedback",
+            "isOffline",
+            "defaultEpisodeAscending",
         ]
 
         for key in boolKeys {
-            if oldSuite.object(forKey: key) != nil {
-                newSuite.set(oldSuite.bool(forKey: key), forKey: key)
+            if let value = read(key) as? Bool {
+                newSuite.set(value, forKey: key)
             }
         }
 
-        // Int settings
         let intKeys = [
             "skipBackwardsInterval",
             "skipForwardsInterval",
@@ -63,24 +77,22 @@ enum DefaultsMigrator {
         ]
 
         for key in intKeys {
-            if let value = oldSuite.object(forKey: key) as? Int {
+            if let value = read(key) as? Int {
                 newSuite.set(value, forKey: key)
             }
         }
 
-        // Double settings
         let doubleKeys = [
             "defaultPlaybackRate",
             "sleepTimerExtendInterval",
         ]
 
         for key in doubleKeys {
-            if oldSuite.object(forKey: key) != nil {
-                newSuite.set(oldSuite.double(forKey: key), forKey: key)
+            if let value = read(key) as? Double {
+                newSuite.set(value, forKey: key)
             }
         }
 
-        // String settings
         let stringKeys = [
             "lastBuild",
             "lastCheckedServerVersion",
@@ -88,19 +100,18 @@ enum DefaultsMigrator {
         ]
 
         for key in stringKeys {
-            if let value = oldSuite.string(forKey: key) {
+            if let value = read(key) as? String {
                 newSuite.set(value, forKey: key)
             }
         }
 
-        // Date settings
         let dateKeys = [
             "spotlightIndexCompletionDate",
             "lastConvenienceDownloadRun",
         ]
 
         for key in dateKeys {
-            if let value = oldSuite.object(forKey: key) as? Date {
+            if let value = read(key) as? Date {
                 newSuite.set(value, forKey: key)
             }
         }
@@ -119,7 +130,7 @@ enum DefaultsMigrator {
         ]
 
         for key in intEnumKeys {
-            if let value = oldSuite.object(forKey: key) as? Int {
+            if let value = read(key) as? Int {
                 newSuite.set(value, forKey: key)
             }
         }
@@ -131,20 +142,8 @@ enum DefaultsMigrator {
         ]
 
         for key in stringEnumKeys {
-            if let value = oldSuite.string(forKey: key) {
+            if let value = read(key) as? String {
                 newSuite.set(value, forKey: key)
-            }
-        }
-
-        // Bool stored in shared suite (old group defaults)
-        let sharedBoolKeys = [
-            "isOffline",
-            "defaultEpisodeAscending",
-        ]
-
-        for key in sharedBoolKeys {
-            if oldSuite.object(forKey: key) != nil {
-                newSuite.set(oldSuite.bool(forKey: key), forKey: key)
             }
         }
 
@@ -164,11 +163,11 @@ enum DefaultsMigrator {
         ]
 
         for key in dataKeys {
-            if let value = oldSuite.data(forKey: key) {
+            if let value = read(key) as? Data {
                 newSuite.set(value, forKey: key)
             }
         }
 
-        logger.info("Migrated UserDefaults from old suite")
+        logger.info("Migrated UserDefaults from old suites")
     }
 }

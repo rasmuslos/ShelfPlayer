@@ -7,19 +7,19 @@ import Foundation
 import AppIntents
 
 public struct SetSleepTimerIntent: AudioPlaybackIntent {
-    public static let title: LocalizedStringResource = "intent.setSleepTimer"
+    public static let title: LocalizedStringResource = "intent.setSleepTimer.title"
     public static let description = IntentDescription("intent.setSleepTimer.description")
 
     @AppDependency private var audioPlayer: IntentAudioPlayer
 
-    @Parameter(title: "intent.setSleepTimer.amount",
+    @Parameter(title: "intent.setSleepTimer.parameter.amount.title",
                controlStyle: .field,
                inclusiveRange: (0, 43_200),
-               requestValueDialog: IntentDialog("How long?"))
+               requestValueDialog: IntentDialog("intent.setSleepTimer.parameter.amount.dialog"))
     public var amount: Int
 
-    @Parameter(title: "intent.setSleepTimer.type",
-               requestValueDialog: IntentDialog("In what units? Seconds, minutes, hours, or chapters?"))
+    @Parameter(title: "intent.setSleepTimer.parameter.type.title",
+               requestValueDialog: IntentDialog("intent.setSleepTimer.parameter.type.dialog"))
     public var type: IntentSleepTimerType
 
     public init() {}
@@ -30,7 +30,7 @@ public struct SetSleepTimerIntent: AudioPlaybackIntent {
     }
 
     public static var parameterSummary: some ParameterSummary {
-        Summary("intent.setSleepTimer \(\.$amount) \(\.$type)")
+        Summary("intent.setSleepTimer.summary \(\.$amount) \(\.$type)")
     }
 
     public func perform() async throws -> some IntentResult {
@@ -59,14 +59,14 @@ public struct SetSleepTimerIntent: AudioPlaybackIntent {
 
 public enum IntentSleepTimerType: Int, Codable, Sendable, CaseIterable, AppEnum {
     public static var typeDisplayRepresentation: TypeDisplayRepresentation {
-        TypeDisplayRepresentation(name: "intent.setSleepTimer.type")
+        TypeDisplayRepresentation(name: "intent.sleepTimer.unit")
     }
 
     public static var caseDisplayRepresentations: [IntentSleepTimerType: DisplayRepresentation] {[
-        .seconds: DisplayRepresentation(title: "intent.setSleepTimer.type.seconds"),
-        .minutes: DisplayRepresentation(title: "intent.setSleepTimer.type.minutes"),
-        .hours: DisplayRepresentation(title: "intent.setSleepTimer.type.hours"),
-        .chapters: DisplayRepresentation(title: "intent.setSleepTimer.type.chapters"),
+        .seconds: DisplayRepresentation(title: "intent.sleepTimer.unit.seconds"),
+        .minutes: DisplayRepresentation(title: "intent.sleepTimer.unit.minutes"),
+        .hours: DisplayRepresentation(title: "intent.sleepTimer.unit.hours"),
+        .chapters: DisplayRepresentation(title: "intent.sleepTimer.unit.chapters"),
     ]}
 
     case seconds

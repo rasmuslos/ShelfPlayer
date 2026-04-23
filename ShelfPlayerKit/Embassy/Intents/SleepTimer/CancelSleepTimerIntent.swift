@@ -7,7 +7,7 @@ import Foundation
 import AppIntents
 
 public struct CancelSleepTimerIntent: AudioPlaybackIntent {
-    public static let title: LocalizedStringResource = "intent.cancelSleepTimer"
+    public static let title: LocalizedStringResource = "intent.cancelSleepTimer.title"
     public static let description = IntentDescription("intent.cancelSleepTimer.description")
 
     @AppDependency private var audioPlayer: IntentAudioPlayer

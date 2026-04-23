@@ -7,8 +7,8 @@ import Foundation
 import AppIntents
 
 public struct StartPodcastIntent: AudioPlaybackIntent {
-    public static let title: LocalizedStringResource = "intent.start.podcast"
-    public static let description = IntentDescription("intent.start.description")
+    public static let title: LocalizedStringResource = "intent.startPodcast.title"
+    public static let description = IntentDescription("intent.startPodcast.description")
 
     @AppDependency private var audioPlayer: IntentAudioPlayer
 
@@ -18,14 +18,14 @@ public struct StartPodcastIntent: AudioPlaybackIntent {
         self.podcast = await .init(podcast: podcast)
     }
 
-    @Parameter(title: "intent.entity.item.podcast",
-               description: "intent.entity.item.description",
-               requestValueDialog: IntentDialog("Which podcast?"),
+    @Parameter(title: "intent.startPodcast.parameter.podcast.title",
+               description: "intent.startPodcast.parameter.podcast.description",
+               requestValueDialog: IntentDialog("intent.startPodcast.parameter.podcast.dialog"),
                optionsProvider: PodcastEntityOptionsProvider())
     public var podcast: PodcastEntity
 
     public static var parameterSummary: some ParameterSummary {
-        Summary("intent.start.podcast \(\.$podcast)")
+        Summary("intent.startPodcast.summary \(\.$podcast)")
     }
 
     public func perform() async throws -> some ReturnsValue<ItemEntity> {

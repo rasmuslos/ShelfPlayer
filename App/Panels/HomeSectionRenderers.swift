@@ -9,11 +9,8 @@
 //  `AudiobookHomePanel` / `PodcastHomePanel` because they already hold the
 //  fetched `HomeRow<Audiobook>` / `HomeRow<Episode>` data.
 
-import OSLog
 import SwiftUI
 import ShelfPlayback
-
-private let homeSectionLogger = Logger(subsystem: "io.rfk.shelfPlayer", category: "HomeSection")
 
 // MARK: - Wrapper
 
@@ -196,7 +193,6 @@ struct DownloadedAudiobooksRow: View {
     let title: String
 
     @State private var audiobooks: [Audiobook] = []
-    @State private var didLoad = false
 
     var body: some View {
         Group {
@@ -206,16 +202,7 @@ struct DownloadedAudiobooksRow: View {
                 EmptyView()
             }
         }
-        .onAppear {
-            homeSectionLogger.info("DownloadedAudiobooksRow onAppear libraryID=\(libraryID?.libraryID ?? "nil", privacy: .public) didLoad=\(didLoad)")
-            if !didLoad {
-                Task { await load() }
-            }
-        }
-        .task(id: libraryID) {
-            homeSectionLogger.info("DownloadedAudiobooksRow task(id:) fired libraryID=\(libraryID?.libraryID ?? "nil", privacy: .public)")
-            await load()
-        }
+        .task(id: libraryID) { await load() }
         .onReceive(PersistenceManager.shared.download.events.statusChanged) { payload in
             if let libraryID, let (itemID, _) = payload, itemID.libraryID != libraryID.libraryID { return }
             Task { await load() }
@@ -223,19 +210,14 @@ struct DownloadedAudiobooksRow: View {
     }
 
     private func load() async {
-        homeSectionLogger.info("DownloadedAudiobooksRow load() start libraryID=\(libraryID?.libraryID ?? "nil", privacy: .public)")
         let books: [Audiobook]?
         if let libraryID {
             books = try? await PersistenceManager.shared.download.audiobooks(in: libraryID.libraryID)
         } else {
             books = try? await PersistenceManager.shared.download.audiobooks()
         }
-        homeSectionLogger.info("DownloadedAudiobooksRow load() result count=\(books?.count ?? -1) libraryID=\(libraryID?.libraryID ?? "nil", privacy: .public)")
         guard let books else { return }
-        await MainActor.run {
-            withAnimation { audiobooks = books }
-            didLoad = true
-        }
+        withAnimation { audiobooks = books }
     }
 }
 
@@ -245,7 +227,6 @@ struct DownloadedEpisodesRow: View {
     let title: String
 
     @State private var episodes: [Episode] = []
-    @State private var didLoad = false
 
     var body: some View {
         Group {
@@ -255,11 +236,6 @@ struct DownloadedEpisodesRow: View {
                 }
             } else {
                 EmptyView()
-            }
-        }
-        .onAppear {
-            if !didLoad {
-                Task { await load() }
             }
         }
         .task(id: libraryID) { await load() }
@@ -277,10 +253,7 @@ struct DownloadedEpisodesRow: View {
             eps = try? await PersistenceManager.shared.download.episodes()
         }
         guard let eps else { return }
-        await MainActor.run {
-            withAnimation { episodes = eps }
-            didLoad = true
-        }
+        withAnimation { episodes = eps }
     }
 }
 
@@ -346,6 +319,12 @@ struct BookmarksRow: View {
 /// Resolves a pinned `ItemCollection` (collection or playlist) and renders its
 /// items as a home row. If the collection fails to resolve (server removed it,
 /// connection offline) the row collapses to an EmptyView.
+///
+/// Important: this view does NOT wrap its content in a `NavigationLink`.
+/// `AudiobookRow` already contains its own `NavigationLink` (for the "see all"
+/// destination when there are >5 audiobooks), and nesting NavigationLinks
+/// triggers a collection-view recursive-layout loop (UICollectionView
+/// feedback-loop crash).
 struct PinnedCollectionRow: View {
     let itemID: ItemIdentifier
     /// Optional override title. When nil, the collection's own name is used.
@@ -357,22 +336,13 @@ struct PinnedCollectionRow: View {
         Group {
             if let collection {
                 let displayTitle = titleOverride ?? collection.name
-                switch collection.id.type {
-                case .collection:
-                    if let audiobooks = collection.audiobooks, !audiobooks.isEmpty {
-                        NavigationLink(value: NavigationDestination.item(collection)) {
-                            AudiobookRow(title: displayTitle, small: false, audiobooks: audiobooks)
-                        }
-                        .buttonStyle(.plain)
-                    } else {
-                        EmptyView()
+                if let audiobooks = collection.audiobooks, !audiobooks.isEmpty {
+                    AudiobookRow(title: displayTitle, small: false, audiobooks: audiobooks)
+                } else if let episodes = collection.episodes, !episodes.isEmpty {
+                    HomeRowContainer(title: displayTitle) {
+                        EpisodeGrid(episodes: episodes)
                     }
-                case .playlist:
-                    NavigationLink(value: NavigationDestination.item(collection)) {
-                        playlistBody(displayTitle: displayTitle)
-                    }
-                    .buttonStyle(.plain)
-                default:
+                } else {
                     EmptyView()
                 }
             } else {
@@ -382,19 +352,6 @@ struct PinnedCollectionRow: View {
         .task(id: itemID) { await load() }
         .onReceive(CollectionEventSource.shared.changed) { _ in
             Task { await load() }
-        }
-    }
-
-    @ViewBuilder
-    private func playlistBody(displayTitle: String) -> some View {
-        if let audiobooks = collection?.audiobooks, !audiobooks.isEmpty {
-            AudiobookRow(title: displayTitle, small: false, audiobooks: audiobooks)
-        } else if let episodes = collection?.episodes, !episodes.isEmpty {
-            HomeRowContainer(title: displayTitle) {
-                EpisodeGrid(episodes: episodes)
-            }
-        } else {
-            EmptyView()
         }
     }
 

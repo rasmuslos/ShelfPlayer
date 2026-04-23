@@ -8,12 +8,12 @@ import AppIntents
 import CoreTransferable
 
 public struct ItemEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable, Identifiable {
-    public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "intent.entity.item", numericFormat: "intent.entity.item \(placeholder: .int)", synonyms: [
-        "intent.entity.item.audiobook",
-        "intent.entity.item.series",
-        "intent.entity.item.author",
-        "intent.entity.item.episode",
-        "intent.entity.item.podcast",
+    public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "intent.entity.item.name", numericFormat: "intent.entity.item.count \(placeholder: .int)", synonyms: [
+        "intent.entity.item.synonym.audiobook",
+        "intent.entity.item.synonym.series",
+        "intent.entity.item.synonym.author",
+        "intent.entity.item.synonym.episode",
+        "intent.entity.item.synonym.podcast",
     ])
     public static let defaultQuery = ItemEntityQuery()
 

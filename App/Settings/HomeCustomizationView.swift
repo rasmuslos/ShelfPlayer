@@ -130,9 +130,16 @@ struct HomeCustomizationView: View {
         }
         .sheet(item: $collectionPickerType) { type in
             NavigationStack {
-                CollectionSectionPicker(type: type) { itemID in
-                    addCollection(type: type, itemID: itemID)
+                CollectionSectionPicker(type: type, libraryOverride: scope.implicitLibraryID) { itemID in
+                    // Dismiss the sheet first. Mutating `sections` while the
+                    // sheet is still on-screen triggers a simultaneous List
+                    // row-insertion animation, which reliably crashes
+                    // UICollectionView ("recursive layout loop").
                     collectionPickerType = nil
+                    Task { @MainActor in
+                        try? await Task.sleep(for: .milliseconds(350))
+                        addCollection(type: type, itemID: itemID)
+                    }
                 }
             }
         }
@@ -298,37 +305,58 @@ private struct HomeSectionLibraryPicker: View {
 /// items of the chosen library when tapped.
 private struct CollectionSectionPicker: View {
     let type: ItemCollection.CollectionType
+    /// When set (library-scope customization), the picker skips the library
+    /// enumerator and shows only this library's collections/playlists. When
+    /// nil (pinned-scope customization), the user picks a library first.
+    let libraryOverride: LibraryIdentifier?
     let onPick: (ItemIdentifier) -> Void
 
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        List {
-            LibraryEnumerator { name, content in
-                Section(name) { content() }
-            } label: { library in
-                if library.id.type == expectedLibraryType {
-                    NavigationLink {
-                        CollectionSectionPickerList(library: library, type: type, onPick: { id in
-                            onPick(id)
-                            dismiss()
-                        })
-                    } label: {
-                        Text(library.name)
-                            .foregroundStyle(.primary)
+        Group {
+            if let libraryOverride, libraryOverride.type == expectedLibraryType {
+                // Library scope — go straight to this library's items. The
+                // caller dismisses the sheet via `collectionPickerType = nil`
+                // when `onPick` fires, so we don't dismiss here ourselves.
+                CollectionSectionPickerList(library: syntheticLibrary(from: libraryOverride), type: type, onPick: onPick)
+            } else if libraryOverride != nil {
+                // The scope's library is the wrong type for this collection kind.
+                // This shouldn't happen because the add-button row is filtered by
+                // library type, but render an explicit state rather than nothing.
+                EmptyCollectionView()
+                    .navigationTitle(navigationTitle)
+                    .navigationBarTitleDisplayMode(.inline)
+            } else {
+                List {
+                    LibraryEnumerator { name, content in
+                        Section(name) { content() }
+                    } label: { library in
+                        if library.id.type == expectedLibraryType {
+                            NavigationLink {
+                                CollectionSectionPickerList(library: library, type: type, onPick: onPick)
+                            } label: {
+                                Text(library.name)
+                                    .foregroundStyle(.primary)
+                            }
+                        }
                     }
                 }
+                .navigationTitle(navigationTitle)
+                .navigationBarTitleDisplayMode(.inline)
             }
         }
-        .navigationTitle(type == .collection
-                         ? String(localized: "home.customization.addCollection")
-                         : String(localized: "home.customization.addPlaylist"))
-        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("action.cancel") { dismiss() }
             }
         }
+    }
+
+    private var navigationTitle: String {
+        type == .collection
+            ? String(localized: "home.customization.addCollection")
+            : String(localized: "home.customization.addPlaylist")
     }
 
     /// Collections live in audiobook libraries; playlists in podcast libraries
@@ -338,6 +366,18 @@ private struct CollectionSectionPicker: View {
         case .collection: .audiobooks
         case .playlist: .podcasts
         }
+    }
+
+    /// Build a minimal `Library` from a `LibraryIdentifier` so the lazy loader
+    /// can fetch. Only `id.connectionID` / `id.libraryID` are used downstream —
+    /// the placeholder name is never shown because the list's title uses the
+    /// add-collection/playlist label instead.
+    private func syntheticLibrary(from identifier: LibraryIdentifier) -> Library {
+        Library(id: identifier.libraryID,
+                connectionID: identifier.connectionID,
+                name: "",
+                type: identifier.type,
+                index: 0)
     }
 }
 
@@ -386,7 +426,11 @@ private struct CollectionSectionPickerList: View {
                 }
             }
         }
-        .navigationTitle(library.name)
+        .navigationTitle(library.name.isEmpty
+                         ? (type == .collection
+                            ? String(localized: "home.customization.addCollection")
+                            : String(localized: "home.customization.addPlaylist"))
+                         : library.name)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             lazyLoader.library = library

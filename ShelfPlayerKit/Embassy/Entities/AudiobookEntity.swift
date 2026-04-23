@@ -27,15 +27,15 @@ public struct AudiobookEntity: AppEntity, IndexedEntity, PersistentlyIdentifiabl
     public var seriesTitle: String?
     public var url: URL?
 
-    @Property(title: "intent.entity.item.property.subtitle")
+    @Property(title: "intent.entity.audiobook.property.subtitle")
     public var subtitle: String?
 
-    @Property(title: "intent.entity.item.property.narrators")
+    @Property(title: "intent.entity.audiobook.property.narrators")
     public var narrators: [String]?
 
-    @Property(title: "intent.entity.item.property.explicit")
+    @Property(title: "intent.entity.audiobook.property.explicit")
     public var explicit: Bool?
-    @Property(title: "intent.entity.item.property.abridged")
+    @Property(title: "intent.entity.audiobook.property.abridged")
     public var abridged: Bool?
 
     public init(audiobook: Audiobook) async {

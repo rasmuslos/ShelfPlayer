@@ -8,7 +8,7 @@ import AppIntents
 import CoreTransferable
 
 public struct PodcastEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
-    public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "intent.entity.item.podcast", numericFormat: "intent.entity.item \(placeholder: .int)")
+    public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "intent.entity.podcast.name", numericFormat: "intent.entity.podcast.count \(placeholder: .int)")
     public static let defaultQuery = PodcastEntityQuery()
 
     public let hideInSpotlight: Bool = true
@@ -20,12 +20,12 @@ public struct PodcastEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable 
         podcast.id
     }
 
-    @Property(title: "intent.entity.item.property.explicit")
+    @Property(title: "intent.entity.podcast.property.explicit")
     public var explicit: Bool
 
-    @Property(title: "intent.entity.item.property.episodeCount")
+    @Property(title: "intent.entity.podcast.property.episodeCount")
     public var episodeCount: Int
-    @Property(title: "intent.entity.item.property.incompleteEpisodeCount")
+    @Property(title: "intent.entity.podcast.property.incompleteEpisodeCount")
     public var incompleteEpisodeCount: Int?
 
     public init(podcast: Podcast) async {

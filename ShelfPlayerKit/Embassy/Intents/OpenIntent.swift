@@ -7,14 +7,14 @@ import Foundation
 import AppIntents
 
 public struct OpenIntent: AppIntent {
-    public static let title: LocalizedStringResource = "intent.open"
+    public static let title: LocalizedStringResource = "intent.open.title"
     public static let description = IntentDescription("intent.open.description")
 
     public static let openAppWhenRun: Bool = true
 
-    @Parameter(title: "intent.entity.item",
-               description: "intent.entity.item.description",
-               requestValueDialog: IntentDialog("Which item would you like to open?"))
+    @Parameter(title: "intent.open.parameter.item.title",
+               description: "intent.open.parameter.item.description",
+               requestValueDialog: IntentDialog("intent.open.parameter.item.dialog"))
     public var item: ItemEntity
 
     public init() {}
@@ -28,7 +28,7 @@ public struct OpenIntent: AppIntent {
     }
 
     public static var parameterSummary: some ParameterSummary {
-        Summary("intent.open \(\.$item)")
+        Summary("intent.open.summary \(\.$item)")
     }
 
     @MainActor

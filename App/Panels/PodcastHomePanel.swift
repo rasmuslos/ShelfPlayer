@@ -47,7 +47,7 @@ struct PodcastHomePanel: View {
                 }
             } else {
                 ScrollView {
-                    VStack(spacing: 16) {
+                    LazyVStack(spacing: 16) {
                         ForEach(visibleSections) { section in
                             PodcastHomeSectionRow(
                                 section: section,

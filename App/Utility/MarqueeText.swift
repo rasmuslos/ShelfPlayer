@@ -10,9 +10,8 @@ import SwiftUI
 @Observable @MainActor
 final class MarqueeController {
     private(set) var phase: MarqueePhase = .idle
-    private var entries = [Entry]()
-
-    private var animating = false
+    private var entries = [UUID: CGFloat]()
+    private var animationToken: UUID?
 
     var delay: TimeInterval = 2
     var speed: Double = 30
@@ -24,74 +23,74 @@ final class MarqueeController {
         case scrollingBack(duration: TimeInterval)
     }
 
-    struct Entry {
-        let overflow: CGFloat
+    private var maxOverflow: CGFloat {
+        entries.values.max() ?? 0
     }
 
-    func register(overflow: CGFloat) -> Int {
-        let id = entries.count
-        entries.append(Entry(overflow: overflow))
-
+    func register() -> UUID {
+        let id = UUID()
+        entries[id] = 0
         return id
     }
 
-    func update(id: Int, overflow: CGFloat) {
-        guard entries.indices.contains(id) else { return }
-        entries[id] = Entry(overflow: overflow)
+    func update(id: UUID, overflow: CGFloat) {
+        guard entries.keys.contains(id) else { return }
+        entries[id] = max(0, overflow)
+        startIfNeeded()
+    }
+
+    func unregister(id: UUID) {
+        entries.removeValue(forKey: id)
+        if maxOverflow <= 0 {
+            stop()
+        }
     }
 
     func startIfNeeded() {
-        guard !animating else { return }
+        guard animationToken == nil else { return }
+        guard maxOverflow > 0 else { return }
 
-        let maxOverflow = entries.map(\.overflow).max() ?? 0
-        guard maxOverflow > 0 else {
-            phase = .idle
-            return
-        }
-
-        animating = true
-        phase = .idle
+        let token = UUID()
+        animationToken = token
 
         Task { @MainActor in
-            await animate()
+            await animate(token: token)
         }
     }
 
     func stop() {
-        animating = false
+        animationToken = nil
         phase = .idle
     }
 
-    private func animate() async {
-        while animating {
-            let maxOverflow = entries.map(\.overflow).max() ?? 0
-            guard maxOverflow > 0 else {
+    private func animate(token: UUID) async {
+        defer {
+            if animationToken == token {
+                animationToken = nil
                 phase = .idle
-                return
             }
+        }
 
-            // Pause at start
-            try? await Task.sleep(for: .seconds(delay))
-            guard animating else { return }
-
-            // Scroll forward
-            let duration = maxOverflow / speed
-            phase = .scrollingForward(duration: duration)
-
-            try? await Task.sleep(for: .seconds(duration))
-            guard animating else { return }
-
-            // Pause at end
-            phase = .pausedAtEnd
-            try? await Task.sleep(for: .seconds(delay))
-            guard animating else { return }
-
-            // Scroll back
-            phase = .scrollingBack(duration: duration)
-            try? await Task.sleep(for: .seconds(duration))
-            guard animating else { return }
+        while animationToken == token {
+            let currentOverflow = maxOverflow
+            guard currentOverflow > 0 else { return }
 
             phase = .idle
+            try? await Task.sleep(for: .seconds(delay))
+            guard animationToken == token else { return }
+
+            let duration = currentOverflow / speed
+            phase = .scrollingForward(duration: duration)
+            try? await Task.sleep(for: .seconds(duration))
+            guard animationToken == token else { return }
+
+            phase = .pausedAtEnd
+            try? await Task.sleep(for: .seconds(delay))
+            guard animationToken == token else { return }
+
+            phase = .scrollingBack(duration: duration)
+            try? await Task.sleep(for: .seconds(duration))
+            guard animationToken == token else { return }
         }
     }
 }
@@ -107,9 +106,9 @@ struct MarqueeText: View {
 
     @State private var textWidth: CGFloat = 0
     @State private var containerWidth: CGFloat = 0
-    @State private var offset: CGFloat = 0
+    @State private var progress: Double = 0
     @State private var animating = false
-    @State private var entryID: Int?
+    @State private var entryID: UUID?
 
     private var overflow: CGFloat {
         max(0, textWidth - containerWidth)
@@ -120,11 +119,11 @@ struct MarqueeText: View {
     }
 
     private var fadeLeading: Bool {
-        needsMarquee && offset < 0
+        needsMarquee && progress > 0
     }
 
     private var fadeTrailing: Bool {
-        needsMarquee && offset > -overflow
+        needsMarquee && progress < 1
     }
 
     var body: some View {
@@ -144,22 +143,14 @@ struct MarqueeText: View {
                                     .preference(key: TextWidthKey.self, value: textGeo.size.width)
                             }
                         }
-                        .offset(x: offset)
-                        .onPreferenceChange(TextWidthKey.self) {
-                            textWidth = $0
-                            if let controller {
-                                if let entryID {
-                                    controller.update(id: entryID, overflow: max(0, $0 - containerWidth))
-                                } else {
-                                    entryID = controller.register(overflow: max(0, $0 - containerWidth))
-                                }
-                            }
+                        .offset(x: -progress * overflow)
+                        .onPreferenceChange(TextWidthKey.self) { newValue in
+                            textWidth = newValue
+                            syncEntry()
                         }
                         .onChange(of: containerGeo.size.width, initial: true) {
                             containerWidth = containerGeo.size.width
-                            if let controller, let entryID {
-                                controller.update(id: entryID, overflow: max(0, textWidth - containerGeo.size.width))
-                            }
+                            syncEntry()
                         }
                 }
                 .mask {
@@ -176,14 +167,14 @@ struct MarqueeText: View {
             }
             .onChange(of: controller?.phase, initial: true) { _, newPhase in
                 guard controller != nil, let newPhase else { return }
-                handlePhase(newPhase, maxOverflow: overflow)
+                handlePhase(newPhase)
             }
             .onChange(of: needsMarquee, initial: true) {
-                guard controller == nil else {
-                    controller?.startIfNeeded()
-                    return
-                }
-                if needsMarquee {
+                if let controller {
+                    if needsMarquee {
+                        controller.startIfNeeded()
+                    }
+                } else if needsMarquee {
                     startStandaloneAnimation()
                 } else {
                     stopStandaloneAnimation()
@@ -206,26 +197,43 @@ struct MarqueeText: View {
                     }
                 }
             }
+            .onDisappear {
+                if let entryID, let controller {
+                    controller.unregister(id: entryID)
+                    self.entryID = nil
+                }
+                animating = false
+            }
+    }
+
+    private func syncEntry() {
+        guard let controller else { return }
+        if let entryID {
+            controller.update(id: entryID, overflow: overflow)
+        } else if needsMarquee {
+            let id = controller.register()
+            entryID = id
+            controller.update(id: id, overflow: overflow)
+        }
     }
 
     // MARK: - Controller-driven animation
 
-    private func handlePhase(_ phase: MarqueeController.MarqueePhase, maxOverflow: CGFloat) {
+    private func handlePhase(_ phase: MarqueeController.MarqueePhase) {
         switch phase {
         case .idle:
             withAnimation(.easeOut(duration: 0.3)) {
-                offset = 0
+                progress = 0
             }
         case .scrollingForward(let duration):
-            guard overflow > 0 else { return }
             withAnimation(.linear(duration: duration)) {
-                offset = -overflow
+                progress = 1
             }
         case .pausedAtEnd:
             break
         case .scrollingBack(let duration):
             withAnimation(.linear(duration: duration)) {
-                offset = 0
+                progress = 0
             }
         }
     }
@@ -233,37 +241,42 @@ struct MarqueeText: View {
     // MARK: - Standalone animation (no controller)
 
     private func startStandaloneAnimation() {
-        offset = 0
+        guard !animating else { return }
         animating = true
 
         Task { @MainActor in
-            try? await Task.sleep(for: .seconds(delay))
-            guard animating else { return }
+            while animating {
+                guard needsMarquee else {
+                    progress = 0
+                    return
+                }
 
-            let duration = overflow / speed
+                try? await Task.sleep(for: .seconds(delay))
+                guard animating else { return }
 
-            withAnimation(.linear(duration: duration)) {
-                offset = -overflow
+                let duration = overflow / speed
+                withAnimation(.linear(duration: duration)) {
+                    progress = 1
+                }
+                try? await Task.sleep(for: .seconds(duration))
+                guard animating else { return }
+
+                try? await Task.sleep(for: .seconds(delay))
+                guard animating else { return }
+
+                withAnimation(.linear(duration: duration)) {
+                    progress = 0
+                }
+                try? await Task.sleep(for: .seconds(duration))
+                guard animating else { return }
             }
-
-            try? await Task.sleep(for: .seconds(duration + delay))
-            guard animating else { return }
-
-            withAnimation(.linear(duration: duration)) {
-                offset = 0
-            }
-
-            try? await Task.sleep(for: .seconds(duration))
-            guard animating else { return }
-
-            startStandaloneAnimation()
         }
     }
 
     private func stopStandaloneAnimation() {
         animating = false
         withAnimation(.easeOut(duration: 0.3)) {
-            offset = 0
+            progress = 0
         }
     }
 }
@@ -274,3 +287,102 @@ private struct TextWidthKey: PreferenceKey {
         value = nextValue()
     }
 }
+
+#if DEBUG
+private struct MarqueePreviewHost: View {
+    @State private var controller = MarqueeController()
+    @State private var containerWidth: CGFloat = 200
+    @State private var title: String = "The Hitchhiker's Guide to the Galaxy: The Restaurant at the End of the Universe"
+
+    private let titles = [
+        "Short title",
+        "The Hitchhiker's Guide to the Galaxy: The Restaurant at the End of the Universe",
+        "A Fire Upon the Deep",
+        "Dune — Frank Herbert, narrated by Scott Brick, George Guidall, and an ensemble cast",
+        "1984",
+    ]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Controller-driven (synced)")
+                    .font(.caption).foregroundStyle(.secondary)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    MarqueeText(text: title, font: .headline, controller: controller)
+                    MarqueeText(text: "Douglas Adams • Narrated by Stephen Fry • A very, very long subtitle that absolutely cannot fit",
+                                font: .subheadline,
+                                foregroundStyle: .init(.secondary),
+                                controller: controller)
+                }
+                .frame(width: containerWidth, alignment: .leading)
+                .padding(8)
+                .background(.quaternary, in: .rect(cornerRadius: 8))
+            }
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Standalone (no controller)")
+                    .font(.caption).foregroundStyle(.secondary)
+
+                MarqueeText(text: title, font: .headline)
+                    .frame(width: containerWidth, alignment: .leading)
+                    .padding(8)
+                    .background(.quaternary, in: .rect(cornerRadius: 8))
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("Container width")
+                    Spacer()
+                    Text("\(Int(containerWidth)) pt").monospacedDigit().foregroundStyle(.secondary)
+                }
+                .font(.caption)
+
+                Slider(value: $containerWidth, in: 80...360)
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Title").font(.caption)
+                Picker("Title", selection: $title) {
+                    ForEach(titles, id: \.self) { Text($0).tag($0) }
+                }
+                .pickerStyle(.menu)
+            }
+
+            Spacer()
+        }
+        .padding()
+    }
+}
+
+#Preview("Playground") {
+    MarqueePreviewHost()
+}
+
+#Preview("Fits") {
+    MarqueeText(text: "Short", font: .headline)
+        .frame(width: 200, alignment: .leading)
+        .padding()
+}
+
+#Preview("Overflows (standalone)") {
+    MarqueeText(text: "The quick brown fox jumps over the lazy dog, repeatedly and at speed.", font: .headline)
+        .frame(width: 200, alignment: .leading)
+        .padding()
+}
+
+#Preview("Overflows (controller, 2 rows)") {
+    @Previewable @State var controller = MarqueeController()
+    VStack(alignment: .leading, spacing: 4) {
+        MarqueeText(text: "The Hitchhiker's Guide to the Galaxy — Primary Phase",
+                    font: .headline,
+                    controller: controller)
+        MarqueeText(text: "Douglas Adams • Narrated by Stephen Fry",
+                    font: .subheadline,
+                    foregroundStyle: .init(.secondary),
+                    controller: controller)
+    }
+    .frame(width: 220, alignment: .leading)
+    .padding()
+}
+#endif

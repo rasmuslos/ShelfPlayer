@@ -8,7 +8,7 @@ import AppIntents
 import WidgetKit
 
 public struct PlayIntent: AudioPlaybackIntent {
-    public static let title: LocalizedStringResource = "intent.play"
+    public static let title: LocalizedStringResource = "intent.play.title"
     public static let description = IntentDescription("intent.play.description")
 
     @AppDependency private var audioPlayer: IntentAudioPlayer

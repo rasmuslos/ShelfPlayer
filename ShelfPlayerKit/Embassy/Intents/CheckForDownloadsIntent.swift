@@ -7,13 +7,13 @@ import Foundation
 import AppIntents
 
 public struct CheckForDownloadsIntent: ProgressReportingIntent {
-    public static let title: LocalizedStringResource = "intent.checkForDownloads"
+    public static let title: LocalizedStringResource = "intent.checkForDownloads.title"
     public static let description = IntentDescription("intent.checkForDownloads.description")
 
     public init() {}
 
     public static var parameterSummary: some ParameterSummary {
-        Summary("intent.checkForDownloads")
+        Summary("intent.checkForDownloads.summary")
     }
 
     public func perform() async throws -> some IntentResult {

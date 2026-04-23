@@ -7,13 +7,13 @@ import Foundation
 import AppIntents
 
 public struct CreateBookmarkIntent: AudioPlaybackIntent {
-    public static let title: LocalizedStringResource = "intent.createBookmark"
+    public static let title: LocalizedStringResource = "intent.createBookmark.title"
     public static let description = IntentDescription("intent.createBookmark.description")
 
     @AppDependency private var audioPlayer: IntentAudioPlayer
 
-    @Parameter(title: "intent.createBookmark.note",
-               requestValueDialog: IntentDialog("What should the bookmark note say?"))
+    @Parameter(title: "intent.createBookmark.parameter.note.title",
+               requestValueDialog: IntentDialog("intent.createBookmark.parameter.note.dialog"))
     public var note: String?
 
     public init() {}

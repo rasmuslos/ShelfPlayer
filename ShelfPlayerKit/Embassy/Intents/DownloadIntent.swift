@@ -7,12 +7,12 @@ import Foundation
 import AppIntents
 
 public struct DownloadIntent: AppIntent {
-    public static let title: LocalizedStringResource = "intent.download"
+    public static let title: LocalizedStringResource = "intent.download.title"
     public static let description = IntentDescription("intent.download.description")
 
-    @Parameter(title: "intent.entity.item",
-               description: "intent.entity.item.description",
-               requestValueDialog: IntentDialog("Which item would you like to download?"))
+    @Parameter(title: "intent.download.parameter.item.title",
+               description: "intent.download.parameter.item.description",
+               requestValueDialog: IntentDialog("intent.download.parameter.item.dialog"))
     public var item: ItemEntity
 
     public init() {}
