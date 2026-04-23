@@ -118,6 +118,9 @@ final class LocalAudioEndpoint: AudioEndpoint {
     private var sleepLastPause: Date?
     private var sleepTimeoutTimer: Timer?
 
+    private var decodeRetryCount: Int
+    private var decodeRetryAt: TimeInterval?
+
     private var allowUpNextQueueGeneration: Bool
 
     let audioPlayerVolume: Float = 1
@@ -155,6 +158,9 @@ final class LocalAudioEndpoint: AudioEndpoint {
         chapterCurrentTime = nil
 
         route = nil
+
+        decodeRetryCount = 0
+        decodeRetryAt = nil
 
         allowUpNextQueueGeneration = true
 
@@ -759,6 +765,66 @@ private extension LocalAudioEndpoint {
         RunLoop.main.add(sleepTimeoutTimer!, forMode: .common)
     }
 
+    /// Workaround for Apple's xHE-AAC (USAC) decoder bug FB22340742: AVPlayer occasionally
+    /// reports error -11821 ("Cannot Decode") at specific positions and its decoder state
+    /// stays corrupted until the queue is rebuilt. Rebuild and seek back 1s; give up after
+    /// 10 consecutive failures to avoid spinning on an unrecoverable file.
+    func handlePlaybackFailure(error: NSError?) async {
+        if let error {
+            logger.error("AVPlayerItem failed to play to end: \(error.domain, privacy: .public) \(error.code): \(error.localizedDescription, privacy: .public)")
+        } else {
+            logger.error("AVPlayerItem failed to play to end (no error provided)")
+        }
+
+        guard let error, error.domain == AVFoundationErrorDomain, error.code == AVError.Code.decodeFailed.rawValue else {
+            return
+        }
+
+        guard let currentTime, activeAudioTrackIndex >= 0, !audioTracks.isEmpty else {
+            return
+        }
+
+        guard decodeRetryCount < 10 else {
+            logger.error("Giving up after \(self.decodeRetryCount) consecutive decode retries at \(currentTime)")
+            decodeRetryCount = 0
+            decodeRetryAt = nil
+
+            await AudioPlayer.shared.stop(endpointID: id)
+            return
+        }
+
+        let retryTime = max(0, currentTime - 1)
+
+        decodeRetryCount += 1
+        decodeRetryAt = retryTime
+
+        logger.warning("Decoder reported -11821 at \(currentTime); retry \(self.decodeRetryCount)/10 at \(retryTime)")
+
+        activeOperationCount += 1
+        audioPlayer.pause()
+
+        do {
+            let trackIndex = try audioTrackIndex(at: retryTime)
+
+            try await repopulateAudioPlayerQueue(start: trackIndex)
+            activeAudioTrackIndex = trackIndex
+
+            let offset = audioTracks[trackIndex].offset
+            await audioPlayer.seek(to: CMTime(seconds: retryTime - offset, preferredTimescale: 1000))
+
+            self.currentTime = retryTime
+            await updateChapterIndex()
+
+            if isPlaying {
+                audioPlayer.play()
+            }
+        } catch {
+            logger.error("Failed to recover from decode error: \(error)")
+        }
+
+        activeOperationCount -= 1
+    }
+
     func repopulateAudioPlayerQueue(start index: Int) async throws {
         audioPlayer.removeAllItems()
         let headers = try? await ABSClient[currentItemID.connectionID].requestHeaders
@@ -1021,6 +1087,18 @@ private extension LocalAudioEndpoint {
             .store(in: &observerSubscriptions)
 
         NotificationCenter.default
+            .publisher(for: AVPlayerItem.failedToPlayToEndTimeNotification)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] notification in
+                let error = notification.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? NSError
+
+                Task { @MainActor [weak self] in
+                    await self?.handlePlaybackFailure(error: error)
+                }
+            }
+            .store(in: &observerSubscriptions)
+
+        NotificationCenter.default
             .publisher(for: UIApplication.willTerminateNotification)
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
@@ -1062,6 +1140,11 @@ private extension LocalAudioEndpoint {
                         if offsetIncluded.isFinite, offsetIncluded >= 0 {
                             self.currentTime = offsetIncluded
                         }
+                    }
+
+                    if let decodeRetryAt = self.decodeRetryAt, let currentTime = self.currentTime, currentTime > decodeRetryAt + 3 {
+                        self.decodeRetryCount = 0
+                        self.decodeRetryAt = nil
                     }
 
                     // MARK: Chapter
