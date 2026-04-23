@@ -51,6 +51,9 @@ extension TabValue {
             case .downloaded:
                 String(localized: "item.downloaded")
 
+            case .multiLibrary:
+                String(localized: "panel.multiLibrary")
+
             case .loading:
                 ""
         }
@@ -96,6 +99,9 @@ extension TabValue {
 
             case .downloaded:
                 "arrow.down"
+
+            case .multiLibrary:
+                "square.grid.3x3.fill"
 
             case .loading:
                 "teddybear.fill"

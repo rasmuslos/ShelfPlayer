@@ -10,14 +10,22 @@ import Charts
 import ShelfPlayback
 
 struct StatisticsView: View {
+    @Environment(ConnectionStore.self) private var connectionStore
+
     @State private var viewModel: StatisticsViewModel
 
     init(connectionID: ItemIdentifier.ConnectionID) {
         _viewModel = .init(initialValue: .init(connectionID: connectionID))
     }
 
+    private var currentConnection: FriendlyConnection? {
+        connectionStore.connections.first { $0.id == viewModel.connectionID }
+    }
+
     var body: some View {
-        Group {
+        @Bindable var viewModel = viewModel
+
+        return Group {
             if viewModel.isLoading && viewModel.stats == nil {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -61,7 +69,24 @@ struct StatisticsView: View {
         .navigationTitle("statistics")
         .navigationBarTitleDisplayMode(.inline)
         .presentationDetents([.large])
-        .task {
+        .toolbar {
+            if connectionStore.connections.count > 1 {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Picker(selection: $viewModel.connectionID) {
+                            ForEach(connectionStore.connections) { connection in
+                                Text(connection.name).tag(connection.id)
+                            }
+                        } label: {
+                            Text("statistics.account")
+                        }
+                    } label: {
+                        Label(currentConnection?.name ?? String(localized: "statistics.account"), systemImage: "person.crop.circle")
+                    }
+                }
+            }
+        }
+        .task(id: viewModel.connectionID) {
             await viewModel.load()
         }
         .refreshable {
@@ -371,7 +396,7 @@ private struct TopItemsChart: View {
 
 @Observable @MainActor
 final class StatisticsViewModel {
-    let connectionID: ItemIdentifier.ConnectionID
+    var connectionID: ItemIdentifier.ConnectionID
 
     private(set) var stats: ListeningStatsPayload?
     private(set) var isLoading = false

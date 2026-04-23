@@ -192,45 +192,35 @@ extension PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope {
 struct CustomTabValuesPreferences: View {
     @State private var pinnedTabValues: [TabValue] = AppSettings.shared.pinnedTabValues
 
-    private var pinnedHomeTabs: [TabValue] {
-        pinnedTabValues.filter { tab in
-            if case .custom(let inner, _) = tab {
-                switch inner {
-                case .audiobookHome, .podcastHome:
-                    return true
-                default:
-                    return false
-                }
-            }
-            return false
-        }
+    private var multiLibraryBinding: Binding<Bool> {
+        pinnedBinding(for: .multiLibrary)
     }
 
     var body: some View {
         List {
-            if !pinnedHomeTabs.isEmpty {
-                Section {
-                    ForEach(pinnedHomeTabs) { tab in
-                        if case .custom(let inner, _) = tab {
-                            NavigationLink {
-                                HomeCustomizationView(scope: .pinned(inner.id), libraryType: nil)
-                            } label: {
-                                Label(tab.label, systemImage: "slider.horizontal.3")
-                                    .foregroundStyle(.primary)
-                            }
-                        }
-                    }
-                } header: {
-                    Text("home.customization.pinnedSectionHeader")
+            Section {
+                Toggle(isOn: multiLibraryBinding) {
+                    Label("panel.multiLibrary", systemImage: "square.grid.3x3.fill")
+                        .foregroundStyle(.primary)
                 }
+                if pinnedTabValues.contains(.multiLibrary) {
+                    NavigationLink {
+                        HomeCustomizationView(scope: .multiLibrary, libraryType: nil)
+                    } label: {
+                        Label("home.customization.title", systemImage: "slider.horizontal.3")
+                            .foregroundStyle(.primary)
+                    }
+                }
+            } header: {
+                Text("home.customization.multiLibrarySectionHeader")
+            } footer: {
+                Text("home.customization.multiLibrarySectionFooter")
             }
 
-            Section {
-                LibraryEnumerator { name, content in
-                    Section(name) {
-                        content()
-                    }
-                } label: { library in
+            LibraryEnumerator { _, content in
+                content()
+            } label: { library in
+                Section {
                     ForEach(PersistenceManager.shared.customization.availableTabs(for: library.id, scope: .tabBar)) { tab in
                         let customTab: TabValue = .custom(tab, library.name)
 
@@ -239,6 +229,8 @@ struct CustomTabValuesPreferences: View {
                                 .foregroundStyle(.primary)
                         }
                     }
+                } header: {
+                    Text(library.name)
                 }
             }
         }

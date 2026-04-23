@@ -9,22 +9,6 @@ import Foundation
 import SwiftUI
 import ShelfPlayback
 
-// MARK: - Environment
-
-private struct HomeScopeKey: EnvironmentKey {
-    static let defaultValue: HomeScope? = nil
-}
-
-extension EnvironmentValues {
-    /// Overrides the home scope that a home panel would otherwise derive from
-    /// the current library. Set this for pinned-tab contexts so the panel
-    /// renders using the pinned-tab's saved customization.
-    var homeScope: HomeScope? {
-        get { self[HomeScopeKey.self] }
-        set { self[HomeScopeKey.self] = newValue }
-    }
-}
-
 extension HomeSectionKind {
     /// Localized title used when the section has no server-provided label to
     /// fall back to.

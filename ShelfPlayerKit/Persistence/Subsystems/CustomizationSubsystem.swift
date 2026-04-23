@@ -35,17 +35,17 @@ extension PersistenceManager.CustomizationSubsystem {
                 [
                     .audiobookHome(library),
                     .audiobookSeries(library),
-                    .audiobookCollections(library),
+                    .audiobookAuthors(library),
                     .audiobookLibrary(library),
                 ]
             case .library:
                 [
-                    .audiobookAuthors(library),
                     .audiobookNarrators(library),
                     .audiobookBookmarks(library),
                     .audiobookGenres(library),
                     .audiobookTags(library),
                     .playlists(library),
+                    .audiobookCollections(library),
                     .downloaded(library),
                 ]
             case .sidebar:

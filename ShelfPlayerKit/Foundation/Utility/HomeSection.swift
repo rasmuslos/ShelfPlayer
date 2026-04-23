@@ -51,7 +51,7 @@ public struct HomeSection: Codable, Identifiable, Hashable, Sendable {
     public var kind: HomeSectionKind
 
     /// When non-nil, the section is resolved against this library instead of
-    /// the enclosing scope's library. Used in pinned-tab start pages to
+    /// the enclosing scope's library. Used by the multi-library panel to
     /// aggregate content across libraries.
     public var libraryID: LibraryIdentifier?
 
@@ -71,22 +71,22 @@ public struct HomeSection: Codable, Identifiable, Hashable, Sendable {
 public enum HomeScope: Hashable, Sendable {
     /// The start page of a specific library.
     case library(LibraryIdentifier)
-    /// A pinned-tab start page, keyed by a stable pinned-tab id.
-    case pinned(String)
+    /// The multi-library start page — aggregates rows across libraries.
+    case multiLibrary
 
     public var key: String {
         switch self {
         case .library(let libraryID): "library::\(libraryID.id)"
-        case .pinned(let pinnedID): "pinned::\(pinnedID)"
+        case .multiLibrary: "multiLibrary"
         }
     }
 
     /// The library used to resolve a section when the section itself does not
-    /// carry an override. For pinned scopes no implicit library exists.
+    /// carry an override. The multi-library scope has none.
     public var implicitLibraryID: LibraryIdentifier? {
         switch self {
         case .library(let libraryID): libraryID
-        case .pinned: nil
+        case .multiLibrary: nil
         }
     }
 }

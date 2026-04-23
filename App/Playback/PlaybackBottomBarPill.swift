@@ -128,6 +128,15 @@ struct PlaybackBottomBarPill: View {
                         .opacity(viewModel.showCompactPlaybackBarOnExpandedViewCount > 0 ? 0 : 1)
                 }
                 .buttonStyle(.plain)
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 10)
+                        .onEnded { value in
+                            guard !viewModel.isExpanded else { return }
+                            if value.translation.height < -20 || value.velocity.height < -500 {
+                                viewModel.toggleExpanded()
+                            }
+                        }
+                )
                 .onChange(of: x, initial: true) { viewModel.pillX = x }
                 .onChange(of: y, initial: true) { viewModel.pillY = y }
                 .onChange(of: width, initial: true) { viewModel.pillWidth = width }

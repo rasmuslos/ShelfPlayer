@@ -137,7 +137,7 @@ final class PlaybackViewModel {
                     self?.isNowPlayingBackgroundVisible = false
                     self?.translationY = 0
 
-                    self?.expansionAnimationCount = 0
+                    self?.resetAnimationCounts()
                     self?.keyboardsVisible = 0
 
                     self?.isCreateBookmarkAlertVisible = false

@@ -21,14 +21,12 @@ struct ListenNowSheet: View {
     var body: some View {
         NavigationStack {
             List {
-                if !offlineMode.isEnabled {
+                if !offlineMode.isEnabled, let firstConnection = connectionStore.connections.first {
                     Section {
-                        ForEach(connectionStore.connections) { connection in
-                            NavigationLink {
-                                StatisticsView(connectionID: connection.id)
-                            } label: {
-                                Label("statistics", systemImage: "chart.bar.fill")
-                            }
+                        NavigationLink {
+                            StatisticsView(connectionID: firstConnection.id)
+                        } label: {
+                            Label("statistics", systemImage: "chart.bar.fill")
                         }
                     }
                 }

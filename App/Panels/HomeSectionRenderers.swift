@@ -266,36 +266,43 @@ struct BookmarksRow: View {
 
     @State private var count: Int = 0
 
+    @ViewBuilder
+    private var rowContent: some View {
+        HStack {
+            Text(count > 0
+                 ? "home.section.bookmarks.count \(count)"
+                 : "home.section.bookmarks.empty")
+                .foregroundStyle(.secondary)
+            Spacer()
+            if count > 0, libraryID != nil {
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .padding(.horizontal, 20)
+    }
+
     var body: some View {
+        // Always render when configured — an empty-state message is more
+        // useful than a vanishing row, and lets the user confirm the section
+        // is actually pinned. Podcast-only libraries don't have bookmarks
+        // (bookmarks are audiobook-only) so they still hide.
         Group {
-            if let libraryID, libraryID.type == .audiobooks, count > 0 {
-                NavigationLink {
-                    AudiobookBookmarksPanel()
-                        .environment(\.library, Library(id: libraryID.libraryID, connectionID: libraryID.connectionID, name: title, type: libraryID.type, index: 0))
-                } label: {
-                    HomeRowContainer(title: title) {
-                        HStack {
-                            Text("home.section.bookmarks.count \(count)")
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding(.horizontal, 20)
+            if let libraryID {
+                if libraryID.type == .audiobooks {
+                    NavigationLink {
+                        AudiobookBookmarksPanel()
+                            .environment(\.library, Library(id: libraryID.libraryID, connectionID: libraryID.connectionID, name: title, type: libraryID.type, index: 0))
+                    } label: {
+                        HomeRowContainer(title: title) { rowContent }
                     }
-                }
-                .buttonStyle(.plain)
-            } else if libraryID == nil, count > 0 {
-                HomeRowContainer(title: title) {
-                    HStack {
-                        Text("home.section.bookmarks.count \(count)")
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                    }
-                    .padding(.horizontal, 20)
+                    .buttonStyle(.plain)
+                    .disabled(count == 0)
+                } else {
+                    EmptyView()
                 }
             } else {
-                EmptyView()
+                HomeRowContainer(title: title) { rowContent }
             }
         }
         .task(id: libraryID) { await load() }
@@ -317,8 +324,9 @@ struct BookmarksRow: View {
 // MARK: - Pinned Collection / Playlist
 
 /// Resolves a pinned `ItemCollection` (collection or playlist) and renders its
-/// items as a home row. If the collection fails to resolve (server removed it,
-/// connection offline) the row collapses to an EmptyView.
+/// items as a home row. Always renders once configured — empty or unreachable
+/// collections fall back to a placeholder container so the user can see the
+/// section is actually pinned.
 ///
 /// Important: this view does NOT wrap its content in a `NavigationLink`.
 /// `AudiobookRow` already contains its own `NavigationLink` (for the "see all"
@@ -331,6 +339,13 @@ struct PinnedCollectionRow: View {
     let titleOverride: String?
 
     @State private var collection: ItemCollection?
+    @State private var didFail = false
+
+    private var fallbackTitle: String {
+        titleOverride ?? String(localized: itemID.type == .playlist
+                                ? "home.section.playlist"
+                                : "home.section.collection")
+    }
 
     var body: some View {
         Group {
@@ -343,9 +358,16 @@ struct PinnedCollectionRow: View {
                         EpisodeGrid(episodes: episodes)
                     }
                 } else {
-                    EmptyView()
+                    HomeRowContainer(title: displayTitle) {
+                        placeholder(textKey: "home.section.collection.empty")
+                    }
+                }
+            } else if didFail {
+                HomeRowContainer(title: fallbackTitle) {
+                    placeholder(textKey: "home.section.collection.unavailable")
                 }
             } else {
+                // Brief pre-resolve window — keep quiet to avoid a flash.
                 EmptyView()
             }
         }
@@ -355,8 +377,26 @@ struct PinnedCollectionRow: View {
         }
     }
 
+    @ViewBuilder
+    private func placeholder(textKey: LocalizedStringKey) -> some View {
+        HStack {
+            Text(textKey)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            Spacer()
+        }
+        .padding(.horizontal, 20)
+    }
+
     private func load() async {
-        let resolved = try? await ResolveCache.shared.resolve(itemID) as? ItemCollection
-        withAnimation { collection = resolved }
+        do {
+            let resolved = try await ResolveCache.shared.resolve(itemID) as? ItemCollection
+            withAnimation {
+                collection = resolved
+                didFail = resolved == nil
+            }
+        } catch {
+            withAnimation { didFail = true }
+        }
     }
 }

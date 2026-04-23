@@ -152,7 +152,7 @@ final class TabRouterViewModel: Sendable {
 extension TabRouterViewModel {
     var pinnedTabsActive: Bool {
         switch tabValue {
-        case .custom:
+        case .custom, .multiLibrary:
             true
         case .search:
             keepCustomTabsActiveWhileSearching
@@ -260,7 +260,7 @@ private extension TabRouterViewModel {
 private extension TabRouterViewModel {
     func isPinned(_ tab: TabValue?) -> Bool {
         switch tab {
-        case .custom:
+        case .custom, .multiLibrary:
             true
         case .search:
             keepCustomTabsActiveWhileSearching

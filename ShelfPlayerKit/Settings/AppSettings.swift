@@ -64,6 +64,10 @@ public final class AppSettings: @unchecked Sendable {
         didSet { suite.set(skipForwardsInterval, forKey: "skipForwardsInterval") }
     }
 
+    public var remoteSeekAutoEndInterval: Double = 0.5 {
+        didSet { suite.set(remoteSeekAutoEndInterval, forKey: "remoteSeekAutoEndInterval") }
+    }
+
     // MARK: Advanced
 
     public var enableSerifFont = true {
@@ -332,6 +336,7 @@ public final class AppSettings: @unchecked Sendable {
         extendSleepTimerOnPlay = suite.object(forKey: "extendSleepTimerOnPlay") as? Bool ?? false
         skipBackwardsInterval = suite.object(forKey: "skipBackwardsInterval") as? Int ?? 30
         skipForwardsInterval = suite.object(forKey: "skipForwardsInterval") as? Int ?? 30
+        remoteSeekAutoEndInterval = suite.object(forKey: "remoteSeekAutoEndInterval") as? Double ?? 0.5
 
         enableSerifFont = suite.object(forKey: "enableSerifFont") as? Bool ?? true
         showSingleEntryGroupedSeries = suite.object(forKey: "showSingleEntryGroupedSeries") as? Bool ?? true

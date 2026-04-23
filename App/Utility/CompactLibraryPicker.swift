@@ -11,7 +11,6 @@ import ShelfPlayback
 struct CompactLibraryPicker: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.library) private var library
-    @Environment(\.homeScope) private var injectedHomeScope
 
     @Environment(TabRouterViewModel.self) private var tabRouterViewModel
     @Environment(ConnectionStore.self) private var connectionStore
@@ -22,11 +21,19 @@ struct CompactLibraryPicker: View {
     /// customization sheet for this library type instead of the tab-bar
     /// customization. Intended for use on home panels.
     var customizeHomeLibraryType: LibraryMediaType? = nil
+    /// When true, the menu operates on the multi-library panel — the
+    /// customize-home button targets `HomeScope.multiLibrary` and the
+    /// library picker is shown even though a pinned tab is active.
+    var isMultiLibraryScope: Bool = false
 
     private var homeCustomizationScope: HomeScope? {
-        if let injectedHomeScope { return injectedHomeScope }
+        if isMultiLibraryScope { return .multiLibrary }
         if let library { return .library(library.id) }
         return nil
+    }
+
+    private var showCustomizeHome: Bool {
+        homeCustomizationScope != nil && (customizeHomeLibraryType != nil || isMultiLibraryScope)
     }
 
     private var offlineConnections: [ItemIdentifier.ConnectionID] {
@@ -57,12 +64,12 @@ struct CompactLibraryPicker: View {
 
             Divider()
 
-            if !tabRouterViewModel.pinnedTabsActive {
+            if !tabRouterViewModel.pinnedTabsActive || isMultiLibraryScope {
                 LibraryPicker()
                 Divider()
             }
 
-            if let customizeHomeLibraryType, let homeCustomizationScope {
+            if showCustomizeHome, let homeCustomizationScope {
                 Button("home.customization.title", systemImage: "slider.horizontal.3") {
                     satellite.present(.customizeHome(homeCustomizationScope, customizeHomeLibraryType))
                 }

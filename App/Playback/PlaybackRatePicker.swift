@@ -12,6 +12,8 @@ struct PlaybackRateButton: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
 
+    var onMeshBackground: Bool = false
+
     @State private var showPicker = false
 
     var body: some View {
@@ -37,7 +39,7 @@ struct PlaybackRateButton: View {
         }
         .hoverEffect(.highlight)
         .modify(if: viewModel.isRatePickerVisible) {
-            $0.glassEffect(.clear.interactive(), in: .circle)
+            $0.glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .circle)
         }
         .padding(-12)
         .accessibilityLabel("preferences.playbackRate")
@@ -61,6 +63,7 @@ struct PlaybackRatePickerCard: View {
     let onMeshBackground: Bool
 
     @State private var dragAnchorRate: Double?
+    @State private var dragTranslation: CGFloat = 0
     @State private var isDragging = false
     @State private var notifyGroupingSave = false
     @State private var notifyGroupingError = false
@@ -118,6 +121,19 @@ struct PlaybackRatePickerCard: View {
         return (clamped / step).rounded() * step
     }
 
+    private func presetGlass(isSelected: Bool) -> Glass {
+        let base: Glass = onMeshBackground ? .clear.interactive() : .regular.interactive()
+        return isSelected ? base.tint(primaryColor.opacity(0.12)) : base
+    }
+
+    private var rulerDisplayRate: Double {
+        guard isDragging, let anchor = dragAnchorRate else {
+            return satellite.playbackRate
+        }
+        let delta = -dragTranslation / tickSpacing * step
+        return max(minRate, min(maxRate, anchor + delta))
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             groupingDefaultControl
@@ -168,7 +184,7 @@ struct PlaybackRatePickerCard: View {
                         .lineLimit(1)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
-                        .glassEffect(.clear.interactive(), in: .capsule)
+                        .glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .capsule)
                 }
                 .buttonStyle(.plain)
                 .transition(.scale(scale: 0.4, anchor: .top).combined(with: .opacity))
@@ -214,13 +230,11 @@ struct PlaybackRatePickerCard: View {
 
             VStack(spacing: labelSpacing) {
                 Image(systemName: "arrowtriangle.down.fill")
-                    .font(.system(size: 9))
+                    .font(.system(size: 10, weight: .semibold))
                     .foregroundStyle(primaryColor)
                     .frame(width: width, height: 10)
-                    .scaleEffect(isDragging ? 1.25 : 1)
-                    .animation(.spring(response: 0.3, dampingFraction: 0.55), value: isDragging)
 
-                RulerCanvas(rate: satellite.playbackRate,
+                RulerCanvas(rate: rulerDisplayRate,
                             minRate: minRate,
                             maxRate: maxRate,
                             step: step,
@@ -234,13 +248,13 @@ struct PlaybackRatePickerCard: View {
                     .mask(alignment: .leading) {
                         LinearGradient(stops: [
                             .init(color: .clear, location: 0),
-                            .init(color: .black, location: 0.1),
-                            .init(color: .black, location: 0.9),
+                            .init(color: .black, location: 0.12),
+                            .init(color: .black, location: 0.88),
                             .init(color: .clear, location: 1)
                         ], startPoint: .leading, endPoint: .trailing)
                         .frame(width: width)
                     }
-                    .animation(isDragging ? nil : .spring(response: 0.4, dampingFraction: 0.75), value: satellite.playbackRate)
+                    .animation(isDragging ? nil : .spring(response: 0.45, dampingFraction: 0.85), value: rulerDisplayRate)
             }
             .frame(width: width, height: geo.size.height, alignment: .top)
             .contentShape(.rect)
@@ -252,6 +266,7 @@ struct PlaybackRatePickerCard: View {
                             dragAnchorRate = satellite.playbackRate
                             isDragging = true
                         }
+                        dragTranslation = value.translation.width
 
                         let delta = -value.translation.width / tickSpacing * step
                         let target = snappedRate(dragAnchorRate! + delta)
@@ -262,7 +277,10 @@ struct PlaybackRatePickerCard: View {
                     }
                     .onEnded { _ in
                         dragAnchorRate = nil
-                        isDragging = false
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+                            isDragging = false
+                            dragTranslation = 0
+                        }
                     }
             )
         }
@@ -288,7 +306,7 @@ struct PlaybackRatePickerCard: View {
                                 .frame(minWidth: 44)
                                 .padding(.horizontal, 14)
                                 .frame(height: 40)
-                                .glassEffect(isSelected ? .clear.interactive().tint(primaryColor.opacity(0.12)) : .clear.interactive(), in: .capsule)
+                                .glassEffect(presetGlass(isSelected: isSelected), in: .capsule)
                                 .scaleEffect(isSelected ? 1.04 : 1)
                         }
                         .buttonStyle(.plain)
@@ -361,8 +379,8 @@ private struct RulerCanvas: View, Animatable {
             let currentIndex = (rate - minRate) / step
             let offsetX = centerX - CGFloat(currentIndex) * tickSpacing - tickSpacing / 2
 
-            let baseMajorHeight: CGFloat = 20
-            let baseMinorHeight: CGFloat = 12
+            let majorHeight: CGFloat = 24
+            let minorHeight: CGFloat = 10
             let labelY = tickHeight + labelSpacing + labelHeight / 2
 
             for index in 0..<tickCount {
@@ -371,28 +389,12 @@ private struct RulerCanvas: View, Animatable {
 
                 let rateValue = minRate + Double(index) * step
                 let major = (Int((rateValue * 10).rounded()) % 5) == 0
-                let fracDistance = abs(Double(index) - currentIndex)
 
-                let height: CGFloat
-                let opacity: Double
+                let height: CGFloat = major ? majorHeight : minorHeight
+                let width: CGFloat = major ? 1.75 : 1
+                let opacity: Double = major ? 0.9 : 0.3
 
-                if fracDistance < 1 {
-                    let t = fracDistance
-                    height = tickHeight - (tickHeight - tickHeight * 0.55) * CGFloat(t)
-                    opacity = 1.0 - 0.25 * t
-                } else if fracDistance < 2 {
-                    let t = fracDistance - 1
-                    let start: CGFloat = tickHeight * 0.55
-                    let end: CGFloat = major ? baseMajorHeight + 2 : baseMinorHeight + 4
-                    height = start + (end - start) * CGFloat(t)
-                    let endOpacity = major ? 0.85 : 0.35
-                    opacity = 0.75 + (endOpacity - 0.75) * t
-                } else {
-                    height = major ? baseMajorHeight : baseMinorHeight
-                    opacity = major ? 0.85 : 0.35
-                }
-
-                let barRect = CGRect(x: tickX - 0.75, y: tickHeight - height, width: 1.5, height: height)
+                let barRect = CGRect(x: tickX - width / 2, y: tickHeight - height, width: width, height: height)
                 context.fill(Path(barRect), with: .color(primaryColor.opacity(opacity)))
 
                 if major {

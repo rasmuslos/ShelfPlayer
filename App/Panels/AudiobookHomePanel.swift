@@ -11,7 +11,6 @@ import ShelfPlayback
 struct AudiobookHomePanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.library) private var library
-    @Environment(\.homeScope) private var injectedScope
 
     @State private var audiobookRowsByID = [String: HomeRow<Audiobook>]()
     @State private var authorRowsByID = [String: HomeRow<Person>]()
@@ -22,8 +21,7 @@ struct AudiobookHomePanel: View {
     @State private var isLoading = false
     @State private var notifyError = false
 
-    private var effectiveScope: HomeScope? {
-        if let injectedScope { return injectedScope }
+    private var scope: HomeScope? {
         if let library { return .library(library.id) }
         return nil
     }
@@ -88,7 +86,7 @@ struct AudiobookHomePanel: View {
             fetchItems()
         }
         .onReceive(PersistenceManager.shared.homeCustomization.events.invalidateSections) { changed in
-            if changed == effectiveScope {
+            if changed == scope {
                 Task { await reloadSections() }
             }
         }
@@ -97,7 +95,7 @@ struct AudiobookHomePanel: View {
 
 private extension AudiobookHomePanel {
     func reloadSections() async {
-        guard let scope = effectiveScope else { return }
+        guard let scope else { return }
         let loaded = await PersistenceManager.shared.homeCustomization.sections(for: scope, libraryType: .audiobooks)
         // No `withAnimation` here — animating a section-array change while a
         // sheet transition or GeometryReader remeasure is in flight pushes

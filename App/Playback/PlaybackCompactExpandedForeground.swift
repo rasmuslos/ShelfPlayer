@@ -128,7 +128,7 @@ struct PlaybackCompactExpandedForeground: View {
                 }
             }
 
-            PlaybackActions()
+            PlaybackActions(onMeshBackground: isMeshActive)
                 .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
                 .padding(.bottom, safeAreBottomInset + 12)
                 .offset(y: viewModel.controlTranslationY)

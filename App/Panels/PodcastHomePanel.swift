@@ -11,7 +11,6 @@ import ShelfPlayback
 struct PodcastHomePanel: View {
     @Environment(\.library) private var library
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.homeScope) private var injectedScope
 
     @State private var episodeRowsByID = [String: HomeRow<Episode>]()
     @State private var podcastRowsByID = [String: HomeRow<Podcast>]()
@@ -21,8 +20,7 @@ struct PodcastHomePanel: View {
     @State private var didFail = false
     @State private var isLoading = false
 
-    private var effectiveScope: HomeScope? {
-        if let injectedScope { return injectedScope }
+    private var scope: HomeScope? {
         if let library { return .library(library.id) }
         return nil
     }
@@ -87,7 +85,7 @@ struct PodcastHomePanel: View {
             fetchItems()
         }
         .onReceive(PersistenceManager.shared.homeCustomization.events.invalidateSections) { changed in
-            if changed == effectiveScope {
+            if changed == scope {
                 Task { await reloadSections() }
             }
         }
@@ -96,7 +94,7 @@ struct PodcastHomePanel: View {
 
 private extension PodcastHomePanel {
     func reloadSections() async {
-        guard let scope = effectiveScope else { return }
+        guard let scope else { return }
         let loaded = await PersistenceManager.shared.homeCustomization.sections(for: scope, libraryType: .podcasts)
         // No `withAnimation` here — see AudiobookHomePanel for the rationale.
         sections = loaded

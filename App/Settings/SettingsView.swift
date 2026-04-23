@@ -256,9 +256,11 @@ private struct PlaybackSettingsView: View {
                 Toggle("settings.replaceVolumeWithTotalProgress", isOn: $settings.replaceVolumeWithTotalProgress)
             }
 
-            Section(footer: Text("settings.smartRewind.footer")) {
-                Toggle("settings.enableSmartRewind", isOn: $settings.enableSmartRewind)
+            Section {
                 Toggle("settings.generateUpNextQueue", isOn: $settings.generateUpNextQueue)
+                Toggle("settings.enableSmartRewind", isOn: $settings.enableSmartRewind)
+            } footer: {
+                Text("settings.smartRewind.footer")
             }
 
             Section("settings.skipIntervals") {

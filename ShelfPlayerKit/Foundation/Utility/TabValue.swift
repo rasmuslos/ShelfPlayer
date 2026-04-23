@@ -31,6 +31,11 @@ public indirect enum TabValue: Identifiable, Hashable, Codable, Sendable {
 
     case custom(TabValue, String)
 
+    /// A global start page that aggregates rows from any library. Pinned as
+    /// a top-level tab from the custom tab editor; its sections are edited
+    /// under `HomeScope.multiLibrary`.
+    case multiLibrary
+
     case search
     case loading
 
@@ -72,6 +77,9 @@ public indirect enum TabValue: Identifiable, Hashable, Codable, Sendable {
         case .custom(let tabValue, _):
             "custom_\(tabValue.id)"
 
+        case .multiLibrary:
+            "multiLibrary"
+
         case .search:
             "search"
         case .loading:
@@ -103,7 +111,7 @@ public indirect enum TabValue: Identifiable, Hashable, Codable, Sendable {
         case .custom(let tabValue, _):
             tabValue.libraryID
 
-        case .search, .loading:
+        case .multiLibrary, .search, .loading:
             nil
         }
     }

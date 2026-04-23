@@ -124,7 +124,10 @@ struct TabRouter: View {
                 DownloadedPanel()
 
             case .custom(let tabValue, _):
-                AnyView(erasing: panel(for: tabValue).environment(\.homeScope, .pinned(tabValue.id)))
+                AnyView(erasing: panel(for: tabValue))
+
+            case .multiLibrary:
+                MultiLibraryHomePanel()
 
             default:
                 fatalError()
@@ -132,7 +135,12 @@ struct TabRouter: View {
     }
     private func tab(for tab: TabValue) -> some TabContent<TabValue?> {
         Tab(tab.label, systemImage: tab.image, value: tab) {
-            if let libraryID = tab.libraryID, let library = viewModel.libraryLookup[libraryID] {
+            if case .multiLibrary = tab {
+                NavigationStackWrapper(tab: tab) {
+                    Self.panel(for: tab)
+                }
+                .modifier(PlaybackTabContentModifier())
+            } else if let libraryID = tab.libraryID, let library = viewModel.libraryLookup[libraryID] {
                 if let isSynchronized = viewModel.currentConnectionStatus[libraryID.connectionID] {
                     if isSynchronized {
                         NavigationStackWrapper(tab: tab) {

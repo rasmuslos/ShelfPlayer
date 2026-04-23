@@ -98,6 +98,15 @@ struct CompactLegacyCollapsedForeground: View {
                 }
                 .buttonStyle(.plain)
                 .universalContentShape(RoundedRectangle(cornerRadius: viewModel.PILL_CORNER_RADIUS, style: .continuous))
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 10)
+                        .onEnded { value in
+                            guard !viewModel.isExpanded else { return }
+                            if value.translation.height < -20 || value.velocity.height < -500 {
+                                viewModel.toggleExpanded()
+                            }
+                        }
+                )
                 .contextMenu {
                     PlaybackMenuActions()
                 } preview: {

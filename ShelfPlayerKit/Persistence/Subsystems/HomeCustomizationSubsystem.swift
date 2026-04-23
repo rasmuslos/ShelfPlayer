@@ -97,12 +97,26 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
         }
     }
 
-    /// Pinned-tab start pages start with a small, obvious set. The user picks
-    /// per-section libraries from the editor.
-    nonisolated func defaultPinnedSections() -> [HomeSection] {
+    /// The multi-library panel starts with a small, obvious set. The user
+    /// picks per-section libraries from the editor.
+    nonisolated func defaultMultiLibrarySections() -> [HomeSection] {
         [
             .init(kind: .listenNow),
             .init(kind: .upNext),
+        ]
+    }
+
+    /// Kinds available in the multi-library panel. Server rows are excluded
+    /// because they are per-library; collection/playlist rows are added via
+    /// the dedicated picker flow in the editor.
+    nonisolated func availableMultiLibraryKinds() -> [HomeSectionKind] {
+        [
+            .listenNow,
+            .upNext,
+            .nextUpPodcasts,
+            .downloadedAudiobooks,
+            .downloadedEpisodes,
+            .bookmarks,
         ]
     }
 
@@ -119,8 +133,8 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
             switch scope {
             case .library:
                 loaded = defaultSections(for: libraryType ?? .audiobooks)
-            case .pinned:
-                loaded = defaultPinnedSections()
+            case .multiLibrary:
+                loaded = defaultMultiLibrarySections()
             }
         }
 

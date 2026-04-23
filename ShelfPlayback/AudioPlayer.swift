@@ -47,6 +47,9 @@ public final actor AudioPlayer: Sendable {
     var didPauseAt: Date?
     var sleepTimerDidExpireAt: (SleepTimerConfiguration, Date)?
 
+    private var remoteSeekDirection: Bool?
+    private var remoteSeekAutoEndTask: Task<Void, Never>?
+
     nonisolated(unsafe) var observerSubscriptions = Set<AnyCancellable>()
 
     init() {
@@ -298,6 +301,44 @@ public extension AudioPlayer {
         await current?.endSeeking()
     }
 
+    func handleRemoteSeek(forwards: Bool) async {
+        guard current != nil else {
+            return
+        }
+
+        if let direction = remoteSeekDirection, direction != forwards {
+            await current?.endSeeking()
+            remoteSeekDirection = nil
+        }
+
+        if remoteSeekDirection == nil {
+            remoteSeekDirection = forwards
+            await current?.beginSeeking(forwards)
+        }
+
+        remoteSeekAutoEndTask?.cancel()
+        let timeout = max(0.05, AppSettings.shared.remoteSeekAutoEndInterval)
+        remoteSeekAutoEndTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(timeout))
+            guard !Task.isCancelled else {
+                return
+            }
+            await self?.stopRemoteSeek()
+        }
+    }
+
+    private func stopRemoteSeek() async {
+        remoteSeekAutoEndTask?.cancel()
+        remoteSeekAutoEndTask = nil
+
+        guard remoteSeekDirection != nil else {
+            return
+        }
+
+        remoteSeekDirection = nil
+        await current?.endSeeking()
+    }
+
     func setSleepTimer(_ configuration: SleepTimerConfiguration?) async {
         await current?.setSleepTimer(configuration)
     }
@@ -522,52 +563,22 @@ private extension AudioPlayer {
 
         commandCenter.seekBackwardCommand.isEnabled = true
         commandCenter.seekBackwardCommand.addTarget { event in
-            self.logger.info("MP-Command: seekBackward triggered")
-
-            guard let event = event as? MPSeekCommandEvent else {
-                self.logger.error("MP-Command: seekBackward failed: invalid event type")
-
-                return .commandFailed
-            }
-
-            let type = event.type
+            let rawType = (event as? MPSeekCommandEvent)?.type
+            self.logger.info("MP-Command: seekBackward triggered (type=\(String(describing: rawType?.rawValue)))")
 
             Task {
-                guard await self.current != nil else {
-                    self.logger.error("MP-Command: seekBackward failed: no active endpoint")
-                    return
-                }
-
-                switch type {
-                    case .beginSeeking: await self.beginSeeking(false)
-                    default: await self.endSeeking()
-                }
+                await self.handleRemoteSeek(forwards: false)
             }
 
             return .success
         }
         commandCenter.seekForwardCommand.isEnabled = true
         commandCenter.seekForwardCommand.addTarget { event in
-            self.logger.info("MP-Command: seekForward triggered")
-
-            guard let event = event as? MPSeekCommandEvent else {
-                self.logger.error("MP-Command: seekForward failed: invalid event type")
-
-                return .commandFailed
-            }
-
-            let type = event.type
+            let rawType = (event as? MPSeekCommandEvent)?.type
+            self.logger.info("MP-Command: seekForward triggered (type=\(String(describing: rawType?.rawValue)))")
 
             Task {
-                guard await self.current != nil else {
-                    self.logger.error("MP-Command: seekForward failed: no active endpoint")
-                    return
-                }
-
-                switch type {
-                    case .beginSeeking: await self.beginSeeking(true)
-                    default: await self.endSeeking()
-                }
+                await self.handleRemoteSeek(forwards: true)
             }
 
             return .success

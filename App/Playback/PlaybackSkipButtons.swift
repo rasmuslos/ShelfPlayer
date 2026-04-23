@@ -24,31 +24,34 @@ struct PlaybackBackwardButton: View {
     }
 
     var body: some View {
-        Label("playback.skip.backward", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
-            .labelStyle(.iconOnly)
-            .foregroundStyle(isLoading ? .secondary : .primary)
-            .padding(12)
-            .contentShape(.rect)
-            .onLongPressGesture(minimumDuration: 0.5, perform: {}, onPressingChanged: { pressing in
-                if pressing {
-                    skipController.skipPressed(forwards: false, satellite: satellite)
-                    seekTimer = .scheduledTimer(withTimeInterval: 0.5, repeats: true) { [satellite, skipController] _ in
-                        Task { @MainActor in
-                            skipController.skipPressed(forwards: false, satellite: satellite)
-                        }
+        Button {
+            skipController.skipPressed(forwards: false, satellite: satellite)
+        } label: {
+            Label("playback.skip.backward", systemImage: "gobackward.\(viewModel.skipBackwardsInterval)")
+                .labelStyle(.iconOnly)
+                .foregroundStyle(isLoading ? .secondary : .primary)
+                .padding(12)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .onLongPressGesture(minimumDuration: 0.5, perform: {}, onPressingChanged: { pressing in
+            if pressing {
+                seekTimer = .scheduledTimer(withTimeInterval: 0.5, repeats: true) { [satellite, skipController] _ in
+                    Task { @MainActor in
+                        skipController.skipPressed(forwards: false, satellite: satellite)
                     }
-                } else {
-                    seekTimer?.invalidate()
-                    seekTimer = nil
                 }
-            })
-            .padding(-12)
-            .disabled(isLoading)
-            .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(10), value: skipController.notifySkipBackwards)
-            .animation(.smooth, value: isLoading)
-            .accessibilityRemoveTraits(.isImage)
-            .accessibilityAddTraits(.isButton)
-            .accessibilityValue(Text(verbatim: "\(viewModel.skipBackwardsInterval)"))
+            } else {
+                seekTimer?.invalidate()
+                seekTimer = nil
+            }
+        })
+        .padding(-12)
+        .disabled(isLoading)
+        .symbolEffect(.rotate.counterClockwise.byLayer, options: .speed(10), value: skipController.notifySkipBackwards)
+        .animation(.smooth, value: isLoading)
+        .accessibilityRemoveTraits(.isImage)
+        .accessibilityValue(Text(verbatim: "\(viewModel.skipBackwardsInterval)"))
     }
 }
 

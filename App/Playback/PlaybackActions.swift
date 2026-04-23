@@ -11,6 +11,8 @@ import ShelfPlayback
 struct PlaybackActions: View {
     @Environment(PlaybackViewModel.self) private var viewModel
 
+    var onMeshBackground: Bool = false
+
     @ViewBuilder
     private var queueButton: some View {
         Button {
@@ -24,14 +26,14 @@ struct PlaybackActions: View {
                 .contentShape(.rect)
         }
         .modify(if: viewModel.isQueueVisible) {
-            $0.glassEffect(.clear.interactive(), in: .circle)
+            $0.glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .circle)
         }
         .padding(-12)
     }
 
     var body: some View {
         LazyVGrid(columns: .init(repeating: .init(alignment: .centerFirstTextBaseline), count: 4)) {
-            PlaybackRateButton()
+            PlaybackRateButton(onMeshBackground: onMeshBackground)
             PlaybackSleepTimerButton()
             PlaybackAirPlayButton()
             queueButton

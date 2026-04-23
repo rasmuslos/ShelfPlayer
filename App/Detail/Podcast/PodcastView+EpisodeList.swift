@@ -33,6 +33,7 @@ struct PodcastEpisodesView: View {
             EpisodeList(episodes: viewModel.visible, context: .podcast, selected: $viewModel.bulkSelected)
         }
         .listStyle(.plain)
+        .navigationLinkIndicatorVisibility(.hidden)
         .navigationTitle("item.related.podcast.episodes")
         .navigationBarTitleDisplayMode(.inline)
         .refreshable {

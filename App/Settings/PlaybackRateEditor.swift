@@ -46,7 +46,7 @@ struct PlaybackRateEditor: View {
             }
 
             Section {
-                Stepper(value: $newValue, in: 0.1...8, step: 0.05) {
+                Stepper(value: $newValue, in: 0.1...8, step: 0.1) {
                     Text(newValue, format: .playbackRate)
                 }
 

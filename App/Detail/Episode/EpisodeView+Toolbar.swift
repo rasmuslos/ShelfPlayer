@@ -47,8 +47,6 @@ extension EpisodeView {
                         Menu {
                             ControlGroup {
                                 ItemShareButton(item: viewModel.episode)
-                                DownloadButton(itemID: viewModel.episode.id, progressVisibility: .toolbar)
-                                    .labelStyle(.iconOnly)
                                 ItemCollectionMembershipEditButton(itemID: viewModel.episode.id)
                             }
 
@@ -56,16 +54,13 @@ extension EpisodeView {
 
                             QueuePlayButton(itemID: viewModel.episode.id)
                             QueueButton(itemID: viewModel.episode.id)
+                            
+                            DownloadButton(itemID: viewModel.episode.id, progressVisibility: .toolbar)
 
                             Divider()
 
                             ProgressButton(itemID: viewModel.episode.id)
                             ProgressResetButton(itemID: viewModel.episode.id)
-                            
-                            Divider()
-                            
-                            DownloadButton(itemID: viewModel.episode.id, progressVisibility: .toolbar)
-                                .labelStyle(.iconOnly)
 
                             Divider()
 
