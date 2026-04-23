@@ -12,9 +12,10 @@ struct EpisodeDescription: View {
     @Environment(Satellite.self) private var satellite
 
     let episode: Episode
+    var textColor: UIColor = .label
 
     var body: some View {
-        Description(description: episode.description, showHeadline: false) { description in
+        Description(description: episode.description, showHeadline: false, textColor: textColor) { description in
             let text = description.string
 
             for match in text.matches(of: Episode.chapterTimestampRegex) {

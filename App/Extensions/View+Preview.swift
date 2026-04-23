@@ -20,7 +20,7 @@ extension View {
             .environment(ConnectionStore.shared)
             .environment(Satellite.shared.debugPlayback())
 
-            .environment(PlaybackViewModel.shared)
+            .environment(PlaybackViewModel.shared.debugPlayback())
             .environment(BookmarkEditor())
             .environment(SkipController.shared)
             .environment(ListenedTodayTracker.shared)

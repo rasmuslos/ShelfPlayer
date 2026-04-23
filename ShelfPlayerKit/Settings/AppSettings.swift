@@ -306,6 +306,10 @@ public final class AppSettings: @unchecked Sendable {
         didSet { suite.set(enableHapticFeedback, forKey: "enableHapticFeedback") }
     }
 
+    public var animatedNowPlayingBackground = false {
+        didSet { suite.set(animatedNowPlayingBackground, forKey: "animatedNowPlayingBackground") }
+    }
+
     // MARK: - Init
 
     private init() {
@@ -414,6 +418,7 @@ public final class AppSettings: @unchecked Sendable {
         carPlayTabBarLibraries = decodeCodable(forKey: "carPlayTabBarLibraries")
         carPlayShowOtherLibraries = suite.object(forKey: "carPlayShowOtherLibraries") as? Bool ?? true
         enableHapticFeedback = suite.object(forKey: "enableHapticFeedback") as? Bool ?? true
+        animatedNowPlayingBackground = suite.object(forKey: "animatedNowPlayingBackground") as? Bool ?? false
     }
 }
 

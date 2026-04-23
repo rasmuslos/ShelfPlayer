@@ -98,9 +98,8 @@ private extension PodcastHomePanel {
     func reloadSections() async {
         guard let scope = effectiveScope else { return }
         let loaded = await PersistenceManager.shared.homeCustomization.sections(for: scope, libraryType: .podcasts)
-        withAnimation {
-            sections = loaded
-        }
+        // No `withAnimation` here — see AudiobookHomePanel for the rationale.
+        sections = loaded
     }
 
     func fetchItems() {

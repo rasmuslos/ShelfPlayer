@@ -30,7 +30,7 @@ struct PlaybackAirPlayButton: View {
             Label("airPlay", systemImage: satellite.route?.icon ?? "airplay.audio")
                 .padding(12)
                 .symbolRenderingMode(.multicolor)
-                .foregroundStyle(satellite.route?.isHighlighted == true ? tintColor.color : Color.primary)
+                .foregroundStyle(satellite.route?.isHighlighted == true ? AnyShapeStyle(tintColor.color) : AnyShapeStyle(HierarchicalShapeStyle.primary))
                 .contentTransition(.symbolEffect(.replace))
                 .contentShape(.rect(cornerRadius: 4))
         }

@@ -10,7 +10,6 @@ import ShelfPlayback
 
 struct PlaybackSlider<MiddleContent: View>: View {
     @Environment(Satellite.self) private var satellite
-    @Environment(\.colorScheme) private var colorScheme
 
     private var durationToggled: Bool {
         get { AppSettings.shared.durationToggled }
@@ -103,15 +102,8 @@ struct PlaybackSlider<MiddleContent: View>: View {
                 let width = geometry.size.width * min(1, max(0, CGFloat(seeking ?? percentage)))
 
                 ZStack(alignment: .leading) {
-                    if colorScheme == .dark {
-                        Rectangle()
-                            .fill(.background.tertiary)
-                            .saturation(1.6)
-                    } else {
-                        Rectangle()
-                            .fill(.background.secondary)
-                            .saturation(1.6)
-                    }
+                    Rectangle()
+                        .fill(.primary.opacity(0.2))
 
                     Rectangle()
                         .frame(width: width)

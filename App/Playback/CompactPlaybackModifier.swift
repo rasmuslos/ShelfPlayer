@@ -16,6 +16,8 @@ struct CompactPlaybackModifier: ViewModifier {
     @Environment(OfflineMode.self) private var offlineMode
     @Environment(PlaybackViewModel.self) private var viewModel
 
+    @Bindable private var settings = AppSettings.shared
+
     private var nowPlayingCornerRadius: CGFloat {
         guard viewModel.isExpanded else {
             return viewModel.PILL_CORNER_RADIUS
@@ -45,6 +47,15 @@ struct CompactPlaybackModifier: ViewModifier {
                         .fill(.background)
                 }
             }
+            .overlay {
+                if settings.animatedNowPlayingBackground, let meshColors = viewModel.nowPlayingMeshColors {
+                    NowPlayingMeshBackground(colors: meshColors)
+                        .clipShape(RoundedRectangle(cornerRadius: nowPlayingCornerRadius, style: .continuous))
+                        .opacity(viewModel.isExpanded ? 1 : 0)
+                        .transition(.opacity)
+                }
+            }
+            .animation(.smooth(duration: 1.0), value: viewModel.nowPlayingMeshColors)
             .opacity(viewModel.isNowPlayingBackgroundVisible ? 1 : 0)
             .offset(viewModel.isExpanded ? .zero : .init(width: viewModel.pillX + geometryProxy.safeAreaInsets.leading,
                                                          height: viewModel.pillY - viewModel.translationY))
@@ -127,11 +138,17 @@ struct CompactPlaybackModifier: ViewModifier {
         Tab(String(":)"), systemImage: "command") {
             NavigationStack {
                 ScrollView {
+                    Button("Animation on") {
+                        AppSettings.shared.animatedNowPlayingBackground = true
+                    }
+                    Button("Animation off") {
+                        AppSettings.shared.animatedNowPlayingBackground = false
+                    }
+                    
                     Rectangle()
                         .fill(.blue)
                         .frame(height: 10_000)
                 }
-                .ignoresSafeArea()
             }
             .modifier(PlaybackTabContentModifier())
         }

@@ -16,6 +16,7 @@ struct Description: View {
     let description: String?
 
     var showHeadline = true
+    var textColor: UIColor = .label
 
     var attribute: AttributeCallback = nil
     var handleURL: ((URL) -> Bool)? = nil
@@ -45,7 +46,7 @@ struct Description: View {
                     }
 
                     if let description {
-                        HTMLTextView(height: $height, delegate: $delegate, html: description, width: availableWidth, attribute: attribute) {
+                        HTMLTextView(height: $height, delegate: $delegate, html: description, width: availableWidth, textColor: textColor, attribute: attribute) {
                             if let handleURL {
                                 handleURL($0)
                             } else {
@@ -74,6 +75,7 @@ private struct HTMLTextView: UIViewRepresentable {
     let html: String
     let width: CGFloat
 
+    let textColor: UIColor
     let attribute: Description.AttributeCallback
     let handleURL: (URL) -> Bool
 
@@ -116,7 +118,7 @@ private struct HTMLTextView: UIViewRepresentable {
                 }
 
                 textView.attributedText = attributedString
-                textView.textColor = UIColor.label
+                textView.textColor = textColor
                 textView.font = UIFont.preferredFont(forTextStyle: .body)
             } catch {
                 textView.attributedText = .init(string: "Failed to parse HTML")

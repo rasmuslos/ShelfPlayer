@@ -114,7 +114,6 @@ struct HomeCustomizationView: View {
         .navigationTitle(isPinnedScope ? "home.customization.pinnedTitle" : "home.customization.title")
         .navigationBarTitleDisplayMode(.inline)
         .environment(\.editMode, .constant(.active))
-        .animation(.smooth, value: sections)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
@@ -131,10 +130,11 @@ struct HomeCustomizationView: View {
         .sheet(item: $collectionPickerType) { type in
             NavigationStack {
                 CollectionSectionPicker(type: type, libraryOverride: scope.implicitLibraryID) { itemID in
-                    // Dismiss the sheet first. Mutating `sections` while the
-                    // sheet is still on-screen triggers a simultaneous List
-                    // row-insertion animation, which reliably crashes
-                    // UICollectionView ("recursive layout loop").
+                    // Dismiss the sheet first, then mutate state on the next
+                    // runloop turn. Mutating `sections` while the sheet is
+                    // still transitioning away triggers a simultaneous row
+                    // insertion in the underlying List, which reliably puts
+                    // UICollectionView into a recursive layout loop.
                     collectionPickerType = nil
                     Task { @MainActor in
                         try? await Task.sleep(for: .milliseconds(350))
@@ -143,7 +143,11 @@ struct HomeCustomizationView: View {
                 }
             }
         }
-        .onChange(of: sections) {
+        // Persist whenever the pinned-scope library picker mutates a row's
+        // libraryID through the @Binding. Every other mutation (add / delete /
+        // move / reset) calls `persist()` directly, so we only need to react
+        // to the library-picker case here.
+        .onChange(of: sections.map(\.libraryID)) {
             guard !isLoading else { return }
             persist()
         }
@@ -154,6 +158,7 @@ struct HomeCustomizationView: View {
 
     private func add(_ kind: HomeSectionKind) {
         sections.append(.init(kind: kind, libraryID: scope.implicitLibraryID))
+        persist()
     }
 
     private func addCollection(type: ItemCollection.CollectionType, itemID: ItemIdentifier) {
@@ -168,14 +173,17 @@ struct HomeCustomizationView: View {
             ? LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(itemID)
             : scope.implicitLibraryID
         sections.append(.init(kind: kind, libraryID: override))
+        persist()
     }
 
     private func moveSections(from source: IndexSet, to destination: Int) {
         sections.move(fromOffsets: source, toOffset: destination)
+        persist()
     }
 
     private func deleteSections(at indices: IndexSet) {
         sections.remove(atOffsets: indices)
+        persist()
     }
 
     private func load() async {

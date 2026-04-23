@@ -93,7 +93,7 @@ private struct PodcastGridItem: View {
     var body: some View {
         NavigationLink(value: NavigationDestination.item(podcast, .init())) {
             VStack(alignment: .leading, spacing: 4) {
-                ItemImage(item: podcast, size: .small)
+                ItemImage(item: podcast, size: .small, showLabelFallback: true)
 
                 if let incompleteEpisodeCount = podcast.incompleteEpisodeCount {
                     Text("item.count.episodes.unplayed \(incompleteEpisodeCount)")

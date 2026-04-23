@@ -181,6 +181,12 @@ struct MarqueeText: View {
                 }
             }
             .onChange(of: text) {
+                var transaction = Transaction()
+                transaction.disablesAnimations = true
+                withTransaction(transaction) {
+                    progress = 0
+                }
+
                 if let controller {
                     controller.stop()
                     Task { @MainActor in
@@ -292,15 +298,7 @@ private struct TextWidthKey: PreferenceKey {
 private struct MarqueePreviewHost: View {
     @State private var controller = MarqueeController()
     @State private var containerWidth: CGFloat = 200
-    @State private var title: String = "The Hitchhiker's Guide to the Galaxy: The Restaurant at the End of the Universe"
-
-    private let titles = [
-        "Short title",
-        "The Hitchhiker's Guide to the Galaxy: The Restaurant at the End of the Universe",
-        "A Fire Upon the Deep",
-        "Dune — Frank Herbert, narrated by Scott Brick, George Guidall, and an ensemble cast",
-        "1984",
-    ]
+    @State private var title: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
@@ -310,7 +308,7 @@ private struct MarqueePreviewHost: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     MarqueeText(text: title, font: .headline, controller: controller)
-                    MarqueeText(text: "Douglas Adams • Narrated by Stephen Fry • A very, very long subtitle that absolutely cannot fit",
+                    MarqueeText(text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
                                 font: .subheadline,
                                 foregroundStyle: .init(.secondary),
                                 controller: controller)
@@ -343,10 +341,9 @@ private struct MarqueePreviewHost: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Title").font(.caption)
-                Picker("Title", selection: $title) {
-                    ForEach(titles, id: \.self) { Text($0).tag($0) }
-                }
-                .pickerStyle(.menu)
+                TextField("Title", text: $title, axis: .vertical)
+                    .textFieldStyle(.roundedBorder)
+                    .lineLimit(1...4)
             }
 
             Spacer()
@@ -360,13 +357,13 @@ private struct MarqueePreviewHost: View {
 }
 
 #Preview("Fits") {
-    MarqueeText(text: "Short", font: .headline)
+    MarqueeText(text: "Lorem ipsum", font: .headline)
         .frame(width: 200, alignment: .leading)
         .padding()
 }
 
 #Preview("Overflows (standalone)") {
-    MarqueeText(text: "The quick brown fox jumps over the lazy dog, repeatedly and at speed.", font: .headline)
+    MarqueeText(text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.", font: .headline)
         .frame(width: 200, alignment: .leading)
         .padding()
 }
@@ -374,10 +371,10 @@ private struct MarqueePreviewHost: View {
 #Preview("Overflows (controller, 2 rows)") {
     @Previewable @State var controller = MarqueeController()
     VStack(alignment: .leading, spacing: 4) {
-        MarqueeText(text: "The Hitchhiker's Guide to the Galaxy — Primary Phase",
+        MarqueeText(text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                     font: .headline,
                     controller: controller)
-        MarqueeText(text: "Douglas Adams • Narrated by Stephen Fry",
+        MarqueeText(text: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                     font: .subheadline,
                     foregroundStyle: .init(.secondary),
                     controller: controller)

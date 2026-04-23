@@ -15,9 +15,15 @@ struct PlaybackCompactExpandedForeground: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.namespace) private var namespace
 
+    @Bindable private var settings = AppSettings.shared
+
     let height: CGFloat
     let safeAreTopInset: CGFloat
     let safeAreBottomInset: CGFloat
+
+    private var isMeshActive: Bool {
+        settings.animatedNowPlayingBackground && viewModel.nowPlayingMeshColors != nil
+    }
 
     var body: some View {
         @Bindable var viewModel = viewModel
@@ -109,7 +115,7 @@ struct PlaybackCompactExpandedForeground: View {
                 .modifier(PlaybackDragGestureCatcher(height: height))
 
                 if viewModel.isRatePickerVisible {
-                    PlaybackRatePickerCard(isPresented: $viewModel.isRatePickerVisible)
+                    PlaybackRatePickerCard(isPresented: $viewModel.isRatePickerVisible, onMeshBackground: isMeshActive)
                         .padding(.vertical, 12)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -146,6 +152,9 @@ struct PlaybackCompactExpandedForeground: View {
             .accessibilityLabel("action.dismiss")
         }
         .padding(.horizontal, 28)
+        .modify(if: isMeshActive) {
+            $0.foregroundStyle(.white)
+        }
     }
 }
 

@@ -213,6 +213,7 @@ private struct GeneralSettingsView: View {
 
 private struct AppearanceSettingsView: View {
     @State private var activeTintColor: TintColor = AppSettings.shared.tintColor
+    @Bindable private var settings = AppSettings.shared
 
     var body: some View {
         List {
@@ -228,6 +229,10 @@ private struct AppearanceSettingsView: View {
                 ColorSchemePreference { title, icon in
                     Label(title, systemImage: icon)
                 }
+            }
+
+            Section {
+                Toggle("settings.animatedNowPlayingBackground", isOn: $settings.animatedNowPlayingBackground)
             }
         }
         .navigationTitle("settings.appearance")
@@ -361,12 +366,18 @@ private struct AdvancedSettingsView: View {
 private struct DebugSettingsView: View {
     @State private var general = [String: String]()
 
+    @AppStorage("io.rfk.shelfPlayer.debug.forceImagePlaceholder") private var forceImagePlaceholder = false
+
     var body: some View {
         List {
             Section {
                 ForEach(Array(general.keys).sorted(), id: \.hashValue) { key in
                     LabeledContent(key, value: general[key]!)
                 }
+            }
+
+            Section("Rendering") {
+                Toggle("Force image placeholder", isOn: $forceImagePlaceholder)
             }
 
             Button("Reconnect sockets") {

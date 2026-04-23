@@ -14,6 +14,9 @@ struct PlaybackQueue: View {
     @Environment(Satellite.self) private var satellite
 
     private var tintColor: TintColor { AppSettings.shared.tintColor }
+    private var isMeshActive: Bool {
+        AppSettings.shared.animatedNowPlayingBackground && viewModel.nowPlayingMeshColors != nil
+    }
 
     @ViewBuilder
     static func header(label: LocalizedStringKey, subtitle: String? = nil, clear: @escaping () -> Void) -> some View {
@@ -88,7 +91,7 @@ struct PlaybackQueue: View {
 
                     if let episode = satellite.nowPlayingItem as? Episode {
                         Section {
-                            EpisodeDescription(episode: episode)
+                            EpisodeDescription(episode: episode, textColor: isMeshActive ? .white : .label)
                                 .listRowSeparator(.hidden)
                                 .listRowBackground(Color.clear)
                                 .listRowInsets(EdgeInsets(top: 12, leading: 28, bottom: 12, trailing: 28))

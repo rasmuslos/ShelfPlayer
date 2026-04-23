@@ -12,6 +12,7 @@ public struct ItemImage: View {
     let cornerRadius: CGFloat
     let aspectRatio: AspectRatioPolicy
     let contrastConfiguration: ContrastConfiguration?
+    let fallbackLabel: String?
 
     private var aspectRatioPolicy: AspectRatioPolicy {
         if AppSettings.shared.forceAspectRatio && aspectRatio == .none {
@@ -23,26 +24,39 @@ public struct ItemImage: View {
 
     @State private var image: Image?
 
-    public init(itemID: ItemIdentifier?, size: ImageSize, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, contrastConfiguration: ContrastConfiguration? = .init()) {
+    #if DEBUG
+    @AppStorage("io.rfk.shelfPlayer.debug.forceImagePlaceholder") private var forcePlaceholder = false
+    #endif
+
+    private var displayedImage: Image? {
+        #if DEBUG
+        if forcePlaceholder { return nil }
+        #endif
+        return image
+    }
+
+    public init(itemID: ItemIdentifier?, size: ImageSize, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, contrastConfiguration: ContrastConfiguration? = .init(), fallbackLabel: String? = nil) {
         self.itemID = itemID
         self.size = size
 
         self.cornerRadius = cornerRadius
         self.aspectRatio = aspectRatio
         self.contrastConfiguration = contrastConfiguration
+        self.fallbackLabel = fallbackLabel
 
         if let itemID, let cached = itemID.cachedPlatformImage(size: size) {
             _image = State(initialValue: Image(uiImage: cached))
         }
     }
 
-    public init(item: Item?, size: ImageSize, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, contrastConfiguration: ContrastConfiguration? = .init()) {
+    public init(item: Item?, size: ImageSize, cornerRadius: CGFloat = 8, aspectRatio: AspectRatioPolicy = .square, contrastConfiguration: ContrastConfiguration? = .init(), showLabelFallback: Bool = false) {
         self.itemID = item?.id
         self.size = size
 
         self.cornerRadius = cornerRadius
         self.aspectRatio = aspectRatio
         self.contrastConfiguration = contrastConfiguration
+        self.fallbackLabel = showLabelFallback ? item?.name : nil
 
         if let itemID = item?.id, let cached = itemID.cachedPlatformImage(size: size) {
             _image = State(initialValue: Image(uiImage: cached))
@@ -51,7 +65,7 @@ public struct ItemImage: View {
 
     public var body: some View {
         ZStack {
-            if let image {
+            if let image = displayedImage {
                 if aspectRatioPolicy == .none {
                     image
                         .resizable()
@@ -84,7 +98,7 @@ public struct ItemImage: View {
                         .padding(0)
                 }
             } else {
-                ImagePlaceholder(itemID: itemID, cornerRadius: cornerRadius)
+                ImagePlaceholder(itemID: itemID, cornerRadius: cornerRadius, fallbackLabel: fallbackLabel)
                     .onAppear {
                         reload()
                     }

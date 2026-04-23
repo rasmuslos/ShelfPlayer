@@ -112,9 +112,10 @@ struct ItemProgressIndicatorImage: View {
 
     var cornerRadius: CGFloat = 8
     var aspectRatio = ItemImage.AspectRatioPolicy.square
+    var fallbackLabel: String? = nil
 
     var body: some View {
-        ItemImage(itemID: itemID, size: size, cornerRadius: cornerRadius, aspectRatio: aspectRatio)
+        ItemImage(itemID: itemID, size: size, cornerRadius: cornerRadius, aspectRatio: aspectRatio, fallbackLabel: fallbackLabel)
             .overlay {
                 StatusOverlay(itemID: itemID)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius))

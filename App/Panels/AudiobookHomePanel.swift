@@ -99,9 +99,10 @@ private extension AudiobookHomePanel {
     func reloadSections() async {
         guard let scope = effectiveScope else { return }
         let loaded = await PersistenceManager.shared.homeCustomization.sections(for: scope, libraryType: .audiobooks)
-        withAnimation {
-            sections = loaded
-        }
+        // No `withAnimation` here — animating a section-array change while a
+        // sheet transition or GeometryReader remeasure is in flight pushes
+        // UICollectionView into a feedback loop.
+        sections = loaded
     }
 
     func fetchItems(refresh: Bool = false) {

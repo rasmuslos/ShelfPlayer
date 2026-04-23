@@ -55,6 +55,7 @@ struct PlaybackRatePickerCard: View {
     @Environment(Satellite.self) private var satellite
 
     @Binding var isPresented: Bool
+    let onMeshBackground: Bool
 
     @State private var dragAnchorRate: Double?
     @State private var isDragging = false
@@ -70,6 +71,14 @@ struct PlaybackRatePickerCard: View {
 
     private var presets: [Double] { AppSettings.shared.playbackRates }
     private var defaultRate: Double { AppSettings.shared.defaultPlaybackRate }
+
+    private var primaryColor: Color {
+        onMeshBackground ? .white : .primary
+    }
+
+    private var secondaryColor: Color {
+        onMeshBackground ? .white.opacity(0.6) : .secondary
+    }
 
     private var hasChanged: Bool {
         abs(satellite.playbackRate - defaultRate) > 0.001
@@ -158,11 +167,11 @@ struct PlaybackRatePickerCard: View {
                 } label: {
                     Label(grouping.kind.label, systemImage: "pin")
                         .font(.system(.footnote, weight: .semibold))
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(primaryColor)
                         .lineLimit(1)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
-                        .background(.gray.opacity(0.28), in: .capsule)
+                        .glassEffect(.regular.interactive(), in: .capsule)
                 }
                 .buttonStyle(.plain)
                 .transition(.scale(scale: 0.4, anchor: .top).combined(with: .opacity))
@@ -184,10 +193,10 @@ struct PlaybackRatePickerCard: View {
                 } label: {
                     Label("action.reset", systemImage: "arrow.counterclockwise")
                         .font(.system(.footnote, weight: .semibold))
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(primaryColor)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
-                        .background(.gray.opacity(0.28), in: .capsule)
+                        .glassEffect(.regular.interactive(), in: .capsule)
                 }
                 .buttonStyle(.plain)
                 .transition(.scale(scale: 0.4, anchor: .bottom).combined(with: .opacity))
@@ -232,7 +241,7 @@ struct PlaybackRatePickerCard: View {
             VStack(spacing: labelSpacing) {
                 Image(systemName: "arrowtriangle.down.fill")
                     .font(.system(size: 9))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(primaryColor)
                     .frame(width: width, height: 10)
                     .scaleEffect(isDragging ? 1.25 : 1)
                     .animation(.spring(response: 0.3, dampingFraction: 0.55), value: isDragging)
@@ -244,7 +253,9 @@ struct PlaybackRatePickerCard: View {
                             tickSpacing: tickSpacing,
                             tickHeight: tickHeight,
                             labelSpacing: labelSpacing,
-                            labelHeight: labelHeight)
+                            labelHeight: labelHeight,
+                            primaryColor: primaryColor,
+                            secondaryColor: secondaryColor)
                     .frame(width: width, height: tickHeight + labelSpacing + labelHeight)
                     .mask(alignment: .leading) {
                         LinearGradient(stops: [
@@ -296,13 +307,13 @@ struct PlaybackRatePickerCard: View {
                         } label: {
                             Text(rate, format: .playbackRate.hideX())
                                 .font(.system(.subheadline, weight: isSelected ? .bold : .medium))
-                                .foregroundStyle(isSelected ? Color.primary : Color.secondary)
+                                .foregroundStyle(isSelected ? primaryColor : secondaryColor)
                                 .lineLimit(1)
                                 .fixedSize()
                                 .frame(minWidth: 44)
                                 .padding(.horizontal, 14)
                                 .frame(height: 40)
-                                .background(.gray.opacity(isSelected ? 0.32 : 0.18), in: .capsule)
+                                .glassEffect(isSelected ? .regular.interactive().tint(primaryColor.opacity(0.18)) : .regular.interactive(), in: .capsule)
                                 .scaleEffect(isSelected ? 1.04 : 1)
                         }
                         .buttonStyle(.plain)
@@ -360,6 +371,8 @@ private struct RulerCanvas: View, Animatable {
     let tickHeight: CGFloat
     let labelSpacing: CGFloat
     let labelHeight: CGFloat
+    let primaryColor: Color
+    let secondaryColor: Color
 
     var animatableData: Double {
         get { rate }
@@ -405,12 +418,12 @@ private struct RulerCanvas: View, Animatable {
                 }
 
                 let barRect = CGRect(x: tickX - 0.75, y: tickHeight - height, width: 1.5, height: height)
-                context.fill(Path(barRect), with: .color(.primary.opacity(opacity)))
+                context.fill(Path(barRect), with: .color(primaryColor.opacity(opacity)))
 
                 if major {
                     let text = Text(rateValue, format: .playbackRate.hideX())
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(secondaryColor)
                     context.draw(text, at: CGPoint(x: tickX, y: labelY), anchor: .center)
                 }
             }
@@ -420,7 +433,7 @@ private struct RulerCanvas: View, Animatable {
 
 #if DEBUG
 #Preview {
-    PlaybackRatePickerCard(isPresented: .constant(true))
+    PlaybackRatePickerCard(isPresented: .constant(true), onMeshBackground: false)
         .previewEnvironment()
 }
 #endif

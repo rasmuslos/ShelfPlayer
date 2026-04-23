@@ -486,6 +486,39 @@
         }
       }
     },
+    "intent.exportBookmarks.description" : {
+      "comment" : "Description of the ExportBookmarksIntent.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exports every bookmark across all libraries as a CSV file."
+          }
+        }
+      }
+    },
+    "intent.exportBookmarks.summary" : {
+      "comment" : "Parameter summary of the ExportBookmarksIntent.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export all bookmarks as CSV"
+          }
+        }
+      }
+    },
+    "intent.exportBookmarks.title" : {
+      "comment" : "Title of the ExportBookmarksIntent.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export bookmarks"
+          }
+        }
+      }
+    },
     "intent.extendSleepTimer.description" : {
       "comment" : "Description of the ExtendSleepTimerIntent.",
       "localizations" : {

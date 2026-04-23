@@ -25,7 +25,7 @@ struct AudiobookVGrid: View {
                     switch section {
                         case .audiobook(let audiobook):
                             NavigationLink(value: NavigationDestination.item(audiobook)) {
-                                ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
+                                ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none, fallbackLabel: audiobook.name)
                             }
                             .buttonStyle(.plain)
                             .modifier(ItemStatusModifier(item: audiobook))
@@ -67,12 +67,19 @@ struct AudiobookHGrid: View {
         }
     }
     private var size: CGFloat {
+        // Guard against the initial GeometryReader measurement (width = 0) and
+        // any transient pass where the proposal would yield a non-positive
+        // column count. Returning a NaN here via `-28 / 0` poisons the layout
+        // engine and causes a UICollectionView recursive layout loop.
+        guard width.isFinite, width > padding * 2 else { return minimumSize }
+
         let usable = width - padding * 2
         let paddedSize = minimumSize + gap
 
         let amount = CGFloat(Int(usable / paddedSize))
-        let available = usable - gap * (amount - 1)
+        guard amount > 0 else { return minimumSize }
 
+        let available = usable - gap * (amount - 1)
         return max(minimumSize, available / amount)
     }
 
@@ -90,7 +97,7 @@ struct AudiobookHGrid: View {
                 LazyHStack(alignment: .bottom, spacing: gap) {
                     ForEach(audiobooks) { audiobook in
                         NavigationLink(value: NavigationDestination.item(audiobook)) {
-                            ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none)
+                            ItemProgressIndicatorImage(itemID: audiobook.id, size: .small, aspectRatio: .none, fallbackLabel: audiobook.name)
                                 .frame(width: size)
                         }
                         .buttonStyle(.plain)

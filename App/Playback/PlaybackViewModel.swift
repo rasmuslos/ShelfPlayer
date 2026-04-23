@@ -95,11 +95,22 @@ final class PlaybackViewModel {
     private(set) var notifyError = false
     private(set) var notifySuccess = false
 
+    // Animated now playing background
+
+    private(set) var nowPlayingMeshColors: [Color]?
+    private var colorExtractionTask: Task<Void, Never>?
+
     private init() {
         AudioPlayer.shared.events.playbackItemChanged
             .sink { [weak self] itemID, _, _ in
                 Task { @MainActor [weak self] in
-                    guard let self, self.isExpanded == false else {
+                    guard let self else {
+                        return
+                    }
+
+                    self.extractMeshColors(for: itemID)
+
+                    guard self.isExpanded == false else {
                         return
                     }
 
@@ -135,6 +146,9 @@ final class PlaybackViewModel {
                     self?.authorIDs = []
                     self?.narratorIDs = []
                     self?.seriesIDs = []
+
+                    self?.colorExtractionTask?.cancel()
+                    self?.nowPlayingMeshColors = nil
 
                     self?.stoppedPlayingAt = .now
                 }
@@ -421,4 +435,105 @@ private extension PlaybackViewModel {
 
 extension PlaybackViewModel {
     static let shared = PlaybackViewModel()
+}
+
+// MARK: Debug fixture
+
+#if DEBUG
+extension PlaybackViewModel {
+    func debugPlayback() -> Self {
+        isExpanded = true
+        isNowPlayingBackgroundVisible = true
+        nowPlayingShadowVisibleCount = 1
+
+        nowPlayingMeshColors = [
+            .red, .orange, .yellow,
+            .green, .mint, .teal,
+            .blue, .purple, .pink,
+        ]
+
+        authorIDs = [(Audiobook.fixture.id, "Author")]
+        narratorIDs = [(Audiobook.fixture.id, "Narrator")]
+        seriesIDs = [(Audiobook.fixture.id, "Series")]
+
+        return self
+    }
+}
+#endif
+
+// MARK: - Now Playing mesh colors
+
+private extension PlaybackViewModel {
+    func extractMeshColors(for itemID: ItemIdentifier) {
+        colorExtractionTask?.cancel()
+        nowPlayingMeshColors = nil
+
+        colorExtractionTask = Task { [weak self] in
+            guard let image = await itemID.platformImage(size: .regular) else {
+                return
+            }
+            guard !Task.isCancelled else { return }
+
+            guard let dominant = try? await RFKVisuals.extractDominantColors(9, image: image) else {
+                return
+            }
+
+            let detailed = RFKVisuals.prepareForFiltering(dominant)
+            let vibrant = detailed
+                .filter { $0.saturation >= 0.1 && $0.percentage > 0 }
+                .sorted { $0.percentage > $1.percentage }
+
+            guard !Task.isCancelled,
+                  let meshColors = Self.makeMeshColors(from: vibrant) else {
+                return
+            }
+
+            await MainActor.run {
+                self?.nowPlayingMeshColors = meshColors
+            }
+        }
+    }
+
+    /// Builds 9 dimmed mesh colors, placing the most dominant color at the center and
+    /// allocating the remaining slots proportionally to each color's share of the image.
+    nonisolated static func makeMeshColors(from colors: [RFKVisuals.DetailedColor]) -> [Color]? {
+        guard !colors.isEmpty else { return nil }
+
+        let order = [4, 1, 3, 5, 7, 0, 2, 6, 8]
+
+        let total = max(1, colors.reduce(0) { $0 + $1.percentage })
+        var mesh = Array(repeating: Color.clear, count: 9)
+        var cursor = 0
+
+        for (index, color) in colors.enumerated() {
+            guard cursor < 9 else { break }
+
+            let dimmed = dim(color)
+            let remaining = 9 - cursor
+            let laterColors = colors.count - index - 1
+            let proportional = Int((Double(color.percentage) / Double(total) * 9.0).rounded())
+            let slots = max(1, min(proportional, remaining - laterColors))
+
+            for _ in 0..<slots where cursor < 9 {
+                mesh[order[cursor]] = dimmed
+                cursor += 1
+            }
+        }
+
+        if cursor > 0 {
+            let last = mesh[order[cursor - 1]]
+            while cursor < 9 {
+                mesh[order[cursor]] = last
+                cursor += 1
+            }
+        }
+
+        return mesh
+    }
+
+    nonisolated static func dim(_ color: RFKVisuals.DetailedColor) -> Color {
+        let saturation = max(0.28, min(color.saturation * 0.8, 0.5))
+        let brightness = max(0.55, min(color.brightness, 0.78))
+        return Color(hue: color.hue, saturation: saturation, brightness: brightness)
+    }
 }
