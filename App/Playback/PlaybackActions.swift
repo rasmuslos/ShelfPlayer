@@ -23,7 +23,9 @@ struct PlaybackActions: View {
                 .padding(12)
                 .contentShape(.rect)
         }
-        .background(.gray.opacity(viewModel.isQueueVisible ? 0.2 : 0), in: .circle)
+        .modify(if: viewModel.isQueueVisible) {
+            $0.glassEffect(.clear.interactive(), in: .circle)
+        }
         .padding(-12)
     }
 

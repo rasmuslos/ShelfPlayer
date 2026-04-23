@@ -494,12 +494,13 @@ private extension PlaybackViewModel {
         }
     }
 
-    /// Builds 9 dimmed mesh colors, placing the most dominant color at the center and
-    /// allocating the remaining slots proportionally to each color's share of the image.
+    /// Builds 9 dimmed mesh colors, streaming the most dominant color along a
+    /// top-left → center → bottom-right diagonal and allocating the remaining slots
+    /// proportionally to each color's share of the image.
     nonisolated static func makeMeshColors(from colors: [RFKVisuals.DetailedColor]) -> [Color]? {
         guard !colors.isEmpty else { return nil }
 
-        let order = [4, 1, 3, 5, 7, 0, 2, 6, 8]
+        let order = [0, 4, 8, 2, 6, 3, 5, 1, 7]
 
         let total = max(1, colors.reduce(0) { $0 + $1.percentage })
         var mesh = Array(repeating: Color.clear, count: 9)

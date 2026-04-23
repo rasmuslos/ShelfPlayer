@@ -45,13 +45,13 @@ struct ImagePlaceholder: View {
         GeometryReader { geometryProxy in
             ZStack {
                 if let fallbackLabel, !fallbackLabel.isEmpty {
-                    let useInitials = geometryProxy.size.width < 120
+                    let useInitials = geometryProxy.size.width < 72
 
                     Text(useInitials ? initials(from: fallbackLabel) : fallbackLabel)
-                        .font(.system(size: useInitials ? geometryProxy.size.width * 0.34 : geometryProxy.size.width * 0.12, weight: .semibold, design: .rounded))
+                        .font(.system(size: useInitials ? geometryProxy.size.width * 0.34 : geometryProxy.size.width * 0.13, weight: .semibold, design: .rounded))
                         .foregroundStyle(.gray)
                         .multilineTextAlignment(.center)
-                        .lineLimit(useInitials ? 1 : 4)
+                        .lineLimit(useInitials ? 1 : 5)
                         .minimumScaleFactor(0.5)
                         .padding(useInitials ? 0 : geometryProxy.size.width * 0.08)
                 } else {

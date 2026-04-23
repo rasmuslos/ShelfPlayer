@@ -36,6 +36,9 @@ struct PlaybackRateButton: View {
             }
         }
         .hoverEffect(.highlight)
+        .modify(if: viewModel.isRatePickerVisible) {
+            $0.glassEffect(.clear.interactive(), in: .circle)
+        }
         .padding(-12)
         .accessibilityLabel("preferences.playbackRate")
         .accessibilityValue(Text(satellite.playbackRate.formatted(.playbackRate)))
@@ -78,10 +81,6 @@ struct PlaybackRatePickerCard: View {
 
     private var secondaryColor: Color {
         onMeshBackground ? .white.opacity(0.6) : .secondary
-    }
-
-    private var hasChanged: Bool {
-        abs(satellite.playbackRate - defaultRate) > 0.001
     }
 
     private var effectiveGroupingDefault: Double {
@@ -136,8 +135,6 @@ struct PlaybackRatePickerCard: View {
 
             Spacer(minLength: 16)
 
-            resetControl
-
             presetButtons
                 .padding(.top, 8)
                 .padding(.bottom, 4)
@@ -171,7 +168,7 @@ struct PlaybackRatePickerCard: View {
                         .lineLimit(1)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
-                        .glassEffect(.regular.interactive(), in: .capsule)
+                        .glassEffect(.clear.interactive(), in: .capsule)
                 }
                 .buttonStyle(.plain)
                 .transition(.scale(scale: 0.4, anchor: .top).combined(with: .opacity))
@@ -185,30 +182,6 @@ struct PlaybackRatePickerCard: View {
     }
 
     @ViewBuilder
-    private var resetControl: some View {
-        ZStack {
-            if hasChanged {
-                Button {
-                    satellite.setPlaybackRate(defaultRate)
-                } label: {
-                    Label("action.reset", systemImage: "arrow.counterclockwise")
-                        .font(.system(.footnote, weight: .semibold))
-                        .foregroundStyle(primaryColor)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .glassEffect(.regular.interactive(), in: .capsule)
-                }
-                .buttonStyle(.plain)
-                .transition(.scale(scale: 0.4, anchor: .bottom).combined(with: .opacity))
-            } else {
-                Color.clear.frame(height: 34)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .animation(.spring(response: 0.45, dampingFraction: 0.65), value: hasChanged)
-    }
-
-    @ViewBuilder
     private var rateDisplay: some View {
         HStack(alignment: .firstTextBaseline, spacing: 0) {
             Image(decorative: "xsign")
@@ -216,8 +189,9 @@ struct PlaybackRatePickerCard: View {
                 .padding(.trailing, 4)
                 .hidden()
 
-            Text(satellite.playbackRate, format: .playbackRate.hideX())
+            Text(satellite.playbackRate, format: .playbackRate.hideX().fractionDigits(1))
                 .font(.system(size: 96, weight: .bold))
+                .monospacedDigit()
                 .contentTransition(.numericText(value: satellite.playbackRate))
 
             Image(decorative: "xsign")
@@ -305,15 +279,16 @@ struct PlaybackRatePickerCard: View {
                         Button {
                             satellite.setPlaybackRate(rate)
                         } label: {
-                            Text(rate, format: .playbackRate.hideX())
+                            Text(rate, format: .playbackRate.hideX().fractionDigits(1))
                                 .font(.system(.subheadline, weight: isSelected ? .bold : .medium))
+                                .monospacedDigit()
                                 .foregroundStyle(isSelected ? primaryColor : secondaryColor)
                                 .lineLimit(1)
                                 .fixedSize()
                                 .frame(minWidth: 44)
                                 .padding(.horizontal, 14)
                                 .frame(height: 40)
-                                .glassEffect(isSelected ? .regular.interactive().tint(primaryColor.opacity(0.18)) : .regular.interactive(), in: .capsule)
+                                .glassEffect(isSelected ? .clear.interactive().tint(primaryColor.opacity(0.12)) : .clear.interactive(), in: .capsule)
                                 .scaleEffect(isSelected ? 1.04 : 1)
                         }
                         .buttonStyle(.plain)
@@ -421,8 +396,9 @@ private struct RulerCanvas: View, Animatable {
                 context.fill(Path(barRect), with: .color(primaryColor.opacity(opacity)))
 
                 if major {
-                    let text = Text(rateValue, format: .playbackRate.hideX())
+                    let text = Text(rateValue, format: .playbackRate.hideX().fractionDigits(1))
                         .font(.caption)
+                        .monospacedDigit()
                         .foregroundStyle(secondaryColor)
                     context.draw(text, at: CGPoint(x: tickX, y: labelY), anchor: .center)
                 }
@@ -432,6 +408,11 @@ private struct RulerCanvas: View, Animatable {
 }
 
 #if DEBUG
+#Preview {
+    PlaybackRateButton()
+        .previewEnvironment()
+}
+
 #Preview {
     PlaybackRatePickerCard(isPresented: .constant(true), onMeshBackground: false)
         .previewEnvironment()
