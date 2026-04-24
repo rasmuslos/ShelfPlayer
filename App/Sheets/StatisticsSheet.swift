@@ -192,6 +192,14 @@ private struct YearHeatmap: View {
                 }
             }
         }
+
+        if labels.count >= 2, labels[1].1 - labels[0].1 < 2 {
+            labels.removeFirst()
+        }
+        if labels.count >= 2, weeks.count - labels[labels.count - 1].1 < 2 {
+            labels.removeLast()
+        }
+
         return labels
     }
 
@@ -219,6 +227,12 @@ private struct YearHeatmap: View {
                         Color.clear.frame(width: 28)
 
                         let labels = monthLabels()
+                        let leadingOffset = labels.first?.1 ?? 0
+                        if leadingOffset > 0 {
+                            Color.clear
+                                .frame(width: CGFloat(leadingOffset) * (cellSize + cellSpacing))
+                        }
+
                         ForEach(Array(labels.enumerated()), id: \.offset) { index, item in
                             let (label, weekIndex) = item
                             let nextWeekIndex = index + 1 < labels.count ? labels[index + 1].1 : weeks.count

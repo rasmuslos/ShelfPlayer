@@ -13,21 +13,19 @@ struct TabValuePreferences: View {
         List {
             SettingsPageHeader(title: "preferences.tabs", systemImage: "rectangle.2.swap", color: .purple)
 
-            Section {
-                LibraryEnumerator { name, content in
-                    Section(name) {
-                        content()
-                    }
-                } label: { library in
-                    let scopes = PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope.available(for: library.id.type)
+            LibraryEnumerator { name, content in
+                Section(name) {
+                    content()
+                }
+            } label: { library in
+                let scopes = PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope.available(for: library.id.type)
 
-                    if scopes.count == 1, let scope = scopes.first {
-                        NavigationLink(library.name, destination: TabValueLibraryPreferences(library: library, scope: scope))
-                    } else {
-                        DisclosureGroup(library.name) {
-                            ForEach(scopes) { scope in
-                                NavigationLink(scope.label, destination: TabValueLibraryPreferences(library: library, scope: scope))
-                            }
+                if scopes.count == 1, let scope = scopes.first {
+                    NavigationLink(library.name, destination: TabValueLibraryPreferences(library: library, scope: scope))
+                } else {
+                    DisclosureGroup(library.name) {
+                        ForEach(scopes) { scope in
+                            NavigationLink(scope.label, destination: TabValueLibraryPreferences(library: library, scope: scope))
                         }
                     }
                 }
@@ -52,45 +50,30 @@ struct TabValueLibraryPreferences: View {
 
     @State private var viewModel: TabValueShadow?
 
-    func isActive(tabID: TabValue.ID) -> Bool {
-        viewModel?.activeIDs.contains(tabID) ?? false
-    }
-    func binding(for tabID: TabValue.ID) -> Binding<Bool> {
-        Binding {
-            isActive(tabID: tabID)
-        } set: {
-            guard $0 != isActive(tabID: tabID) else {
-                return
-            }
-
-            if let viewModel, let index = viewModel.activeIDs.firstIndex(of: tabID) {
-                viewModel.activeIDs.remove(at: index)
-            } else if viewModel?.isFull == false {
-                viewModel?.activeIDs.append(tabID)
-            }
-
-            viewModel?.transferOrder()
-        }
-    }
-
-    @ViewBuilder
-    private func label(tab: TabValue) -> some View {
-        Label(tab.label, systemImage: tab.image)
-            .foregroundStyle(.primary)
-    }
-
     var body: some View {
         List {
             if let viewModel {
-                ForEach(viewModel.available) { tab in
-                    Toggle(isOn: binding(for: tab.id)) {
-                        label(tab: tab)
+                Section {
+                    ForEach(viewModel.active) { tab in
+                        Label(tab.label, systemImage: tab.image)
                     }
-                    .disabled(viewModel.isFull && !isActive(tabID: tab.id))
+                    .onMove { viewModel.move(from: $0, to: $1) }
+                    .onDelete { viewModel.remove(at: $0) }
                 }
-                .onMove {
-                    viewModel.available.move(fromOffsets: $0, toOffset: $1)
-                    viewModel.transferOrder()
+
+                let unselected = viewModel.unselected
+                if !unselected.isEmpty {
+                    Section {
+                        ForEach(unselected) { tab in
+                            AddRow(systemImage: tab.image, title: tab.label) {
+                                viewModel.add(tab.id)
+                            }
+                            .disabled(viewModel.isFull)
+                            .opacity(viewModel.isFull ? 0.4 : 1)
+                        }
+                    } header: {
+                        Text("home.customization.addSection")
+                    }
                 }
             } else {
                 ProgressView()
@@ -123,7 +106,10 @@ private final class TabValueShadow {
     let scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope
 
     var activeIDs = [TabValue.ID]()
-    var available: [TabValue]
+    /// Master list of every tab available for this library+scope, in the
+    /// canonical order defined by the app. Used as a lookup table and to
+    /// determine the default order of not-yet-added tabs.
+    let available: [TabValue]
 
     var isLoading = false
     var notifyError = false
@@ -132,14 +118,10 @@ private final class TabValueShadow {
         self.library = library
         self.scope = scope
 
-        let available = PersistenceManager.shared.customization.availableTabs(for: library.id, scope: scope)
+        available = PersistenceManager.shared.customization.availableTabs(for: library.id, scope: scope)
 
         let configured = await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: scope)
-
-        let missing = available.filter { !configured.contains($0) }
-
-        self.available = configured + missing
-        setActive(tabs: configured)
+        activeIDs = configured.map(\.id)
     }
 
     var isFull: Bool {
@@ -150,18 +132,29 @@ private final class TabValueShadow {
         }
     }
 
-    func setActive(tabs: [TabValue]) {
-        self.activeIDs = tabs.map(\.id)
-    }
     var active: [TabValue] {
         activeIDs.compactMap { id in
             available.first { $0.id == id }
         }
     }
 
-    func transferOrder() {
-        let tabIDs = activeIDs
-        activeIDs = available.compactMap { tabIDs.contains($0.id) ? $0.id : nil }
+    var unselected: [TabValue] {
+        let selected = Set(activeIDs)
+        return available.filter { !selected.contains($0.id) }
+    }
+
+    func add(_ tabID: TabValue.ID) {
+        guard !isFull, !activeIDs.contains(tabID) else { return }
+        activeIDs.append(tabID)
+    }
+
+    func remove(at offsets: IndexSet) {
+        let ids = offsets.map { active[$0].id }
+        activeIDs.removeAll { ids.contains($0) }
+    }
+
+    func move(from source: IndexSet, to destination: Int) {
+        activeIDs.move(fromOffsets: source, toOffset: destination)
     }
 
     func save(callback: @escaping () -> Void) {
@@ -173,6 +166,31 @@ private final class TabValueShadow {
                 notifyError.toggle()
             }
         }
+    }
+}
+
+/// Shared row used by the plus-based add sections in the tab-value and
+/// CarPlay library pickers. Matches the styling used in
+/// `HomeCustomizationView` so the three customization flows read the same.
+struct AddRow: View {
+    let systemImage: String
+    let title: String
+    let action: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "plus.circle.fill")
+                .foregroundStyle(.white, .green)
+                .font(.title3)
+            Image(systemName: systemImage)
+                .foregroundStyle(Color.accentColor)
+                .frame(width: 22)
+            Text(title)
+                .foregroundStyle(.primary)
+            Spacer(minLength: 0)
+        }
+        .contentShape(.rect)
+        .onTapGesture(perform: action)
     }
 }
 
@@ -192,67 +210,86 @@ extension PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope {
 struct CustomTabValuesPreferences: View {
     @State private var pinnedTabValues: [TabValue] = AppSettings.shared.pinnedTabValues
 
-    private var multiLibraryBinding: Binding<Bool> {
-        pinnedBinding(for: .multiLibrary)
+    private var isMultiLibraryPinned: Bool {
+        pinnedTabValues.contains(.multiLibrary)
     }
 
     var body: some View {
         List {
-            Section {
-                Toggle(isOn: multiLibraryBinding) {
-                    Label("panel.multiLibrary", systemImage: "square.grid.3x3.fill")
-                        .foregroundStyle(.primary)
-                }
-                if pinnedTabValues.contains(.multiLibrary) {
-                    NavigationLink {
-                        HomeCustomizationView(scope: .multiLibrary, libraryType: nil)
-                    } label: {
-                        Label("home.customization.title", systemImage: "slider.horizontal.3")
-                            .foregroundStyle(.primary)
+            if !pinnedTabValues.isEmpty {
+                Section {
+                    ForEach(pinnedTabValues) { tab in
+                        Label(tab.label, systemImage: tab.image)
                     }
+                    .onMove(perform: move)
+                    .onDelete(perform: remove)
                 }
-            } header: {
-                Text("home.customization.multiLibrarySectionHeader")
-            } footer: {
-                Text("home.customization.multiLibrarySectionFooter")
+            }
+
+            if isMultiLibraryPinned {
+                Section {
+                    NavigationLink(value: HomeScope.multiLibrary) {
+                        Label("home.customization.title", systemImage: "slider.horizontal.3")
+                    }
+                } footer: {
+                    Text("home.customization.multiLibrarySectionFooter")
+                }
+            } else {
+                Section {
+                    AddRow(systemImage: TabValue.multiLibrary.image, title: TabValue.multiLibrary.label) {
+                        add(.multiLibrary)
+                    }
+                } header: {
+                    Text("home.customization.multiLibrarySectionHeader")
+                } footer: {
+                    Text("home.customization.multiLibrarySectionFooter")
+                }
             }
 
             LibraryEnumerator { _, content in
                 content()
             } label: { library in
-                Section {
-                    ForEach(PersistenceManager.shared.customization.availableTabs(for: library.id, scope: .tabBar)) { tab in
-                        let customTab: TabValue = .custom(tab, library.name)
+                let available = PersistenceManager.shared.customization.availableTabs(for: library.id, scope: .tabBar)
+                let unselected = available.filter { !pinnedTabValues.contains(.custom($0, library.name)) }
 
-                        Toggle(isOn: pinnedBinding(for: customTab)) {
-                            Label(tab.label, systemImage: tab.image)
-                                .foregroundStyle(.primary)
+                if !unselected.isEmpty {
+                    Section {
+                        ForEach(unselected) { tab in
+                            AddRow(systemImage: tab.image, title: tab.label) {
+                                add(.custom(tab, library.name))
+                            }
                         }
+                    } header: {
+                        Text(library.name)
                     }
-                } header: {
-                    Text(library.name)
                 }
             }
         }
         .navigationTitle("panel.home")
         .navigationBarTitleDisplayMode(.inline)
+        .environment(\.editMode, .constant(.active))
         .animation(.smooth, value: pinnedTabValues)
+        .navigationDestination(for: HomeScope.self) { scope in
+            HomeCustomizationView(scope: scope, libraryType: nil)
+        }
     }
 
-    private func pinnedBinding(for tab: TabValue) -> Binding<Bool> {
-        Binding {
-            pinnedTabValues.contains(tab)
-        } set: { pinned in
-            withAnimation {
-                if pinned {
-                    guard !pinnedTabValues.contains(tab) else { return }
-                    pinnedTabValues.append(tab)
-                } else {
-                    pinnedTabValues.removeAll { $0 == tab }
-                }
-                AppSettings.shared.pinnedTabValues = pinnedTabValues
-            }
+    private func add(_ tab: TabValue) {
+        withAnimation {
+            guard !pinnedTabValues.contains(tab) else { return }
+            pinnedTabValues.append(tab)
+            AppSettings.shared.pinnedTabValues = pinnedTabValues
         }
+    }
+
+    private func move(from source: IndexSet, to destination: Int) {
+        pinnedTabValues.move(fromOffsets: source, toOffset: destination)
+        AppSettings.shared.pinnedTabValues = pinnedTabValues
+    }
+
+    private func remove(at offsets: IndexSet) {
+        pinnedTabValues.remove(atOffsets: offsets)
+        AppSettings.shared.pinnedTabValues = pinnedTabValues
     }
 }
 

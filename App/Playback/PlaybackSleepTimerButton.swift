@@ -14,6 +14,32 @@ struct PlaybackSleepTimerButton: View {
 
     private var sleepTimerIntervals: [Double] { AppSettings.shared.sleepTimerIntervals }
 
+    @State private var upcomingQueueDuration: TimeInterval = 0
+
+    private var remainingPlaybackDuration: TimeInterval {
+        let currentRemaining = max(0, satellite.duration - satellite.currentTime)
+        let totalAudio = currentRemaining + upcomingQueueDuration
+        let rate = satellite.playbackRate > 0 ? satellite.playbackRate : 1
+        return totalAudio / rate
+    }
+
+    private var availableSleepTimerIntervals: [Double] {
+        sleepTimerIntervals.filter { $0 <= remainingPlaybackDuration }
+    }
+
+    private func refreshUpcomingQueueDuration() async {
+        let ids = satellite.queue + satellite.upNextQueue
+        var total: TimeInterval = 0
+
+        for id in ids {
+            if let item = try? await id.resolved as? PlayableItem {
+                total += item.duration
+            }
+        }
+
+        upcomingQueueDuration = total
+    }
+
     private func remainingSleepTime(at date: Date) -> Double? {
         if let sleepTimer = satellite.sleepTimer, case .interval(let expiresAt, _) = sleepTimer {
             return date.distance(to: expiresAt)
@@ -95,7 +121,7 @@ struct PlaybackSleepTimerButton: View {
                 Divider()
             }
 
-            ForEach(sleepTimerIntervals, id: \.hashValue) { interval in
+            ForEach(availableSleepTimerIntervals, id: \.hashValue) { interval in
                 Button {
                     satellite.setSleepTimer(.interval(interval))
                 } label: {
@@ -154,6 +180,9 @@ struct PlaybackSleepTimerButton: View {
             .padding(-12)
             .accessibilityLabel("playback.sleepTimer")
             .accessibilityValue(Text(accessibilityValue(at: context.date)))
+        }
+        .task(id: satellite.queue + satellite.upNextQueue) {
+            await refreshUpcomingQueueDuration()
         }
     }
 }

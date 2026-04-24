@@ -95,7 +95,7 @@ extension AudiobookView {
                             QueuePlayButton(itemID: viewModel.audiobook.id)
                             QueueButton(itemID: viewModel.audiobook.id)
                             
-                            DownloadButton(itemID: viewModel.audiobook.id, progressVisibility: .toolbar)
+                            DownloadButton(itemID: viewModel.audiobook.id)
 
                             Divider()
 

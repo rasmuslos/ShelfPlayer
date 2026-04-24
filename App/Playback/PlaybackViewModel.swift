@@ -533,8 +533,8 @@ private extension PlaybackViewModel {
     }
 
     nonisolated static func dim(_ color: RFKVisuals.DetailedColor) -> Color {
-        let saturation = max(0.28, min(color.saturation * 0.8, 0.5))
-        let brightness = max(0.55, min(color.brightness, 0.78))
+        let saturation = max(0.16, min(color.saturation * 0.5, 0.32))
+        let brightness = max(0.34, min(color.brightness * 0.7, 0.52))
         return Color(hue: color.hue, saturation: saturation, brightness: brightness)
     }
 }

@@ -43,7 +43,9 @@ struct OfflineControlsModifier: ViewModifier {
                         Divider()
 
                         Button("navigation.offline.enable", systemImage: "network.slash") {
-                            OfflineMode.shared.forceEnable()
+                            Task {
+                                await OfflineMode.shared.refreshAvailability(reason: "Library picker offline button")
+                            }
                         }
                         .onAppear {
                             offlineTimeout?.cancel()

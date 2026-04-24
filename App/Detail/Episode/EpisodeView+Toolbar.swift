@@ -55,7 +55,7 @@ extension EpisodeView {
                             QueuePlayButton(itemID: viewModel.episode.id)
                             QueueButton(itemID: viewModel.episode.id)
                             
-                            DownloadButton(itemID: viewModel.episode.id, progressVisibility: .toolbar)
+                            DownloadButton(itemID: viewModel.episode.id)
 
                             Divider()
 
