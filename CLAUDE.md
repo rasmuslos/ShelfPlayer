@@ -100,6 +100,27 @@ xcodebuild test -scheme ShelfPlayer -destination 'platform=iOS Simulator,name=iP
 - **ShelfPlayerUITests**: XCTest-based UI tests for connection flow, navigation, and content browsing.
 - Fixture data for previews lives in `ShelfPlayerKit/Fixtures/`.
 
+## Local Audiobookshelf dev server
+
+A local Audiobookshelf server runs at `http://localhost:3333` (credentials: `root` / `root`). Source checkout lives at `/Users/rasmus/Desktop/Development/audiobookshelf` — useful for verifying what the ABS API actually returns when reasoning about client behavior.
+
+```bash
+# Log in and capture an access token
+TOKEN=$(curl -s -X POST http://localhost:3333/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"root","password":"root"}' | python3 -c 'import json,sys; print(json.load(sys.stdin)["user"]["accessToken"])')
+
+# List libraries
+curl -s -H "Authorization: Bearer $TOKEN" http://localhost:3333/api/libraries
+
+# Personalized home shelves for a library (what `/personalized` returns is the
+# ground truth for what rows can appear in the iOS home screen)
+curl -s -H "Authorization: Bearer $TOKEN" \
+  http://localhost:3333/api/libraries/<LIBRARY_ID>/personalized
+```
+
+Prefer this local server over the public `audiobooks.dev` demo when gauging API shapes — you can mutate state (download, play, scan) without affecting anyone else.
+
 ## Localization
 
 The app supports multiple languages. Localized strings are in `.xcstrings` files. See `Localization.md` for contributing translations.

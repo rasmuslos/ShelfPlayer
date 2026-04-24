@@ -52,7 +52,7 @@ struct PlaybackBottomBarPill: View {
 
     @ViewBuilder
     private var image: some View {
-        ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: viewModel.PILL_IMAGE_CORNER_RADIUS)
+        ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: viewModel.PILL_IMAGE_CORNER_RADIUS, aspectRatio: .none)
             .opacity(!viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
     }
 

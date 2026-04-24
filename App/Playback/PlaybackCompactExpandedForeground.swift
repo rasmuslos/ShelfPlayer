@@ -53,6 +53,7 @@ struct PlaybackCompactExpandedForeground: View {
                                 .onChange(of: size, initial: true) { viewModel.expandedImageSize = size }
 
                             ItemImage(itemID: satellite.nowPlayingItemID, size: .large, cornerRadius: viewModel.EXPANDED_IMAGE_CORNER_RADIUS, aspectRatio: .none, contrastConfiguration: nil)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .opacity(viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
                         }
                         .aspectRatio(1, contentMode: .fit)
@@ -98,6 +99,7 @@ struct PlaybackCompactExpandedForeground: View {
                                 .onChange(of: size, initial: true) { viewModel.expandedImageSize = size }
 
                             ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: 8, aspectRatio: .none, contrastConfiguration: nil)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .opacity(viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
                         }
                         .aspectRatio(1, contentMode: .fit)

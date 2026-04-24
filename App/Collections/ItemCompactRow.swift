@@ -137,7 +137,7 @@ struct ItemCompactRow: View {
                             .universalContentShape(.rect(cornerRadius: imageCornerRadius))
                         }
                     } else {
-                        ItemImage(itemID: itemID, size: .small, cornerRadius: imageCornerRadius)
+                        ItemImage(itemID: itemID, size: .small, cornerRadius: imageCornerRadius, aspectRatio: .none)
                     }
                 }
             }

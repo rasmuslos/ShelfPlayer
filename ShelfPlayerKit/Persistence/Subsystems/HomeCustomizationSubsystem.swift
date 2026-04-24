@@ -49,6 +49,10 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
                 .bookmarks,
             ]
         case .podcasts:
+            // The ABS `/personalized` endpoint only returns continue-listening,
+            // newest-episodes, recently-added, and listen-again for podcast
+            // libraries — `discover` / `newest-authors` / series rows are
+            // book-only. Bookmarks are audiobook-only too, so omit them here.
             [
                 .listenNow,
                 .upNext,
@@ -57,9 +61,7 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
                 .serverRow(id: "newest-episodes"),
                 .serverRow(id: "recently-added"),
                 .serverRow(id: "listen-again"),
-                .serverRow(id: "discover"),
                 .downloadedEpisodes,
-                .bookmarks,
             ]
         }
     }
@@ -91,7 +93,6 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
                 .init(kind: .serverRow(id: "newest-episodes")),
                 .init(kind: .serverRow(id: "recently-added")),
                 .init(kind: .serverRow(id: "listen-again")),
-                .init(kind: .serverRow(id: "discover")),
                 .init(kind: .downloadedEpisodes),
             ]
         }

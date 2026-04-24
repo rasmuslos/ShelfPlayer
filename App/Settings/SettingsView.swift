@@ -37,9 +37,6 @@ struct SettingsView: View {
         NavigationStack(path: $satellite.settingsNavigationPath) {
             List {
                 Section {
-                    NavigationLink(value: SettingsPage.general) {
-                        label("settings.general", systemImage: "slider.horizontal.3", color: .gray)
-                    }
                     NavigationLink(value: SettingsPage.appearance) {
                         label("settings.appearance", systemImage: "paintbrush.fill", color: .purple)
                     }
@@ -106,8 +103,6 @@ struct SettingsView: View {
             .foregroundStyle(.primary)
             .navigationDestination(for: SettingsPage.self) { page in
                 switch page {
-                case .general:
-                    GeneralSettingsView()
                 case .appearance:
                     AppearanceSettingsView()
                 case .playback:
@@ -141,7 +136,6 @@ struct SettingsView: View {
 // MARK: - Settings Page
 
 enum SettingsPage: Hashable {
-    case general
     case appearance
     case playback
     case sleepTimer
@@ -187,28 +181,6 @@ struct SettingsPageHeader: View {
     }
 }
 
-// MARK: - General
-
-private struct GeneralSettingsView: View {
-    @Bindable private var settings = AppSettings.shared
-
-    var body: some View {
-        List {
-            SettingsPageHeader(title: "settings.general", systemImage: "slider.horizontal.3", color: .gray)
-
-            Section {
-                Toggle("settings.groupAudiobooksInSeries", isOn: $settings.groupAudiobooksInSeries)
-                Toggle("settings.forceAspectRatio", isOn: $settings.forceAspectRatio)
-                Toggle("settings.showSingleEntryGroupedSeries", isOn: $settings.showSingleEntryGroupedSeries)
-                Toggle("settings.enableSerifFont", isOn: $settings.enableSerifFont)
-            }
-
-}
-        .navigationTitle("settings.general")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
 // MARK: - Appearance
 
 private struct AppearanceSettingsView: View {
@@ -233,6 +205,25 @@ private struct AppearanceSettingsView: View {
 
             Section {
                 Toggle("settings.animatedNowPlayingBackground", isOn: $settings.animatedNowPlayingBackground)
+            }
+
+            Section {
+                Toggle("settings.enableSerifFont", isOn: $settings.enableSerifFont)
+            } footer: {
+                Text("settings.enableSerifFont.footer")
+            }
+
+            Section {
+                Toggle("settings.forceAspectRatio", isOn: $settings.forceAspectRatio)
+            } footer: {
+                Text("settings.forceAspectRatio.footer")
+            }
+
+            Section {
+                Toggle("settings.groupAudiobooksInSeries", isOn: $settings.groupAudiobooksInSeries)
+                Toggle("settings.showSingleEntryGroupedSeries", isOn: $settings.showSingleEntryGroupedSeries)
+            } footer: {
+                Text("settings.groupAudiobooksInSeries.footer")
             }
         }
         .navigationTitle("settings.appearance")
