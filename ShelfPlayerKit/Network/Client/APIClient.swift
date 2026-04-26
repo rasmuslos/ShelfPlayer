@@ -280,7 +280,7 @@ private extension APIClient {
 
         let cacheKey = NSString(string: request.id)
 
-        if let cached = cache.object(forKey: cacheKey), cached.validUntil > .now {
+        if !request.bypassesCache, let cached = cache.object(forKey: cacheKey), cached.validUntil > .now {
             logger.info("Used cached response for \(request.path)")
             return cached.response
         }

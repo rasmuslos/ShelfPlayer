@@ -32,11 +32,22 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
     /// Every kind that can appear in a start page for the given library type.
     /// Server-row kinds are reported using the canonical row ids the server
     /// sends; the UI renders whatever rows the server has actually returned.
+    ///
+    /// Only kinds that can actually surface content for the given library type
+    /// are returned. Podcast-only kinds (next-up podcasts, downloaded episodes)
+    /// are omitted from audiobook libraries; audiobook-only kinds (bookmarks,
+    /// downloaded audiobooks, series rows, discover, newest-authors) are
+    /// omitted from podcast libraries. The Listen Now rows are excluded too —
+    /// in a single-library scope they would just duplicate the server-driven
+    /// `continue-listening` row.
     nonisolated func availableKinds(for libraryType: LibraryMediaType) -> [HomeSectionKind] {
         switch libraryType {
         case .audiobooks:
+            // ABS `/personalized` returns continue-listening, continue-series,
+            // recent-series, recently-added, discover, listen-again, and
+            // newest-authors for book libraries. continue-reading / read-again
+            // are ebook-only and ShelfPlayer is audio-only, so they're omitted.
             [
-                .listenNow,
                 .upNext,
                 .serverRow(id: "continue-listening"),
                 .serverRow(id: "continue-series"),
@@ -49,12 +60,11 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
                 .bookmarks,
             ]
         case .podcasts:
-            // The ABS `/personalized` endpoint only returns continue-listening,
+            // ABS `/personalized` only returns continue-listening,
             // newest-episodes, recently-added, and listen-again for podcast
             // libraries — `discover` / `newest-authors` / series rows are
-            // book-only. Bookmarks are audiobook-only too, so omit them here.
+            // book-only.
             [
-                .listenNow,
                 .upNext,
                 .nextUpPodcasts,
                 .serverRow(id: "continue-listening"),
@@ -102,7 +112,8 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
     /// picks per-section libraries from the editor.
     nonisolated func defaultMultiLibrarySections() -> [HomeSection] {
         [
-            .init(kind: .listenNow),
+            .init(kind: .listenNowAudiobooks),
+            .init(kind: .listenNowEpisodes),
             .init(kind: .upNext),
         ]
     }
@@ -112,7 +123,8 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
     /// the dedicated picker flow in the editor.
     nonisolated func availableMultiLibraryKinds() -> [HomeSectionKind] {
         [
-            .listenNow,
+            .listenNowAudiobooks,
+            .listenNowEpisodes,
             .upNext,
             .nextUpPodcasts,
             .downloadedAudiobooks,

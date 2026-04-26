@@ -19,6 +19,10 @@ struct PodcastHomePanel: View {
 
     @State private var didFail = false
     @State private var isLoading = false
+    /// Debounce handle for progress-driven refetches. New progress events
+    /// cancel the prior pending fetch so a burst of updates collapses to a
+    /// single network round-trip.
+    @State private var pendingProgressRefresh: Task<Void, Never>?
 
     private var scope: HomeScope? {
         if let library { return .library(library.id) }
@@ -78,16 +82,26 @@ struct PodcastHomePanel: View {
         }
         .refreshable {
             await reloadSections()
-            fetchItems()
+            fetchItems(bypassCache: true)
             ListenedTodayTracker.shared.refresh()
         }
         .onReceive(PlaybackLifecycleEventSource.shared.finalizeReporting) { _ in
             fetchItems()
         }
+        .onReceive(PersistenceManager.shared.progress.events.entityUpdated) { _ in
+            scheduleProgressRefresh()
+        }
+        .onReceive(PersistenceManager.shared.progress.events.invalidateEntities) { _ in
+            scheduleProgressRefresh()
+        }
         .onReceive(PersistenceManager.shared.homeCustomization.events.invalidateSections) { changed in
             if changed == scope {
                 Task { await reloadSections() }
             }
+        }
+        .onDisappear {
+            pendingProgressRefresh?.cancel()
+            pendingProgressRefresh = nil
         }
     }
 }
@@ -100,14 +114,14 @@ private extension PodcastHomePanel {
         sections = loaded
     }
 
-    func fetchItems() {
+    func fetchItems(bypassCache: Bool = false) {
         Task {
             withAnimation {
                 didFail = false
                 isLoading = true
             }
 
-            await fetchRemoteItems()
+            await fetchRemoteItems(bypassCache: bypassCache)
 
             withAnimation {
                 isLoading = false
@@ -115,13 +129,26 @@ private extension PodcastHomePanel {
         }
     }
 
-    func fetchRemoteItems() async {
+    /// Coalesce bursts of progress updates (e.g. mid-playback ticks or a batch
+    /// websocket sync) into a single refetch. Refresh after `entityUpdated`
+    /// also bypasses the API client cache so freshly-marked-complete items
+    /// don't keep reappearing in continue-listening for up to 12 s.
+    func scheduleProgressRefresh() {
+        pendingProgressRefresh?.cancel()
+        pendingProgressRefresh = Task {
+            try? await Task.sleep(for: .milliseconds(800))
+            guard !Task.isCancelled else { return }
+            await fetchRemoteItems(bypassCache: true)
+        }
+    }
+
+    func fetchRemoteItems(bypassCache: Bool = false) async {
         guard let library else {
             return
         }
 
         do {
-            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[library.id.connectionID].home(for: library.id.libraryID)
+            let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[library.id.connectionID].home(for: library.id.libraryID, bypassCache: bypassCache)
             let episodes = await HomeRow.prepareForPresentation(home.1, connectionID: library.id.connectionID)
 
             withAnimation {
@@ -171,24 +198,22 @@ private struct PodcastHomeSectionRow: View {
                     PodcastHGrid(podcasts: row.entities)
                 }
             }
-        case .listenNow:
-            ListenNowRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
+        case .listenNowAudiobooks, .listenNowEpisodes:
+            // Listen Now rows are reserved for the multi-library panel; in a
+            // single-library scope they just duplicate `continue-listening`.
+            EmptyView()
         case .upNext:
             UpNextRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
         case .nextUpPodcasts:
-            if resolvedLibraryID == nil || resolvedLibraryID?.type == .podcasts {
-                NextUpPodcastsRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
-            }
+            NextUpPodcastsRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
         case .downloadedAudiobooks:
-            if resolvedLibraryID == nil || resolvedLibraryID?.type == .audiobooks {
-                DownloadedAudiobooksRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
-            }
+            // Audiobook-only row; skip on podcast panel.
+            EmptyView()
         case .downloadedEpisodes:
-            if resolvedLibraryID == nil || resolvedLibraryID?.type == .podcasts {
-                DownloadedEpisodesRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
-            }
+            DownloadedEpisodesRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
         case .bookmarks:
-            BookmarksRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
+            // Audiobook-only row; skip on podcast panel.
+            EmptyView()
         case .collection(let itemID), .playlist(let itemID):
             if ItemIdentifier.isValid(itemID) {
                 PinnedCollectionRow(itemID: ItemIdentifier(string: itemID), titleOverride: nil)

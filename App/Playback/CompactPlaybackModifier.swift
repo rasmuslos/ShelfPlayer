@@ -115,8 +115,10 @@ struct CompactPlaybackModifier: ViewModifier {
                         }
                     }
                     .overlay(alignment: .topLeading) {
-                        ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: viewModel.isExpanded ? viewModel.EXPANDED_IMAGE_CORNER_RADIUS : viewModel.PILL_IMAGE_CORNER_RADIUS)
-                            .frame(width: viewModel.isExpanded ? viewModel.expandedImageSize : viewModel.pillImageSize)
+                        let imageSize = viewModel.isExpanded ? viewModel.expandedImageSize : viewModel.pillImageSize
+
+                        ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: viewModel.isExpanded ? viewModel.EXPANDED_IMAGE_CORNER_RADIUS : viewModel.PILL_IMAGE_CORNER_RADIUS, aspectRatio: .none)
+                            .frame(width: imageSize, height: imageSize)
                             .offset(x: viewModel.isExpanded ? viewModel.expandedImageX : viewModel.pillImageX,
                                     y: viewModel.isExpanded ? viewModel.expandedImageY : viewModel.pillImageY)
                             .opacity(viewModel.expansionAnimationCount > 0 ? 1 : 0)

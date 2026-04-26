@@ -205,6 +205,8 @@ private struct AppearanceSettingsView: View {
 
             Section {
                 Toggle("settings.animatedNowPlayingBackground", isOn: $settings.animatedNowPlayingBackground)
+            } footer: {
+                Text("settings.animatedNowPlayingBackground.footer")
             }
 
             Section {
@@ -221,9 +223,15 @@ private struct AppearanceSettingsView: View {
 
             Section {
                 Toggle("settings.groupAudiobooksInSeries", isOn: $settings.groupAudiobooksInSeries)
-                Toggle("settings.showSingleEntryGroupedSeries", isOn: $settings.showSingleEntryGroupedSeries)
             } footer: {
                 Text("settings.groupAudiobooksInSeries.footer")
+            }
+
+            Section {
+                Toggle("settings.showSingleEntryGroupedSeries", isOn: $settings.showSingleEntryGroupedSeries)
+                    .disabled(!settings.groupAudiobooksInSeries)
+            } footer: {
+                Text("settings.showSingleEntryGroupedSeries.footer")
             }
         }
         .navigationTitle("settings.appearance")
@@ -244,7 +252,14 @@ private struct PlaybackSettingsView: View {
 
             Section {
                 Toggle("settings.enableChapterTrack", isOn: $settings.enableChapterTrack)
+            } footer: {
+                Text("settings.enableChapterTrack.footer")
+            }
+
+            Section {
                 Toggle("settings.replaceVolumeWithTotalProgress", isOn: $settings.replaceVolumeWithTotalProgress)
+            } footer: {
+                Text("settings.replaceVolumeWithTotalProgress.footer")
             }
 
             Section {
@@ -290,7 +305,7 @@ private struct SleepTimerSettingsView: View {
         List {
             SettingsPageHeader(title: "settings.sleepTimer", systemImage: "moon.zzz.fill", color: .indigo)
 
-            Section(footer: Text("settings.sleepTimer.footer")) {
+            Section {
                 Toggle("settings.sleepTimerFadeOut", isOn: $settings.sleepTimerFadeOut)
                 Toggle("settings.shakeExtendsSleepTimer", isOn: $settings.shakeExtendsSleepTimer)
                 Toggle("settings.extendSleepTimerOnPlay", isOn: $settings.extendSleepTimerOnPlay)
@@ -343,7 +358,17 @@ private struct AdvancedSettingsView: View {
 
             Section {
                 Toggle("settings.lockSeekBar", isOn: $settings.lockSeekBar)
+            } footer: {
+                Text("settings.lockSeekBar.footer")
+            }
+
+            Section {
                 Toggle("settings.ultraHighQuality", isOn: $settings.ultraHighQuality)
+            } footer: {
+                Text("settings.ultraHighQuality.footer")
+            }
+
+            Section {
                 Toggle("settings.enableHapticFeedback", isOn: $settings.enableHapticFeedback)
                 Toggle("settings.itemImageStatusPercentageText", isOn: $settings.itemImageStatusPercentageText)
             }

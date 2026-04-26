@@ -15,33 +15,20 @@ struct PodcastLibraryPanel: View {
 
     @Environment(Satellite.self) private var satellite
 
-    @State private var podcastsAscending = AppSettings.shared.podcastsAscending
-    @State private var podcastsSortOrder = AppSettings.shared.podcastsSortOrder
-    @State private var podcastsDisplayType = AppSettings.shared.podcastsDisplayType
-
     @State private var id = UUID()
-    @State private var tabs = [TabValue]()
-    @State private var lazyLoader = LazyLoadHelper<Podcast, PodcastSortOrder>.podcasts
-
-    private var showPlaceholders: Bool {
-        !lazyLoader.didLoad
-    }
-
-    private var isLoading: Bool {
-        lazyLoader.working && !lazyLoader.failed
-    }
+    @State private var viewModel = LibraryViewModel()
 
     private var libraryRowCount: CGFloat {
         horizontalSizeClass == .compact && library != nil
-        ? (tabs.isEmpty ? 0 : CGFloat(tabs.count))
+        ? viewModel.tabs.isEmpty ? 0 : CGFloat(viewModel.tabs.count)
         : 0
     }
 
     @ViewBuilder
     private var libraryRows: some View {
         if horizontalSizeClass == .compact {
-            if !tabs.isEmpty {
-                ForEach(Array(tabs.enumerated()), id: \.element) { (index, row) in
+            if !viewModel.tabs.isEmpty {
+                ForEach(Array(viewModel.tabs.enumerated()), id: \.element) { (index, row) in
                     NavigationLink(value: NavigationDestination.tabValue(row)) {
                         Label {
                             Text(row.label)
@@ -70,11 +57,11 @@ struct PodcastLibraryPanel: View {
         List {
             libraryRows
 
-            PodcastList(podcasts: lazyLoader.items) {
-                lazyLoader.performLoadIfRequired($0)
+            PodcastList(podcasts: viewModel.lazyLoader.items) {
+                viewModel.lazyLoader.performLoadIfRequired($0)
             }
 
-            PanelItemCountLabel(total: lazyLoader.totalCount, type: .podcast, isLoading: lazyLoader.isLoading)
+            PanelItemCountLabel(total: viewModel.lazyLoader.totalCount, type: .podcast, isLoading: viewModel.lazyLoader.isLoading)
         }
         .id(id)
         .listStyle(.plain)
@@ -85,20 +72,20 @@ struct PodcastLibraryPanel: View {
         ScrollView {
             libraryRowsList
 
-            PodcastVGrid(podcasts: lazyLoader.items) {
-                lazyLoader.performLoadIfRequired($0)
+            PodcastVGrid(podcasts: viewModel.lazyLoader.items) {
+                viewModel.lazyLoader.performLoadIfRequired($0)
             }
             .id(id)
             .padding(.top, 12)
             .padding(.horizontal, 20)
 
-            PanelItemCountLabel(total: lazyLoader.totalCount, type: .podcast, isLoading: lazyLoader.isLoading)
+            PanelItemCountLabel(total: viewModel.lazyLoader.totalCount, type: .podcast, isLoading: viewModel.lazyLoader.isLoading)
         }
     }
 
     var body: some View {
         Group {
-            if showPlaceholders {
+            if viewModel.showPlaceholders {
                 ScrollView {
                     ZStack {
                         Spacer()
@@ -109,9 +96,9 @@ struct PodcastLibraryPanel: View {
                                 .frame(alignment: .top)
 
                             Group {
-                                if isLoading {
+                                if viewModel.isLoading {
                                     LoadingView.Inner()
-                                } else if lazyLoader.failed {
+                                } else if viewModel.lazyLoader.failed {
                                     ErrorViewInner()
                                 } else {
                                     EmptyCollectionView.Inner()
@@ -122,7 +109,7 @@ struct PodcastLibraryPanel: View {
                     }
                 }
             } else {
-                switch podcastsDisplayType {
+                switch viewModel.displayType {
                 case .grid:
                     gridPresentation
                 case .list:
@@ -135,11 +122,17 @@ struct PodcastLibraryPanel: View {
         .largeTitleDisplayMode()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu("item.options", systemImage: "ellipsis") {
-                    ItemDisplayTypePicker(displayType: $podcastsDisplayType)
+                Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease" : "line.3.horizontal") {
+                    ItemDisplayTypePicker(displayType: $viewModel.displayType)
+
+                    Divider()
+
+                    Section("item.filter") {
+                        ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
+                    }
 
                     Section("item.sort") {
-                        ItemSortOrderPicker(sortOrder: $podcastsSortOrder, ascending: $podcastsAscending)
+                        ItemSortOrderPicker(sortOrder: $viewModel.sortOrder, ascending: $viewModel.ascending)
                     }
 
                     if let library {
@@ -154,33 +147,87 @@ struct PodcastLibraryPanel: View {
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .onChange(of: podcastsAscending) {
-            AppSettings.shared.podcastsAscending = podcastsAscending
-            lazyLoader.ascending = podcastsAscending
+        .onChange(of: viewModel.filter) {
+            viewModel.lazyLoader.filter = viewModel.filter
         }
-        .onChange(of: podcastsSortOrder) {
-            AppSettings.shared.podcastsSortOrder = podcastsSortOrder
-            lazyLoader.sortOrder = podcastsSortOrder
+        .onChange(of: viewModel.restrictToPersisted) {
+            viewModel.lazyLoader.restrictToPersisted = viewModel.restrictToPersisted
         }
-        .onChange(of: podcastsDisplayType) {
-            AppSettings.shared.podcastsDisplayType = podcastsDisplayType
+        .onChange(of: viewModel.sortOrder) {
+            viewModel.lazyLoader.sortOrder = viewModel.sortOrder
+        }
+        .onChange(of: viewModel.ascending) {
+            viewModel.lazyLoader.ascending = viewModel.ascending
+        }
+        .task {
+            viewModel.loadTabs()
         }
         .refreshable {
-            lazyLoader.refresh()
-            loadTabs()
+            viewModel.refresh()
         }
         .onAppear {
-            lazyLoader.library = library
-            lazyLoader.initialLoad()
-            loadTabs()
+            viewModel.library = library
+            viewModel.lazyLoader.initialLoad()
         }
         .onReceive(TabEventSource.shared.invalidateTabs) { _ in
-            loadTabs()
+            viewModel.loadTabs()
         }
     }
 }
 
-private extension PodcastLibraryPanel {
+// MARK: - View Model
+
+@MainActor @Observable
+private final class LibraryViewModel {
+    var filter: ItemFilter {
+        didSet { AppSettings.shared.podcastsFilter = filter }
+    }
+    var restrictToPersisted: Bool {
+        didSet { AppSettings.shared.podcastsRestrictToPersisted = restrictToPersisted }
+    }
+    var displayType: ItemDisplayType {
+        didSet { AppSettings.shared.podcastsDisplayType = displayType }
+    }
+
+    var sortOrder: PodcastSortOrder {
+        didSet { AppSettings.shared.podcastsSortOrder = sortOrder }
+    }
+    var ascending: Bool {
+        didSet { AppSettings.shared.podcastsAscending = ascending }
+    }
+
+    var tabs = [TabValue]()
+
+    let lazyLoader = LazyLoadHelper<Podcast, PodcastSortOrder>.podcasts
+
+    var library: Library? {
+        didSet {
+            lazyLoader.library = library
+        }
+    }
+
+    init() {
+        let settings = AppSettings.shared
+        filter = settings.podcastsFilter
+        restrictToPersisted = settings.podcastsRestrictToPersisted
+        displayType = settings.podcastsDisplayType
+        sortOrder = settings.podcastsSortOrder
+        ascending = settings.podcastsAscending
+    }
+
+    var showPlaceholders: Bool {
+        !lazyLoader.didLoad
+    }
+
+    var isLoading: Bool {
+        lazyLoader.working && !lazyLoader.failed
+    }
+
+    func refresh() {
+        lazyLoader.refresh()
+        loadTabs()
+    }
+
     func loadTabs() {
         Task {
             guard let library else {

@@ -12,7 +12,7 @@ struct MultiLibraryHomePanel: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var sections: [HomeSection] = []
-    @State private var isLoading = true
+    @State private var isLoadingSections = true
 
     private var visibleSections: [HomeSection] {
         sections.filter { !$0.isHidden }
@@ -20,10 +20,17 @@ struct MultiLibraryHomePanel: View {
 
     var body: some View {
         Group {
-            if isLoading {
+            if isLoadingSections {
                 LoadingView()
             } else if visibleSections.isEmpty {
-                EmptyCollectionView()
+                // Only-explicit empty state: the user has actively removed
+                // every section from their multi-library home customization.
+                // We deliberately don't aggregate "every row reports empty"
+                // here — listen-now / progress can transiently return [] for
+                // legitimate reasons (offline mode, mid-sync, slow resolver),
+                // and surfacing "Nothing to show yet" in those cases is
+                // misleading.
+                emptyState
             } else {
                 ScrollView {
                     LazyVStack(spacing: 16) {
@@ -47,7 +54,11 @@ struct MultiLibraryHomePanel: View {
             }
         }
         .task {
-            guard sections.isEmpty else { return }
+            // Reload unconditionally on every appear. The `invalidateSections`
+            // event on the customization subsystem is the primary refresh
+            // path, but losing one of those — e.g. if the panel was
+            // re-created while the customization sheet was up — used to leave
+            // the panel showing stale (or worse, empty) section state.
             await reloadSections()
         }
         .refreshable {
@@ -60,13 +71,24 @@ struct MultiLibraryHomePanel: View {
             }
         }
     }
+
+    @ViewBuilder
+    private var emptyState: some View {
+        UnavailableWrapper {
+            ContentUnavailableView(
+                "home.multiLibrary.empty",
+                systemImage: "rectangle.3.group",
+                description: Text("home.multiLibrary.empty.description")
+            )
+        }
+    }
 }
 
 private extension MultiLibraryHomePanel {
     func reloadSections() async {
         let loaded = await PersistenceManager.shared.homeCustomization.sections(for: .multiLibrary, libraryType: nil)
         sections = loaded
-        isLoading = false
+        isLoadingSections = false
     }
 }
 
@@ -80,13 +102,15 @@ private struct MultiLibraryHomeSectionRow: View {
         case .serverRow:
             // Server rows are per-library and not offered in this panel.
             EmptyView()
-        case .listenNow:
-            ListenNowRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle)
+        case .listenNowAudiobooks:
+            ListenNowAudiobooksRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle, showEmptyPlaceholder: true)
+        case .listenNowEpisodes:
+            ListenNowEpisodesRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle, showEmptyPlaceholder: true)
         case .upNext:
-            UpNextRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle)
+            UpNextRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle, showEmptyPlaceholder: true)
         case .nextUpPodcasts:
             if section.libraryID == nil || section.libraryID?.type == .podcasts {
-                NextUpPodcastsRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle)
+                NextUpPodcastsRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle, showEmptyPlaceholder: true)
             }
         case .downloadedAudiobooks:
             if section.libraryID == nil || section.libraryID?.type == .audiobooks {
@@ -97,7 +121,9 @@ private struct MultiLibraryHomeSectionRow: View {
                 DownloadedEpisodesRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle)
             }
         case .bookmarks:
-            BookmarksRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle)
+            if section.libraryID == nil || section.libraryID?.type == .audiobooks {
+                BookmarksRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle)
+            }
         case .collection(let itemID), .playlist(let itemID):
             if ItemIdentifier.isValid(itemID) {
                 PinnedCollectionRow(itemID: ItemIdentifier(string: itemID), titleOverride: nil)

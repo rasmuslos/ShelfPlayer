@@ -15,6 +15,10 @@ public struct ItemImage: View {
     let fallbackLabel: String?
 
     private var aspectRatioPolicy: AspectRatioPolicy {
+        if let itemID, itemID.type == .author || itemID.type == .narrator {
+            return .square
+        }
+
         if AppSettings.shared.forceAspectRatio && aspectRatio == .none {
             return .squareFit
         }

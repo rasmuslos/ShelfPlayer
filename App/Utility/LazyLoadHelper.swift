@@ -544,8 +544,13 @@ extension LazyLoadHelper {
 
     static var podcasts: LazyLoadHelper<Podcast, PodcastSortOrder> {
         let settings = AppSettings.shared
-        return .init(filterLocally: false, filter: .all, restrictToPersisted: false, sortOrder: settings.podcastsSortOrder, ascending: settings.podcastsAscending, loadMore: { page, _, sortOrder, ascending, _, library in
-            try await ABSClient[library.connectionID].podcasts(from: library.libraryID, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
+        return .init(filterLocally: false,
+              filter: settings.podcastsFilter,
+              restrictToPersisted: settings.podcastsRestrictToPersisted,
+              sortOrder: settings.podcastsSortOrder,
+              ascending: settings.podcastsAscending,
+              loadMore: { page, filter, sortOrder, ascending, _, library in
+            try await ABSClient[library.connectionID].podcasts(from: library.libraryID, filter: filter, sortOrder: sortOrder, ascending: ascending, limit: PAGE_SIZE, page: page)
         })
     }
 

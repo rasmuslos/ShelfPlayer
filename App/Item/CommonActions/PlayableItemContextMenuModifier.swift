@@ -32,11 +32,11 @@ struct PlayableItemContextMenuInner: View {
         ControlGroup {
             ItemShareButton(item: item)
             ItemCollectionMembershipEditButton(itemID: item.id)
-            DownloadButton(itemID: item.id, initialStatus: currentDownloadStatus)
         }
 
         QueuePlayButton(itemID: item.id)
         QueueButton(itemID: item.id)
+        DownloadButton(itemID: item.id, initialStatus: currentDownloadStatus)
 
         Divider()
 

@@ -22,6 +22,7 @@ public protocol APIRequestProtocol: Identifiable, Hashable, Sendable, Equatable 
     var maxAttempts: Int { get }
     var bypassesOffline: Bool { get }
     var bypassesScheduler: Bool { get }
+    var bypassesCache: Bool { get }
 
     func _typecast(_ data: Data) throws -> Response
     func typecast(decodable: Decodable) throws -> Response

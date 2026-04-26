@@ -13,7 +13,8 @@ public enum HomeSectionKind: Codable, Hashable, Sendable {
     case serverRow(id: String)
 
     // Client-derived sections.
-    case listenNow
+    case listenNowAudiobooks
+    case listenNowEpisodes
     case upNext
     /// Next unplayed episode per recently-played podcast in the current scope.
     case nextUpPodcasts
@@ -30,7 +31,8 @@ public enum HomeSectionKind: Codable, Hashable, Sendable {
     public var stableID: String {
         switch self {
         case .serverRow(let id): "server::\(id)"
-        case .listenNow: "client::listenNow"
+        case .listenNowAudiobooks: "client::listenNowAudiobooks"
+        case .listenNowEpisodes: "client::listenNowEpisodes"
         case .upNext: "client::upNext"
         case .nextUpPodcasts: "client::nextUpPodcasts"
         case .downloadedAudiobooks: "client::downloadedAudiobooks"

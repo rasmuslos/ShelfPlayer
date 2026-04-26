@@ -16,8 +16,10 @@ extension HomeSectionKind {
         switch self {
         case .serverRow(let id):
             Self.localizedServerRowLabel(forID: id) ?? id
-        case .listenNow:
-            String(localized: "home.section.listenNow")
+        case .listenNowAudiobooks:
+            String(localized: "home.section.listenNowAudiobooks")
+        case .listenNowEpisodes:
+            String(localized: "home.section.listenNowEpisodes")
         case .upNext:
             String(localized: "home.section.upNext")
         case .nextUpPodcasts:
@@ -60,7 +62,7 @@ extension HomeSectionKind {
             default:
                 "square.grid.2x2"
             }
-        case .listenNow:
+        case .listenNowAudiobooks, .listenNowEpisodes:
             "headphones"
         case .upNext:
             "text.line.first.and.arrowtriangle.forward"

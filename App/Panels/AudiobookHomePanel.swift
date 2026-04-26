@@ -14,12 +14,17 @@ struct AudiobookHomePanel: View {
 
     @State private var audiobookRowsByID = [String: HomeRow<Audiobook>]()
     @State private var authorRowsByID = [String: HomeRow<Person>]()
+    @State private var seriesRowsByID = [String: HomeRow<Series>]()
 
     @State private var sections: [HomeSection] = []
 
     @State private var didFail = false
     @State private var isLoading = false
     @State private var notifyError = false
+    /// Debounce handle for progress-driven refetches. New progress events
+    /// cancel the prior pending fetch so a burst of updates collapses to a
+    /// single network round-trip.
+    @State private var pendingProgressRefresh: Task<Void, Never>?
 
     private var scope: HomeScope? {
         if let library { return .library(library.id) }
@@ -31,7 +36,7 @@ struct AudiobookHomePanel: View {
     }
 
     private var hasContent: Bool {
-        !audiobookRowsByID.isEmpty || !authorRowsByID.isEmpty
+        !audiobookRowsByID.isEmpty || !authorRowsByID.isEmpty || !seriesRowsByID.isEmpty
     }
 
     var body: some View {
@@ -52,7 +57,8 @@ struct AudiobookHomePanel: View {
                                 section: section,
                                 fallbackLibraryID: library?.id,
                                 audiobookRowsByID: audiobookRowsByID,
-                                authorRowsByID: authorRowsByID
+                                authorRowsByID: authorRowsByID,
+                                seriesRowsByID: seriesRowsByID
                             )
                         }
                     }
@@ -85,10 +91,20 @@ struct AudiobookHomePanel: View {
         .onReceive(PlaybackLifecycleEventSource.shared.finalizeReporting) { _ in
             fetchItems()
         }
+        .onReceive(PersistenceManager.shared.progress.events.entityUpdated) { _ in
+            scheduleProgressRefresh()
+        }
+        .onReceive(PersistenceManager.shared.progress.events.invalidateEntities) { _ in
+            scheduleProgressRefresh()
+        }
         .onReceive(PersistenceManager.shared.homeCustomization.events.invalidateSections) { changed in
             if changed == scope {
                 Task { await reloadSections() }
             }
+        }
+        .onDisappear {
+            pendingProgressRefresh?.cancel()
+            pendingProgressRefresh = nil
         }
     }
 }
@@ -110,7 +126,7 @@ private extension AudiobookHomePanel {
                 didFail = false
             }
 
-            await fetchRemoteItems(refresh: refresh)
+            await fetchRemoteItems(refresh: refresh, bypassCache: refresh)
 
             withAnimation {
                 isLoading = false
@@ -118,7 +134,20 @@ private extension AudiobookHomePanel {
         }
     }
 
-    func fetchRemoteItems(refresh: Bool) async {
+    /// Coalesce bursts of progress updates (e.g. mid-playback ticks or a batch
+    /// websocket sync) into a single refetch. Refresh after `entityUpdated`
+    /// also bypasses the API client cache so freshly-marked-complete items
+    /// don't keep reappearing in continue-listening for up to 12 s.
+    func scheduleProgressRefresh() {
+        pendingProgressRefresh?.cancel()
+        pendingProgressRefresh = Task {
+            try? await Task.sleep(for: .milliseconds(800))
+            guard !Task.isCancelled else { return }
+            await fetchRemoteItems(refresh: false, bypassCache: true)
+        }
+    }
+
+    func fetchRemoteItems(refresh: Bool, bypassCache: Bool = false) async {
         guard let library else {
             return
         }
@@ -126,7 +155,7 @@ private extension AudiobookHomePanel {
         let discoverRow = refresh ? nil : audiobookRowsByID["discover"]
 
         do {
-            let home: ([HomeRow<Audiobook>], [HomeRow<Person>]) = try await ABSClient[library.id.connectionID].home(for: library.id.libraryID)
+            let home: ([HomeRow<Audiobook>], [HomeRow<Person>], [HomeRow<Series>]) = try await ABSClient[library.id.connectionID].home(for: library.id.libraryID, bypassCache: bypassCache)
             let audiobooks = await HomeRow.prepareForPresentation(home.0, connectionID: library.id.connectionID).map {
                 if $0.id == "discover", let discoverRow {
                     discoverRow
@@ -138,6 +167,7 @@ private extension AudiobookHomePanel {
             withAnimation {
                 authorRowsByID = Dictionary(uniqueKeysWithValues: home.1.map { ($0.id, $0) })
                 audiobookRowsByID = Dictionary(uniqueKeysWithValues: audiobooks.map { ($0.id, $0) })
+                seriesRowsByID = Dictionary(uniqueKeysWithValues: home.2.map { ($0.id, $0) })
             }
         } catch {
             withAnimation {
@@ -155,6 +185,7 @@ private struct AudiobookHomeSectionRow: View {
     let fallbackLibraryID: LibraryIdentifier?
     let audiobookRowsByID: [String: HomeRow<Audiobook>]
     let authorRowsByID: [String: HomeRow<Person>]
+    let seriesRowsByID: [String: HomeRow<Series>]
 
     private var resolvedLibraryID: LibraryIdentifier? {
         section.libraryID ?? fallbackLibraryID
@@ -163,34 +194,37 @@ private struct AudiobookHomeSectionRow: View {
     var body: some View {
         switch section.kind {
         case .serverRow(let id):
-            if id == "newest-authors" {
-                if let row = authorRowsByID[id], !row.entities.isEmpty {
-                    VStack(alignment: .leading, spacing: 0) {
-                        RowTitle(title: row.localizedLabel)
-                            .padding(.bottom, 12)
-                            .padding(.horizontal, 20)
-                        PersonGrid(people: row.entities)
-                    }
+            if let row = authorRowsByID[id], !row.entities.isEmpty {
+                VStack(alignment: .leading, spacing: 0) {
+                    RowTitle(title: row.localizedLabel)
+                        .padding(.bottom, 12)
+                        .padding(.horizontal, 20)
+                    PersonGrid(people: row.entities)
+                }
+            } else if let row = seriesRowsByID[id], !row.entities.isEmpty {
+                VStack(alignment: .leading, spacing: 0) {
+                    RowTitle(title: row.localizedLabel)
+                        .padding(.bottom, 12)
+                        .padding(.horizontal, 20)
+                    SeriesHGrid(series: row.entities)
                 }
             } else if let row = audiobookRowsByID[id], !row.entities.isEmpty {
                 AudiobookRow(title: row.localizedLabel, small: false, audiobooks: row.entities)
             }
-        case .listenNow:
-            ListenNowRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
+        case .listenNowAudiobooks, .listenNowEpisodes:
+            // Listen Now rows are reserved for the multi-library panel; in a
+            // single-library scope they just duplicate `continue-listening`.
+            EmptyView()
         case .upNext:
             UpNextRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
         case .nextUpPodcasts:
-            if resolvedLibraryID == nil || resolvedLibraryID?.type == .podcasts {
-                NextUpPodcastsRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
-            }
+            // Podcast-only row; skip on audiobook panel.
+            EmptyView()
         case .downloadedAudiobooks:
-            if resolvedLibraryID == nil || resolvedLibraryID?.type == .audiobooks {
-                DownloadedAudiobooksRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
-            }
+            DownloadedAudiobooksRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
         case .downloadedEpisodes:
-            if resolvedLibraryID == nil || resolvedLibraryID?.type == .podcasts {
-                DownloadedEpisodesRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
-            }
+            // Podcast-only row; skip on audiobook panel.
+            EmptyView()
         case .bookmarks:
             BookmarksRow(libraryID: resolvedLibraryID, title: section.kind.defaultLocalizedTitle)
         case .collection(let itemID), .playlist(let itemID):

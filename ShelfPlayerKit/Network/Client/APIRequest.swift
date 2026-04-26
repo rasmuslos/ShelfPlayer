@@ -19,13 +19,17 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
     public let maxAttempts: Int
     public let bypassesOffline: Bool
     public let bypassesScheduler: Bool
+    /// When true the API client skips its cache lookup and forces a network
+    /// fetch. The new response is still written to the cache (subject to
+    /// `ttl`), so subsequent non-bypassing requests can use it.
+    public let bypassesCache: Bool
 
     public let dataBody: Data?
 
     public let id: String
     public let description: String
 
-    public init(path: String, method: HTTPMethod, body: Any? = nil, query: [URLQueryItem] = [], headers: [String: String] = [:], ttl: TimeInterval? = nil, timeout: TimeInterval = 45, maxAttempts: Int = 3, bypassesOffline: Bool = false, bypassesScheduler: Bool = false) {
+    public init(path: String, method: HTTPMethod, body: Any? = nil, query: [URLQueryItem] = [], headers: [String: String] = [:], ttl: TimeInterval? = nil, timeout: TimeInterval = 45, maxAttempts: Int = 3, bypassesOffline: Bool = false, bypassesScheduler: Bool = false, bypassesCache: Bool = false) {
         self.path = path
         self.method = method
 
@@ -39,6 +43,7 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
 
         self.bypassesOffline = bypassesOffline
         self.bypassesScheduler = bypassesScheduler
+        self.bypassesCache = bypassesCache
 
         if let body {
             if let encodable = body as? Encodable {

@@ -6,25 +6,37 @@
 import Foundation
 
 public extension APIClient {
-    func home(for libraryID: String) async throws -> ([HomeRow<Audiobook>], [HomeRow<Person>]) {
-        let response = try await response(APIRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get, ttl: 12))
+    func home(for libraryID: String, bypassCache: Bool = false) async throws -> ([HomeRow<Audiobook>], [HomeRow<Person>], [HomeRow<Series>]) {
+        let response = try await response(APIRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get, ttl: 12, bypassesCache: bypassCache))
 
         var authors = [HomeRow<Person>]()
         var audiobooks = [HomeRow<Audiobook>]()
+        var series = [HomeRow<Series>]()
 
         for row in response {
             if row.entities.isEmpty {
                 continue
             }
 
-            if row.type == "book" {
+            switch row.type {
+            case "book":
                 audiobooks.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) }))
-            } else if row.type == "authors" {
+            case "authors":
                 authors.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map { Person(author: $0, connectionID: connectionID) }))
+            case "series":
+                // ABS returns full series objects (with nested books) for the
+                // recent-series shelf. Names are required by Series.init, so
+                // skip series payloads missing one rather than crashing.
+                series.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap {
+                    guard $0.name != nil else { return nil }
+                    return Series(payload: $0, libraryID: libraryID, connectionID: connectionID)
+                }))
+            default:
+                break
             }
         }
 
-        return (audiobooks, authors)
+        return (audiobooks, authors, series)
     }
 
     func audiobook(with itemID: ItemIdentifier) async throws -> Audiobook {

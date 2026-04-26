@@ -156,7 +156,7 @@ struct ConnectionManageView: View {
                             }
                             return (library.id.libraryID, total)
                         case .podcasts:
-                            guard let (_, total) = try? await client?.podcasts(from: library.id.libraryID, sortOrder: .addedAt, ascending: false, limit: 0, page: 0) else {
+                            guard let (_, total) = try? await client?.podcasts(from: library.id.libraryID, filter: .all, sortOrder: .addedAt, ascending: false, limit: 0, page: 0) else {
                                 return nil
                             }
                             return (library.id.libraryID, total)

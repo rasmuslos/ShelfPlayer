@@ -67,7 +67,7 @@ private extension CarPlayLibraryController {
 
     func loadAudiobookHome() async {
         do {
-            let rows: ([HomeRow<Audiobook>], [HomeRow<Person>]) = try await ABSClient[library.id.connectionID].home(for: library.id.libraryID)
+            let rows: ([HomeRow<Audiobook>], [HomeRow<Person>], [HomeRow<Series>]) = try await ABSClient[library.id.connectionID].home(for: library.id.libraryID)
             let prepared = await HomeRow.prepareForPresentation(rows.0, connectionID: library.id.connectionID)
 
             var sections = [CPListSection]()

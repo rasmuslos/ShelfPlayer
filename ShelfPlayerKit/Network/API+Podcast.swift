@@ -6,8 +6,8 @@
 import Foundation
 
 public extension APIClient {
-    func home(for libraryID: String) async throws -> ([HomeRow<Podcast>], [HomeRow<Episode>]) {
-        let response = try await response(APIRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get, ttl: 12))
+    func home(for libraryID: String, bypassCache: Bool = false) async throws -> ([HomeRow<Podcast>], [HomeRow<Episode>]) {
+        let response = try await response(APIRequest<[HomeRowPayload]>(path: "api/libraries/\(libraryID)/personalized", method: .get, ttl: 12, bypassesCache: bypassCache))
 
         var episodes = [HomeRow<Episode>]()
         var podcasts = [HomeRow<Podcast>]()
@@ -42,11 +42,22 @@ public extension APIClient {
         return (podcast, episodes.compactMap { Episode(episode: $0, item: item, connectionID: connectionID) })
     }
 
-    func podcasts(from libraryID: String, sortOrder: PodcastSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Podcast], Int) {
+    func podcasts(from libraryID: String, filter: ItemFilter, sortOrder: PodcastSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Podcast], Int) {
         var query: [URLQueryItem] = [
             .init(name: "sort", value: sortOrder.queryValue),
             .init(name: "desc", value: ascending ? "0" : "1"),
         ]
+
+        switch filter {
+        case .all:
+            break
+        case .active:
+            query.append(.init(name: "filter", value: "progress.aW4tcHJvZ3Jlc3M%3D"))
+        case .finished:
+            query.append(.init(name: "filter", value: "progress.ZmluaXNoZWQ%3D"))
+        case .notFinished:
+            query.append(.init(name: "filter", value: "progress.bm90LWZpbmlzaGVk"))
+        }
 
         if let page {
             query.append(.init(name: "page", value: String(page)))

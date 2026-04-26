@@ -20,7 +20,16 @@ extension HomeRow {
         case "newest-episodes":
             String(localized: "row.latestEpisodes")
         case "recently-added":
-            String(localized: "row.recentlyAdded")
+            // ABS returns "Recently Added" for both audiobook libraries
+            // (entities are books) and podcast libraries (entities are full
+            // podcasts, not episodes). Disambiguate the podcast variant —
+            // otherwise it sits next to "Newest Episodes" with the same
+            // generic label.
+            if T.self == Podcast.self {
+                String(localized: "row.recentlyAddedPodcasts")
+            } else {
+                String(localized: "row.recentlyAdded")
+            }
         case "recent-series":
             String(localized: "row.recentSeries")
         case "listen-again":

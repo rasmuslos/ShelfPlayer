@@ -226,6 +226,14 @@ public final class AppSettings: @unchecked Sendable {
         didSet { suite.set(podcastsSortOrder.rawValue, forKey: "podcastsSortOrder") }
     }
 
+    public var podcastsFilter: ItemFilter = .all {
+        didSet { suite.set(podcastsFilter.rawValue, forKey: "podcastsFilter") }
+    }
+
+    public var podcastsRestrictToPersisted = false {
+        didSet { suite.set(podcastsRestrictToPersisted, forKey: "podcastsRestrictToPersisted") }
+    }
+
     public var podcastsDisplayType: ItemDisplayType = .grid {
         didSet { suite.set(podcastsDisplayType.rawValue, forKey: "podcastsDisplayType") }
     }
@@ -399,6 +407,9 @@ public final class AppSettings: @unchecked Sendable {
         podcastsAscending = suite.object(forKey: "podcastsAscending") as? Bool ?? true
         if let raw = suite.object(forKey: "podcastsSortOrder") as? Int,
            let val = PodcastSortOrder(rawValue: raw) { podcastsSortOrder = val }
+        if let raw = suite.object(forKey: "podcastsFilter") as? Int,
+           let val = ItemFilter(rawValue: raw) { podcastsFilter = val }
+        podcastsRestrictToPersisted = suite.object(forKey: "podcastsRestrictToPersisted") as? Bool ?? false
         if let raw = suite.object(forKey: "podcastsDisplayType") as? Int,
            let val = ItemDisplayType(rawValue: raw) { podcastsDisplayType = val }
 

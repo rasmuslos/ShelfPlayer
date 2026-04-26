@@ -38,6 +38,63 @@ struct SeriesGrid: View {
     }
 }
 
+struct SeriesHGrid: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    let series: [Series]
+
+    @State private var width: CGFloat = .zero
+
+    private let gap: CGFloat = 12
+    private let padding: CGFloat = 20
+
+    // Mirrors `AudiobookHGrid` so the row visually matches an audiobook row.
+    private var minimumSize: CGFloat {
+        horizontalSizeClass == .compact ? 100.0 : 120.0
+    }
+    private var size: CGFloat {
+        guard width.isFinite, width > padding * 2 else { return minimumSize }
+
+        let usable = width - padding * 2
+        let paddedSize = minimumSize + gap
+
+        let amount = CGFloat(Int(usable / paddedSize))
+        guard amount > 0 else { return minimumSize }
+
+        let available = usable - gap * (amount - 1)
+        return max(minimumSize, available / amount)
+    }
+
+    var body: some View {
+        ZStack {
+            GeometryReader { proxy in
+                Color.clear
+                    .onChange(of: proxy.size.width, initial: true) {
+                        width = proxy.size.width
+                    }
+            }
+            .frame(height: 0)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(alignment: .top, spacing: gap) {
+                    ForEach(series) { item in
+                        NavigationLink(value: NavigationDestination.item(item)) {
+                            SeriesGrid.SeriesGridItem(series: item, showName: true)
+                                .frame(width: size)
+                        }
+                        .buttonStyle(.plain)
+                        .modifier(ItemStatusModifier(item: item))
+                    }
+                }
+                .scrollTargetLayout()
+                .padding(.horizontal, padding)
+            }
+            .scrollTargetBehavior(.viewAligned)
+            .scrollClipDisabled()
+        }
+    }
+}
+
 extension SeriesGrid {
     struct SeriesGridItem: View {
         let name: String?

@@ -252,7 +252,7 @@ private extension SpotlightIndexer {
             }
         case .podcasts:
             let podcasts: [Podcast]
-            (podcasts, total) = try await ABSClient[library.id.connectionID].podcasts(from: library.id.libraryID, sortOrder: .addedAt, ascending: true, limit: PAGE_SIZE, page: metadata.page)
+            (podcasts, total) = try await ABSClient[library.id.connectionID].podcasts(from: library.id.libraryID, filter: .all, sortOrder: .addedAt, ascending: true, limit: PAGE_SIZE, page: metadata.page)
 
             isFinished = podcasts.isEmpty
             attributes = await withTaskGroup {
