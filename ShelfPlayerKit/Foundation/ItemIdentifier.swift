@@ -154,6 +154,22 @@ public extension ItemIdentifier {
     func isEqual(primaryID: PrimaryID, groupingID: GroupingID?, connectionID: ConnectionID) -> Bool {
         self.primaryID == primaryID && self.groupingID == groupingID && self.connectionID == connectionID
     }
+
+    func matchesItemUpdate(connectionID: ConnectionID, primaryID: PrimaryID, groupingID: GroupingID?) -> Bool {
+        guard self.connectionID == connectionID else {
+            return false
+        }
+
+        if self.primaryID == primaryID && self.groupingID == groupingID {
+            return true
+        }
+
+        if groupingID == nil && self.groupingID == primaryID {
+            return true
+        }
+
+        return false
+    }
 }
 
 extension ItemIdentifier: Sendable {}

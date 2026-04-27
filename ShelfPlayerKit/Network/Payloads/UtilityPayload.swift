@@ -12,6 +12,26 @@ public struct BookmarkPayload: Codable, Sendable {
     public let createdAt: Double
 }
 
+public struct UserPermissionsPayload: Codable, Sendable, Hashable {
+    public let download: Bool
+    public let update: Bool
+    public let delete: Bool
+    public let upload: Bool
+    public let accessAllLibraries: Bool
+    public let accessAllTags: Bool
+    public let accessExplicitContent: Bool
+
+    public init(download: Bool, update: Bool, delete: Bool, upload: Bool, accessAllLibraries: Bool, accessAllTags: Bool, accessExplicitContent: Bool) {
+        self.download = download
+        self.update = update
+        self.delete = delete
+        self.upload = upload
+        self.accessAllLibraries = accessAllLibraries
+        self.accessAllTags = accessAllTags
+        self.accessExplicitContent = accessExplicitContent
+    }
+}
+
 struct HomeRowPayload: Codable, Sendable {
     let id: String
     let label: String
@@ -36,6 +56,8 @@ struct AuthorizationResponse: Codable, Sendable {
 
         let bookmarks: [BookmarkPayload]
         let mediaProgress: [ProgressPayload]
+
+        let permissions: UserPermissionsPayload?
     }
 
     var versionSafeAccessToken: String {
@@ -66,6 +88,8 @@ struct MeResponse: Codable, Sendable {
 
     let isActive: Bool
     let isLocked: Bool
+
+    let permissions: UserPermissionsPayload?
 }
 
 struct LibrariesResponse: Codable, Sendable {

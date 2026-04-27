@@ -49,10 +49,10 @@ public extension APIClient {
         return (response.id, response.username)
     }
 
-    func authorize() async throws -> ([ProgressPayload], [BookmarkPayload]) {
+    func authorize() async throws -> ([ProgressPayload], [BookmarkPayload], UserPermissionsPayload?) {
         let request = APIRequest<AuthorizationResponse>(path: "api/authorize", method: .post, ttl: 3, bypassesOffline: true, bypassesScheduler: true)
         let response = try await response(request)
-        return (response.user.mediaProgress, response.user.bookmarks)
+        return (response.user.mediaProgress, response.user.bookmarks, response.user.permissions)
     }
 
     func refresh(refreshToken: String) async throws -> (String, String?) {

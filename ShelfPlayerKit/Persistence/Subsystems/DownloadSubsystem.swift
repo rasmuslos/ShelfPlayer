@@ -836,6 +836,8 @@ public extension PersistenceManager.DownloadSubsystem {
             throw error
         }
 
+        busy.remove(itemID)
+
         await MainActor.run {
             events.statusChanged.send((itemID, .none))
         }

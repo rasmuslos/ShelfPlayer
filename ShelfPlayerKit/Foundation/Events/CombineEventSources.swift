@@ -64,6 +64,17 @@ public final class CollectionEventSource: @unchecked Sendable {
     private init() {}
 }
 
+public final class ItemEventSource: @unchecked Sendable {
+    public typealias Payload = (connectionID: ItemIdentifier.ConnectionID, primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?)
+
+    public let updated = PassthroughSubject<Payload, Never>()
+    public let deleted = PassthroughSubject<Payload, Never>()
+
+    public static let shared = ItemEventSource()
+
+    private init() {}
+}
+
 public final class TabEventSource: @unchecked Sendable {
     public let invalidateTabs = PassthroughSubject<Void, Never>()
     public let enablePinnedTabs = PassthroughSubject<Void, Never>()

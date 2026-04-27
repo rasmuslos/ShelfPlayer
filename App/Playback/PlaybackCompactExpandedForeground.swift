@@ -26,8 +26,6 @@ struct PlaybackCompactExpandedForeground: View {
     }
 
     var body: some View {
-        @Bindable var viewModel = viewModel
-
         VStack(spacing: 0) {
             Rectangle()
                 .frame(height: safeAreTopInset)
@@ -35,7 +33,7 @@ struct PlaybackCompactExpandedForeground: View {
 
             Spacer(minLength: 12)
 
-            if !viewModel.isQueueVisible && !viewModel.isRatePickerVisible {
+            if viewModel.activeCard == nil {
                 Rectangle()
                     .fill(.clear)
                     .aspectRatio(1, contentMode: .fit)
@@ -83,7 +81,7 @@ struct PlaybackCompactExpandedForeground: View {
                 HStack(spacing: 12) {
                     Button {
                         withAnimation(.snappy) {
-                            viewModel.isQueueVisible.toggle()
+                            viewModel.activeCard = nil
                         }
                     } label: {
                         GeometryReader { imageGeometryProxy in
@@ -116,17 +114,18 @@ struct PlaybackCompactExpandedForeground: View {
                 .padding(.top, 20)
                 .modifier(PlaybackDragGestureCatcher(height: height))
 
-                if viewModel.isRatePickerVisible {
-                    PlaybackRatePickerCard(isPresented: $viewModel.isRatePickerVisible, onMeshBackground: isMeshActive)
-                        .padding(.vertical, 12)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
-                } else {
-                    PlaybackQueue()
-                        .padding(.vertical, 12)
-                        .frame(maxHeight: height - 140)
-                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
-                        .offset(y: viewModel.controlTranslationY * 2)
+                switch viewModel.activeCard {
+                    case .ratePicker:
+                        PlaybackRatePickerCard(onMeshBackground: isMeshActive)
+                            .padding(.vertical, 12)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                    case .queue, .none:
+                        PlaybackQueue()
+                            .padding(.vertical, 12)
+                            .frame(maxHeight: height - 140)
+                            .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
+                            .offset(y: viewModel.controlTranslationY * 2)
                 }
             }
 

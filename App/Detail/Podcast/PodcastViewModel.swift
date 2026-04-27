@@ -6,11 +6,14 @@
 //
 
 import Foundation
+import Combine
 import SwiftUI
 import ShelfPlayback
 
 @Observable @MainActor
 final class PodcastViewModel: Equatable, Hashable {
+    private var observerSubscriptions = Set<AnyCancellable>()
+
     let podcast: Podcast
 
     private(set) var episodes = [Episode]()
@@ -44,6 +47,18 @@ final class PodcastViewModel: Equatable, Hashable {
 
     init(_ podcast: Podcast) {
         self.podcast = podcast
+
+        ItemEventSource.shared.updated
+            .sink { [weak self] connectionID, primaryID, groupingID in
+                Task { @MainActor [weak self] in
+                    guard let self, self.podcast.id.matchesItemUpdate(connectionID: connectionID, primaryID: primaryID, groupingID: groupingID) else {
+                        return
+                    }
+
+                    self.load(refresh: true)
+                }
+            }
+            .store(in: &observerSubscriptions)
     }
 
     nonisolated static func == (lhs: PodcastViewModel, rhs: PodcastViewModel) -> Bool {

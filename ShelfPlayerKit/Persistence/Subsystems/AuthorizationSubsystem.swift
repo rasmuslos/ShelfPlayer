@@ -21,6 +21,7 @@ extension PersistenceManager {
             public let connectionUnauthorized = PassthroughSubject<ItemIdentifier.ConnectionID, Never>()
             public let connectionsChanged = PassthroughSubject<Void, Never>()
             public let accessTokenExpired = PassthroughSubject<ItemIdentifier.ConnectionID, Never>()
+            public let permissionsChanged = PassthroughSubject<ItemIdentifier.ConnectionID, Never>()
 
             init() {}
         }
@@ -36,6 +37,8 @@ extension PersistenceManager {
 
         public private(set) var connectionIDs = [ItemIdentifier.ConnectionID]()
         public private(set) var friendlyConnections = [FriendlyConnection]()
+
+        private var permissionsByConnection = [ItemIdentifier.ConnectionID: UserPermissionsPayload]()
 
         public struct KnownConnection: Sendable, Identifiable, Equatable {
             public let id: String
@@ -94,6 +97,28 @@ public extension PersistenceManager.AuthorizationSubsystem {
 
     func isUsingLegacyAuthentication(for connectionID: ItemIdentifier.ConnectionID) -> Bool {
         (try? token(for: connectionID, service: refreshTokenService)) == nil
+    }
+
+    func permissions(for connectionID: ItemIdentifier.ConnectionID) -> UserPermissionsPayload? {
+        permissionsByConnection[connectionID]
+    }
+    func updatePermissions(_ permissions: UserPermissionsPayload?, for connectionID: ItemIdentifier.ConnectionID) async {
+        let previous = permissionsByConnection[connectionID]
+
+        if let permissions {
+            permissionsByConnection[connectionID] = permissions
+        } else {
+            permissionsByConnection.removeValue(forKey: connectionID)
+        }
+
+        guard previous != permissions else {
+            return
+        }
+
+        let event = events.permissionsChanged
+        await MainActor.run {
+            event.send(connectionID)
+        }
     }
 
     // MARK: Modify
@@ -224,6 +249,8 @@ public extension PersistenceManager.AuthorizationSubsystem {
         if passwordStatus != errSecSuccess {
             logger.error("Error removing connection from keychain: \(SecCopyErrorMessageString(identityStatus, nil)) & \(SecCopyErrorMessageString(passwordStatus, nil))")
         }
+
+        permissionsByConnection.removeValue(forKey: connectionID)
 
         await OfflineMode.shared.forceEnable(reason: "Connection removed")
         try? await fetchConnections()

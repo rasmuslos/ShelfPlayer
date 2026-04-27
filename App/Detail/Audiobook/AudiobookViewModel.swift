@@ -77,6 +77,18 @@ final class AudiobookViewModel: Sendable {
                 }
             }
             .store(in: &observerSubscriptions)
+
+        ItemEventSource.shared.updated
+            .sink { [weak self] connectionID, primaryID, groupingID in
+                Task { @MainActor [weak self] in
+                    guard let self, self.audiobook.id.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) else {
+                        return
+                    }
+
+                    self.load(refresh: true)
+                }
+            }
+            .store(in: &observerSubscriptions)
     }
 }
 

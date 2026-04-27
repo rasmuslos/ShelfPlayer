@@ -257,7 +257,7 @@ struct NextUpPodcastsRow: View {
         Group {
             if !episodes.isEmpty {
                 HomeRowContainer(title: title) {
-                    EpisodeGrid(episodes: episodes)
+                    EpisodeFeaturedGrid(episodes: episodes)
                 }
             } else if showEmptyPlaceholder && hasLoaded {
                 HomeRowContainer(title: title) {

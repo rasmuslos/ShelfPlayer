@@ -14,13 +14,10 @@ struct PlaybackRateButton: View {
 
     var onMeshBackground: Bool = false
 
-    @State private var showPicker = false
-
     var body: some View {
         Button {
             withAnimation(.snappy) {
-                viewModel.isQueueVisible = false
-                showPicker.toggle()
+                viewModel.activeCard = viewModel.activeCard == .ratePicker ? nil : .ratePicker
             }
         } label: {
             HStack(alignment: .firstTextBaseline, spacing: 0) {
@@ -38,20 +35,12 @@ struct PlaybackRateButton: View {
             }
         }
         .hoverEffect(.highlight)
-        .modify(if: viewModel.isRatePickerVisible) {
+        .modify(if: viewModel.activeCard == .ratePicker) {
             $0.glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .circle)
         }
         .padding(-12)
         .accessibilityLabel("preferences.playbackRate")
         .accessibilityValue(Text(satellite.playbackRate.formatted(.playbackRate)))
-        .onChange(of: showPicker) {
-            withAnimation(.snappy) {
-                viewModel.isRatePickerVisible = showPicker
-            }
-        }
-        .onChange(of: viewModel.isRatePickerVisible) {
-            showPicker = viewModel.isRatePickerVisible
-        }
     }
 }
 
@@ -59,7 +48,6 @@ struct PlaybackRatePickerCard: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
 
-    @Binding var isPresented: Bool
     let onMeshBackground: Bool
 
     @State private var dragAnchorRate: Double?
@@ -416,7 +404,7 @@ private struct RulerCanvas: View, Animatable {
 }
 
 #Preview {
-    PlaybackRatePickerCard(isPresented: .constant(true), onMeshBackground: false)
+    PlaybackRatePickerCard(onMeshBackground: false)
         .previewEnvironment()
 }
 #endif

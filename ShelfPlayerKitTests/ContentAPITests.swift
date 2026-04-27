@@ -76,7 +76,7 @@ struct ContentAPITests {
 
     @Test func authorize() async throws {
         let client = try await authenticatedClient()
-        let (progress, bookmarks) = try await client.authorize()
+        let (progress, bookmarks, _) = try await client.authorize()
 
         #expect(progress.count >= 0)
         #expect(bookmarks.count >= 0)

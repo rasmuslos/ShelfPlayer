@@ -24,7 +24,9 @@ struct PlaybackSleepTimerButton: View {
     }
 
     private var availableSleepTimerIntervals: [Double] {
-        sleepTimerIntervals.filter { $0 <= remainingPlaybackDuration }
+        guard remainingPlaybackDuration > 0 else { return sleepTimerIntervals }
+        let filtered = sleepTimerIntervals.filter { $0 <= remainingPlaybackDuration }
+        return filtered.isEmpty ? sleepTimerIntervals : filtered
     }
 
     private func refreshUpcomingQueueDuration() async {

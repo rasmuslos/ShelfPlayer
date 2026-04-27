@@ -351,13 +351,9 @@ private extension EmbassyManager {
                     self.activity = nil
                 }
             } else if sleepTimer != nil {
-                let isAuthorized = await withCheckedContinuation { continuation in
-                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge]) { authorized, _ in
-                        continuation.resume(returning: authorized)
-                    }
-                }
-
-                guard isAuthorized else {
+                guard ActivityAuthorizationInfo().areActivitiesEnabled else {
+                    logger.error("Live Activities are not enabled — cannot start sleep timer activity")
+                    self.isUpdatingActivity = false
                     return
                 }
 

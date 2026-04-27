@@ -188,6 +188,87 @@ private final class SocketConnection {
             self?.userItemProgressUpdated(data)
         }
 
+        // Items
+
+        socket.on("item_added") { [weak self] data, _ in
+            self?.itemUpdated(data, event: "item_added")
+        }
+        socket.on("item_updated") { [weak self] data, _ in
+            self?.itemUpdated(data, event: "item_updated")
+        }
+        socket.on("item_removed") { [weak self] data, _ in
+            self?.itemRemoved(data)
+        }
+        socket.on("items_added") { [weak self] data, _ in
+            self?.itemsUpdated(data, event: "items_added")
+        }
+        socket.on("items_updated") { [weak self] data, _ in
+            self?.itemsUpdated(data, event: "items_updated")
+        }
+
+        // Episodes
+
+        socket.on("episode_added") { [weak self] data, _ in
+            self?.episodeAdded(data)
+        }
+
+        // Series
+
+        socket.on("series_updated") { [weak self] data, _ in
+            self?.itemUpdated(data, event: "series_updated")
+        }
+        socket.on("series_removed") { [weak self] data, _ in
+            self?.itemRemoved(data)
+        }
+
+        // Authors
+
+        socket.on("author_added") { [weak self] data, _ in
+            self?.itemUpdated(data, event: "author_added")
+        }
+        socket.on("author_updated") { [weak self] data, _ in
+            self?.itemUpdated(data, event: "author_updated")
+        }
+        socket.on("author_removed") { [weak self] data, _ in
+            self?.itemRemoved(data)
+        }
+
+        // Collections
+
+        socket.on("collection_added") { [weak self] data, _ in
+            self?.collectionChanged(data, event: "collection_added")
+        }
+        socket.on("collection_updated") { [weak self] data, _ in
+            self?.collectionChanged(data, event: "collection_updated")
+        }
+        socket.on("collection_removed") { [weak self] data, _ in
+            self?.collectionRemoved(data)
+        }
+
+        // Playlists
+
+        socket.on("playlist_added") { [weak self] data, _ in
+            self?.collectionChanged(data, event: "playlist_added")
+        }
+        socket.on("playlist_updated") { [weak self] data, _ in
+            self?.collectionChanged(data, event: "playlist_updated")
+        }
+        socket.on("playlist_removed") { [weak self] data, _ in
+            self?.collectionRemoved(data)
+        }
+
+        // Podcast episode downloads (server-side RSS pulls)
+
+        socket.on("episode_download_finished") { [weak self] data, _ in
+            self?.episodeDownloadFinished(data)
+        }
+
+        // Server-wide
+
+        socket.on("backup_applied") { [weak self] _, _ in
+            self?.backupApplied()
+        }
+
         PersistenceManager.shared.authorization.events.accessTokenExpired
             .sink { [weak self] _ in
                 Task { @MainActor in
@@ -233,6 +314,14 @@ private final class SocketConnection {
         }
 
         receivedProgressUpdate(decoded.mediaProgress, event: "user_updated")
+        librariesChanged()
+
+        if let permissions = decoded.permissions {
+            let connectionID = connectionID
+            Task.detached {
+                await PersistenceManager.shared.authorization.updatePermissions(permissions, for: connectionID)
+            }
+        }
     }
     func userItemProgressUpdated(_ data: [Any]) {
         guard let payload = data.first else {
@@ -260,10 +349,144 @@ private final class SocketConnection {
             }
         }
     }
+
+    func itemUpdated(_ data: [Any], event: String) {
+        guard let identifier = decodeIdentifier(from: data, event: event) else {
+            return
+        }
+
+        emitItemUpdated(primaryID: identifier.id, groupingID: nil)
+    }
+    func itemRemoved(_ data: [Any]) {
+        guard let identifier = decodeIdentifier(from: data, event: "item_removed") else {
+            return
+        }
+
+        emitItemDeleted(primaryID: identifier.id, groupingID: nil)
+    }
+    func itemsUpdated(_ data: [Any], event: String) {
+        guard let payload = data.first as? [Any] else {
+            logger.warning("Socket \(self.connectionID) received \(event) without array payload")
+            return
+        }
+
+        for entry in payload {
+            guard let identifier = decodeIdentifier(from: [entry], event: event) else {
+                continue
+            }
+
+            emitItemUpdated(primaryID: identifier.id, groupingID: nil)
+        }
+    }
+    func episodeAdded(_ data: [Any]) {
+        guard let payload = data.first as? [String: Any] else {
+            logger.warning("Socket \(self.connectionID) received episode_added without payload")
+            return
+        }
+
+        guard let podcastID = payload["libraryItemId"] as? String else {
+            logger.warning("Socket \(self.connectionID) received episode_added without libraryItemId")
+            return
+        }
+
+        let episodeID = payload["id"] as? String
+
+        emitItemUpdated(primaryID: podcastID, groupingID: nil)
+        if let episodeID {
+            emitItemUpdated(primaryID: episodeID, groupingID: podcastID)
+        }
+    }
+
+    func collectionChanged(_ data: [Any], event: String) {
+        guard let identifier = decodeIdentifier(from: data, event: event) else {
+            return
+        }
+
+        emitItemUpdated(primaryID: identifier.id, groupingID: nil)
+        CollectionEventSource.shared.changed.send(makeIdentifier(primaryID: identifier.id, libraryID: identifier.libraryID, type: .collection))
+    }
+    func collectionRemoved(_ data: [Any]) {
+        guard let identifier = decodeIdentifier(from: data, event: "collection_removed") else {
+            return
+        }
+
+        emitItemDeleted(primaryID: identifier.id, groupingID: nil)
+
+        let itemID = makeIdentifier(primaryID: identifier.id, libraryID: identifier.libraryID, type: .collection)
+        CollectionEventSource.shared.changed.send(itemID)
+        CollectionEventSource.shared.deleted.send(itemID)
+    }
+
+    func episodeDownloadFinished(_ data: [Any]) {
+        guard let payload = data.first as? [String: Any],
+              let libraryItemID = payload["libraryItemId"] as? String else {
+            logger.warning("Socket \(self.connectionID) received episode_download_finished without libraryItemId")
+            return
+        }
+
+        emitItemUpdated(primaryID: libraryItemID, groupingID: nil)
+    }
+
+    func backupApplied() {
+        logger.info("Socket \(self.connectionID) received backup_applied; flushing caches")
+
+        Task.detached {
+            try? await PersistenceManager.shared.invalidateCache()
+            await ResolveCache.shared.flush()
+
+            await MainActor.run {
+                PersistenceManager.shared.webSocket.events.librariesChanged.send()
+            }
+        }
+    }
+}
+
+private extension SocketConnection {
+    func decodeIdentifier(from data: [Any], event: String) -> (id: String, libraryID: String?)? {
+        guard let payload = data.first as? [String: Any] else {
+            logger.warning("Socket \(self.connectionID) received \(event) without payload")
+            return nil
+        }
+
+        guard let id = payload["id"] as? String else {
+            logger.warning("Socket \(self.connectionID) received \(event) without id")
+            return nil
+        }
+
+        return (id, payload["libraryId"] as? String)
+    }
+
+    func makeIdentifier(primaryID: String, libraryID: String?, type: ItemIdentifier.ItemType) -> ItemIdentifier {
+        .init(primaryID: primaryID, groupingID: nil, libraryID: libraryID ?? "", connectionID: connectionID, type: type)
+    }
+
+    func emitItemUpdated(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?) {
+        let connectionID = connectionID
+
+        Task.detached {
+            await ResolveCache.shared.invalidate(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+
+            await MainActor.run {
+                ItemEventSource.shared.updated.send((connectionID: connectionID, primaryID: primaryID, groupingID: groupingID))
+            }
+        }
+    }
+    func emitItemDeleted(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?) {
+        let connectionID = connectionID
+
+        Task.detached {
+            await ResolveCache.shared.invalidate(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+
+            await MainActor.run {
+                ItemEventSource.shared.deleted.send((connectionID: connectionID, primaryID: primaryID, groupingID: groupingID))
+            }
+        }
+    }
 }
 
 private struct UserUpdatedPayload: Decodable {
     let mediaProgress: [ProgressPayload]
+    let permissions: UserPermissionsPayload?
 }
 private struct UserItemProgressUpdatedPayload: Decodable {
     let data: ProgressPayload

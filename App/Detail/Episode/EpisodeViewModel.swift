@@ -6,12 +6,15 @@
 //
 
 import Foundation
+import Combine
 import OSLog
 import SwiftUI
 import ShelfPlayback
 
 @Observable @MainActor
 final class EpisodeViewModel {
+    private var observerSubscriptions = Set<AnyCancellable>()
+
     private(set) var id = UUID()
 
     private(set) var episode: Episode
@@ -27,6 +30,18 @@ final class EpisodeViewModel {
     init(episode: Episode) {
         self.episode = episode
         sessionLoader = .init(filter: .itemID(episode.id))
+
+        ItemEventSource.shared.updated
+            .sink { [weak self] connectionID, primaryID, groupingID in
+                Task { @MainActor [weak self] in
+                    guard let self, self.episode.id.matchesItemUpdate(connectionID: connectionID, primaryID: primaryID, groupingID: groupingID) else {
+                        return
+                    }
+
+                    await self.load(refresh: true)
+                }
+            }
+            .store(in: &observerSubscriptions)
     }
 }
 

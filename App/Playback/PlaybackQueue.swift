@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import TipKit
 import ShelfPlayback
 
 struct PlaybackQueue: View {
@@ -133,10 +132,6 @@ struct PlaybackQueue: View {
 
                     if !satellite.upNextQueue.isEmpty {
                         Section {
-                            TipView(NextUpQueueTip())
-                                .listRowSeparator(.hidden)
-                                .listRowBackground(Color.clear)
-
                             ForEach(Array(satellite.upNextQueue.enumerated()), id: \.element) { (index, itemID) in
                                 QueueItemRow(itemID: itemID, queueIndex: index, isUpNextQueue: true)
                             }
@@ -390,11 +385,6 @@ private struct QueueItemRow: View {
     }
 }
 
-private struct NextUpQueueTip: Tip {
-    let title = Text("playback.upNextQueue.tip")
-    let message: Text? = Text("playback.upNextQueue.tip.description")
-}
-
 #if DEBUG
 #Preview {
     PlaybackQueue()
@@ -409,16 +399,5 @@ private struct NextUpQueueTip: Tip {
     }
     .listStyle(.plain)
     .previewEnvironment()
-}
-
-#Preview {
-    List {
-        Section {
-            TipView(NextUpQueueTip())
-        } header: {
-            PlaybackQueue.header(label: "carPlay.noConnections", subtitle: "carPlay.noConnections.subtitle") {}
-        }
-    }
-    .listStyle(.plain)
 }
 #endif

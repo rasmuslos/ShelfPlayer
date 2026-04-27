@@ -6,11 +6,14 @@
 //
 
 import Foundation
+import Combine
 import SwiftUI
 import ShelfPlayback
 
 @Observable @MainActor
 final class PersonViewModel {
+    private var observerSubscriptions = Set<AnyCancellable>()
+
     let person: Person
 
     var filter: ItemFilter
@@ -45,6 +48,29 @@ final class PersonViewModel {
         if person.id.type == .author {
             seriesLoader = .series(filtered: person.id, filter: settings.audiobooksFilter, sortOrder: .sortName, ascending: true)
         }
+
+        ItemEventSource.shared.updated
+            .sink { [weak self] connectionID, primaryID, groupingID in
+                Task { @MainActor [weak self] in
+                    guard let self else {
+                        return
+                    }
+
+                    if self.person.id.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) {
+                        self.load(refresh: true)
+                        return
+                    }
+
+                    let matchesContent = self.audiobooksLoader.items.contains { $0.id.matchesItemUpdate(connectionID: connectionID, primaryID: primaryID, groupingID: groupingID) }
+                        || (self.seriesLoader?.items.contains { $0.id.matchesItemUpdate(connectionID: connectionID, primaryID: primaryID, groupingID: groupingID) } ?? false)
+
+                    if matchesContent {
+                        self.audiobooksLoader.refresh()
+                        self.seriesLoader?.refresh()
+                    }
+                }
+            }
+            .store(in: &observerSubscriptions)
     }
 }
 

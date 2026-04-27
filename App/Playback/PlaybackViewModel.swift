@@ -64,8 +64,12 @@ final class PlaybackViewModel {
     private(set) var expansionAnimationCount = 0
     var translateYAnimationCount = 0
 
-    var isQueueVisible = false
-    var isRatePickerVisible = false
+    var activeCard: ActiveCard?
+
+    enum ActiveCard {
+        case queue
+        case ratePicker
+    }
 
     // Bookmark
 

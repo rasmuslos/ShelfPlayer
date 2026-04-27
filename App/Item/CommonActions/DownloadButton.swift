@@ -39,7 +39,9 @@ struct DownloadButton: View {
 
     var body: some View {
         ZStack {
-            if isLoading && viewModel.progressVisibility != .never {
+            if !viewModel.canDownload && viewModel.status != .completed && viewModel.status != .downloading {
+                EmptyView()
+            } else if isLoading && viewModel.progressVisibility != .never {
                 ProgressView()
             } else if let text = viewModel.text {
                 Text(text, format: .percent.notation(.compactName))
@@ -96,6 +98,7 @@ struct DownloadButton: View {
         .animation(.smooth, value: viewModel.current)
         .task {
             viewModel.loadCurrent()
+            viewModel.loadCanDownload()
         }
     }
 }
@@ -131,6 +134,8 @@ final class DownloadButtonViewModel {
 
     var progress = [UUID: Int64]()
     var metadata = [UUID: (Percentage, Int64)]()
+
+    var canDownload: Bool = true
 
     init(itemID: ItemIdentifier, tint: Bool, progressVisibility: PresentationContext, isPercentageTextVisible: Bool, initialStatus: DownloadStatus?) {
         self.itemID = itemID
@@ -261,6 +266,20 @@ final class DownloadButtonViewModel {
             }
         }
     }
+    func loadCanDownload() {
+        Task {
+            let permissions = await PersistenceManager.shared.authorization.permissions(for: itemID.connectionID)
+            let resolved = permissions?.download ?? true
+
+            guard resolved != canDownload else {
+                return
+            }
+
+            withAnimation {
+                self.canDownload = resolved
+            }
+        }
+    }
 
     private func setupObservers() {
         observerSubscriptions.removeAll(keepingCapacity: true)
@@ -296,6 +315,18 @@ final class DownloadButtonViewModel {
                     }
 
                     self.status = status
+                }
+            }
+            .store(in: &observerSubscriptions)
+
+        PersistenceManager.shared.authorization.events.permissionsChanged
+            .sink { [weak self] connectionID in
+                Task { @MainActor [weak self] in
+                    guard let self, self.itemID.connectionID == connectionID else {
+                        return
+                    }
+
+                    self.loadCanDownload()
                 }
             }
             .store(in: &observerSubscriptions)

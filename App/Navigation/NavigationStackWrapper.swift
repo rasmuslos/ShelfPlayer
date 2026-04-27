@@ -64,6 +64,11 @@ struct NavigationStackWrapper<Content: View>: View {
                 $0.itemID == collectionID
             }
         }
+        .onReceive(ItemEventSource.shared.deleted) { connectionID, primaryID, groupingID in
+            context.path.removeAll {
+                $0.itemID?.matchesItemUpdate(connectionID: connectionID, primaryID: primaryID, groupingID: groupingID) ?? false
+            }
+        }
     }
 }
 

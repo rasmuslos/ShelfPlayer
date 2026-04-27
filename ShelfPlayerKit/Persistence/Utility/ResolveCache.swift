@@ -276,6 +276,24 @@ public extension ResolveCache {
             invalidate(itemID: ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(itemID))
         }
     }
+
+    func invalidate(primaryID: ItemIdentifier.PrimaryID, groupingID: ItemIdentifier.GroupingID?, connectionID: ItemIdentifier.ConnectionID) {
+        let cacheKey = memoryCacheKey(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+
+        resolveItemID = resolveItemID.filter {
+            !($0.key.primaryID == primaryID && $0.key.groupingID == groupingID && $0.key.connectionID == connectionID)
+        }
+        resolvePlayableItem.removeValue(forKey: cacheKey)
+        resolvePodcast.removeValue(forKey: cacheKey)
+
+        memoryCache.removeObject(forKey: cacheKey)
+
+        do {
+            try FileManager.default.removeItem(atPath: diskPath(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID).relativePath)
+        } catch {
+            logger.error("Failed to remove cached item: \(error)")
+        }
+    }
 }
 
 // MARK: Disk & Memory cache

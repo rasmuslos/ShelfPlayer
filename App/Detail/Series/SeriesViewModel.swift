@@ -58,6 +58,26 @@ final class SeriesViewModel {
                 }
             }
             .store(in: &observerSubscriptions)
+
+        ItemEventSource.shared.updated
+            .sink { [weak self] connectionID, primaryID, groupingID in
+                Task { @MainActor [weak self] in
+                    guard let self else {
+                        return
+                    }
+
+                    if self.series.id.isEqual(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) {
+                        self.refresh()
+                        return
+                    }
+
+                    if self.lazyLoader.items.contains(where: { $0.id.matchesItemUpdate(connectionID: connectionID, primaryID: primaryID, groupingID: groupingID) }) {
+                        self.lazyLoader.refresh()
+                        self.updateHighlighted()
+                    }
+                }
+            }
+            .store(in: &observerSubscriptions)
     }
 
     func refresh() {

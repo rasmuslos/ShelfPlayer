@@ -17,15 +17,14 @@ struct PlaybackActions: View {
     private var queueButton: some View {
         Button {
             withAnimation(.snappy) {
-                viewModel.isRatePickerVisible = false
-                viewModel.isQueueVisible.toggle()
+                viewModel.activeCard = viewModel.activeCard == .queue ? nil : .queue
             }
         } label: {
             Label("playback.queue", systemImage: "list.number")
                 .padding(12)
                 .contentShape(.rect)
         }
-        .modify(if: viewModel.isQueueVisible) {
+        .modify(if: viewModel.activeCard == .queue) {
             $0.glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .circle)
         }
         .padding(-12)

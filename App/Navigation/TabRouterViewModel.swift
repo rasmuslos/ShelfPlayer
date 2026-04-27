@@ -325,7 +325,9 @@ extension TabRouterViewModel {
             let task = UIApplication.shared.beginBackgroundTask(withName: "synchronizeUserData")
 
             do {
-                let (sessions, bookmarks) = try await ABSClient[connectionID].authorize()
+                let (sessions, bookmarks, permissions) = try await ABSClient[connectionID].authorize()
+
+                await PersistenceManager.shared.authorization.updatePermissions(permissions, for: connectionID)
 
                 do {
                     try await PersistenceManager.shared.session.attemptSync(connectionID: connectionID, early: false)
