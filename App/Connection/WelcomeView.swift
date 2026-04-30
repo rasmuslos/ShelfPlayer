@@ -49,7 +49,6 @@ struct WelcomeView: View {
                 }
                 .font(.caption2)
                 .padding(.bottom, 4)
-                .border(.red)
 
                 Button("setup.welcome.action") {
                     satellite.present(.addConnection)

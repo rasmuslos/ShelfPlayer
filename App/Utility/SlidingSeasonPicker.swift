@@ -77,6 +77,7 @@ struct SlidingSeasonPicker: View {
                     .mask(alignment: .leading) {
                         capsule
                     }
+                    .accessibilityHidden(true)
             }
             .padding(.horizontal, 12)
             .animation(.interactiveSpring(response: 0.4, dampingFraction: 0.75), value: selection)

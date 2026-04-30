@@ -59,6 +59,7 @@ struct PlaybackSlider<MiddleContent: View>: View {
             if let currentTime, let trailingTime {
                 LazyVGrid(columns: [.init(alignment: .leading), .init(alignment: .center), .init(alignment: .trailing)]) {
                     Text(currentTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
+                        .accessibilityHidden(true)
 
                     middleContent()
 
@@ -114,6 +115,25 @@ struct PlaybackSlider<MiddleContent: View>: View {
                 .clipShape(.rect(cornerRadius: .infinity))
                 .padding(.vertical, hitTargetPadding)
                 .contentShape(.rect)
+                .accessibilityRepresentation {
+                    if let currentTime, let duration {
+                        Slider(value: .init() {
+                            duration * percentage
+                        } set: {
+                            seeking = min(1, max(0, $0 / duration))
+                        }, in: 0...duration) {
+                            Text(verbatim: "\(currentTime.formatted(.duration(unitsStyle: .spellOut, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))) / \(duration.formatted(.duration(unitsStyle: .spellOut, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))))")
+                        }
+                    } else {
+                        Slider(value: .init() {
+                            percentage
+                        } set: {
+                            seeking = $0
+                        }, in: 0...1) {
+                            Text("volume")
+                        }
+                    }
+                }
                 .highPriorityGesture(DragGesture(minimumDistance: 10.0)
                     .onChanged {
                         guard !lockSeekBar else {
@@ -168,25 +188,6 @@ struct PlaybackSlider<MiddleContent: View>: View {
         .frame(height: height * 2 + activeHeight + 6)
         .compositingGroup()
         .animation(.smooth, value: seeking)
-        .accessibilityRepresentation {
-            if let currentTime, let duration {
-                Slider(value: .init() {
-                    duration * percentage
-                } set: {
-                    seeking = min(1, max(0, $0 / duration))
-                }, in: 0...duration) {
-                    Text(verbatim: "\(currentTime.formatted(.duration(unitsStyle: .spellOut, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))) / \(duration.formatted(.duration(unitsStyle: .spellOut, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))))")
-                }
-            } else {
-                Slider(value: .init() {
-                    percentage
-                } set: {
-                    seeking = $0
-                }, in: 0...1) {
-                    Text("volume")
-                }
-            }
-        }
     }
 }
 

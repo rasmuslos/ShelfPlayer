@@ -159,7 +159,6 @@ struct PlaybackRatePickerCard: View {
         .hapticFeedback(.error, trigger: notifyGroupingError)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("preferences.playbackRate")
-        .accessibilityAddTraits(.isModal)
         .accessibilityAction(.escape) {
             withAnimation(.snappy) {
                 viewModel.activeCard = nil

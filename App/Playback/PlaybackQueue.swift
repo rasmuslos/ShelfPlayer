@@ -149,15 +149,7 @@ struct PlaybackQueue: View {
                 }
                 .listStyle(.plain)
                 .headerProminence(.increased)
-                .mask(
-                    VStack(spacing: 0) {
-                        Rectangle()
-                            .fill(Color.black)
-
-                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0), Color.black]), startPoint: .bottom, endPoint: .top)
-                            .frame(height: 8)
-                    }
-                )
+                .scrollEdgeEffectStyle(.soft, for: .bottom)
                 .padding(.horizontal, -28)
                 .onAppear {
                     scrollProxy.scrollTo("playback_episode_description")
