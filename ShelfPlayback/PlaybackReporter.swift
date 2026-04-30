@@ -15,7 +15,7 @@ import UIKit
 #endif
 
 final actor PlaybackReporter {
-    nonisolated let logger = Logger(subsystem: "io.rfk.shelfplayerKit", category: "PlaybackReporter")
+    nonisolated let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "PlaybackReporter")
 
     private let itemID: ItemIdentifier
 
@@ -64,6 +64,7 @@ final actor PlaybackReporter {
     func update(currentTime: TimeInterval, isSeeking: Bool) {
         guard currentTime.isFinite, currentTime > 10 || isSeeking else {
             logger.info("Dropping progress sync update because it is < 10s and not seeking.")
+            logger.debug("Drop context: currentTime=\(currentTime, privacy: .public) isSeeking=\(isSeeking, privacy: .public)")
             return
         }
 

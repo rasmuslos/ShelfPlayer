@@ -131,12 +131,24 @@ public extension PersistenceManager.CustomizationSubsystem {
     func configuredTabs(for libraryID: LibraryIdentifier, scope: TabValueCustomizationScope) -> [TabValue] {
         let compositeKey = "\(libraryID)::\(scope.rawValue)"
 
-        guard let entity = try? modelContext.fetch(FetchDescriptor<PersistedTabCustomization>(predicate: #Predicate { $0.compositeKey == compositeKey })).first,
-              let tabs = try? JSONDecoder().decode([TabValue].self, from: entity.tabsData) else {
+        let entity: PersistedTabCustomization?
+        do {
+            entity = try modelContext.fetch(FetchDescriptor<PersistedTabCustomization>(predicate: #Predicate { $0.compositeKey == compositeKey })).first
+        } catch {
+            logger.warning("Failed to fetch tab customization for \(compositeKey, privacy: .public); falling back to defaults: \(error, privacy: .public)")
             return defaultTabs(for: libraryID, scope: scope)
         }
 
-        return tabs
+        guard let entity else {
+            return defaultTabs(for: libraryID, scope: scope)
+        }
+
+        do {
+            return try JSONDecoder().decode([TabValue].self, from: entity.tabsData)
+        } catch {
+            logger.warning("Failed to decode tab customization for \(compositeKey, privacy: .public); falling back to defaults: \(error, privacy: .public)")
+            return defaultTabs(for: libraryID, scope: scope)
+        }
     }
     func setConfiguredTabs(_ tabs: [TabValue]?, for libraryID: LibraryIdentifier, scope: TabValueCustomizationScope) async throws {
         let compositeKey = "\(libraryID)::\(scope.rawValue)"
@@ -161,8 +173,16 @@ public extension PersistenceManager.CustomizationSubsystem {
     }
 
     func purgeAll() {
-        try? modelContext.delete(model: PersistedTabCustomization.self)
-        try? modelContext.save()
+        do {
+            try modelContext.delete(model: PersistedTabCustomization.self)
+        } catch {
+            logger.warning("Failed to delete persisted tab customizations: \(error, privacy: .public)")
+        }
+        do {
+            try modelContext.save()
+        } catch {
+            logger.warning("Failed to save context after purging tab customizations: \(error, privacy: .public)")
+        }
     }
 
     enum TabValueCustomizationScope: String, Identifiable, Sendable {

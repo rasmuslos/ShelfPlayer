@@ -35,10 +35,12 @@ extension PersistenceManager {
         }
 
         func remove(itemID: ItemIdentifier) async {
+            logger.info("Attempting early sync before removing sessions for \(itemID, privacy: .public)")
+
             do {
                 try await attemptSync(connectionID: itemID.connectionID, early: true)
             } catch {
-                logger.error("Sync failed while removing related sessions to itemID \(itemID): \(error)")
+                logger.error("Sync failed while removing related sessions to itemID \(itemID, privacy: .public): \(error, privacy: .public)")
             }
 
             let description = itemID.description

@@ -62,11 +62,13 @@ struct SleepTimerEditor: View {
                             Text(minute, format: .number)
                         }
                     }
+                    .accessibilityLabel("preferences.sleepTimer.minutes.tens")
                     Picker("preferences.sleepTimer.minutes", selection: $minuteOne) {
                         ForEach(0..<10) { minute in
                             Text(minute, format: .number)
                         }
                     }
+                    .accessibilityLabel("preferences.sleepTimer.minutes.ones")
                 }
                 .pickerStyle(.wheel)
                 .alignmentGuide(.listRowSeparatorLeading) { _ in

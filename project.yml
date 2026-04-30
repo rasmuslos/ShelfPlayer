@@ -39,6 +39,7 @@ schemes:
         ShelfPlayer: all
         ShelfPlayerWidgets: all
         ShelfPlayerKitTests: [test]
+        ShelfPlaybackTests: [test]
         ShelfPlayerUITests: [test]
     run:
       config: Debug
@@ -46,7 +47,11 @@ schemes:
       config: Debug
       targets:
         - ShelfPlayerKitTests
+        - ShelfPlaybackTests
         - ShelfPlayerUITests
+      coverageTargets:
+        - ShelfPlayerKit
+        - ShelfPlayback
     archive:
       config: Release
   ShelfPlayerWidgets:
@@ -249,6 +254,18 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: ${BUNDLE_ID_PREFIX}.${BUNDLE_ID_SUFFIX}.KitTests
+        GENERATE_INFOPLIST_FILE: YES
+
+  ShelfPlaybackTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - ShelfPlaybackTests
+    dependencies:
+      - target: ShelfPlayback
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ${BUNDLE_ID_PREFIX}.${BUNDLE_ID_SUFFIX}.PlaybackTests
         GENERATE_INFOPLIST_FILE: YES
 
   ShelfPlayerUITests:

@@ -7,11 +7,14 @@
 
 import Foundation
 import Combine
+import OSLog
 import SwiftUI
 import ShelfPlayback
 
 @Observable @MainActor
 final class PodcastViewModel: Equatable, Hashable {
+    private let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "PodcastViewModel")
+
     private var observerSubscriptions = Set<AnyCancellable>()
 
     let podcast: Podcast
@@ -244,6 +247,8 @@ extension PodcastViewModel {
                 restrictToPersisted = configuration.restrictToPersisted
             }
 
+            logger.debug("Updating visible episodes; sort: \(String(describing: self.sortOrder), privacy: .public) ascending: \(self.ascending ?? false, privacy: .public) filter: \(String(describing: self.filter), privacy: .public)")
+
             let episodes = await Podcast.filterSort(episodes, filter: filter!, seasonFilter: seasonFilter, restrictToPersisted: restrictToPersisted!, search: search, sortOrder: sortOrder!, ascending: ascending!)
 
             withAnimation {
@@ -288,10 +293,13 @@ private extension PodcastViewModel {
         }
         #endif
 
+        logger.info("Loading episodes for podcast \(self.podcast.id, privacy: .public)")
+
         do {
             episodes = try await ABSClient[podcast.id.connectionID].podcast(with: podcast.id).1
             updateVisible()
         } catch {
+            logger.warning("Failed to load episodes for \(self.podcast.id, privacy: .public): \(error, privacy: .public)")
             notifyError.toggle()
         }
     }

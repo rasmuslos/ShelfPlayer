@@ -6,7 +6,10 @@
 //
 
 import SwiftUI
+import OSLog
 import ShelfPlayback
+
+private let audiobookBookmarksPanelLogger = Logger(subsystem: "io.rfk.shelfPlayer", category: "AudiobookBookmarksPanel")
 
 struct AudiobookBookmarksPanel: View {
     @Environment(\.library) private var library
@@ -95,7 +98,13 @@ struct AudiobookBookmarksPanel: View {
             let possiblePrimaryIDs = try await PersistenceManager.shared.bookmark[library.id].sorted(by: <)
 
             for (primaryID, amount) in possiblePrimaryIDs {
-                let item = try? await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: nil, connectionID: library.id.connectionID) as? Audiobook
+                let item: Audiobook?
+                do {
+                    item = try await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: nil, connectionID: library.id.connectionID) as? Audiobook
+                } catch {
+                    audiobookBookmarksPanelLogger.warning("Failed to resolve bookmark item \(primaryID, privacy: .public): \(error, privacy: .public)")
+                    continue
+                }
 
                 guard let item, item.id.libraryID == library.id.libraryID else {
                     continue

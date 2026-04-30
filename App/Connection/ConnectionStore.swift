@@ -7,12 +7,15 @@
 
 import Foundation
 import Combine
+import OSLog
 import SwiftUI
 import Synchronization
 import ShelfPlayback
 
 @Observable @MainActor
 final class ConnectionStore {
+    private let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ConnectionStore")
+
     private var observerSubscriptions = Set<AnyCancellable>()
 
     private(set) var didLoad = false
@@ -38,11 +41,17 @@ final class ConnectionStore {
 
     func update() {
         Task {
-            try await PersistenceManager.shared.authorization.waitForConnections()
+            do {
+                try await PersistenceManager.shared.authorization.waitForConnections()
+            } catch {
+                logger.warning("Failed to wait for connections: \(error, privacy: .public)")
+            }
 
             let connections = await PersistenceManager.shared.authorization.friendlyConnections.sorted {
                 $0.name < $1.name
             }
+
+            logger.info("Loaded \(connections.count, privacy: .public) connections")
 
             didLoad = true
 

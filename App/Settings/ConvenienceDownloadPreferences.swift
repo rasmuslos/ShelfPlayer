@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import OSLog
 import ShelfPlayback
 
 struct ConvenienceDownloadPreferences: View {
+    private static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ConvenienceDownloadPreferences")
+
     @Bindable private var settings = AppSettings.shared
 
     @State private var totalDownloaded = 0
@@ -76,6 +79,7 @@ struct ConvenienceDownloadPreferences: View {
             do {
                 try await PersistenceManager.shared.convenienceDownload.setRetrieval(for: itemID, retrieval: nil)
             } catch {
+                Self.logger.warning("Failed to remove convenience download configuration for \(itemID, privacy: .public): \(error, privacy: .public)")
                 notifyError.toggle()
             }
 
@@ -89,6 +93,7 @@ struct ConvenienceDownloadPreferences: View {
             do {
                 try await PersistenceManager.shared.convenienceDownload.setRetrieval(for: itemID, retrieval: retrieval)
             } catch {
+                Self.logger.warning("Failed to update convenience download configuration for \(itemID, privacy: .public): \(error, privacy: .public)")
                 notifyError.toggle()
             }
 

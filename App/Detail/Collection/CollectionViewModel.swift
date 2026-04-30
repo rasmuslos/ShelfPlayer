@@ -7,11 +7,14 @@
 
 import Foundation
 import Combine
+import OSLog
 import SwiftUI
 import ShelfPlayback
 
 @Observable @MainActor
 final class CollectionViewModel: Sendable {
+    private let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "CollectionViewModel")
+
     private var observerSubscriptions = Set<AnyCancellable>()
 
     private(set) var id = UUID()
@@ -50,6 +53,7 @@ extension CollectionViewModel {
                 collectionID.navigateIsolated()
                 CollectionEventSource.shared.changed.send(collectionID)
             } catch {
+                logger.error("Failed to create playlist copy of \(self.collection.id, privacy: .public): \(error, privacy: .public)")
                 withAnimation {
                     notifyError.toggle()
                 }
@@ -66,6 +70,7 @@ extension CollectionViewModel {
                 CollectionEventSource.shared.changed.send(collection.id)
                 CollectionEventSource.shared.deleted.send(collection.id)
             } catch {
+                logger.error("Failed to delete collection \(self.collection.id, privacy: .public): \(error, privacy: .public)")
                 withAnimation {
                     notifyError.toggle()
                 }

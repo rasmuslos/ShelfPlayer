@@ -12,7 +12,7 @@ import SwiftUI
 
 @Observable @MainActor
 public final class LibraryStore {
-    let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "LibraryStore")
+    nonisolated let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "LibraryStore")
 
     private(set) public var libraries: [Library] = []
     private(set) public var groupedLibraries: [ItemIdentifier.ConnectionID: [Library]] = [:]
@@ -46,12 +46,20 @@ public final class LibraryStore {
                 return
             }
 
-            let libraries = await withTaskGroup {
+            let logger = self.logger
+            let libraries = await withTaskGroup(of: [Library]?.self) { group in
                 for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
-                    $0.addTask { try? await ABSClient[connectionID].libraries() }
+                    group.addTask {
+                        do {
+                            return try await ABSClient[connectionID].libraries()
+                        } catch {
+                            logger.warning("Failed to fetch libraries for connection \(connectionID, privacy: .public): \(error, privacy: .public)")
+                            return nil
+                        }
+                    }
                 }
 
-                return await $0.compactMap { $0 }.reduce([], +)
+                return await group.compactMap { $0 }.reduce([], +)
             }
 
             await MainActor.run {

@@ -7,10 +7,13 @@
 
 import Combine
 import Foundation
+import OSLog
 import ShelfPlayerKit
 
 @MainActor @Observable
 public final class ListenedTodayTracker {
+    nonisolated let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ListenedTodayTracker")
+
     public final class EventSource: @unchecked Sendable {
         public let timeSpendListeningChanged = PassthroughSubject<Int, Never>()
 
@@ -70,12 +73,16 @@ public final class ListenedTodayTracker {
                 return
             }
 
-            let cachedSessions = try await PersistenceManager.shared.session.totalUnreportedTimeSpentListening()
-            let pendingOpen = await AudioPlayer.shared.pendingTimeSpendListening ?? 0
+            do {
+                let cachedSessions = try await PersistenceManager.shared.session.totalUnreportedTimeSpentListening()
+                let pendingOpen = await AudioPlayer.shared.pendingTimeSpendListening ?? 0
 
-            await MainActor.run {
-                self.cachedTimeSpendListening = cachedSessions + pendingOpen
-                self.events.timeSpendListeningChanged.send(totalMinutesListenedToday)
+                await MainActor.run {
+                    self.cachedTimeSpendListening = cachedSessions + pendingOpen
+                    self.events.timeSpendListeningChanged.send(totalMinutesListenedToday)
+                }
+            } catch {
+                logger.error("Failed to update cached time spent listening: \(error)")
             }
         }
     }

@@ -7,10 +7,13 @@
 
 import Foundation
 import MediaPlayer
+import OSLog
 import ShelfPlayerKit
 
 extension AudioPlayer {
     func didStartPlaying(endpointID: UUID, itemID: ItemIdentifier, chapters: [Chapter], at time: TimeInterval) async {
+        logger.debug("didStartPlaying itemID=\(itemID, privacy: .public) at=\(time, privacy: .public) chapters=\(chapters.count, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -27,6 +30,8 @@ extension AudioPlayer {
         widgetManager.update(itemID: itemID)
     }
     func playStateDidChange(endpointID: UUID, isPlaying: Bool, updateSessionActivation: Bool) async {
+        logger.debug("playStateDidChange isPlaying=\(isPlaying, privacy: .public) updateSessionActivation=\(updateSessionActivation, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -45,6 +50,8 @@ extension AudioPlayer {
     }
 
     func bufferHealthDidChange(endpointID: UUID, isBuffering: Bool) async {
+        logger.debug("bufferHealthDidChange isBuffering=\(isBuffering, privacy: .public)")
+
         guard current?.id == endpointID else {
             return
         }
@@ -55,6 +62,8 @@ extension AudioPlayer {
     }
 
     func durationsDidChange(endpointID: UUID, itemDuration: TimeInterval?, chapterDuration: TimeInterval?) async {
+        logger.debug("durationsDidChange itemDuration=\(itemDuration ?? -1, privacy: .public) chapterDuration=\(chapterDuration ?? -1, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -72,6 +81,8 @@ extension AudioPlayer {
     }
 
     func chapterDidChange(endpointID: UUID, chapter: Chapter?) async {
+        logger.debug("chapterDidChange hasChapter=\(chapter != nil, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -80,6 +91,8 @@ extension AudioPlayer {
         events.chapterChanged.send(chapter)
     }
     func chapterIndexDidChange(endpointID: UUID, chapterIndex: Int?, chapterCount: Int) async {
+        logger.debug("chapterIndexDidChange index=\(chapterIndex ?? -1, privacy: .public) count=\(chapterCount, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -88,6 +101,8 @@ extension AudioPlayer {
     }
 
     func volumeDidChange(endpointID: UUID, volume: Percentage) async {
+        logger.debug("volumeDidChange volume=\(volume, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -96,6 +111,8 @@ extension AudioPlayer {
     }
 
     func playbackRateDidChange(endpointID: UUID, playbackRate: Percentage) async {
+        logger.debug("playbackRateDidChange rate=\(playbackRate, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -105,6 +122,8 @@ extension AudioPlayer {
     }
 
     func routeDidChange(endpointID: UUID, route: AudioRoute) async {
+        logger.debug("routeDidChange port=\(route.port.rawValue, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -112,6 +131,8 @@ extension AudioPlayer {
         events.routeChanged.send(route)
     }
     func sleepTimerDidChange(endpointID: UUID, configuration: SleepTimerConfiguration?) async {
+        logger.debug("sleepTimerDidChange hasConfiguration=\(configuration != nil, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -119,6 +140,8 @@ extension AudioPlayer {
         events.sleepTimerChanged.send(configuration)
     }
     func sleepTimerDidExpire(endpointID: UUID, configuration: SleepTimerConfiguration) async {
+        logger.debug("sleepTimerDidExpire")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -127,6 +150,8 @@ extension AudioPlayer {
     }
 
     func queueDidChange(endpointID: UUID, queue: [ItemIdentifier]) async {
+        logger.debug("queueDidChange count=\(queue.count, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -135,6 +160,8 @@ extension AudioPlayer {
         events.queueChanged.send(queue)
     }
     func upNextQueueDidChange(endpointID: UUID, upNextQueue: [ItemIdentifier]) async {
+        logger.debug("upNextQueueDidChange count=\(upNextQueue.count, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -143,6 +170,8 @@ extension AudioPlayer {
         events.upNextQueueChanged.send(upNextQueue)
     }
     func upNextStrategyDidChange(endpointID: UUID, strategy: ResolvedUpNextStrategy?) async {
+        logger.debug("upNextStrategyDidChange hasStrategy=\(strategy != nil, privacy: .public)")
+
         if current != nil && current?.id != endpointID {
             return
         }
@@ -151,6 +180,8 @@ extension AudioPlayer {
     }
 
     func didStopPlaying(endpointID: UUID, itemID: ItemIdentifier) async {
+        logger.debug("didStopPlaying itemID=\(itemID, privacy: .public)")
+
         guard current?.id == endpointID else {
             return
         }
@@ -167,6 +198,7 @@ extension AudioPlayer {
 
     func isBusyDidChange() async {
         let busy = await current?.isBusy ?? false
+        logger.debug("isBusyDidChange busy=\(busy, privacy: .public)")
         await widgetManager.update(isBuffering: busy)
         events.bufferHealthChanged.send(busy)
     }

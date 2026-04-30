@@ -6,7 +6,10 @@
 //
 
 import SwiftUI
+import OSLog
 import ShelfPlayback
+
+private let libraryEnumeratorLogger = Logger(subsystem: "io.rfk.shelfPlayer", category: "LibraryEnumerator")
 
 struct LibraryEnumerator<SectionLabel: View, Label: View>: View {
     @Environment(ConnectionStore.self) private var connectionStore
@@ -35,8 +38,10 @@ private struct SectionInner<Label: View>: View {
             if isLoading {
                 ProgressView()
                     .task {
-                        if let libraries = try? await ABSClient[connectionID].libraries() {
-                            self.libraries = libraries
+                        do {
+                            self.libraries = try await ABSClient[connectionID].libraries()
+                        } catch {
+                            libraryEnumeratorLogger.warning("Failed to fetch libraries for \(connectionID, privacy: .public): \(error, privacy: .public)")
                         }
 
                         isLoading = false

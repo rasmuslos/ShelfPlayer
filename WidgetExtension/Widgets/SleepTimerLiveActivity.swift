@@ -8,7 +8,10 @@
 import ActivityKit
 import WidgetKit
 import SwiftUI
+import OSLog
 import ShelfPlayerKit
+
+private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "SleepTimerLiveActivity")
 
 private struct Actions: View {
     let state: SleepTimerLiveActivityAttributes.ContentState
@@ -120,6 +123,7 @@ struct SleepTimerLiveActivity: Widget {
 
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: SleepTimerLiveActivityAttributes.self) { context in
+            let _ = logger.info("SleepTimer live activity content render: deadline=\(String(describing: context.state.deadline), privacy: .public) chapters=\(String(describing: context.state.chapters), privacy: .public) isPlaying=\(context.state.isPlaying, privacy: .public) isStale=\(context.isStale, privacy: .public)")
             HStack(alignment: .bottom, spacing: 0) {
                 Actions(state: context.state)
                     .font(.largeTitle)
@@ -135,7 +139,8 @@ struct SleepTimerLiveActivity: Widget {
             .activityBackgroundTint(.black)
             .activitySystemActionForegroundColor(.white)
         } dynamicIsland: { context in
-            DynamicIsland {
+            logger.info("SleepTimer dynamic island render: deadline=\(String(describing: context.state.deadline), privacy: .public) chapters=\(String(describing: context.state.chapters), privacy: .public) isPlaying=\(context.state.isPlaying, privacy: .public) isStale=\(context.isStale, privacy: .public)")
+            return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     Actions(state: context.state)
                         .font(.title)

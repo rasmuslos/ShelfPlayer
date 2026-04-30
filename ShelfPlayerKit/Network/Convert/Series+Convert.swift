@@ -4,10 +4,17 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "Series+Convert")
 
 extension Series {
     convenience init(payload: ItemPayload, libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) {
         let audiobooks = payload.books?.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) } ?? []
+
+        if let books = payload.books, !books.isEmpty, audiobooks.isEmpty {
+            logger.debug("Series \(payload.id, privacy: .public) had \(books.count, privacy: .public) book payloads but none converted to audiobooks")
+        }
 
         self.init(
             id: .init(primaryID: payload.id, groupingID: nil, libraryID: libraryID, connectionID: connectionID, type: .series),

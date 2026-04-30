@@ -51,43 +51,53 @@ struct AudiobookList: View {
             _progress = .init(initialValue: .init(itemID: audiobook.id))
         }
 
-        private var additional: [String] {
-            var parts = [String]()
+        private var additional: (visual: [String], accessible: [String]) {
+            var visual = [String]()
+            var accessible = [String]()
+
+            func append(_ part: String) {
+                visual.append(part)
+                accessible.append(part)
+            }
 
             if case .series(let series) = displayContext, let formattedSequence = audiobook.series.first(where: { $0.name == series.name })?.formattedSequence {
-                parts.append("#\(formattedSequence)")
+                append("#\(formattedSequence)")
             }
 
             if let released = audiobook.released {
-                parts.append(released)
+                append(released)
             }
 
             func appendDuration() {
-                parts.append(audiobook.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
+                append(audiobook.duration.formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
             }
 
             if let isFinished = progress.isFinished, isFinished {
-                parts.append(String(localized: "item.progress.finished"))
+                append(String(localized: "item.progress.finished"))
             } else if satellite.nowPlayingItemID == audiobook.id, satellite.duration > 0 {
-                parts.append((satellite.duration - satellite.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1)))
+                append((satellite.duration - satellite.currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1)))
             } else if let progress = progress.progress, progress <= 0 {
                 appendDuration()
             } else if let progress = progress.progress, let currentTime = self.progress.currentTime {
-                parts.append(progress.formatted(.percent.notation(.compactName)))
-                parts.append(((self.progress.duration ?? audiobook.duration) - currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
+                append(progress.formatted(.percent.notation(.compactName)))
+                append(((self.progress.duration ?? audiobook.duration) - currentTime).formatted(.duration(unitsStyle: .brief, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2)))
             } else {
                 appendDuration()
             }
 
             if audiobook.explicit && audiobook.abridged {
-                parts.append("\u{1F174}\u{1F170}")
+                visual.append("\u{1F174}\u{1F170}")
+                accessible.append(String(localized: "item.explicit"))
+                accessible.append(String(localized: "item.abridged"))
             } else if audiobook.explicit {
-                parts.append("\u{1F174}")
+                visual.append("\u{1F174}")
+                accessible.append(String(localized: "item.explicit"))
             } else if audiobook.abridged {
-                parts.append("\u{1F170}")
+                visual.append("\u{1F170}")
+                accessible.append(String(localized: "item.abridged"))
             }
 
-            return parts
+            return (visual, accessible)
         }
         var hasTrailingContent: Bool {
             trailingContent as? EmptyView == nil
@@ -144,13 +154,14 @@ struct AudiobookList: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
-                        if !additional.isEmpty {
-                            Text(additional.joined(separator: " • "))
+                        if !additional.visual.isEmpty {
+                            Text(additional.visual.joined(separator: " • "))
                                 .lineLimit(1)
                                 .font(.caption.smallCaps())
                                 .foregroundStyle(.secondary)
                                 .padding(.top, 4)
                                 .contentTransition(.numericText(countsDown: true))
+                                .accessibilityLabel(additional.accessible.joined(separator: ", "))
                         }
                     }
 

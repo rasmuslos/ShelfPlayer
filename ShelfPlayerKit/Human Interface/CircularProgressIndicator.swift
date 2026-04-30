@@ -26,6 +26,8 @@ public struct CircularProgressIndicator: View {
                 .stroke(tint, style: .init(lineWidth: 3, lineCap: .round))
                 .rotationEffect(.degrees(-90))
         }
+        .accessibilityElement()
+        .accessibilityValue(Text(progress, format: .percent))
     }
 }
 

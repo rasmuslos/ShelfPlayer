@@ -7,11 +7,14 @@
 
 import Foundation
 import Combine
+import OSLog
 import SwiftUI
 import ShelfPlayback
 
 @Observable @MainActor
 final class SeriesViewModel {
+    private let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "SeriesViewModel")
+
     private var observerSubscriptions = Set<AnyCancellable>()
 
     let series: Series
@@ -82,7 +85,11 @@ final class SeriesViewModel {
 
     func refresh() {
         Task {
-            try? await ShelfPlayer.refreshItem(itemID: series.id)
+            do {
+                try await ShelfPlayer.refreshItem(itemID: series.id)
+            } catch {
+                logger.warning("Failed to refresh series \(self.series.id, privacy: .public): \(error, privacy: .public)")
+            }
             lazyLoader.refresh()
             updateHighlighted()
         }

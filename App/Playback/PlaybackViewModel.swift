@@ -7,10 +7,13 @@
 
 import SwiftUI
 import Combine
+import OSLog
 import ShelfPlayback
 
 @Observable @MainActor
 final class PlaybackViewModel {
+    private let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "PlaybackViewModel")
+
     private let settings = AppSettings.shared
     private var observerSubscriptions = Set<AnyCancellable>()
 
@@ -224,6 +227,8 @@ final class PlaybackViewModel {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 
         let ANIMATION_TIMING = (0.36, 0.28)
+
+        logger.debug("Toggle expanded; currently expanded: \(self.isExpanded, privacy: .public)")
 
         if isNowPlayingBackgroundVisible {
             expansionAnimationCount += 1
@@ -471,6 +476,8 @@ private extension PlaybackViewModel {
     func extractMeshColors(for itemID: ItemIdentifier) {
         colorExtractionTask?.cancel()
         nowPlayingMeshColors = nil
+
+        logger.debug("Extracting mesh colors for \(itemID, privacy: .public)")
 
         colorExtractionTask = Task { [weak self] in
             guard let image = await itemID.platformImage(size: .regular) else {

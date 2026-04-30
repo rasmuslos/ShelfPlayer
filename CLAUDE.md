@@ -82,12 +82,14 @@ Item (base)
 
 ## Tests
 
+Both test targets hit the local Audiobookshelf dev server at `http://localhost:3333` (credentials: `root` / `root`). Make sure the server is running and seeded with the public-domain audiobook collection (Pride and Prejudice, Alice in Wonderland, …) before running tests — see [Local Audiobookshelf dev server](#local-audiobookshelf-dev-server) below.
+
 ```bash
-# Run unit tests (ShelfPlayerKit integration tests against https://audiobooks.dev demo:demo)
+# Run unit tests (ShelfPlayerKit integration tests against http://localhost:3333 root:root)
 xcodebuild test -scheme ShelfPlayer -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
   -only-testing:ShelfPlayerKitTests ENABLE_USER_SCRIPT_SANDBOXING=NO
 
-# Run UI tests
+# Run UI tests (drives the welcome flow against http://localhost:3333)
 xcodebuild test -scheme ShelfPlayer -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
   -only-testing:ShelfPlayerUITests ENABLE_USER_SCRIPT_SANDBOXING=NO
 
@@ -96,9 +98,41 @@ xcodebuild test -scheme ShelfPlayer -destination 'platform=iOS Simulator,name=iP
   ENABLE_USER_SCRIPT_SANDBOXING=NO
 ```
 
-- **ShelfPlayerKitTests**: Swift Testing-based unit tests that hit the live demo server at `https://audiobooks.dev` (credentials: `demo`/`demo`). Tests cover API client auth, library fetching, search, and ItemIdentifier logic.
-- **ShelfPlayerUITests**: XCTest-based UI tests for connection flow, navigation, and content browsing.
+- **ShelfPlayerKitTests**: Swift Testing-based integration tests against the local server. Cover API client auth (login, status, ping, refresh), library/genre fetching, search, `me`/`authorize`, and pure-logic `ItemIdentifier` round-trips.
+- **ShelfPlayerUITests**: XCTest-based UI tests for the welcome flow, connection setup, tab navigation, search, audiobook detail, playback start, bookmark/finished controls, and offline mode. The test bundle defines a `LocalServer` fixture (endpoint, credentials, seeded titles) at the bottom of `ShelfPlayerUITests.swift`.
 - Fixture data for previews lives in `ShelfPlayerKit/Fixtures/`.
+
+### Test isolation
+
+UI tests rely on two debug-only launch environment variables wired in `ShelfPlayerApp.init()` (gated behind `#if DEBUG` so they cannot ship in release):
+
+- `WIPE_CONNECTIONS=YES` — synchronously deletes every keychain entry the app owns at launch, so the test starts on the welcome screen.
+- `FORCE_OFFLINE_MODE=YES` — forces offline mode after the initial availability probe completes, so tests with a logged-in connection drop straight onto the offline panel.
+
+`XCUIApplication.launchForUITesting(wipeConnections:forceOfflineMode:)` is the entry point — `ConnectionFlowTests` and `OfflineModeTests` opt into wiping; `UserFlowTests` reuses an existing connection so the API content cache is warm.
+
+Prefer **a fresh simulator clone** when you want stronger isolation than the keychain wipe (file system, UserDefaults, downloads):
+
+```bash
+# Clone, run tests against the clone, then delete it
+udid=$(xcrun simctl clone "iPhone 17 Pro" "ShelfPlayer Tests")
+xcrun simctl boot "$udid"
+xcodebuild test -scheme ShelfPlayer -destination "platform=iOS Simulator,id=$udid" \
+  ENABLE_USER_SCRIPT_SANDBOXING=NO
+xcrun simctl shutdown "$udid"
+xcrun simctl delete "$udid"
+```
+
+ATS already allows arbitrary loads (`NSAllowsArbitraryLoads = YES` in `App/Info.plist`), so plain HTTP to `localhost` works from the simulator.
+
+### Offline mode tests
+
+`OfflineModeTests` covers two scenarios:
+
+- **Welcome wins without connections**: launching with `WIPE_CONNECTIONS=YES` and `FORCE_OFFLINE_MODE=YES` should still show the welcome screen — no connections means offline mode is moot.
+- **Offline panel + recovery**: log in to localhost on a wiped simulator, terminate, relaunch with `FORCE_OFFLINE_MODE=YES`, expect the offline panel, tap the toolbar **Go online** button, expect the tab bar to return.
+
+The toolbar **Go online** button is selected via `app.navigationBars["Offline"].buttons["Go online"]` because the offline panel renders the same label twice (toolbar + body row).
 
 ## Local Audiobookshelf dev server
 

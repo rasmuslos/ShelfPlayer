@@ -6,11 +6,14 @@
 //
 
 import Foundation
+import OSLog
 import SwiftData
 import Intents
 import AppIntents
 
 public final class PersistenceManager: Sendable {
+    let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "PersistenceManager")
+
     public let modelContainer: ModelContainer
 
     public let authorization: AuthorizationSubsystem
@@ -67,15 +70,31 @@ public final class PersistenceManager: Sendable {
         await progress.remove(itemID: itemID)
         await session.remove(itemID: itemID)
 
-        try? await download.remove(itemID)
+        do {
+            try await download.remove(itemID)
+        } catch {
+            logger.warning("Failed to remove download while removing item \(itemID, privacy: .public): \(error, privacy: .public)")
+        }
         await convenienceDownload.remove(itemID: itemID, configurationID: nil)
 
         await item.removePersistedData(itemID: itemID)
 
-        let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: ItemEntity.self, identifier: itemID)))
-        let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: AudiobookEntity.self, identifier: itemID)))
+        do {
+            try await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: ItemEntity.self, identifier: itemID)))
+        } catch {
+            logger.debug("Failed to delete ItemEntity intent donations for \(itemID, privacy: .public): \(error, privacy: .public)")
+        }
+        do {
+            try await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: AudiobookEntity.self, identifier: itemID)))
+        } catch {
+            logger.debug("Failed to delete AudiobookEntity intent donations for \(itemID, privacy: .public): \(error, privacy: .public)")
+        }
 
-        try? await INInteraction.delete(with: itemID.description)
+        do {
+            try await INInteraction.delete(with: itemID.description)
+        } catch {
+            logger.debug("Failed to delete INInteraction for \(itemID, privacy: .public): \(error, privacy: .public)")
+        }
 
         NSUserActivity.deleteSavedUserActivities(withPersistentIdentifiers: [itemID.description]) {}
 
@@ -121,6 +140,8 @@ enum PersistenceError: Error {
 
     case busy
     case blocked
+
+    case notPermitted
 
     case unsupportedItemType
     case unsupportedDownloadCodec

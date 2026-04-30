@@ -21,7 +21,7 @@ struct WelcomeView: View {
                         .resizable()
                         .aspectRatio(1, contentMode: .fit)
                         .frame(width: 108)
-                        .clipShape(RoundedRectangle(cornerRadius: 15))
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
                         .padding(.bottom, 28)
 
                     Text("setup.welcome")
@@ -49,6 +49,7 @@ struct WelcomeView: View {
                 }
                 .font(.caption2)
                 .padding(.bottom, 4)
+                .border(.red)
 
                 Button("setup.welcome.action") {
                     satellite.present(.addConnection)
@@ -56,9 +57,10 @@ struct WelcomeView: View {
                 .controlSize(.large)
                 .buttonStyle(.glassProminent)
                 .buttonSizing(.flexible)
-                .padding(.horizontal)
                 .padding(.bottom, 8)
             }
+            .padding(.horizontal, 20)
+            .multilineTextAlignment(.center)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("preferences.support", systemImage: "lifepreserver") {

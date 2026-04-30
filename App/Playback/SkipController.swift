@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import OSLog
 import ShelfPlayback
 
 @Observable @MainActor
 final class SkipController {
+    private let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "SkipController")
+
     private let settings = AppSettings.shared
 
     private(set) var skipCache: TimeInterval?
@@ -25,6 +28,8 @@ final class SkipController {
     func skipPressed(forwards: Bool, satellite: Satellite) {
         let isInitial: Bool
         let adjustment = Double(forwards ? settings.skipForwardsInterval : -settings.skipBackwardsInterval)
+
+        logger.info("Skip pressed forwards: \(forwards, privacy: .public) interval: \(adjustment, privacy: .public)")
 
         if let skipCache {
             isInitial = false

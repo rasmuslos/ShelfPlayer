@@ -12,6 +12,10 @@
               "Springe zurück mit ${applicationName}",
               "Zurück mit ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rückwärts mit ${applicationName}"
           }
         },
         "el": {
@@ -21,6 +25,10 @@
               "Πίσω με το ${applicationName}",
               "Επιστροφή με το ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Πίσω με το ${applicationName}"
           }
         },
         "en": {
@@ -39,6 +47,10 @@
               "Reculer en utilisant ${applicationName}",
               "Retourner en arrière en utilisant ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reculer avec ${applicationName}"
           }
         },
         "it": {
@@ -48,6 +60,10 @@
               "Indietro con ${applicationName}",
               "Torna indietro con ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indietro con ${applicationName}"
           }
         },
         "nl": {
@@ -57,6 +73,10 @@
               "Terug met ${applicationName}",
               "Ga terug met ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Achteruit met ${applicationName}"
           }
         },
         "ru": {
@@ -66,6 +86,10 @@
               "Вернуться назад ${applicationName}",
               "Отменить возвращение ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Назад в ${applicationName}"
           }
         },
         "sv": {
@@ -74,6 +98,10 @@
             "values": [
               "Hoppa bakåt med ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bakåt med ${applicationName}"
           }
         },
         "uk": {
@@ -83,6 +111,10 @@
               "Повернутися назад ${applicationName}",
               "Скасувати повернення ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Назад в ${applicationName}"
           }
         },
         "zh-Hans": {
@@ -91,6 +123,10 @@
             "values": [
               "后退 ${applicationName}中的播放"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 ${applicationName} 中后退"
           }
         }
       }
@@ -105,6 +141,10 @@
             "values": [
               "Erstelle ein Lesezeichen mit ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lesezeichen mit ${applicationName} erstellen"
           }
         },
         "el": {
@@ -113,6 +153,10 @@
             "values": [
               "Δημιουργία σελιδοδείκτη με το ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Δημιουργία σελιδοδείκτη με το ${applicationName}"
           }
         },
         "en": {
@@ -129,6 +173,10 @@
             "values": [
               "Créer un signet en utilisant ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Créer un signet avec ${applicationName}"
           }
         },
         "it": {
@@ -137,6 +185,10 @@
             "values": [
               "Crea un segnalibro con ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crea un segnalibro con ${applicationName}"
           }
         },
         "nl": {
@@ -145,6 +197,10 @@
             "values": [
               "Maak een bladwijzer met ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bladwijzer maken met ${applicationName}"
           }
         },
         "ru": {
@@ -153,6 +209,10 @@
             "values": [
               "Создать закладку, используя ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Создать закладку в ${applicationName}"
           }
         },
         "sv": {
@@ -161,6 +221,10 @@
             "values": [
               "Skapa ett bokmärke med ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skapa ett bokmärke med ${applicationName}"
           }
         },
         "uk": {
@@ -169,6 +233,10 @@
             "values": [
               "Створіть закладку за допомогою ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Створити закладку в ${applicationName}"
           }
         },
         "zh-Hans": {
@@ -177,6 +245,10 @@
             "values": [
               "在  ${applicationName}创建书签"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 ${applicationName} 中创建书签"
           }
         }
       }
@@ -192,6 +264,10 @@
               "Springe vorwärts mit ${applicationName}",
               "Vorwärts mit ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vorwärts mit ${applicationName}"
           }
         },
         "el": {
@@ -201,6 +277,10 @@
               "Μπροστά με το ${applicationName}",
               "Προχώρα με το ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Μπροστά με το ${applicationName}"
           }
         },
         "en": {
@@ -219,6 +299,10 @@
               "Avancer en utilisant ${applicationName}",
               "Passer en avant en utilisant ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avancer avec ${applicationName}"
           }
         },
         "it": {
@@ -228,6 +312,10 @@
               "Avanti con ${applicationName}",
               "Vai avanti con ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avanti con ${applicationName}"
           }
         },
         "nl": {
@@ -237,6 +325,10 @@
               "Vooruit met ${applicationName}",
               "Ga vooruit met ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vooruit met ${applicationName}"
           }
         },
         "ru": {
@@ -246,6 +338,10 @@
               "Перейти вперёд ${applicationName}",
               "Отменить переход ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вперёд в ${applicationName}"
           }
         },
         "sv": {
@@ -254,6 +350,10 @@
             "values": [
               "Hoppa framåt med ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Framåt med ${applicationName}"
           }
         },
         "uk": {
@@ -263,6 +363,10 @@
               "Вперед ${applicationName}",
               "Скасувати використання ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вперед в ${applicationName}"
           }
         },
         "zh-Hans": {
@@ -271,6 +375,10 @@
             "values": [
               "快进 ${applicationName}的播放"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 ${applicationName} 中前进"
           }
         }
       }
@@ -287,6 +395,10 @@
               "Pausiere die ${applicationName} Wiedergabe",
               "Stoppe ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName} pausieren"
           }
         },
         "el": {
@@ -296,6 +408,10 @@
               "Παύση ${applicationName}",
               "Σταμάτα το ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Παύση του ${applicationName}"
           }
         },
         "en": {
@@ -316,6 +432,10 @@
               "Arrêter ${applicationName}",
               "Mettre en pause la lecture de ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mettre ${applicationName} en pause"
           }
         },
         "it": {
@@ -325,6 +445,10 @@
               "Metti in pausa ${applicationName}",
               "Ferma ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metti ${applicationName} in pausa"
           }
         },
         "nl": {
@@ -334,6 +458,10 @@
               "Pauzeer ${applicationName}",
               "Stop ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName} pauzeren"
           }
         },
         "ru": {
@@ -344,6 +472,10 @@
               "Приостановить вопросизведение ${applicationName}",
               "Закончить воспроизведение ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поставить ${applicationName} на паузу"
           }
         },
         "sv": {
@@ -352,6 +484,10 @@
             "values": [
               "Pausa ${applicationName} uppspelning"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausa ${applicationName}"
           }
         },
         "uk": {
@@ -362,6 +498,10 @@
               "Призупинити відтворення ${applicationName}",
               "Зупинити відтворення ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Призупинити ${applicationName}"
           }
         },
         "zh-Hans": {
@@ -370,6 +510,10 @@
             "values": [
               "暂停${applicationName}的播放"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂停 ${applicationName}"
           }
         }
       }
@@ -385,6 +529,10 @@
               "Spiele ${podcast} mit ${applicationName}",
               "Spiele ${podcast} Episodes mit ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "${podcast} mit ${applicationName} abspielen"
           }
         },
         "el": {
@@ -394,6 +542,10 @@
               "Αναπαραγωγή ${podcast} με το ${applicationName}",
               "Άκουσε ${podcast} με το ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αναπαραγωγή ${podcast} με το ${applicationName}"
           }
         },
         "en": {
@@ -412,6 +564,10 @@
               "Écouter ${podcast} en utilisant ${applicationName}",
               "Écouter les épisodes de ${podcast} en utilisant ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lire ${podcast} avec ${applicationName}"
           }
         },
         "it": {
@@ -421,6 +577,10 @@
               "Riproduci ${podcast} con ${applicationName}",
               "Ascolta ${podcast} con ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riproduci ${podcast} con ${applicationName}"
           }
         },
         "nl": {
@@ -430,6 +590,10 @@
               "Speel ${podcast} af met ${applicationName}",
               "Luister naar ${podcast} met ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "${podcast} afspelen met ${applicationName}"
           }
         },
         "ru": {
@@ -439,6 +603,10 @@
               "Воспроизвести ${podcast} с помощью ${applicationName}",
               "Воспроизвести ${podcast} эпизоды с помощью ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Включить ${podcast} в ${applicationName}"
           }
         },
         "sv": {
@@ -447,6 +615,10 @@
             "values": [
               "Spela ${podcast} med ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spela ${podcast} med ${applicationName}"
           }
         },
         "uk": {
@@ -456,6 +628,10 @@
               "Відтворити ${podcast} за допомогою ${applicationName}",
               "Відтворити епізоди ${podcast} за допомогою ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Відтворити ${podcast} в ${applicationName}"
           }
         },
         "zh-Hans": {
@@ -464,6 +640,10 @@
             "values": [
               "使用 ${applicationName} 播放 ${podcast}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 ${applicationName} 中播放 ${podcast}"
           }
         }
       }
@@ -478,6 +658,10 @@
             "values": [
               "Spiele ${target} mit ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "${target} mit ${applicationName} abspielen"
           }
         },
         "el": {
@@ -486,6 +670,10 @@
             "values": [
               "Αναπαραγωγή ${target} με το ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αναπαραγωγή ${target} με το ${applicationName}"
           }
         },
         "en": {
@@ -502,6 +690,10 @@
             "values": [
               "Écouter ${target} en utilisant ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lire ${target} avec ${applicationName}"
           }
         },
         "it": {
@@ -510,6 +702,10 @@
             "values": [
               "Riproduci ${target} con ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riproduci ${target} con ${applicationName}"
           }
         },
         "nl": {
@@ -518,6 +714,10 @@
             "values": [
               "Speel ${target} af met ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "${target} afspelen met ${applicationName}"
           }
         },
         "ru": {
@@ -526,6 +726,10 @@
             "values": [
               "Воспроизвести ${target} с помощью ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Включить ${target} в ${applicationName}"
           }
         },
         "sv": {
@@ -534,6 +738,10 @@
             "values": [
               "Spela ${target} med ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spela ${target} med ${applicationName}"
           }
         },
         "uk": {
@@ -542,6 +750,10 @@
             "values": [
               "Відтворити ${target} за допомогою ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Відтворити ${target} в ${applicationName}"
           }
         },
         "zh-Hans": {
@@ -550,6 +762,10 @@
             "values": [
               "使用 ${applicationName} 播放 ${target}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 ${applicationName} 中播放 ${target}"
           }
         }
       }
@@ -566,6 +782,10 @@
               "Setzte die ${applicationName} Wiedergabe fort",
               "Spiele ${applicationName} weiter"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName} fortsetzen"
           }
         },
         "el": {
@@ -575,6 +795,10 @@
               "Συνέχιση του ${applicationName}",
               "Συνέχισε με το ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Συνέχιση του ${applicationName}"
           }
         },
         "en": {
@@ -595,6 +819,10 @@
               "Reprendre la lecture avec ${applicationName}",
               "Continuer à écouter ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reprendre ${applicationName}"
           }
         },
         "it": {
@@ -604,6 +832,10 @@
               "Riprendi ${applicationName}",
               "Continua con ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprendi ${applicationName}"
           }
         },
         "nl": {
@@ -613,6 +845,10 @@
               "Hervat ${applicationName}",
               "Ga verder met ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "${applicationName} hervatten"
           }
         },
         "ru": {
@@ -623,6 +859,10 @@
               "Продолжить воспроизведение с помощью ${applicationName}",
               "Продолжить воспроизведение ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Возобновить ${applicationName}"
           }
         },
         "sv": {
@@ -631,6 +871,10 @@
             "values": [
               "Återuppta uppspelning med ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Återuppta ${applicationName}"
           }
         },
         "uk": {
@@ -641,6 +885,10 @@
               "Відновити відтворення за допомогою ${applicationName}",
               "Продовжити відтворення ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Відновити ${applicationName}"
           }
         },
         "zh-Hans": {
@@ -649,6 +897,10 @@
             "values": [
               "使用 ${applicationName} 继续播放"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续播放 ${applicationName}"
           }
         }
       }
@@ -663,6 +915,10 @@
             "values": [
               "Suche nach neuen Downloads mit ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit ${applicationName} nach neuen Downloads suchen"
           }
         },
         "el": {
@@ -672,6 +928,10 @@
               "Αναζήτηση νέων λήψεων με το ${applicationName}",
               "Έλεγχος για νέες λήψεις με το ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Αναζήτηση νέων λήψεων με το ${applicationName}"
           }
         },
         "en": {
@@ -690,6 +950,10 @@
               "Rechercher de nouveaux téléchargements à l'aide de ${applicationName}",
               "Vérifiez les nouveaux téléchargements à l'aide de ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechercher de nouveaux téléchargements avec ${applicationName}"
           }
         },
         "it": {
@@ -699,6 +963,10 @@
               "Cerca nuovi download con ${applicationName}",
               "Controlla i nuovi download con ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca nuovi download con ${applicationName}"
           }
         },
         "nl": {
@@ -708,6 +976,10 @@
               "Zoek naar nieuwe downloads met ${applicationName}",
               "Controleer op nieuwe downloads met ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoek naar nieuwe downloads met ${applicationName}"
           }
         },
         "ru": {
@@ -717,6 +989,10 @@
               "Найти новые загрузке через ${applicationName}",
               "Проверить новые загрузке через ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Найти новые загрузки в ${applicationName}"
           }
         },
         "sv": {
@@ -725,6 +1001,10 @@
             "values": [
               "Sök efter nya nedladdningar med ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sök efter nya nedladdningar med ${applicationName}"
           }
         },
         "uk": {
@@ -734,6 +1014,10 @@
               "Пошук нових завантажень за допомогою ${applicationName}",
               "Перевірте наявність нових завантажень за допомогою ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шукати нові завантаження в ${applicationName}"
           }
         },
         "zh-Hans": {
@@ -742,6 +1026,10 @@
             "values": [
               "使用 ${applicationName} 搜索新的下载内容"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 ${applicationName} 中查找新下载"
           }
         }
       }
@@ -756,6 +1044,10 @@
             "values": [
               "Setzte die ${applicationName} Wiedergabegeschwindigkeit"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiedergabegeschwindigkeit von ${applicationName} festlegen"
           }
         },
         "el": {
@@ -765,6 +1057,10 @@
               "Ορισμός ταχύτητας αναπαραγωγής στο ${applicationName}",
               "Αλλαγή ταχύτητας στο ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ορισμός ταχύτητας αναπαραγωγής του ${applicationName}"
           }
         },
         "en": {
@@ -783,6 +1079,10 @@
               "Définir la vitesse de lecture de ${applicationName}",
               "Définir la fréquence de lecture de ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Régler la vitesse de lecture de ${applicationName}"
           }
         },
         "it": {
@@ -792,6 +1092,10 @@
               "Imposta la velocità di riproduzione di ${applicationName}",
               "Cambia la velocità di ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imposta la velocità di riproduzione di ${applicationName}"
           }
         },
         "nl": {
@@ -801,6 +1105,10 @@
               "Stel de afspeelsnelheid van ${applicationName} in",
               "Wijzig de snelheid van ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stel afspeelsnelheid van ${applicationName} in"
           }
         },
         "ru": {
@@ -810,6 +1118,10 @@
               "Установить скорость воспроизведения для ${applicationName}",
               "Установить скорость воспроизведения для ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установить скорость воспроизведения ${applicationName}"
           }
         },
         "sv": {
@@ -818,6 +1130,10 @@
             "values": [
               "Sätt uppspelningshastighet med ${applicationName} "
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ställ in uppspelningshastighet för ${applicationName}"
           }
         },
         "uk": {
@@ -827,6 +1143,10 @@
               "Встановити швидкість відтворення ${applicationName}",
               "Встановити швидкість відтворення для ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Встановити швидкість відтворення ${applicationName}"
           }
         },
         "zh-Hans": {
@@ -835,6 +1155,10 @@
             "values": [
               "设置${applicationName} 的播放速度"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置 ${applicationName} 的播放速度"
           }
         }
       }
@@ -852,6 +1176,10 @@
               "Starte Schlaf-Timer ${applicationName}",
               "Starte Sleep-Timer ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep-Timer von ${applicationName} festlegen"
           }
         },
         "el": {
@@ -861,6 +1189,10 @@
               "Ορισμός χρονοδιακόπτη ύπνου στο ${applicationName}",
               "Όρισε χρονοδιακόπτη ύπνου με το ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ορισμός χρονοδιακόπτη του ${applicationName}"
           }
         },
         "en": {
@@ -879,6 +1211,10 @@
               "Définir la minuterie de sommeil ${applicationName}",
               "Définir une minuterie de sommeil à l'aide de ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Régler le minuteur de ${applicationName}"
           }
         },
         "it": {
@@ -888,6 +1224,10 @@
               "Imposta il timer di spegnimento di ${applicationName}",
               "Imposta un timer di spegnimento con ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imposta il timer di spegnimento di ${applicationName}"
           }
         },
         "nl": {
@@ -897,6 +1237,10 @@
               "Stel de sluimertimer van ${applicationName} in",
               "Stel een sluimertimer in met ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stel sluimertimer van ${applicationName} in"
           }
         },
         "ru": {
@@ -906,6 +1250,10 @@
               "Установить таймер сна в ${applicationName}",
               "Установить таймер сна используя ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Установить таймер сна ${applicationName}"
           }
         },
         "sv": {
@@ -914,6 +1262,10 @@
             "values": [
               "Sätt insomningsTimer med ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ställ in insomningstimer för ${applicationName}"
           }
         },
         "uk": {
@@ -923,6 +1275,10 @@
               "Встановити ${applicationName} таймер сну",
               "Встановіть таймер сну ${applicationName}"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "Встановити таймер сну ${applicationName}"
           }
         },
         "zh-Hans": {
@@ -931,6 +1287,10 @@
             "values": [
               "设置一个${applicationName} 的睡眠倒计时"
             ]
+          },
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置 ${applicationName} 的睡眠定时器"
           }
         }
       }

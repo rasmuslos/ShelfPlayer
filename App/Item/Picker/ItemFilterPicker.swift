@@ -59,3 +59,48 @@ extension ItemFilter {
         }
     }
 }
+
+struct PodcastFilterPicker: View {
+    @Binding var filter: PodcastFilter
+
+    private func binding(for filter: PodcastFilter) -> Binding<Bool> {
+        .init() { self.filter == filter } set: {
+            if $0 {
+                self.filter = filter
+            } else {
+                self.filter = .all
+            }
+        }
+    }
+
+    var body: some View {
+        ForEach([PodcastFilter]([.unfinished, .finished])) {
+            Toggle($0.label, systemImage: $0.icon, isOn: binding(for: $0))
+                .tag($0)
+        }
+    }
+}
+
+extension PodcastFilter {
+    var label: LocalizedStringKey {
+        switch self {
+        case .all:
+            "item.filter.all"
+        case .unfinished:
+            "item.filter.unfinished"
+        case .finished:
+            "item.filter.finished"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .all:
+            "circle"
+        case .unfinished:
+            "circle.bottomrighthalf.pattern.checkered"
+        case .finished:
+            "checkmark.circle"
+        }
+    }
+}

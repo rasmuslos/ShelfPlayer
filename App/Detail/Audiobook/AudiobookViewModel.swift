@@ -149,9 +149,15 @@ private extension AudiobookViewModel {
     }
 
     func loadAudiobook() async {
-        guard let (item, _, chapters, supplementaryPDFs) = try? await ABSClient[audiobook.id.connectionID].playableItem(itemID: audiobook.id) else {
+        let result: (PlayableItem, [PlayableItem.AudioFile], [Chapter], [PlayableItem.SupplementaryPDF])
+        do {
+            result = try await ABSClient[audiobook.id.connectionID].playableItem(itemID: audiobook.id)
+        } catch {
+            logger.warning("Failed to load audiobook \(self.audiobook.id, privacy: .public): \(error, privacy: .public)")
             return
         }
+
+        let (item, _, chapters, supplementaryPDFs) = result
 
         withAnimation {
             self.audiobook = item as! Audiobook

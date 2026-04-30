@@ -54,6 +54,17 @@ struct EpisodePlayButton: View {
             return formatDuration()
         }
     }
+    private var accessibilityActionLabel: LocalizedStringKey {
+        if isPlaying {
+            return "playback.pause"
+        } else if tracker.isFinished == true {
+            return "item.play.again"
+        } else if let progress = tracker.progress, progress > 0 {
+            return "item.play.resume"
+        } else {
+            return "item.play"
+        }
+    }
     private var icon: String {
         if isPlaying && satellite.isPlaying {
             return "pause.fill"
@@ -145,5 +156,8 @@ struct EpisodePlayButton: View {
         .disabled(isLoading)
         .clipShape(.rect(cornerRadius: .infinity))
         .hoverEffect(.highlight)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(accessibilityActionLabel))
+        .accessibilityValue(Text(verbatim: label))
     }
 }

@@ -327,7 +327,11 @@ extension TabRouterViewModel {
             do {
                 let (sessions, bookmarks, permissions) = try await ABSClient[connectionID].authorize()
 
-                await PersistenceManager.shared.authorization.updatePermissions(permissions, for: connectionID)
+                do {
+                    try await PersistenceManager.shared.authorization.updatePermissions(permissions, for: connectionID)
+                } catch {
+                    self?.logger.warning("Failed to update permissions for \(connectionID, privacy: .public): \(error, privacy: .public)")
+                }
 
                 do {
                     try await PersistenceManager.shared.session.attemptSync(connectionID: connectionID, early: false)

@@ -7,14 +7,10 @@ import Testing
 import Foundation
 @testable import ShelfPlayerKit
 
+@Suite(.serialized)
 struct ContentAPITests {
     private func authenticatedClient() async throws -> APIClient {
-        let client = try await APIClient(
-            connectionID: "test",
-            credentialProvider: StaticCredentialProvider()
-        )
-
-        let (_, accessToken, refreshToken) = try await client.login(username: "demo", password: "demo")
+        let (accessToken, refreshToken) = try await ContentAPITokenCache.shared.tokens()
 
         return try await APIClient(
             connectionID: "test-auth",
@@ -32,14 +28,17 @@ struct ContentAPITests {
 
         let audioLibrary = libraries.first(where: { $0.id.type == .audiobooks })
         #expect(audioLibrary != nil)
+
+        let podcastLibrary = libraries.first(where: { $0.id.type == .podcasts })
+        #expect(podcastLibrary != nil)
     }
 
     @Test func fetchGenres() async throws {
         let client = try await authenticatedClient()
         let libraries = try await client.libraries()
 
-        guard let library = libraries.first else {
-            Issue.record("No libraries available")
+        guard let library = libraries.first(where: { $0.id.type == .audiobooks }) else {
+            Issue.record("No audiobook library available")
             return
         }
 
@@ -53,15 +52,14 @@ struct ContentAPITests {
         let client = try await authenticatedClient()
         let libraries = try await client.libraries()
 
-        guard let library = libraries.first else {
-            Issue.record("No libraries available")
+        guard let library = libraries.first(where: { $0.id.type == .audiobooks }) else {
+            Issue.record("No audiobook library available")
             return
         }
 
-        let (audiobooks, _, _, _, _, _) = try await client.items(in: library.id, search: "a")
+        let (audiobooks, _, _, _, _, _) = try await client.items(in: library.id, search: "Pride")
 
-        // Demo server should have some content
-        #expect(audiobooks is [Audiobook])
+        #expect(!audiobooks.isEmpty, "Local server should have at least one audiobook matching 'Pride'")
     }
 
     // MARK: Authorization
@@ -71,7 +69,7 @@ struct ContentAPITests {
         let (userID, username) = try await client.me()
 
         #expect(!userID.isEmpty)
-        #expect(username.hasPrefix("demo"))
+        #expect(username == "root")
     }
 
     @Test func authorize() async throws {
@@ -80,6 +78,29 @@ struct ContentAPITests {
 
         #expect(progress.count >= 0)
         #expect(bookmarks.count >= 0)
+    }
+}
+
+// MARK: - Token Cache
+
+/// Reuses a single login across the whole suite. The local Audiobookshelf
+/// server enforces a per-IP rate limit on `/login`, so logging in per test
+/// trips it as soon as the suite is run together with the other API suites.
+private actor ContentAPITokenCache {
+    static let shared = ContentAPITokenCache()
+
+    private var cached: (String, String?)?
+
+    func tokens() async throws -> (String, String?) {
+        if let cached { return cached }
+
+        let client = try await APIClient(
+            connectionID: "test",
+            credentialProvider: StaticCredentialProvider()
+        )
+        let (_, accessToken, refreshToken) = try await client.login(username: "root", password: "root")
+        cached = (accessToken, refreshToken)
+        return (accessToken, refreshToken)
     }
 }
 
@@ -95,7 +116,7 @@ private final class StaticCredentialProvider: APICredentialProvider, @unchecked 
     }
 
     var configuration: (URL, [HTTPHeader]) {
-        (URL(string: "https://audiobooks.dev")!, [])
+        (URL(string: "http://localhost:3333")!, [])
     }
 
     var accessToken: String? {

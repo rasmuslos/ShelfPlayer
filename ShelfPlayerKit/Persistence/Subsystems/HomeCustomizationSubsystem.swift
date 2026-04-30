@@ -138,20 +138,28 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
     func sections(for scope: HomeScope, libraryType: LibraryMediaType?) -> [HomeSection] {
         let scopeKey = scope.key
 
-        let loaded: [HomeSection]
-        if let entity = try? modelContext.fetch(FetchDescriptor<PersistedHomeCustomization>(predicate: #Predicate { $0.scopeKey == scopeKey })).first,
-           let decoded = try? JSONDecoder().decode([HomeSection].self, from: entity.sectionsData) {
-            loaded = decoded
-        } else {
-            switch scope {
-            case .library:
-                loaded = defaultSections(for: libraryType ?? .audiobooks)
-            case .multiLibrary:
-                loaded = defaultMultiLibrarySections()
+        let entity: PersistedHomeCustomization?
+        do {
+            entity = try modelContext.fetch(FetchDescriptor<PersistedHomeCustomization>(predicate: #Predicate { $0.scopeKey == scopeKey })).first
+        } catch {
+            logger.warning("Failed to fetch home customization for \(scopeKey, privacy: .public); falling back to defaults: \(error, privacy: .public)")
+            entity = nil
+        }
+
+        if let entity {
+            do {
+                return try JSONDecoder().decode([HomeSection].self, from: entity.sectionsData)
+            } catch {
+                logger.warning("Failed to decode home customization for \(scopeKey, privacy: .public); falling back to defaults: \(error, privacy: .public)")
             }
         }
 
-        return loaded
+        switch scope {
+        case .library:
+            return defaultSections(for: libraryType ?? .audiobooks)
+        case .multiLibrary:
+            return defaultMultiLibrarySections()
+        }
     }
 
     func setSections(_ sections: [HomeSection]?, for scope: HomeScope) async throws {
@@ -178,7 +186,15 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
     }
 
     func purgeAll() {
-        try? modelContext.delete(model: PersistedHomeCustomization.self)
-        try? modelContext.save()
+        do {
+            try modelContext.delete(model: PersistedHomeCustomization.self)
+        } catch {
+            logger.warning("Failed to delete persisted home customizations: \(error, privacy: .public)")
+        }
+        do {
+            try modelContext.save()
+        } catch {
+            logger.warning("Failed to save context after purging home customizations: \(error, privacy: .public)")
+        }
     }
 }

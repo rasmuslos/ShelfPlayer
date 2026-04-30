@@ -4,6 +4,9 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "API+Sessions")
 
 public extension APIClient {
     func startPlaybackSession(itemID: ItemIdentifier) async throws -> ([PlayableItem.AudioTrack], [Chapter], TimeInterval, String) {
@@ -43,13 +46,24 @@ public extension APIClient {
     }
 
     func createListeningSession(itemID: ItemIdentifier, timeListened: TimeInterval, startTime: TimeInterval, currentTime: TimeInterval, started: Date, updated: Date) async throws {
-        let (item, status, userID) = try await (
-            try await response(APIRequest<ItemPayload>(path: "api/items/\(itemID.apiItemID)", method: .get, query: [
-                URLQueryItem(name: "expanded", value: "1"),
-            ], bypassesOffline: true)),
-            status(),
-            me().0
-        )
+        logger.info("Preparing listening session for item \(itemID.apiItemID, privacy: .public)")
+
+        let item: ItemPayload
+        let status: (String, [AuthorizationStrategy], Bool)
+        let userID: String
+
+        do {
+            (item, status, userID) = try await (
+                try await response(APIRequest<ItemPayload>(path: "api/items/\(itemID.apiItemID)", method: .get, query: [
+                    URLQueryItem(name: "expanded", value: "1"),
+                ], bypassesOffline: true)),
+                self.status(),
+                me().0
+            )
+        } catch {
+            logger.warning("Failed to gather metadata for listening session for item \(itemID.apiItemID, privacy: .public): \(error, privacy: .public)")
+            throw error
+        }
 
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")

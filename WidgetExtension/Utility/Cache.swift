@@ -6,10 +6,13 @@
 //
 
 import Foundation
+import OSLog
 import ShelfPlayerKit
 
 final actor Cache: Sendable {
     typealias ImageCache = [ItemIdentifier: Data]
+
+    let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "WidgetCache")
 
     var covers = ImageCache()
     var tinyCovers = ImageCache()
@@ -46,8 +49,12 @@ final actor Cache: Sendable {
 
         let fetched = await withTaskGroup {
             for itemID in missingItemIDs {
-                $0.addTask {
-                    (itemID, await itemID.data(size: tiny ? .tiny : .small))
+                $0.addTask { [logger] in
+                    let data = await itemID.data(size: tiny ? .tiny : .small)
+                    if data == nil {
+                        logger.error("Failed to fetch cover for item \(itemID, privacy: .public) (tiny=\(tiny, privacy: .public))")
+                    }
+                    return (itemID, data)
                 }
             }
 
@@ -87,8 +94,14 @@ final actor Cache: Sendable {
 
         let fetched = await withTaskGroup {
             for itemID in missingItemIDs {
-                $0.addTask {
-                    (itemID, try? await ItemEntity(item: itemID.resolved))
+                $0.addTask { [logger] in
+                    do {
+                        let entity = try await ItemEntity(item: itemID.resolved)
+                        return (itemID, Optional(entity))
+                    } catch {
+                        logger.error("Failed to resolve entity for item \(itemID, privacy: .public): \(error.localizedDescription, privacy: .public)")
+                        return (itemID, nil)
+                    }
                 }
             }
 

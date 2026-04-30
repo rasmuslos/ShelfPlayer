@@ -78,8 +78,6 @@
 	<string>ShelfPlayer does not use the microphone</string>
 	<key>NSSiriUsageDescription</key>
 	<string>Use Siri to control playback, create bookmarks, and more.</string>
-	<key>NSSupportsLiveActivities</key>
-	<true/>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>io.rfk.shelfPlayer.item</string>

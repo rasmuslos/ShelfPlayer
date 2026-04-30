@@ -13,6 +13,8 @@ import ShelfPlayback
 
 @Observable @MainActor
 final class EpisodeViewModel {
+    private let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "EpisodeViewModel")
+
     private var observerSubscriptions = Set<AnyCancellable>()
 
     private(set) var id = UUID()
@@ -75,7 +77,11 @@ extension EpisodeViewModel {
     }
     func load(refresh: Bool) async {
         if refresh {
-            try? await ShelfPlayer.refreshItem(itemID: self.episode.id)
+            do {
+                try await ShelfPlayer.refreshItem(itemID: self.episode.id)
+            } catch {
+                logger.warning("Failed to refresh episode \(self.episode.id, privacy: .public): \(error, privacy: .public)")
+            }
         }
 
         await withTaskGroup {

@@ -38,67 +38,73 @@ struct DownloadButton: View {
     }
 
     var body: some View {
-        ZStack {
-            if !viewModel.canDownload && viewModel.status != .completed && viewModel.status != .downloading {
-                EmptyView()
-            } else if isLoading && viewModel.progressVisibility != .never {
-                ProgressView()
-            } else if let text = viewModel.text {
-                Text(text, format: .percent.notation(.compactName))
-                    .contentTransition(.numericText())
-            } else {
-                Button {
-                    if viewModel.status == DownloadStatus.none {
-                        satellite.download(itemID: viewModel.itemID)
-                    } else {
-                        satellite.removeDownload(itemID: viewModel.itemID, force: false)
-                    }
-                } label: {
-                    if let current = viewModel.current {
-                        CircularProgressIndicator(completed: current, background: viewModel.progressBackgroundColor, tint: viewModel.progressTintColor)
-                            .modify {
-                                switch viewModel.progressVisibility {
-                                    case .never:
-                                        EmptyView()
-                                    case .toolbar:
-                                        $0
-                                            .frame(width: 18)
-                                            .overlay {
-                                                RoundedRectangle(cornerRadius: 1)
-                                                    .aspectRatio(1, contentMode: .fit)
-                                                    .frame(width: 6)
-                                            }
-                                    case .triangle:
-                                        $0
-                                    case .episode:
-                                        $0
-                                            .frame(width: 8)
-                                    case .row:
-                                        $0
-                                            .frame(width: 14)
-                                            .overlay {
-                                                RoundedRectangle(cornerRadius: 1)
-                                                    .aspectRatio(1, contentMode: .fit)
-                                                    .frame(width: 5)
-                                            }
-                                            .foregroundStyle(Color.accentColor)
-                                }
-                            }
-                    } else {
-                        Label(viewModel.label, systemImage: viewModel.icon)
-                            .modify(if: viewModel.tint) {
-                                $0
-                                    .tint(viewModel.status == .completed ? .red : .blue)
-                            }
-                    }
-                }
+        Group {
+            if viewModel.isVisible {
+                content
+                    .disabled(viewModel.status == nil || satellite.isLoading(observing: viewModel.itemID))
+                    .animation(.smooth, value: viewModel.current)
             }
         }
-        .disabled(viewModel.status == nil || satellite.isLoading(observing: viewModel.itemID))
-        .animation(.smooth, value: viewModel.current)
         .task {
             viewModel.loadCurrent()
             viewModel.loadCanDownload()
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if isLoading && viewModel.progressVisibility != .never {
+            ProgressView()
+        } else if let text = viewModel.text {
+            Text(text, format: .percent.notation(.compactName))
+                .contentTransition(.numericText())
+        } else {
+            Button {
+                if viewModel.status == DownloadStatus.none {
+                    satellite.download(itemID: viewModel.itemID)
+                } else {
+                    satellite.removeDownload(itemID: viewModel.itemID, force: false)
+                }
+            } label: {
+                if let current = viewModel.current {
+                    CircularProgressIndicator(completed: current, background: viewModel.progressBackgroundColor, tint: viewModel.progressTintColor)
+                        .modify {
+                            switch viewModel.progressVisibility {
+                                case .never:
+                                    EmptyView()
+                                case .toolbar:
+                                    $0
+                                        .frame(width: 18)
+                                        .overlay {
+                                            RoundedRectangle(cornerRadius: 1)
+                                                .aspectRatio(1, contentMode: .fit)
+                                                .frame(width: 6)
+                                        }
+                                case .triangle:
+                                    $0
+                                case .episode:
+                                    $0
+                                        .frame(width: 8)
+                                case .row:
+                                    $0
+                                        .frame(width: 14)
+                                        .overlay {
+                                            RoundedRectangle(cornerRadius: 1)
+                                                .aspectRatio(1, contentMode: .fit)
+                                                .frame(width: 5)
+                                        }
+                                        .foregroundStyle(Color.accentColor)
+                            }
+                        }
+                } else {
+                    Label(viewModel.label, systemImage: viewModel.icon)
+                        .modify(if: viewModel.tint) {
+                            $0
+                                .tint(viewModel.status == .completed ? .red : .blue)
+                        }
+                }
+            }
+            .accessibilityLabel(Text(viewModel.label))
         }
     }
 }
@@ -135,7 +141,15 @@ final class DownloadButtonViewModel {
     var progress = [UUID: Int64]()
     var metadata = [UUID: (Percentage, Int64)]()
 
-    var canDownload: Bool = true
+    var canDownload: Bool? = nil
+
+    var isVisible: Bool {
+        if status == .completed || status == .downloading {
+            return true
+        }
+
+        return canDownload == true
+    }
 
     init(itemID: ItemIdentifier, tint: Bool, progressVisibility: PresentationContext, isPercentageTextVisible: Bool, initialStatus: DownloadStatus?) {
         self.itemID = itemID
@@ -147,6 +161,7 @@ final class DownloadButtonViewModel {
         status = initialStatus
 
         setupObservers()
+        loadCanDownload()
 
         scenePhaseSubscription = AppEventSource.shared.scenePhaseDidChange
             .sink { [weak self] isActive in
@@ -268,8 +283,7 @@ final class DownloadButtonViewModel {
     }
     func loadCanDownload() {
         Task {
-            let permissions = await PersistenceManager.shared.authorization.permissions(for: itemID.connectionID)
-            let resolved = permissions?.download ?? true
+            let resolved = await PersistenceManager.shared.authorization.canDownload(for: itemID.connectionID)
 
             guard resolved != canDownload else {
                 return

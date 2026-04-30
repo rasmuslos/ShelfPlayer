@@ -36,6 +36,16 @@ public enum ItemFilter: Int, Identifiable, Hashable, Codable, Sendable, CaseIter
     }
 }
 
+public enum PodcastFilter: Int, Identifiable, Hashable, Codable, Sendable, CaseIterable {
+    case all
+    case unfinished
+    case finished
+
+    public var id: Int {
+        rawValue
+    }
+}
+
 public enum AudiobookSortOrder: String, Identifiable, Hashable, Codable, Sendable, CaseIterable {
     case sortName
     case authorName
@@ -104,7 +114,6 @@ public enum PodcastSortOrder: Int, Identifiable, Hashable, Codable, Sendable, Ca
     case author
     case episodeCount
     case addedAt
-    case duration
 
     public var id: Int {
         rawValue

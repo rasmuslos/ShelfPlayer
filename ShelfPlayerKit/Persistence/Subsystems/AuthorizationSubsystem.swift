@@ -38,14 +38,45 @@ extension PersistenceManager {
         public private(set) var connectionIDs = [ItemIdentifier.ConnectionID]()
         public private(set) var friendlyConnections = [FriendlyConnection]()
 
-        private var permissionsByConnection = [ItemIdentifier.ConnectionID: UserPermissionsPayload]()
-
         public struct KnownConnection: Sendable, Identifiable, Equatable {
             public let id: String
 
             public let host: URL
             public let username: String
         }
+
+        #if DEBUG
+        /// Services we use in the keychain. Exposed so the debug-only
+        /// synchronous wipe can reach them without instantiating the actor.
+        nonisolated static let debugKeychainServices: [CFString] = [
+            "io.rfk.shelfPlayer.credentials.v2" as CFString,
+            "io.rfk.shelfPlayer.credentials.tlsCertificate.v2" as CFString,
+            "io.rfk.shelfPlayer.credentials.accessToken.v2" as CFString,
+            "io.rfk.shelfPlayer.credentials.refreshToken.v2" as CFString,
+        ]
+
+        /// Synchronously deletes every keychain item we own. Debug-only —
+        /// used by UI-test launch hooks so each launch starts from a clean
+        /// slate without the async race that the regular `remove(...)` path
+        /// would introduce. Production builds must use a fresh simulator
+        /// clone (or run on a real device) instead.
+        public nonisolated static func debugWipeAllConnections() {
+            for service in debugKeychainServices {
+                let query = [
+                    kSecClass: kSecClassGenericPassword,
+                    kSecAttrSynchronizable: kSecAttrSynchronizableAny,
+                    kSecAttrService: service,
+                ] as! [String: Any] as CFDictionary
+                _ = SecItemDelete(query)
+            }
+
+            let identityQuery = [
+                kSecClass: kSecClassIdentity,
+                kSecAttrSynchronizable: kSecAttrSynchronizableAny,
+            ] as! [String: Any] as CFDictionary
+            _ = SecItemDelete(identityQuery)
+        }
+        #endif
     }
 }
 
@@ -96,23 +127,55 @@ public extension PersistenceManager.AuthorizationSubsystem {
     }
 
     func isUsingLegacyAuthentication(for connectionID: ItemIdentifier.ConnectionID) -> Bool {
-        (try? token(for: connectionID, service: refreshTokenService)) == nil
+        do {
+            _ = try token(for: connectionID, service: refreshTokenService)
+            return false
+        } catch {
+            logger.debug("No refresh token for \(connectionID, privacy: .public); legacy authentication assumed: \(error, privacy: .public)")
+            return true
+        }
     }
 
     func permissions(for connectionID: ItemIdentifier.ConnectionID) -> UserPermissionsPayload? {
-        permissionsByConnection[connectionID]
+        friendlyConnections.first(where: { $0.id == connectionID })?.permissions
     }
-    func updatePermissions(_ permissions: UserPermissionsPayload?, for connectionID: ItemIdentifier.ConnectionID) async {
-        let previous = permissionsByConnection[connectionID]
-
-        if let permissions {
-            permissionsByConnection[connectionID] = permissions
-        } else {
-            permissionsByConnection.removeValue(forKey: connectionID)
+    func canDownload(for connectionID: ItemIdentifier.ConnectionID) -> Bool {
+        permissions(for: connectionID)?.download ?? true
+    }
+    func updatePermissions(_ permissions: UserPermissionsPayload?, for connectionID: ItemIdentifier.ConnectionID) async throws {
+        let existing: Connection
+        do {
+            existing = try fetchConnection(connectionID)
+        } catch {
+            logger.warning("Skipping permissions update for unknown connection \(connectionID, privacy: .public)")
+            return
         }
 
-        guard previous != permissions else {
+        guard existing.permissions != permissions else {
             return
+        }
+
+        let updated = existing.with(permissions: permissions)
+
+        let query = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrSynchronizable: kCFBooleanTrue as Any,
+
+            kSecAttrService: connectionService,
+            kSecAttrAccount: connectionID as CFString,
+        ] as! [String: Any] as CFDictionary
+
+        let status = SecItemUpdate(query, [
+            kSecValueData: try JSONEncoder().encode(updated) as CFData,
+        ] as! [String: Any] as CFDictionary)
+
+        guard status == errSecSuccess else {
+            logger.error("Error persisting permissions for \(connectionID, privacy: .public): \(SecCopyErrorMessageString(status, nil))")
+            throw PersistenceError.keychainInsertFailed
+        }
+
+        if let index = friendlyConnections.firstIndex(where: { $0.id == connectionID }) {
+            friendlyConnections[index] = FriendlyConnection(from: updated)
         }
 
         let event = events.permissionsChanged
@@ -199,7 +262,7 @@ public extension PersistenceManager.AuthorizationSubsystem {
             kSecAttrAccount: connectionID as CFString,
         ] as! [String: Any] as CFDictionary
 
-        let updated = Connection(host: connection.host, user: connection.user, headers: headers, added: connection.added)
+        let updated = Connection(host: connection.host, user: connection.user, headers: headers, added: connection.added, permissions: connection.permissions)
 
         SecItemUpdate(query, [
             kSecValueData: try JSONEncoder().encode(updated) as CFData,
@@ -212,12 +275,20 @@ public extension PersistenceManager.AuthorizationSubsystem {
         }
     }
     func updateConnection(_ connectionID: ItemIdentifier.ConnectionID, accessToken: String, refreshToken: String?) async throws {
-        logger.info("Updating connection with new access token (has refresh token: \(refreshToken != nil))")
+        logger.info("Updating connection \(connectionID, privacy: .public) with new access token (has refresh token: \(refreshToken != nil, privacy: .public))")
 
-        try? removeToken(for: connectionID, service: accessTokenService)
+        do {
+            try removeToken(for: connectionID, service: accessTokenService)
+        } catch {
+            logger.warning("Failed to remove existing access token for \(connectionID, privacy: .public): \(error, privacy: .public)")
+        }
         try storeToken(accessToken, for: connectionID, service: accessTokenService)
 
-        try? removeToken(for: connectionID, service: refreshTokenService)
+        do {
+            try removeToken(for: connectionID, service: refreshTokenService)
+        } catch {
+            logger.warning("Failed to remove existing refresh token for \(connectionID, privacy: .public): \(error, privacy: .public)")
+        }
         if let refreshToken {
             try storeToken(refreshToken, for: connectionID, service: refreshTokenService)
         }
@@ -250,10 +321,12 @@ public extension PersistenceManager.AuthorizationSubsystem {
             logger.error("Error removing connection from keychain: \(SecCopyErrorMessageString(identityStatus, nil)) & \(SecCopyErrorMessageString(passwordStatus, nil))")
         }
 
-        permissionsByConnection.removeValue(forKey: connectionID)
-
         await OfflineMode.shared.forceEnable(reason: "Connection removed")
-        try? await fetchConnections()
+        do {
+            try await fetchConnections()
+        } catch {
+            logger.warning("Failed to refresh connections after removing \(connectionID, privacy: .public): \(error, privacy: .public)")
+        }
         await MainActor.run {
             events.connectionsChanged.send()
         }

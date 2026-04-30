@@ -4,9 +4,16 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "Collection+Convert")
 
 extension ItemCollection {
     convenience init(payload: ItemPayload, type: CollectionType, connectionID: ItemIdentifier.ConnectionID) {
+        if (payload.books?.isEmpty ?? true) && (payload.playlistItems?.isEmpty ?? true) {
+            logger.debug("Collection \(payload.id, privacy: .public) has no books or playlistItems")
+        }
+
         let items: [Item] = payload.books?.compactMap { Audiobook(payload: $0, libraryID: payload.libraryId!, connectionID: connectionID) } ?? payload.playlistItems?.compactMap {
             if let episode = $0.episode, let podcastName = $0.libraryItem?.media?.metadata.title {
                 Episode(episode: episode, podcastName: podcastName, libraryID: payload.libraryId!, fallbackIndex: 0, connectionID: connectionID)

@@ -302,7 +302,11 @@ private extension APIClient {
 
         var urlRequest = try await self.request(request)
 
-        try? await authorizationRefreshTask?.value
+        do {
+            try await authorizationRefreshTask?.value
+        } catch {
+            logger.warning("In-flight authorization refresh task threw before performing \(request.method.value, privacy: .public) \(request.path, privacy: .public): \(error, privacy: .public)")
+        }
         let token = try? await credentialProvider.accessToken
 
         do {
@@ -373,7 +377,9 @@ private extension APIClient {
             } else if httpResponse.statusCode == 404 {
                 throw APIClientError.notFound
             } else if !(200..<299).contains(httpResponse.statusCode) {
-                logger.error("Got invalid response code \(httpResponse.statusCode)")
+                let method = request.httpMethod ?? "?"
+                let path = request.url?.path ?? "?"
+                logger.error("Invalid response code \(httpResponse.statusCode, privacy: .public) for \(method, privacy: .public) \(path, privacy: .public)")
                 throw APIClientError.invalidResponseCode(httpResponse.statusCode)
             }
         }

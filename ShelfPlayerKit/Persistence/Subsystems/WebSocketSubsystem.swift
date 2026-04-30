@@ -101,11 +101,12 @@ private extension PersistenceManager.WebSocketSubsystem {
             let bundle = await SocketConnection(connection: connection)
 
             connections[connection.id] = bundle
+            logger.info("Created new socket for \(connection.id, privacy: .public). Initiating connect")
             bundle.socket.connect()
         }
     }
     func disconnect() {
-        logger.info("Disconnecting all sockets")
+        logger.info("Disconnecting \(self.connections.count, privacy: .public) socket(s)")
 
         for connection in connections.values {
             connection.manager.disconnect()
@@ -128,9 +129,15 @@ private final class SocketConnection {
     init(connection: FriendlyConnection) async {
         connectionID = connection.id
 
-        logger.info("Creating new socket for \(self.connectionID)")
+        logger.info("Creating new socket for \(self.connectionID, privacy: .public)")
 
-        let headers = try? await ABSClient[connectionID].headers
+        let headers: [HTTPHeader]?
+        do {
+            headers = try await ABSClient[connectionID].headers
+        } catch {
+            logger.warning("Failed to fetch headers for socket \(self.connectionID, privacy: .public); connecting without auth headers: \(error, privacy: .public)")
+            headers = nil
+        }
 
         manager = SocketManager(socketURL: connection.host, config: [
             .forceWebsockets(true),
@@ -319,7 +326,7 @@ private final class SocketConnection {
         if let permissions = decoded.permissions {
             let connectionID = connectionID
             Task.detached {
-                await PersistenceManager.shared.authorization.updatePermissions(permissions, for: connectionID)
+                try? await PersistenceManager.shared.authorization.updatePermissions(permissions, for: connectionID)
             }
         }
     }

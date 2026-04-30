@@ -7,12 +7,14 @@
 
 import Foundation
 import Observation
+import OSLog
 
 @Observable
 public final class AppSettings: @unchecked Sendable {
     public static let shared = AppSettings()
 
     @ObservationIgnored private let suite: UserDefaults
+    @ObservationIgnored private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "AppSettings")
 
     // MARK: - Settings
 
@@ -64,7 +66,7 @@ public final class AppSettings: @unchecked Sendable {
         didSet { suite.set(skipForwardsInterval, forKey: "skipForwardsInterval") }
     }
 
-    public var remoteSeekAutoEndInterval: Double = 0.5 {
+    public var remoteSeekAutoEndInterval: Double = 20.0 {
         didSet { suite.set(remoteSeekAutoEndInterval, forKey: "remoteSeekAutoEndInterval") }
     }
 
@@ -226,12 +228,8 @@ public final class AppSettings: @unchecked Sendable {
         didSet { suite.set(podcastsSortOrder.rawValue, forKey: "podcastsSortOrder") }
     }
 
-    public var podcastsFilter: ItemFilter = .all {
+    public var podcastsFilter: PodcastFilter = .all {
         didSet { suite.set(podcastsFilter.rawValue, forKey: "podcastsFilter") }
-    }
-
-    public var podcastsRestrictToPersisted = false {
-        didSet { suite.set(podcastsRestrictToPersisted, forKey: "podcastsRestrictToPersisted") }
     }
 
     public var podcastsDisplayType: ItemDisplayType = .grid {
@@ -344,7 +342,7 @@ public final class AppSettings: @unchecked Sendable {
         extendSleepTimerOnPlay = suite.object(forKey: "extendSleepTimerOnPlay") as? Bool ?? false
         skipBackwardsInterval = suite.object(forKey: "skipBackwardsInterval") as? Int ?? 30
         skipForwardsInterval = suite.object(forKey: "skipForwardsInterval") as? Int ?? 30
-        remoteSeekAutoEndInterval = suite.object(forKey: "remoteSeekAutoEndInterval") as? Double ?? 0.5
+        remoteSeekAutoEndInterval = suite.object(forKey: "remoteSeekAutoEndInterval") as? Double ?? 20.0
 
         enableSerifFont = suite.object(forKey: "enableSerifFont") as? Bool ?? true
         showSingleEntryGroupedSeries = suite.object(forKey: "showSingleEntryGroupedSeries") as? Bool ?? true
@@ -408,8 +406,7 @@ public final class AppSettings: @unchecked Sendable {
         if let raw = suite.object(forKey: "podcastsSortOrder") as? Int,
            let val = PodcastSortOrder(rawValue: raw) { podcastsSortOrder = val }
         if let raw = suite.object(forKey: "podcastsFilter") as? Int,
-           let val = ItemFilter(rawValue: raw) { podcastsFilter = val }
-        podcastsRestrictToPersisted = suite.object(forKey: "podcastsRestrictToPersisted") as? Bool ?? false
+           let val = PodcastFilter(rawValue: raw) { podcastsFilter = val }
         if let raw = suite.object(forKey: "podcastsDisplayType") as? Int,
            let val = ItemDisplayType(rawValue: raw) { podcastsDisplayType = val }
 
@@ -443,7 +440,12 @@ public final class AppSettings: @unchecked Sendable {
 private extension AppSettings {
     func decodeCodable<T: Decodable>(forKey key: String) -> T? {
         guard let data = suite.data(forKey: key) else { return nil }
-        return try? JSONDecoder().decode(T.self, from: data)
+        do {
+            return try JSONDecoder().decode(T.self, from: data)
+        } catch {
+            logger.warning("Failed to decode AppSettings value for key \(key, privacy: .public): \(error, privacy: .public)")
+            return nil
+        }
     }
 
     func encodeCodable<T: Encodable>(_ value: T?, forKey key: String) {
@@ -452,8 +454,11 @@ private extension AppSettings {
             return
         }
 
-        if let data = try? JSONEncoder().encode(value) {
+        do {
+            let data = try JSONEncoder().encode(value)
             suite.set(data, forKey: key)
+        } catch {
+            logger.warning("Failed to encode AppSettings value for key \(key, privacy: .public): \(error, privacy: .public)")
         }
     }
 }

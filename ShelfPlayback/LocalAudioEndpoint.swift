@@ -112,6 +112,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
     private var chapterValidUntil: TimeInterval?
 
     private var audioPlayerSubscription: Any?
+    private var lastPeriodicObserverInterval: TimeInterval?
     private var observerSubscriptions = Set<AnyCancellable>()
     private var bufferCheckTimer: Timer?
 
@@ -244,6 +245,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
             .init(audioPlayer.defaultRate)
         }
         set {
+            logger.debug("Playback rate changed to \(newValue, privacy: .public)")
             audioPlayer.defaultRate = Float(newValue)
 
             if audioPlayer.rate > 0 {
@@ -376,9 +378,11 @@ extension LocalAudioEndpoint {
     }
 
     func beginSeeking(_ forwards: Bool) async {
+        logger.info("beginSeeking forwards=\(forwards, privacy: .public) rate=\(self.playbackRate, privacy: .public)")
         audioPlayer.rate = forwards ? 3 : -3
     }
     func endSeeking() async {
+        logger.info("endSeeking rate=\(self.playbackRate, privacy: .public)")
         audioPlayer.rate = Float(playbackRate)
     }
 
@@ -674,8 +678,10 @@ private extension LocalAudioEndpoint {
 
         if let item = audioPlayer.currentItem {
             isBuffering = !(item.status == .readyToPlay && item.isPlaybackLikelyToKeepUp)
+            logger.debug("Buffer health: status=\(item.status.rawValue, privacy: .public) likelyToKeepUp=\(item.isPlaybackLikelyToKeepUp, privacy: .public)")
         } else {
             isBuffering = true
+            logger.debug("Buffer health: no current item")
         }
 
         if self.isBuffering != isBuffering {
@@ -733,7 +739,7 @@ private extension LocalAudioEndpoint {
             waitTime = distance - 10
         }
 
-        logger.info("Scheduling sleep timer for \(waitTime) seconds")
+        logger.info("Scheduling sleep timer waitTime=\(waitTime, privacy: .public) distance=\(distance, privacy: .public)")
 
         sleepTimeoutTimer = .init(timeInterval: waitTime, repeats: false) { [weak self] _ in
             guard let self else {
@@ -750,6 +756,7 @@ private extension LocalAudioEndpoint {
                 }
 
                 if distance <= 0 {
+                    self.logger.info("Sleep timer expired")
                     await self.pause()
 
                     self.sleepTimer = nil
@@ -826,6 +833,7 @@ private extension LocalAudioEndpoint {
     }
 
     func repopulateAudioPlayerQueue(start index: Int) async throws {
+        logger.info("Repopulating AVQueuePlayer queue starting at track index \(index, privacy: .public)")
         audioPlayer.removeAllItems()
         let headers = try? await ABSClient[currentItemID.connectionID].requestHeaders
 
@@ -845,6 +853,7 @@ private extension LocalAudioEndpoint {
         }
     }
     func updateUpNextQueue(using forced: ResolvedUpNextStrategy? = nil) {
+        logger.info("Updating up next queue for currentItemID=\(self.currentItemID, privacy: .public)")
         Task.detached { [weak self] in
             guard let self, await upNextQueue.isEmpty else {
                 return
@@ -1012,6 +1021,7 @@ private extension LocalAudioEndpoint {
         AVAudioSession.sharedInstance()
             .publisher(for: \.outputVolume)
             .sink { [weak self] volume in
+                self?.logger.debug("System volume changed: \(volume, privacy: .public)")
                 self?.systemVolume = .init(volume)
 
                 guard let id = self?.id, let systemVolume = self?.systemVolume else {
@@ -1034,6 +1044,8 @@ private extension LocalAudioEndpoint {
                 }
 
                 let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt
+
+                self?.logger.info("AVAudioSession interruption type=\(type.rawValue, privacy: .public) options=\(optionsValue ?? 0, privacy: .public)")
 
                 Task {
                     switch type {
@@ -1064,6 +1076,7 @@ private extension LocalAudioEndpoint {
                     return
                 }
 
+                self?.logger.info("Audio route changed to \(output.portName, privacy: .public)")
                 self?.route = .init(name: output.portName, port: output.portType)
             }
             .store(in: &observerSubscriptions)
@@ -1075,6 +1088,8 @@ private extension LocalAudioEndpoint {
                 guard let self else {
                     return
                 }
+
+                self.logger.info("AVPlayerItem didPlayToEnd activeIndex=\(self.activeAudioTrackIndex, privacy: .public)")
 
                 if self.activeAudioTrackIndex >= self.audioTracks.index(before: self.audioTracks.endIndex) {
                     Task {
@@ -1091,6 +1106,8 @@ private extension LocalAudioEndpoint {
             .receive(on: RunLoop.main)
             .sink { [weak self] notification in
                 let error = notification.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? NSError
+
+                self?.logger.info("AVPlayerItem failedToPlayToEnd, handling failure")
 
                 Task { @MainActor [weak self] in
                     await self?.handlePlaybackFailure(error: error)
@@ -1119,7 +1136,14 @@ private extension LocalAudioEndpoint {
             audioPlayer.removeTimeObserver(audioPlayerSubscription)
         }
 
-        audioPlayerSubscription = audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1 * (1 / playbackRate), preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) { [weak self] _ in
+        let interval: TimeInterval = 1 * (1 / playbackRate)
+
+        if lastPeriodicObserverInterval != interval {
+            logger.debug("Periodic observer interval changed to \(interval, privacy: .public)s (rate=\(self.playbackRate, privacy: .public))")
+            lastPeriodicObserverInterval = interval
+        }
+
+        audioPlayerSubscription = audioPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: interval, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: .main) { [weak self] _ in
             guard let self else {
                 return
             }

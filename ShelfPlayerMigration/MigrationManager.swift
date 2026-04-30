@@ -48,7 +48,7 @@ public actor MigrationManager {
         let result = hasDefaults || hasStore
 
         if result {
-            logger.info("Old installation detected (defaults: \(hasDefaults), store: \(hasStore))")
+            logger.info("Old installation detected (defaults: \(hasDefaults, privacy: .public), store: \(hasStore, privacy: .public))")
         }
 
         return result
@@ -62,28 +62,33 @@ public actor MigrationManager {
 
     public func performMigration() async throws {
         guard !wasMigrationCompleted() else {
+            logger.info("Migration already completed previously; skipping")
             state = .completed
             return
         }
 
         guard detectOldInstallation() else {
+            logger.info("No old installation detected; migration not needed")
             state = .notNeeded
             return
         }
 
-        logger.info("Starting migration from ShelfPlayer to ShelfPlayer")
+        logger.info("Starting migration: orchestrating keychain, defaults, and SwiftData migrators")
         state = .inProgress(0)
 
         do {
             state = .inProgress(0.1)
+            logger.info("Running KeychainMigrator...")
             try KeychainMigrator.migrate()
-            logger.info("Keychain migration complete")
+            logger.info("KeychainMigrator complete")
 
             state = .inProgress(0.3)
+            logger.info("Running DefaultsMigrator...")
             DefaultsMigrator.migrate()
-            logger.info("Defaults migration complete")
+            logger.info("DefaultsMigrator complete")
 
             state = .inProgress(0.5)
+            logger.info("Running SwiftDataMigrator...")
             try await SwiftDataMigrator.migrate { progress in
                 Task { @MainActor in
                     // Map SwiftData progress from 0.5 to 0.95
@@ -91,7 +96,7 @@ public actor MigrationManager {
                     await self.updateProgress(mapped)
                 }
             }
-            logger.info("SwiftData migration complete")
+            logger.info("SwiftDataMigrator complete")
 
             state = .inProgress(1.0)
 
@@ -99,10 +104,10 @@ public actor MigrationManager {
             UserDefaults.standard.set(Date.now.timeIntervalSince1970, forKey: "shelfPlayerMigrationDate")
 
             state = .completed
-            logger.info("Migration completed successfully")
+            logger.info("Migration complete")
         } catch {
             state = .failed(error)
-            logger.error("Migration failed: \(error)")
+            logger.error("Migration failed: \(error.localizedDescription, privacy: .public)")
             throw error
         }
     }

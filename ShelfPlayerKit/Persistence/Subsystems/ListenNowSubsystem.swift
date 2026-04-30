@@ -84,7 +84,11 @@ private extension PersistenceManager.ListenNowSubsystem {
         updateTask.removeAll()
 
         Task {
-            let _ = try? await current
+            do {
+                let _ = try await current
+            } catch {
+                Self.logger.debug("Listen Now refresh after invalidation failed: \(error, privacy: .public)")
+            }
         }
     }
 }

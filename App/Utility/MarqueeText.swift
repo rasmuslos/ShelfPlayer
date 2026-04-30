@@ -104,6 +104,8 @@ struct MarqueeText: View {
     var delay: TimeInterval = 2
     var speed: Double = 30
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State private var textWidth: CGFloat = 0
     @State private var containerWidth: CGFloat = 0
     @State private var progress: Double = 0
@@ -115,7 +117,7 @@ struct MarqueeText: View {
     }
 
     private var needsMarquee: Bool {
-        overflow > 0
+        !reduceMotion && overflow > 0
     }
 
     private var fadeLeading: Bool {

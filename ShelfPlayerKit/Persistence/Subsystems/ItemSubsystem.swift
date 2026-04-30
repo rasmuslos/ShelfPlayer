@@ -31,7 +31,13 @@ extension PersistenceManager {
 public extension PersistenceManager.ItemSubsystem {
     func playbackRate(for itemID: ItemIdentifier) -> Percentage? {
         let key = itemID.description
-        let entity = try? modelContext.fetch(FetchDescriptor<PersistedPlaybackRate>(predicate: #Predicate { $0.itemID == key })).first
+        let entity: PersistedPlaybackRate?
+        do {
+            entity = try modelContext.fetch(FetchDescriptor<PersistedPlaybackRate>(predicate: #Predicate { $0.itemID == key })).first
+        } catch {
+            logger.warning("Failed to fetch playback rate for \(itemID, privacy: .public): \(error, privacy: .public)")
+            return nil
+        }
         return entity?.rate
     }
     func setPlaybackRate(_ rate: Percentage?, for itemID: ItemIdentifier) throws {
@@ -60,8 +66,20 @@ public extension PersistenceManager.ItemSubsystem {
 
     func sleepTimer(for itemID: ItemIdentifier) -> SleepTimerConfiguration? {
         let key = itemID.description
-        guard let entity = try? modelContext.fetch(FetchDescriptor<PersistedSleepTimerConfig>(predicate: #Predicate { $0.itemID == key })).first else { return nil }
-        return try? JSONDecoder().decode(SleepTimerConfiguration.self, from: entity.configData)
+        let entity: PersistedSleepTimerConfig?
+        do {
+            entity = try modelContext.fetch(FetchDescriptor<PersistedSleepTimerConfig>(predicate: #Predicate { $0.itemID == key })).first
+        } catch {
+            logger.warning("Failed to fetch sleep timer for \(itemID, privacy: .public): \(error, privacy: .public)")
+            return nil
+        }
+        guard let entity else { return nil }
+        do {
+            return try JSONDecoder().decode(SleepTimerConfiguration.self, from: entity.configData)
+        } catch {
+            logger.warning("Failed to decode sleep timer for \(itemID, privacy: .public): \(error, privacy: .public)")
+            return nil
+        }
     }
     func setSleepTimer(_ sleepTimer: SleepTimerConfiguration?, for itemID: ItemIdentifier) throws {
         let key = itemID.description
@@ -104,7 +122,12 @@ public extension PersistenceManager.ItemSubsystem {
 
     func allowSuggestions(for itemID: ItemIdentifier) -> Bool? {
         let key = itemID.description
-        return try? modelContext.fetch(FetchDescriptor<PersistedUpNextStrategy_>(predicate: #Predicate { $0.itemID == key })).first?.allowSuggestions
+        do {
+            return try modelContext.fetch(FetchDescriptor<PersistedUpNextStrategy_>(predicate: #Predicate { $0.itemID == key })).first?.allowSuggestions
+        } catch {
+            logger.warning("Failed to fetch up-next strategy for \(itemID, privacy: .public): \(error, privacy: .public)")
+            return nil
+        }
     }
     func setAllowSuggestions(_ allowed: Bool?, for itemID: ItemIdentifier) throws {
         let key = itemID.description

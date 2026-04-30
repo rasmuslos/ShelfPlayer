@@ -7,7 +7,10 @@
 
 import WidgetKit
 import SwiftUI
+import OSLog
 import ShelfPlayerKit
+
+private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ListenedTodayWidget")
 
 private var tomorrowMidnight: Date {
     Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 1, to: .now)!)
@@ -30,12 +33,14 @@ struct ListenedTodayWidgetProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (ListenedTodayTimelineEntry) -> Void) {
+        logger.info("Generating ListenedToday snapshot")
         Task {
             completion(await getCurrent())
         }
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<ListenedTodayTimelineEntry>) -> Void) {
+        logger.info("Generating ListenedToday timeline")
         Task {
             let timeline = Timeline(entries: [
                 await getCurrent(),
@@ -50,10 +55,12 @@ struct ListenedTodayWidgetProvider: TimelineProvider {
         let empty = ListenedTodayTimelineEntry(totalToday: 0)
 
         guard let current = AppSettings.shared.listenedTodayWidgetValue else {
+            logger.warning("No listenedTodayWidgetValue set; falling back to empty entry")
             return empty
         }
 
         guard tomorrowMidnight.distance(to: current.updated) < 0 else {
+            logger.warning("listenedTodayWidgetValue stale (updated=\(current.updated, privacy: .public)); resetting")
             AppSettings.shared.listenedTodayWidgetValue = nil
             return empty
         }

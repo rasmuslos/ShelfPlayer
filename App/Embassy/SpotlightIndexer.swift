@@ -134,6 +134,8 @@ private extension SpotlightIndexer {
     func iteration(libraries: [Library], metadata: inout [Library: PersistenceManager.ItemSubsystem.LibraryIndexMetadata]) async throws -> Bool {
         let candidates = metadata.compactMap { $1.isFinished ? nil : $0 } + libraries.filter { !metadata.keys.contains($0) }
 
+        logger.debug("SpotlightIndexer iteration: \(candidates.count, privacy: .public) libraries pending")
+
         guard let next = candidates.first else {
             logger.info("Spotlight Indexer finished.")
             settings.spotlightIndexCompletionDate = .now
@@ -154,6 +156,8 @@ private extension SpotlightIndexer {
 
     func planRun() async throws -> ([Library], [Library: PersistenceManager.ItemSubsystem.LibraryIndexMetadata]) {
         let validForSeconds: Double = 60 * 60 * 24 * 21
+
+        logger.debug("SpotlightIndexer planRun starting")
 
         let libraries = await withTaskGroup {
             for connectionID in await PersistenceManager.shared.authorization.connectionIDs {
@@ -252,7 +256,7 @@ private extension SpotlightIndexer {
             }
         case .podcasts:
             let podcasts: [Podcast]
-            (podcasts, total) = try await ABSClient[library.id.connectionID].podcasts(from: library.id.libraryID, filter: .all, sortOrder: .addedAt, ascending: true, limit: PAGE_SIZE, page: metadata.page)
+            (podcasts, total) = try await ABSClient[library.id.connectionID].podcasts(from: library.id.libraryID, sortOrder: .addedAt, ascending: true, limit: PAGE_SIZE, page: metadata.page)
 
             isFinished = podcasts.isEmpty
             attributes = await withTaskGroup {

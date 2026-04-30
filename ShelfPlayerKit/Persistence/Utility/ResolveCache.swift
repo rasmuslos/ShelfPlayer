@@ -253,8 +253,10 @@ public extension ResolveCache {
 
         do {
             try FileManager.default.removeItem(at: cachePath)
+        } catch CocoaError.fileNoSuchFile, CocoaError.fileReadNoSuchFile {
+            // expected: cache may not exist yet
         } catch {
-            logger.error("Error removing cache directory: \(error)")
+            logger.warning("Failed to remove cache directory \(self.cachePath.path, privacy: .public): \(error, privacy: .public)")
         }
     }
     func invalidate(itemID: ItemIdentifier) {
@@ -268,8 +270,10 @@ public extension ResolveCache {
 
         do {
             try FileManager.default.removeItem(atPath: diskPath(primaryID: itemID.primaryID, groupingID: itemID.groupingID, connectionID: itemID.connectionID).relativePath)
+        } catch CocoaError.fileNoSuchFile, CocoaError.fileReadNoSuchFile {
+            // expected: disk cache may not exist
         } catch {
-            logger.error("Failed to remove cached item: \(error)")
+            logger.warning("Failed to remove cached item file for \(itemID, privacy: .public): \(error, privacy: .public)")
         }
 
         if itemID.type == .episode {
@@ -290,8 +294,10 @@ public extension ResolveCache {
 
         do {
             try FileManager.default.removeItem(atPath: diskPath(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID).relativePath)
+        } catch CocoaError.fileNoSuchFile, CocoaError.fileReadNoSuchFile {
+            // expected: disk cache may not exist
         } catch {
-            logger.error("Failed to remove cached item: \(error)")
+            logger.warning("Failed to remove cached item file for primaryID=\(primaryID, privacy: .public) groupingID=\(groupingID ?? "<nil>", privacy: .public) connectionID=\(connectionID, privacy: .public): \(error, privacy: .public)")
         }
     }
 }
@@ -328,7 +334,7 @@ private extension ResolveCache {
         do {
             content = try Data(contentsOf: diskPath)
         } catch {
-            logger.error("Failed to read the cached file: \(error)")
+            logger.warning("Failed to read cached item file at \(diskPath.path, privacy: .public): \(error, privacy: .public)")
             return nil
         }
 
@@ -340,12 +346,12 @@ private extension ResolveCache {
             logger.info("Using disk cache for item \(result.id)")
             return result
         } catch {
-            logger.error("Failed to decode the cached file: \(error)")
+            logger.error("Failed to decode cached item file at \(diskPath.path, privacy: .public): \(error, privacy: .public)")
 
             do {
                 try FileManager.default.removeItem(at: diskPath)
             } catch {
-                logger.error("Failed to delete the corrupted file: \(error)")
+                logger.warning("Failed to delete corrupted cache file at \(diskPath.path, privacy: .public): \(error, privacy: .public)")
             }
 
             return nil

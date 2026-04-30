@@ -30,6 +30,7 @@ final actor AuthorizedAPIClientCredentialProvider: APICredentialProvider {
 
         do {
             accessToken = try await PersistenceManager.shared.authorization.refreshAccessToken(for: connectionID)
+            logger.info("Access token refreshed for \(self.connectionID, privacy: .public)")
         } catch {
             logger.error("Access token refresh failed for \(self.connectionID, privacy: .public). Dispatching connectionUnauthorized notification. Cause: \(error, privacy: .public)")
             await MainActor.run {

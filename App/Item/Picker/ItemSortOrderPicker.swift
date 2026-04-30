@@ -169,8 +169,6 @@ extension PodcastSortOrder: ItemSortOrder {
             "item.sort.episodeCount"
         case .addedAt:
             "item.sort.added"
-        case .duration:
-            "item.sort.duration"
         }
     }
 
@@ -184,8 +182,6 @@ extension PodcastSortOrder: ItemSortOrder {
             "number"
         case .addedAt:
             "document.badge.plus"
-        case .duration:
-            "clock"
         }
     }
 }

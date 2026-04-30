@@ -42,22 +42,11 @@ public extension APIClient {
         return (podcast, episodes.compactMap { Episode(episode: $0, item: item, connectionID: connectionID) })
     }
 
-    func podcasts(from libraryID: String, filter: ItemFilter, sortOrder: PodcastSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Podcast], Int) {
+    func podcasts(from libraryID: String, sortOrder: PodcastSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Podcast], Int) {
         var query: [URLQueryItem] = [
             .init(name: "sort", value: sortOrder.queryValue),
             .init(name: "desc", value: ascending ? "0" : "1"),
         ]
-
-        switch filter {
-        case .all:
-            break
-        case .active:
-            query.append(.init(name: "filter", value: "progress.aW4tcHJvZ3Jlc3M%3D"))
-        case .finished:
-            query.append(.init(name: "filter", value: "progress.ZmluaXNoZWQ%3D"))
-        case .notFinished:
-            query.append(.init(name: "filter", value: "progress.bm90LWZpbmlzaGVk"))
-        }
 
         if let page {
             query.append(.init(name: "page", value: String(page)))

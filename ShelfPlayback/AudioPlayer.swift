@@ -48,6 +48,7 @@ public final actor AudioPlayer: Sendable {
     var sleepTimerDidExpireAt: (SleepTimerConfiguration, Date)?
 
     private var remoteSeekDirection: Bool?
+    private var remoteSeekBeganAt: Date?
     private var remoteSeekAutoEndTask: Task<Void, Never>?
 
     nonisolated(unsafe) var observerSubscriptions = Set<AnyCancellable>()
@@ -159,6 +160,7 @@ public extension AudioPlayer {
 
     func start(_ item: AudioPlayerItem) async throws {
         guard startTask == nil else {
+            logger.warning("Start already in progress; ignoring request for item \(item.itemID, privacy: .public)")
             return
         }
 
@@ -230,7 +232,7 @@ public extension AudioPlayer {
                 do {
                     try await applySmartRewind()
                 } catch {
-                    logger.error("Could not seek back 10 seconds (smart rewind): \(error)")
+                    logger.error("Smart rewind failed (delta >= 30s): \(error, privacy: .public)")
                 }
             }
 
@@ -294,25 +296,36 @@ public extension AudioPlayer {
         }
     }
 
-    func beginSeeking(_ forwards: Bool) async {
-        await current?.beginSeeking(forwards)
-    }
-    func endSeeking() async {
-        await current?.endSeeking()
-    }
-
-    func handleRemoteSeek(forwards: Bool) async {
+    func handleRemoteSeek(forwards: Bool, type: MPSeekCommandEventType?) async {
         guard current != nil else {
+            return
+        }
+
+        if type == .endSeeking {
+            let beganAt = remoteSeekBeganAt
+            await stopRemoteSeek()
+
+            // Some senders (e.g. CarPlay rocker buttons) translate a short tap into
+            // begin+end fast-forward within milliseconds. Treat that as a skip command.
+            if let beganAt, Date().timeIntervalSince(beganAt) < 0.35 {
+                do {
+                    try await skip(forwards: forwards)
+                } catch {
+                    logger.error("MP-Command: skip-on-tap failed: \(error)")
+                }
+            }
             return
         }
 
         if let direction = remoteSeekDirection, direction != forwards {
             await current?.endSeeking()
             remoteSeekDirection = nil
+            remoteSeekBeganAt = nil
         }
 
         if remoteSeekDirection == nil {
             remoteSeekDirection = forwards
+            remoteSeekBeganAt = Date()
             await current?.beginSeeking(forwards)
         }
 
@@ -336,6 +349,7 @@ public extension AudioPlayer {
         }
 
         remoteSeekDirection = nil
+        remoteSeekBeganAt = nil
         await current?.endSeeking()
     }
 
@@ -563,22 +577,22 @@ private extension AudioPlayer {
 
         commandCenter.seekBackwardCommand.isEnabled = true
         commandCenter.seekBackwardCommand.addTarget { event in
-            let rawType = (event as? MPSeekCommandEvent)?.type
-            self.logger.info("MP-Command: seekBackward triggered (type=\(String(describing: rawType?.rawValue)))")
+            let type = (event as? MPSeekCommandEvent)?.type
+            self.logger.info("MP-Command: seekBackward triggered (type=\(String(describing: type?.rawValue)))")
 
             Task {
-                await self.handleRemoteSeek(forwards: false)
+                await self.handleRemoteSeek(forwards: false, type: type)
             }
 
             return .success
         }
         commandCenter.seekForwardCommand.isEnabled = true
         commandCenter.seekForwardCommand.addTarget { event in
-            let rawType = (event as? MPSeekCommandEvent)?.type
-            self.logger.info("MP-Command: seekForward triggered (type=\(String(describing: rawType?.rawValue)))")
+            let type = (event as? MPSeekCommandEvent)?.type
+            self.logger.info("MP-Command: seekForward triggered (type=\(String(describing: type?.rawValue)))")
 
             Task {
-                await self.handleRemoteSeek(forwards: true)
+                await self.handleRemoteSeek(forwards: true, type: type)
             }
 
             return .success

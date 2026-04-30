@@ -33,7 +33,16 @@ struct MultiLibraryHomePanel: View {
                 emptyState
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 16) {
+                    // VStack (eager) instead of LazyVStack: when a row's
+                    // initial body is `EmptyView()` (the brief moment between
+                    // mount and the first .task completion populating
+                    // `hasLoaded`), LazyVStack can fail to realize the row at
+                    // all — its .task never fires, hasLoaded stays false, and
+                    // the row stays invisible permanently. Eager mount avoids
+                    // that. With at most a dozen sections the perf cost is
+                    // negligible; each row's actual content is itself lazy
+                    // (its own ScrollView / task).
+                    VStack(spacing: 16) {
                         ForEach(visibleSections) { section in
                             MultiLibraryHomeSectionRow(section: section)
                         }

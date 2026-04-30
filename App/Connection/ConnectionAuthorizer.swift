@@ -7,9 +7,12 @@
 
 import SwiftUI
 import AuthenticationServices
+import OSLog
 import ShelfPlayback
 
 struct ConnectionAuthorizer: View {
+    private static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ConnectionAuthorizer")
+
     typealias Callback = (_ username: String, _ accessToken: String, _ refreshToken: String?) -> Void
 
     @State private var strategies: [AuthorizationStrategy]
@@ -142,6 +145,8 @@ struct ConnectionAuthorizer: View {
                 error = nil
                 isLoading = true
 
+                Self.logger.info("Begin authorization with strategy \(String(describing: strategy), privacy: .public)")
+
                 switch strategy {
                     case .usernamePassword:
                         try await authorizeLocal()
@@ -151,6 +156,8 @@ struct ConnectionAuthorizer: View {
                         throw APIClientError.parseError
                 }
             } catch {
+                Self.logger.warning("Authorization failed: \(error, privacy: .public)")
+
                 self.error = error
 
                 notifyError.toggle()
@@ -189,6 +196,8 @@ struct ConnectionAuthorizer: View {
                         let (username, accessToken, refreshToken) = try await apiClient.openIDExchange(code: code, state: state, verifier: verifier)
                         callback(username, accessToken, refreshToken)
                     } catch {
+                        Self.logger.warning("OpenID exchange failed: \(error, privacy: .public)")
+
                         self.error = error
 
                         self.isLoading = false

@@ -7,11 +7,14 @@
 
 import Foundation
 import Combine
+import OSLog
 import SwiftUI
 import ShelfPlayback
 
 @Observable @MainActor
 final class PersonViewModel {
+    private let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "PersonViewModel")
+
     private var observerSubscriptions = Set<AnyCancellable>()
 
     let person: Person
@@ -81,13 +84,19 @@ extension PersonViewModel {
 
     func load(refresh: Bool) {
         Task {
+            logger.info("Loading person \(self.person.id, privacy: .public) type: \(self.person.id.type.rawValue, privacy: .public) refresh: \(refresh, privacy: .public)")
+
             await withTaskGroup(of: Void.self) {
                 $0.addTask { await self.seriesLoader?.initialLoad() }
                 $0.addTask { await self.audiobooksLoader.initialLoad() }
             }
 
             if refresh {
-                try? await ShelfPlayer.refreshItem(itemID: self.person.id)
+                do {
+                    try await ShelfPlayer.refreshItem(itemID: self.person.id)
+                } catch {
+                    logger.warning("Failed to refresh person \(self.person.id, privacy: .public): \(error, privacy: .public)")
+                }
                 self.load(refresh: false)
             }
         }

@@ -14,11 +14,16 @@ struct PlaybackRateButton: View {
 
     var onMeshBackground: Bool = false
 
+    private var isOpen: Bool {
+        viewModel.activeCard == .ratePicker
+    }
+
     var body: some View {
         Button {
             withAnimation(.snappy) {
-                viewModel.activeCard = viewModel.activeCard == .ratePicker ? nil : .ratePicker
+                viewModel.activeCard = isOpen ? nil : .ratePicker
             }
+            UIAccessibility.post(notification: .screenChanged, argument: nil)
         } label: {
             HStack(alignment: .firstTextBaseline, spacing: 0) {
                 Text(satellite.playbackRate, format: .playbackRate.hideX())
@@ -35,12 +40,14 @@ struct PlaybackRateButton: View {
             }
         }
         .hoverEffect(.highlight)
-        .modify(if: viewModel.activeCard == .ratePicker) {
+        .modify(if: isOpen) {
             $0.glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .circle)
         }
         .padding(-12)
         .accessibilityLabel("preferences.playbackRate")
         .accessibilityValue(Text(satellite.playbackRate.formatted(.playbackRate)))
+        .accessibilityHint(Text(isOpen ? "playback.rate.hint.close" : "playback.rate.hint.open"))
+        .accessibilityAddTraits(isOpen ? .isSelected : [])
     }
 }
 
@@ -150,6 +157,15 @@ struct PlaybackRatePickerCard: View {
         .onTapGesture {} // prevent passthrough
         .hapticFeedback(.success, trigger: notifyGroupingSave)
         .hapticFeedback(.error, trigger: notifyGroupingError)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("preferences.playbackRate")
+        .accessibilityAddTraits(.isModal)
+        .accessibilityAction(.escape) {
+            withAnimation(.snappy) {
+                viewModel.activeCard = nil
+            }
+            UIAccessibility.post(notification: .screenChanged, argument: nil)
+        }
         .task(id: grouping?.id) {
             if let grouping {
                 storedGroupingRate = await PersistenceManager.shared.item.playbackRate(for: grouping.id)
@@ -271,6 +287,19 @@ struct PlaybackRatePickerCard: View {
                         }
                     }
             )
+            .accessibilityElement()
+            .accessibilityLabel("preferences.playbackRate")
+            .accessibilityValue(Text(satellite.playbackRate.formatted(.playbackRate)))
+            .accessibilityAdjustableAction { direction in
+                switch direction {
+                    case .increment:
+                        satellite.setPlaybackRate(snappedRate(satellite.playbackRate + step))
+                    case .decrement:
+                        satellite.setPlaybackRate(snappedRate(satellite.playbackRate - step))
+                    @unknown default:
+                        break
+                }
+            }
         }
     }
 

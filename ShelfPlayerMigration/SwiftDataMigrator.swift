@@ -14,6 +14,8 @@ enum SwiftDataMigrator {
     private static let logger = Logger(subsystem: "io.rfk.shelfPlayerMigration", category: "SwiftDataMigrator")
 
     static func migrate(progress: @escaping (Double) -> Void) async throws {
+        logger.info("Starting SwiftData migration")
+
         let oldContainer = try openOldContainer()
         let newContainer = PersistenceManager.shared.modelContainer
 
@@ -24,55 +26,79 @@ enum SwiftDataMigrator {
         newContext.autosaveEnabled = false
 
         progress(0.0)
+
+        logger.info("Migrating audiobooks...")
         try migrateAudiobooks(from: oldContext, to: newContext)
         progress(0.1)
 
+        logger.info("Migrating podcasts and episodes...")
         try migratePodcastsAndEpisodes(from: oldContext, to: newContext)
         progress(0.25)
 
+        logger.info("Migrating progress entries...")
         try migrateProgress(from: oldContext, to: newContext)
         progress(0.35)
 
+        logger.info("Migrating playback sessions...")
         try migrateSessions(from: oldContext, to: newContext)
         progress(0.45)
 
+        logger.info("Migrating bookmarks...")
         try migrateBookmarks(from: oldContext, to: newContext)
         progress(0.5)
 
+        logger.info("Migrating chapters...")
         try migrateChapters(from: oldContext, to: newContext)
         progress(0.55)
 
+        logger.info("Migrating assets...")
         try migrateAssets(from: oldContext, to: newContext)
         progress(0.6)
 
+        logger.info("Migrating discovered connections...")
         try migrateDiscoveredConnections(from: oldContext, to: newContext)
         progress(0.65)
 
+        logger.info("Migrating playback rates...")
         try migratePlaybackRates(from: oldContext, to: newContext)
         progress(0.7)
 
+        logger.info("Migrating sleep timer configs...")
         try migrateSleepTimerConfigs(from: oldContext, to: newContext)
         progress(0.75)
 
+        logger.info("Migrating up-next strategies...")
         try migrateUpNextStrategies(from: oldContext, to: newContext)
         progress(0.8)
 
+        logger.info("Migrating dominant colors...")
         try migrateDominantColors(from: oldContext, to: newContext)
         progress(0.85)
 
+        logger.info("Migrating podcast filter/sort configs...")
         try migratePodcastFilterSorts(from: oldContext, to: newContext)
         progress(0.9)
 
+        logger.info("Migrating tab customizations...")
         try migrateTabCustomizations(from: oldContext, to: newContext)
         progress(0.92)
 
+        logger.info("Migrating library indices...")
         try migrateLibraryIndices(from: oldContext, to: newContext)
         progress(0.95)
 
+        logger.info("Migrating convenience downloads...")
         try await migrateConvenienceDownloads(from: oldContext)
         progress(0.97)
 
-        try newContext.save()
+        logger.info("Saving migrated data to new container...")
+        do {
+            try newContext.save()
+            logger.info("Save complete")
+        } catch {
+            logger.error("Failed to save migrated data: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
         progress(1.0)
 
         logger.info("SwiftData migration complete")
@@ -81,6 +107,8 @@ enum SwiftDataMigrator {
     // MARK: - Container
 
     private static func openOldContainer() throws -> ModelContainer {
+        logger.info("Opening old SwiftData container")
+
         let groupContainer = MigrationManager.oldGroupContainer
 
         let schema = Schema([
@@ -104,7 +132,9 @@ enum SwiftDataMigrator {
                                                groupContainer: .identifier(groupContainer),
                                                cloudKitDatabase: .none)
 
-        return try ModelContainer(for: schema, configurations: [configuration])
+        let container = try ModelContainer(for: schema, configurations: [configuration])
+        logger.info("Old container opened successfully")
+        return container
     }
 
     // MARK: - Audiobooks
@@ -112,6 +142,7 @@ enum SwiftDataMigrator {
     private static func migrateAudiobooks(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedAudiobook>()
         let audiobooks = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(audiobooks.count, privacy: .public) audiobooks; migrating...")
 
         for old in audiobooks {
             let id = ItemIdentifier(string: old._id)
@@ -136,7 +167,7 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(audiobooks.count) audiobooks")
+        logger.info("Migrated \(audiobooks.count, privacy: .public) audiobooks")
     }
 
     // MARK: - Podcasts & Episodes
@@ -144,7 +175,9 @@ enum SwiftDataMigrator {
     private static func migratePodcastsAndEpisodes(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let podcastDescriptor = FetchDescriptor<PersistedPodcast>()
         let podcasts = try oldContext.fetch(podcastDescriptor)
+        logger.info("Fetched \(podcasts.count, privacy: .public) podcasts; migrating...")
 
+        var totalEpisodes = 0
         for oldPodcast in podcasts {
             let podcastID = ItemIdentifier(string: oldPodcast._id)
 
@@ -184,8 +217,10 @@ enum SwiftDataMigrator {
                 newContext.insert(newEpisode)
             }
 
-            logger.info("Migrated podcast \(oldPodcast.name) with \(oldPodcast.episodes.count) episodes")
+            totalEpisodes += oldPodcast.episodes.count
         }
+
+        logger.info("Migrated \(podcasts.count, privacy: .public) podcasts with \(totalEpisodes, privacy: .public) episodes")
     }
 
     // MARK: - Progress
@@ -193,6 +228,7 @@ enum SwiftDataMigrator {
     private static func migrateProgress(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedProgress>()
         let entries = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(entries.count, privacy: .public) progress entries; migrating...")
 
         for old in entries {
             let new = ShelfPlayerSchema.PersistedProgress(
@@ -212,7 +248,7 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(entries.count) progress entries")
+        logger.info("Migrated \(entries.count, privacy: .public) progress entries")
     }
 
     // MARK: - Sessions
@@ -220,6 +256,7 @@ enum SwiftDataMigrator {
     private static func migrateSessions(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedPlaybackSession>()
         let sessions = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(sessions.count, privacy: .public) playback sessions; migrating...")
 
         for old in sessions {
             let itemID = ItemIdentifier(string: old._itemID)
@@ -235,7 +272,7 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(sessions.count) playback sessions")
+        logger.info("Migrated \(sessions.count, privacy: .public) playback sessions")
     }
 
     // MARK: - Bookmarks
@@ -243,6 +280,7 @@ enum SwiftDataMigrator {
     private static func migrateBookmarks(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedBookmark>()
         let bookmarks = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(bookmarks.count, privacy: .public) bookmarks; migrating...")
 
         for old in bookmarks {
             let new = ShelfPlayerSchema.PersistedBookmark(
@@ -257,7 +295,7 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(bookmarks.count) bookmarks")
+        logger.info("Migrated \(bookmarks.count, privacy: .public) bookmarks")
     }
 
     // MARK: - Chapters
@@ -265,6 +303,7 @@ enum SwiftDataMigrator {
     private static func migrateChapters(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedChapter>()
         let chapters = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(chapters.count, privacy: .public) chapters; migrating...")
 
         for old in chapters {
             let itemID = ItemIdentifier(string: old._itemID)
@@ -280,7 +319,7 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(chapters.count) chapters")
+        logger.info("Migrated \(chapters.count, privacy: .public) chapters")
     }
 
     // MARK: - Assets
@@ -288,6 +327,7 @@ enum SwiftDataMigrator {
     private static func migrateAssets(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedAsset>()
         let assets = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(assets.count, privacy: .public) assets; migrating...")
 
         for old in assets {
             let itemID = ItemIdentifier(string: old._itemID)
@@ -303,7 +343,7 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(assets.count) assets")
+        logger.info("Migrated \(assets.count, privacy: .public) assets")
     }
 
     // MARK: - Discovered Connections
@@ -311,6 +351,7 @@ enum SwiftDataMigrator {
     private static func migrateDiscoveredConnections(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedDiscoveredConnection>()
         let connections = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(connections.count, privacy: .public) discovered connections; migrating...")
 
         for old in connections {
             let new = ShelfPlayerSchema.PersistedDiscoveredConnection(
@@ -322,7 +363,7 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(connections.count) discovered connections")
+        logger.info("Migrated \(connections.count, privacy: .public) discovered connections")
     }
 
     // MARK: - Key-Value Entity Clusters
@@ -330,6 +371,7 @@ enum SwiftDataMigrator {
     private static func migratePlaybackRates(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedKeyValueEntity>(predicate: #Predicate { $0.cluster == "playbackRates" })
         let entities = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(entities.count, privacy: .public) playback rates; migrating...")
 
         for entity in entities {
             guard let rate = try? JSONDecoder().decode(Double.self, from: entity.value) else { continue }
@@ -338,19 +380,20 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(entities.count) playback rates")
+        logger.info("Migrated \(entities.count, privacy: .public) playback rates")
     }
 
     private static func migrateSleepTimerConfigs(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedKeyValueEntity>(predicate: #Predicate { $0.cluster == "sleepTimers" })
         let entities = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(entities.count, privacy: .public) sleep timer configs; migrating...")
 
         for entity in entities {
             let new = ShelfPlayerSchema.PersistedSleepTimerConfig(itemID: entity.key, configData: entity.value)
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(entities.count) sleep timer configs")
+        logger.info("Migrated \(entities.count, privacy: .public) sleep timer configs")
     }
 
     private static func migrateUpNextStrategies(from oldContext: ModelContext, to newContext: ModelContext) throws {
@@ -360,6 +403,8 @@ enum SwiftDataMigrator {
         let suggestionsDescriptor = FetchDescriptor<PersistedKeyValueEntity>(predicate: #Predicate { $0.cluster == "allowSuggestions" })
         let suggestions = try oldContext.fetch(suggestionsDescriptor)
         let suggestionsMap = Dictionary(uniqueKeysWithValues: suggestions.map { ($0.key, $0) })
+
+        logger.info("Fetched \(strategies.count, privacy: .public) up-next strategies (\(suggestions.count, privacy: .public) suggestion overrides); migrating...")
 
         for entity in strategies {
             guard let strategy = String(data: entity.value, encoding: .utf8) else { continue }
@@ -377,12 +422,13 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(strategies.count) up-next strategies")
+        logger.info("Migrated \(strategies.count, privacy: .public) up-next strategies")
     }
 
     private static func migrateDominantColors(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedKeyValueEntity>(predicate: #Predicate { $0.cluster == "dominantColors" })
         let entities = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(entities.count, privacy: .public) dominant colors; migrating...")
 
         for entity in entities {
             guard let colorString = String(data: entity.value, encoding: .utf8) else { continue }
@@ -403,12 +449,13 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(entities.count) dominant colors")
+        logger.info("Migrated \(entities.count, privacy: .public) dominant colors")
     }
 
     private static func migratePodcastFilterSorts(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedKeyValueEntity>(predicate: #Predicate { $0.cluster == "podcastFilterSortConfigurations" })
         let entities = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(entities.count, privacy: .public) podcast filter/sort configs; migrating...")
 
         for entity in entities {
             guard let config = try? JSONDecoder().decode(OldPodcastFilterSortConfig.self, from: entity.value) else { continue }
@@ -425,12 +472,13 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(entities.count) podcast filter/sort configs")
+        logger.info("Migrated \(entities.count, privacy: .public) podcast filter/sort configs")
     }
 
     private static func migrateTabCustomizations(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedKeyValueEntity>(predicate: #Predicate { $0.cluster == "storedTabIDs" })
         let entities = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(entities.count, privacy: .public) tab customizations; migrating...")
 
         for entity in entities {
             let parts = entity.key.split(separator: "::", maxSplits: 1)
@@ -448,12 +496,13 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(entities.count) tab customizations")
+        logger.info("Migrated \(entities.count, privacy: .public) tab customizations")
     }
 
     private static func migrateLibraryIndices(from oldContext: ModelContext, to newContext: ModelContext) throws {
         let descriptor = FetchDescriptor<PersistedKeyValueEntity>(predicate: #Predicate { $0.cluster == "libraryIndexMetadata" })
         let entities = try oldContext.fetch(descriptor)
+        logger.info("Fetched \(entities.count, privacy: .public) library indices; migrating...")
 
         for entity in entities {
             guard let index = try? JSONDecoder().decode(OldLibraryIndexMetadata.self, from: entity.value) else { continue }
@@ -470,7 +519,7 @@ enum SwiftDataMigrator {
             newContext.insert(new)
         }
 
-        logger.info("Migrated \(entities.count) library indices")
+        logger.info("Migrated \(entities.count, privacy: .public) library indices")
     }
 
     // MARK: - Convenience Downloads
@@ -484,6 +533,7 @@ enum SwiftDataMigrator {
 
         let retrievalDescriptor = FetchDescriptor<PersistedKeyValueEntity>(predicate: #Predicate { $0.cluster == "convenienceDownloadRetrievals" })
         let retrievalEntities = try oldContext.fetch(retrievalDescriptor)
+        logger.info("Fetched \(retrievalEntities.count, privacy: .public) convenience-download retrievals; migrating...")
 
         for entity in retrievalEntities {
             guard let retrieval = try? JSONDecoder().decode(GroupingRetrieval.self, from: entity.value) else { continue }
@@ -522,7 +572,7 @@ enum SwiftDataMigrator {
             associatedConfigurationIDs: associatedConfigurationIDs
         )
 
-        logger.info("Migrated convenience downloads: \(retrievals.count) retrievals, \(downloadedItemIDs.count) downloaded sets, \(associatedConfigurationIDs.count) associations")
+        logger.info("Migrated convenience downloads: \(retrievals.count, privacy: .public) retrievals, \(downloadedItemIDs.count, privacy: .public) downloaded sets, \(associatedConfigurationIDs.count, privacy: .public) associations")
     }
 }
 

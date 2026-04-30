@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import OSLog
 import ShelfPlayback
 
 struct DebugPreferences: View {
+    private static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "DebugPreferences")
+
     private var settings: AppSettings { .shared }
 
     @State private var downloadRunsInExtendedBackgroundTask: Bool? = nil
@@ -113,6 +116,8 @@ private struct CacheSection: View {
 }
 
 private struct FlushButtons: View {
+    private static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "DebugPreferences.FlushButtons")
+
     let onCacheNeedsUpdate: () -> Void
 
     @State private var isLoading = false
@@ -205,6 +210,7 @@ private struct FlushButtons: View {
     }
     func clearCache() {
         Task {
+            Self.logger.info("Invalidating cache")
             withAnimation { isLoading = true }
 
             let success: Bool
@@ -213,6 +219,7 @@ private struct FlushButtons: View {
                 try await ShelfPlayer.invalidateCache()
                 success = true
             } catch {
+                Self.logger.error("Failed to invalidate cache: \(error, privacy: .public)")
                 success = false
             }
 
@@ -230,6 +237,7 @@ private struct FlushButtons: View {
     }
     func removeDownloads() {
         Task {
+            Self.logger.info("Removing all downloads")
             withAnimation { isLoading = true }
 
             let success: Bool
@@ -238,6 +246,7 @@ private struct FlushButtons: View {
                 try await PersistenceManager.shared.removeAllDownloads()
                 success = true
             } catch {
+                Self.logger.error("Failed to remove all downloads: \(error, privacy: .public)")
                 success = false
             }
 
@@ -255,6 +264,7 @@ private struct FlushButtons: View {
     }
     func flushProgress() {
         Task {
+            Self.logger.info("Flushing progress")
             withAnimation { isLoading = true }
 
             let success: Bool
@@ -263,6 +273,7 @@ private struct FlushButtons: View {
                 try await PersistenceManager.shared.progress.flush()
                 success = true
             } catch {
+                Self.logger.error("Failed to flush progress: \(error, privacy: .public)")
                 success = false
             }
 

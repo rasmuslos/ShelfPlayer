@@ -57,7 +57,7 @@ struct PodcastLibraryPanel: View {
         List {
             libraryRows
 
-            PodcastList(podcasts: viewModel.lazyLoader.items) {
+            PodcastList(podcasts: viewModel.filteredPodcasts) {
                 viewModel.lazyLoader.performLoadIfRequired($0)
             }
 
@@ -72,7 +72,7 @@ struct PodcastLibraryPanel: View {
         ScrollView {
             libraryRowsList
 
-            PodcastVGrid(podcasts: viewModel.lazyLoader.items) {
+            PodcastVGrid(podcasts: viewModel.filteredPodcasts) {
                 viewModel.lazyLoader.performLoadIfRequired($0)
             }
             .id(id)
@@ -128,7 +128,7 @@ struct PodcastLibraryPanel: View {
                     Divider()
 
                     Section("item.filter") {
-                        ItemFilterPicker(filter: $viewModel.filter, restrictToPersisted: $viewModel.restrictToPersisted)
+                        PodcastFilterPicker(filter: $viewModel.filter)
                     }
 
                     Section("item.sort") {
@@ -147,12 +147,6 @@ struct PodcastLibraryPanel: View {
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
-        .onChange(of: viewModel.filter) {
-            viewModel.lazyLoader.filter = viewModel.filter
-        }
-        .onChange(of: viewModel.restrictToPersisted) {
-            viewModel.lazyLoader.restrictToPersisted = viewModel.restrictToPersisted
-        }
         .onChange(of: viewModel.sortOrder) {
             viewModel.lazyLoader.sortOrder = viewModel.sortOrder
         }
@@ -179,11 +173,8 @@ struct PodcastLibraryPanel: View {
 
 @MainActor @Observable
 private final class LibraryViewModel {
-    var filter: ItemFilter {
+    var filter: PodcastFilter {
         didSet { AppSettings.shared.podcastsFilter = filter }
-    }
-    var restrictToPersisted: Bool {
-        didSet { AppSettings.shared.podcastsRestrictToPersisted = restrictToPersisted }
     }
     var displayType: ItemDisplayType {
         didSet { AppSettings.shared.podcastsDisplayType = displayType }
@@ -209,10 +200,20 @@ private final class LibraryViewModel {
     init() {
         let settings = AppSettings.shared
         filter = settings.podcastsFilter
-        restrictToPersisted = settings.podcastsRestrictToPersisted
         displayType = settings.podcastsDisplayType
         sortOrder = settings.podcastsSortOrder
         ascending = settings.podcastsAscending
+    }
+
+    var filteredPodcasts: [Podcast] {
+        switch filter {
+        case .all:
+            lazyLoader.items
+        case .unfinished:
+            lazyLoader.items.filter { ($0.incompleteEpisodeCount ?? 0) > 0 }
+        case .finished:
+            lazyLoader.items.filter { ($0.incompleteEpisodeCount ?? -1) == 0 }
+        }
     }
 
     var showPlaceholders: Bool {

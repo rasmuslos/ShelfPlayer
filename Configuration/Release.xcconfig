@@ -11,6 +11,7 @@
 #include "Base.xcconfig"
 
 DEVELOPMENT_TEAM = N8AA4S3S96
+
 BUNDLE_ID_PREFIX = io.rfk
 BUNDLE_ID_SUFFIX = shelfplayer
 

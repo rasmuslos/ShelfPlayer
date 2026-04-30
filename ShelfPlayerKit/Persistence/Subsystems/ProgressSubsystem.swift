@@ -62,14 +62,18 @@ extension PersistenceManager.ProgressSubsystem {
 
             if !entities.isEmpty {
                 if entities.count != 1 {
-                    logger.error("Found \(entities.count) douplicate entities for")
+                    logger.error("Found \(entities.count, privacy: .public) duplicate progress entities for primaryID=\(primaryID, privacy: .public) groupingID=\(groupingID ?? "<nil>", privacy: .public) connectionID=\(connectionID, privacy: .public)")
 
                     var sorted = entities.sorted { $0.lastUpdate > $1.lastUpdate }
                     sorted.removeFirst()
 
                     for entity in sorted {
                         Task {
-                            try await delete(entity)
+                            do {
+                                try await delete(entity)
+                            } catch {
+                                logger.warning("Failed to delete duplicate progress entity \(entity.id, privacy: .public): \(error, privacy: .public)")
+                            }
                         }
                     }
                 }
@@ -77,7 +81,7 @@ extension PersistenceManager.ProgressSubsystem {
                 return entities.first
             }
         } catch {
-            logger.error("Error fetching progress: \(error)")
+            logger.error("Error fetching progress for primaryID=\(primaryID, privacy: .public) groupingID=\(groupingID ?? "<nil>", privacy: .public) connectionID=\(connectionID, privacy: .public): \(error, privacy: .public)")
         }
 
         return nil

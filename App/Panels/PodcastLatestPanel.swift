@@ -6,7 +6,10 @@
 //
 
 import SwiftUI
+import OSLog
 import ShelfPlayback
+
+private let podcastLatestPanelLogger = Logger(subsystem: "io.rfk.shelfPlayer", category: "PodcastLatestPanel")
 
 struct PodcastLatestPanel: View {
     @Environment(\.library) private var library
@@ -59,7 +62,11 @@ struct PodcastLatestPanel: View {
                 isLoading = true
             }
 
-            guard let episodes = try? await ABSClient[library.id.connectionID].recentEpisodes(from: library.id.libraryID, limit: 20) else {
+            let episodes: [Episode]
+            do {
+                episodes = try await ABSClient[library.id.connectionID].recentEpisodes(from: library.id.libraryID, limit: 20)
+            } catch {
+                podcastLatestPanelLogger.warning("Failed to load recent episodes for library \(library.id.libraryID, privacy: .public): \(error, privacy: .public)")
                 withAnimation {
                     didFail = true
                 }

@@ -4,6 +4,9 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "API+Item")
 
 extension APIClient {
     func item(itemID: ItemIdentifier) async throws -> ItemPayload {
@@ -44,6 +47,7 @@ public extension APIClient {
             let episode = Episode(episode: item, item: payload, connectionID: connectionID)
 
             guard let episode, let audioTrack = item.audioTrack, let chapters = item.chapters else {
+                logger.warning("Failed to convert episode for \(itemID, privacy: .public): missing required fields")
                 throw APIClientError.notFound
             }
 
@@ -51,6 +55,7 @@ public extension APIClient {
         }
 
         guard let audiobook = Audiobook(payload: payload, libraryID: itemID.libraryID, connectionID: connectionID), let tracks = payload.media?.tracks, let chapters = payload.media?.chapters else {
+            logger.warning("Failed to convert audiobook for \(itemID, privacy: .public): missing required fields")
             throw APIClientError.notFound
         }
 

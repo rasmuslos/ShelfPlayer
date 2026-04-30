@@ -44,5 +44,10 @@ struct PlaybackDragGestureCatcher: ViewModifier {
                         }
                     }
             )
+            .accessibilityAction(.escape) {
+                if viewModel.isExpanded {
+                    viewModel.toggleExpanded()
+                }
+            }
     }
 }

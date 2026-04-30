@@ -4,14 +4,30 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "Episode+Convert")
 
 extension Episode {
     convenience init?(payload: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
-        guard let recentEpisode = payload.recentEpisode,
-              let media = payload.media,
-              let id = recentEpisode.id,
-              let title = recentEpisode.title,
-              let podcastTitle = media.metadata.title else {
+        guard let recentEpisode = payload.recentEpisode else {
+            logger.warning("Skipping episode conversion for \(payload.id, privacy: .public): missing recentEpisode")
+            return nil
+        }
+        guard let media = payload.media else {
+            logger.warning("Skipping episode conversion for \(payload.id, privacy: .public): missing media")
+            return nil
+        }
+        guard let id = recentEpisode.id else {
+            logger.warning("Skipping episode conversion for \(payload.id, privacy: .public): missing recentEpisode.id")
+            return nil
+        }
+        guard let title = recentEpisode.title else {
+            logger.warning("Skipping episode conversion for \(payload.id, privacy: .public): missing recentEpisode.title")
+            return nil
+        }
+        guard let podcastTitle = media.metadata.title else {
+            logger.warning("Skipping episode conversion for \(payload.id, privacy: .public): missing media.metadata.title")
             return nil
         }
 

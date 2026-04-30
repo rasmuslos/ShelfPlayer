@@ -104,25 +104,25 @@ extension PersistenceManager {
                     do {
                         try await remove(podcast.id)
                     } catch {
-                        logger.error("Failure removing downloads related to connection (4) \(connectionID, privacy: .public): \(error)")
+                        logger.warning("Failure removing podcast download for connection \(connectionID, privacy: .public) podcast \(podcast.id, privacy: .public): \(error, privacy: .public)")
                     }
                 }
             } catch {
-                logger.error("Failed to remove downloads related to connection (1) \(connectionID, privacy: .public): \(error)")
+                logger.warning("Failed to remove audiobook downloads for connection \(connectionID, privacy: .public): \(error, privacy: .public)")
             }
 
             do {
                 try modelContext.delete(model: PersistedAsset.self, where: #Predicate { $0._itemID.contains(connectionID) })
                 try modelContext.delete(model: PersistedChapter.self, where: #Predicate { $0._itemID.contains(connectionID) })
             } catch {
-                logger.error("Failed to remove downloads related to connection (2) \(connectionID, privacy: .public): \(error)")
+                logger.warning("Failed to remove assets/chapters for connection \(connectionID, privacy: .public): \(error, privacy: .public)")
             }
 
             do {
                 let path = ShelfPlayerKit.downloadDirectoryURL.appending(path: connectionID.urlSafe)
                 try FileManager.default.removeItem(at: path)
             } catch {
-                logger.error("Failed to remove download directory for connection (3) \(connectionID, privacy: .public): \(error)")
+                logger.warning("Failed to remove download directory for connection \(connectionID, privacy: .public): \(error, privacy: .public)")
             }
 
             Task { @MainActor in
@@ -169,7 +169,11 @@ private extension PersistenceManager.DownloadSubsystem {
 
         for asset in assets {
             if asset.isDownloaded {
-                try? FileManager.default.removeItem(at: asset.path)
+                do {
+                    try FileManager.default.removeItem(at: asset.path)
+                } catch {
+                    logger.warning("Failed to remove downloaded asset file \(asset.id, privacy: .public) for \(asset.itemID, privacy: .public): \(error, privacy: .public)")
+                }
             } else if let taskID = asset.downloadTaskID {
                 tasks.first(where: { $0.taskIdentifier == taskID })?.cancel()
             }
@@ -244,7 +248,13 @@ private extension PersistenceManager.DownloadSubsystem {
     }
     func assetDownloadFailed(taskIdentifier: Int) {
         let destination = PersistenceManager.DownloadSubsystem.temporaryLocation(taskIdentifier: taskIdentifier)
-        try? FileManager.default.removeItem(at: destination)
+        do {
+            try FileManager.default.removeItem(at: destination)
+        } catch CocoaError.fileNoSuchFile, CocoaError.fileReadNoSuchFile {
+            // expected: temp file may not exist
+        } catch {
+            logger.warning("Failed to remove temporary download file for task \(taskIdentifier, privacy: .public): \(error, privacy: .public)")
+        }
 
         guard let asset = asset(taskIdentifier: taskIdentifier) else {
             logger.fault("Task failed and corresponding asset not found: \(taskIdentifier)")
@@ -274,8 +284,12 @@ private extension PersistenceManager.DownloadSubsystem {
             logger.info("Asset \(assetID, privacy: .public) failed to download \(failedAttempts + 1) times")
 
             if failedAttempts > ASSET_ATTEMPT_LIMIT {
-                logger.warning("Asset \(assetID, privacy: .public) failed to download more than 3 times. Removing download \(assetItemID)")
-                try? await PersistenceManager.shared.download.remove(assetItemID)
+                logger.warning("Asset \(assetID, privacy: .public) failed to download more than 3 times. Removing download \(assetItemID, privacy: .public)")
+                do {
+                    try await PersistenceManager.shared.download.remove(assetItemID)
+                } catch {
+                    logger.warning("Failed to remove download \(assetItemID, privacy: .public) after exceeding attempt limit: \(error, privacy: .public)")
+                }
             } else {
                 await PersistenceManager.shared.download.setAssetFailedAttempts(assetID, count: failedAttempts + 1)
             }
@@ -585,6 +599,10 @@ public extension PersistenceManager.DownloadSubsystem {
     func download(_ itemID: ItemIdentifier) async throws {
         guard itemID.isPlayable else {
             throw PersistenceError.unsupportedItemType
+        }
+
+        guard await PersistenceManager.shared.authorization.canDownload(for: itemID.connectionID) else {
+            throw PersistenceError.notPermitted
         }
 
         guard persistedAudiobook(for: itemID) == nil && persistedEpisode(for: itemID) == nil else {

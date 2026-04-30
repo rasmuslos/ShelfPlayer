@@ -39,6 +39,8 @@ struct ShelfPlayer {
         let intentAudioPlayer = EmbassyManager.shared.intentAudioPlayer
         AppDependencyManager.shared.add(dependency: PersistenceManager.shared)
         AppDependencyManager.shared.add(dependency: intentAudioPlayer)
+
+        _ = DownloadAccessibilityAnnouncer.shared
     }
 
     static func initializeUIHook() {

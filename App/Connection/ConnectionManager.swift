@@ -10,6 +10,8 @@ import OSLog
 import ShelfPlayback
 
 struct ConnectionManager: View {
+    private static let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "ConnectionManager")
+
     @Environment(ConnectionStore.self) private var connectionStore
     @Environment(Satellite.self) private var satellite
 
@@ -31,10 +33,13 @@ struct ConnectionManager: View {
         }
         .onDelete {
             for index in $0 {
+                let connectionID = connectionStore.connections[index].id
+
                 Task {
                     loading = false
 
-                    await PersistenceManager.shared.remove(connectionID: connectionStore.connections[index].id)
+                    Self.logger.info("Removing connection \(connectionID, privacy: .public)")
+                    await PersistenceManager.shared.remove(connectionID: connectionID)
 
                     loading = true
                 }

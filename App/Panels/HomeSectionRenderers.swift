@@ -10,7 +10,10 @@
 //  fetched `HomeRow<Audiobook>` / `HomeRow<Episode>` data.
 
 import SwiftUI
+import OSLog
 import ShelfPlayback
+
+private let homeSectionRenderersLogger = Logger(subsystem: "io.rfk.shelfPlayer", category: "HomeSectionRenderers")
 
 // MARK: - Content state
 
@@ -78,7 +81,6 @@ struct UpNextRow: View {
 
     @State private var audiobooks: [Audiobook] = []
     @State private var episodes: [Episode] = []
-    @State private var hasLoaded = false
 
     var body: some View {
         Group {
@@ -88,7 +90,7 @@ struct UpNextRow: View {
                 HomeRowContainer(title: title) {
                     EpisodeFeaturedGrid(episodes: episodes)
                 }
-            } else if showEmptyPlaceholder && hasLoaded {
+            } else if showEmptyPlaceholder {
                 HomeRowContainer(title: title) {
                     EmptyRowMessage("home.section.upNext.empty")
                 }
@@ -126,13 +128,14 @@ struct UpNextRow: View {
             return collected.sorted { $0.0 < $1.0 }
         }
 
+        homeSectionRenderersLogger.debug("UpNextRow resolved \(resolved.count, privacy: .public)/\(ids.count, privacy: .public) items")
+
         let resolvedBooks = resolved.compactMap { $0.1 as? Audiobook }
         let resolvedEpisodes = resolved.compactMap { $0.1 as? Episode }
 
         withAnimation {
             audiobooks = resolvedBooks
             episodes = resolvedEpisodes
-            hasLoaded = true
         }
         onContentChange?(resolvedBooks.isEmpty && resolvedEpisodes.isEmpty ? .empty : .hasContent)
     }
@@ -151,13 +154,12 @@ struct ListenNowAudiobooksRow: View {
     var onContentChange: ((HomeRowContentState) -> Void)? = nil
 
     @State private var audiobooks: [Audiobook] = []
-    @State private var hasLoaded = false
 
     var body: some View {
         Group {
             if !audiobooks.isEmpty {
                 AudiobookRow(title: title, small: false, audiobooks: audiobooks)
-            } else if showEmptyPlaceholder && hasLoaded {
+            } else if showEmptyPlaceholder {
                 HomeRowContainer(title: title) {
                     EmptyRowMessage("home.section.listenNow.empty")
                 }
@@ -183,7 +185,6 @@ struct ListenNowAudiobooksRow: View {
 
         withAnimation {
             audiobooks = resolved
-            hasLoaded = true
         }
         onContentChange?(resolved.isEmpty ? .empty : .hasContent)
     }
@@ -199,7 +200,6 @@ struct ListenNowEpisodesRow: View {
     var onContentChange: ((HomeRowContentState) -> Void)? = nil
 
     @State private var episodes: [Episode] = []
-    @State private var hasLoaded = false
 
     var body: some View {
         Group {
@@ -207,7 +207,7 @@ struct ListenNowEpisodesRow: View {
                 HomeRowContainer(title: title) {
                     EpisodeFeaturedGrid(episodes: episodes)
                 }
-            } else if showEmptyPlaceholder && hasLoaded {
+            } else if showEmptyPlaceholder {
                 HomeRowContainer(title: title) {
                     EmptyRowMessage("home.section.listenNow.empty")
                 }
@@ -233,7 +233,6 @@ struct ListenNowEpisodesRow: View {
 
         withAnimation {
             episodes = resolved
-            hasLoaded = true
         }
         onContentChange?(resolved.isEmpty ? .empty : .hasContent)
     }
@@ -251,15 +250,14 @@ struct NextUpPodcastsRow: View {
     var onContentChange: ((HomeRowContentState) -> Void)? = nil
 
     @State private var episodes: [Episode] = []
-    @State private var hasLoaded = false
 
     var body: some View {
         Group {
             if !episodes.isEmpty {
                 HomeRowContainer(title: title) {
-                    EpisodeFeaturedGrid(episodes: episodes)
+                    EpisodeGrid(episodes: episodes)
                 }
-            } else if showEmptyPlaceholder && hasLoaded {
+            } else if showEmptyPlaceholder {
                 HomeRowContainer(title: title) {
                     EmptyRowMessage("home.section.nextUpPodcasts.empty")
                 }
@@ -275,7 +273,6 @@ struct NextUpPodcastsRow: View {
 
     private func load() async {
         guard let active = try? await PersistenceManager.shared.progress.activeProgressEntities else {
-            withAnimation { hasLoaded = true }
             onContentChange?(.empty)
             return
         }
@@ -332,7 +329,6 @@ struct NextUpPodcastsRow: View {
 
         withAnimation {
             episodes = next
-            hasLoaded = true
         }
         onContentChange?(next.isEmpty ? .empty : .hasContent)
     }
@@ -346,30 +342,23 @@ struct DownloadedAudiobooksRow: View {
     let title: String
 
     @State private var audiobooks: [Audiobook] = []
-    @State private var hasLoaded = false
 
     var body: some View {
-        // Always render once configured. Hiding the row when empty made
-        // freshly-pinned downloaded rows look broken — users couldn't tell
-        // whether the section was disabled, the data hadn't loaded, or they
-        // simply had no downloads. Mirrors `BookmarksRow`.
+        // Always render. Show the placeholder eagerly (no hasLoaded gate)
+        // because returning `EmptyView()` while waiting on the load can cause
+        // LazyVStack to skip realizing this row entirely, and then `.task`
+        // never fires and the row stays invisible permanently. Mirrors
+        // `BookmarksRow` — the brief "no downloads" flicker before the load
+        // finishes is acceptable.
         Group {
             if libraryID?.type == .podcasts {
                 EmptyView()
             } else if !audiobooks.isEmpty {
                 AudiobookRow(title: title, small: false, audiobooks: audiobooks)
-            } else if hasLoaded {
-                HomeRowContainer(title: title) {
-                    HStack {
-                        Text("home.section.downloadedAudiobooks.empty")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                    }
-                    .padding(.horizontal, 20)
-                }
             } else {
-                EmptyView()
+                HomeRowContainer(title: title) {
+                    EmptyRowMessage("home.section.downloadedAudiobooks.empty")
+                }
             }
         }
         .task(id: libraryID) { await load() }
@@ -388,7 +377,6 @@ struct DownloadedAudiobooksRow: View {
         }
         withAnimation {
             audiobooks = books ?? []
-            hasLoaded = true
         }
     }
 }
@@ -399,10 +387,10 @@ struct DownloadedEpisodesRow: View {
     let title: String
 
     @State private var episodes: [Episode] = []
-    @State private var hasLoaded = false
 
     var body: some View {
-        // See `DownloadedAudiobooksRow` — always render once configured.
+        // See `DownloadedAudiobooksRow` — render the placeholder eagerly so
+        // LazyVStack always realizes this row.
         Group {
             if libraryID?.type == .audiobooks {
                 EmptyView()
@@ -410,18 +398,10 @@ struct DownloadedEpisodesRow: View {
                 HomeRowContainer(title: title) {
                     EpisodeGrid(episodes: episodes)
                 }
-            } else if hasLoaded {
-                HomeRowContainer(title: title) {
-                    HStack {
-                        Text("home.section.downloadedEpisodes.empty")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                    }
-                    .padding(.horizontal, 20)
-                }
             } else {
-                EmptyView()
+                HomeRowContainer(title: title) {
+                    EmptyRowMessage("home.section.downloadedEpisodes.empty")
+                }
             }
         }
         .task(id: libraryID) { await load() }
@@ -440,7 +420,6 @@ struct DownloadedEpisodesRow: View {
         }
         withAnimation {
             episodes = eps ?? []
-            hasLoaded = true
         }
     }
 }

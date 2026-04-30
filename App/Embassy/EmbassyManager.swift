@@ -92,31 +92,35 @@ final class EmbassyManager: Sendable {
         // MARK: Donate Intents
 
         AudioPlayer.shared.events.playbackItemChanged
-            .sink { itemID, _, _ in
+            .sink { [weak self] itemID, _, _ in
                 Task {
-                    // App Intent
-                    try await StartWidgetConfiguration(item: itemID.resolved).donate()
+                    do {
+                        // App Intent
+                        try await StartWidgetConfiguration(item: itemID.resolved).donate()
 
-                    switch itemID.type {
-                    case .episode:
-                        // Episode:
-                        try await StartIntent(item: itemID.resolved).donate()
+                        switch itemID.type {
+                        case .episode:
+                            // Episode:
+                            try await StartIntent(item: itemID.resolved).donate()
 
-                        // Podcast:
-                        guard let podcast = try? await ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(itemID).resolved as? Podcast else {
+                            // Podcast:
+                            guard let podcast = try? await ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(itemID).resolved as? Podcast else {
+                                break
+                            }
+
+                            try await StartPodcastIntent(podcast: podcast).donate()
+                            try await StartWidgetConfiguration(item: podcast).donate()
+                        case .audiobook:
+                            guard let audiobook = try? await itemID.resolved as? Audiobook else {
+                                break
+                            }
+
+                            try await StartAudiobookIntent(audiobook: audiobook).donate()
+                        default:
                             break
                         }
-
-                        try await StartPodcastIntent(podcast: podcast).donate()
-                        try await StartWidgetConfiguration(item: podcast).donate()
-                    case .audiobook:
-                        guard let audiobook = try? await itemID.resolved as? Audiobook else {
-                            break
-                        }
-
-                        try await StartAudiobookIntent(audiobook: audiobook).donate()
-                    default:
-                        break
+                    } catch {
+                        self?.logger.warning("Failed to donate intent for \(itemID, privacy: .public): \(error, privacy: .public)")
                     }
 
                     // SiriKit Intent
@@ -125,23 +129,39 @@ final class EmbassyManager: Sendable {
                         let interaction = INInteraction(intent: intent, response: INPlayMediaIntentResponse(code: .success, userActivity: nil))
                         interaction.groupIdentifier = item.id.description
 
-                        try? await interaction.donate()
+                        do {
+                            try await interaction.donate()
+                        } catch {
+                            self?.logger.warning("Failed to donate INInteraction for \(itemID, privacy: .public): \(error, privacy: .public)")
+                        }
                     }
                 }
             }
             .store(in: &observerSubscriptions)
 
         PersistenceManager.shared.progress.events.entityUpdated
-            .sink { connectionID, primaryID, groupingID, entity in
+            .sink { [weak self] connectionID, primaryID, groupingID, entity in
                 Task {
                     guard entity?.isFinished == true, let item = try? await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID) else {
                         return
                     }
 
-                    let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: ItemEntity.self, identifier: item.id)))
-                    let _ = try? await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: AudiobookEntity.self, identifier: item.id)))
+                    do {
+                        try await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: ItemEntity.self, identifier: item.id)))
+                    } catch {
+                        self?.logger.warning("Failed to delete ItemEntity donations for \(item.id, privacy: .public): \(error, privacy: .public)")
+                    }
+                    do {
+                        try await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: AudiobookEntity.self, identifier: item.id)))
+                    } catch {
+                        self?.logger.warning("Failed to delete AudiobookEntity donations for \(item.id, privacy: .public): \(error, privacy: .public)")
+                    }
 
-                    try? await INInteraction.delete(with: item.id.description)
+                    do {
+                        try await INInteraction.delete(with: item.id.description)
+                    } catch {
+                        self?.logger.warning("Failed to delete INInteraction for \(item.id, privacy: .public): \(error, privacy: .public)")
+                    }
                 }
             }
             .store(in: &observerSubscriptions)

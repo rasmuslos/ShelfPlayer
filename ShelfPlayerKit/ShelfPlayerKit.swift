@@ -42,6 +42,13 @@ public extension ShelfPlayerKit {
     static let clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
     static let clientVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
 
+    static let isWidgetExtension: Bool = {
+        guard let nsExtension = Bundle.main.infoDictionary?["NSExtension"] as? [String: Any] else {
+            return false
+        }
+        return nsExtension["NSExtensionPointIdentifier"] as? String == "com.apple.widgetkit-extension"
+    }()
+
     #if canImport(UIKit)
     @MainActor
     static let osVersion = UIDevice.current.systemVersion

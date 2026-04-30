@@ -74,10 +74,22 @@ extension PersistenceManager {
                         return
                     }
 
+                    let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ConvenienceDownloadSubsystem")
+
                     Task {
-                        guard entity?.isFinished == true,
-                              let item = try? await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID),
-                              let configurationIDs = await self.associatedConfigurationIDs[item.id] else {
+                        guard entity?.isFinished == true else {
+                            return
+                        }
+
+                        let item: PlayableItem
+                        do {
+                            item = try await ResolveCache.shared.resolve(primaryID: primaryID, groupingID: groupingID, connectionID: connectionID)
+                        } catch {
+                            logger.warning("Failed to resolve item for convenience-download finished hook \(primaryID, privacy: .public): \(error, privacy: .public)")
+                            return
+                        }
+
+                        guard let configurationIDs = await self.associatedConfigurationIDs[item.id] else {
                             return
                         }
 
@@ -98,7 +110,11 @@ extension PersistenceManager {
 
             if let associatedConfigs, !associatedConfigs.isEmpty {
                 if (associatedConfigs.count == 1 && associatedConfigs.first == configurationID) || configurationID == nil {
-                    try? await PersistenceManager.shared.download.remove(itemID)
+                    do {
+                        try await PersistenceManager.shared.download.remove(itemID)
+                    } catch {
+                        logger.warning("Failed to remove convenience download for \(itemID, privacy: .public): \(error, privacy: .public)")
+                    }
                     await self.setAssociatedConfigurationIDs(nil, for: itemID)
                 } else if let configurationID {
                     var updated = associatedConfigs
@@ -270,6 +286,10 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
 
             if AppSettings.shared.enableListenNowDownloads {
                 total += 1
+            }
+
+            guard total > 0 else {
+                return 1
             }
 
             var pending = pendingConfigurationIDs.count

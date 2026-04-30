@@ -43,32 +43,44 @@ struct ItemCompactRow: View {
         }
     }
 
-    private var headline: String? {
-        var parts = [String]()
+    private var headline: (visual: String, accessible: String)? {
+        var visual = [String]()
+        var accessible = [String]()
 
         if let audiobook = item as? Audiobook {
             if let released = audiobook.released {
-                parts.append(released)
+                visual.append(released)
+                accessible.append(released)
             }
 
             if audiobook.explicit && audiobook.abridged {
-                parts.append("\u{1F174}\u{1F170}")
+                visual.append("\u{1F174}\u{1F170}")
+                accessible.append(String(localized: "item.explicit"))
+                accessible.append(String(localized: "item.abridged"))
             } else if audiobook.explicit {
-                parts.append("\u{1F174}")
+                visual.append("\u{1F174}")
+                accessible.append(String(localized: "item.explicit"))
             } else if audiobook.abridged {
-                parts.append("\u{1F170}")
+                visual.append("\u{1F170}")
+                accessible.append(String(localized: "item.abridged"))
             }
 
-            parts.append(audiobook.duration.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .hour])))
+            let duration = audiobook.duration.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .hour]))
+            visual.append(duration)
+            accessible.append(duration)
         } else if let episode = item as? Episode {
             if let releaseDate = episode.releaseDate {
-                parts.append(releaseDate.formatted(date: .abbreviated, time: .omitted))
+                let formatted = releaseDate.formatted(date: .abbreviated, time: .omitted)
+                visual.append(formatted)
+                accessible.append(formatted)
             }
 
-            parts.append(episode.duration.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .hour])))
+            let duration = episode.duration.formatted(.duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .hour]))
+            visual.append(duration)
+            accessible.append(duration)
         }
 
-        return parts.isEmpty ? nil : parts.joined(separator: " • ")
+        return visual.isEmpty ? nil : (visual.joined(separator: " • "), accessible.joined(separator: ", "))
     }
     private var subtitle: String? {
         var parts = [String]()
@@ -147,11 +159,12 @@ struct ItemCompactRow: View {
             if let item {
                 VStack(alignment: .leading, spacing: 2) {
                     if let headline {
-                        Text(headline)
+                        Text(headline.visual)
                             .lineLimit(1)
                             .font(.caption)
                             .fontDesign(.rounded)
                             .foregroundStyle(.secondary)
+                            .accessibilityLabel(headline.accessible)
                     }
 
                     Text(item.name)

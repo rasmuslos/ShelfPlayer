@@ -26,6 +26,8 @@ struct ConnectionManageView: View {
     var body: some View {
         Form {
             Section {
+                let isOffline = connectionStore.offlineConnections.contains(connection.id)
+
                 VStack(spacing: 12) {
                     Image(systemName: "server.rack")
                         .font(.system(size: 56))
@@ -35,11 +37,17 @@ struct ConnectionManageView: View {
                     Text(connection.username)
                         .font(.title2.bold())
 
-                    Text(connection.host, format: .url)
-                        .font(.subheadline)
-                        .fontDesign(.monospaced)
-                        .foregroundStyle(connectionStore.offlineConnections.contains(connection.id) ? .red : .secondary)
-                        .multilineTextAlignment(.center)
+                    HStack(spacing: 4) {
+                        if isOffline {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .accessibilityLabel("connection.status.offline")
+                        }
+                        Text(connection.host, format: .url)
+                            .fontDesign(.monospaced)
+                            .multilineTextAlignment(.center)
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(isOffline ? .red : .secondary)
                 }
                 .frame(maxWidth: .infinity)
                 .listRowBackground(Color.clear)
@@ -156,7 +164,7 @@ struct ConnectionManageView: View {
                             }
                             return (library.id.libraryID, total)
                         case .podcasts:
-                            guard let (_, total) = try? await client?.podcasts(from: library.id.libraryID, filter: .all, sortOrder: .addedAt, ascending: false, limit: 0, page: 0) else {
+                            guard let (_, total) = try? await client?.podcasts(from: library.id.libraryID, sortOrder: .addedAt, ascending: false, limit: 0, page: 0) else {
                                 return nil
                             }
                             return (library.id.libraryID, total)

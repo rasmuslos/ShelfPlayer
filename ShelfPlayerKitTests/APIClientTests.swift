@@ -7,22 +7,21 @@ import Testing
 import Foundation
 @testable import ShelfPlayerKit
 
+@Suite(.serialized)
 struct APIClientTests {
     let client: APIClient
 
     init() async throws {
         client = try await APIClient(
             connectionID: "test",
-            credentialProvider: DemoCredentialProvider()
+            credentialProvider: LocalCredentialProvider()
         )
     }
 
     // MARK: Authorization
 
     @Test func login() async throws {
-        let (username, accessToken, _) = try await client.login(username: "demo", password: "demo")
-
-        #expect(username.hasPrefix("demo"))
+        let (accessToken, _) = try await APIClientTokenCache.shared.tokens()
         #expect(!accessToken.isEmpty)
     }
 
@@ -62,17 +61,40 @@ struct APIClientTests {
     // MARK: Helpers
 
     private func authenticatedClient() async throws -> APIClient {
-        let (_, accessToken, refreshToken) = try await client.login(username: "demo", password: "demo")
+        let (accessToken, refreshToken) = try await APIClientTokenCache.shared.tokens()
         return try await APIClient(
             connectionID: "test-authenticated",
-            credentialProvider: DemoCredentialProvider(accessToken: accessToken, refreshToken: refreshToken)
+            credentialProvider: LocalCredentialProvider(accessToken: accessToken, refreshToken: refreshToken)
         )
+    }
+}
+
+// MARK: - Token Cache
+
+/// Reuses a single login across the whole suite. The local Audiobookshelf
+/// server enforces a per-IP rate limit on `/login`, so logging in per test
+/// trips it as soon as the suite is run together with the other API suites.
+private actor APIClientTokenCache {
+    static let shared = APIClientTokenCache()
+
+    private var cached: (String, String?)?
+
+    func tokens() async throws -> (String, String?) {
+        if let cached { return cached }
+
+        let client = try await APIClient(
+            connectionID: "test",
+            credentialProvider: LocalCredentialProvider()
+        )
+        let (_, accessToken, refreshToken) = try await client.login(username: "root", password: "root")
+        cached = (accessToken, refreshToken)
+        return (accessToken, refreshToken)
     }
 }
 
 // MARK: - Credential Provider
 
-private final class DemoCredentialProvider: APICredentialProvider, @unchecked Sendable {
+private final class LocalCredentialProvider: APICredentialProvider, @unchecked Sendable {
     private var _accessToken: String?
     private var _refreshToken: String?
 
@@ -82,7 +104,7 @@ private final class DemoCredentialProvider: APICredentialProvider, @unchecked Se
     }
 
     var configuration: (URL, [HTTPHeader]) {
-        (URL(string: "https://audiobooks.dev")!, [])
+        (URL(string: "http://localhost:3333")!, [])
     }
 
     var accessToken: String? {

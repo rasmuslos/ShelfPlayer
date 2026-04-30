@@ -7,7 +7,10 @@
 
 import SwiftUI
 import WidgetKit
+import OSLog
 import ShelfPlayerKit
+
+private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "StartWidget")
 
 struct StartWidget: Widget {
     var body: some WidgetConfiguration {
@@ -121,24 +124,35 @@ struct StartTimelineProvider: AppIntentTimelineProvider {
     }
 
     func snapshot(for configuration: StartWidgetConfiguration, in context: Context) async -> StartWidgetTimelineEntry {
-        await getCurrent(itemID: configuration.item?.id)
+        logger.info("Generating Start snapshot (configured=\(configuration.item != nil, privacy: .public))")
+        return await getCurrent(itemID: configuration.item?.id)
     }
 
     func timeline(for configuration: StartWidgetConfiguration, in context: Context) async -> Timeline<StartWidgetTimelineEntry> {
+        logger.info("Generating Start timeline (configured=\(configuration.item != nil, privacy: .public))")
         let entry = await getCurrent(itemID: configuration.item?.id)
+        logger.info("Start timeline generated: hasItem=\(entry.item != nil, privacy: .public) isPlaying=\(String(describing: entry.isPlaying), privacy: .public)")
         return .init(entries: [entry], policy: configuration.item == nil ? .after(.now.advanced(by: 60 * 60 * 2)) : .never)
     }
 
     private func getCurrent(itemID: ItemIdentifier?) async -> StartWidgetTimelineEntry {
         var itemID = itemID
 
-        if itemID == nil, let listenNowItems = try? await PersistenceManager.shared.listenNow.current {
-            itemID = listenNowItems.first?.id
+        if itemID == nil {
+            do {
+                let listenNowItems = try await PersistenceManager.shared.listenNow.current
+                itemID = listenNowItems.first?.id
+            } catch {
+                logger.warning("Failed to fetch ListenNow fallback for Start widget: \(error.localizedDescription, privacy: .public)")
+            }
         }
 
         guard let itemID else {
+            logger.warning("Start widget has no resolvable itemID; rendering empty entry")
             return .init(item: nil, isDownloaded: false, isPlaying: nil)
         }
+
+        logger.debug("Resolving Start widget item \(itemID, privacy: .public)")
 
         let isPlaying: Bool?
         let playbackItemID: ItemIdentifier?
@@ -151,7 +165,15 @@ struct StartTimelineProvider: AppIntentTimelineProvider {
             playbackItemID = nil
         }
 
-        return await StartWidgetTimelineEntry(item: try? itemID.resolved, playbackItemID: playbackItemID, isPlaying: isPlaying, isStandalone: true)
+        let resolvedItem: Item?
+        do {
+            resolvedItem = try await itemID.resolved
+        } catch {
+            logger.error("Failed to resolve Start widget item \(itemID, privacy: .public): \(error.localizedDescription, privacy: .public)")
+            resolvedItem = nil
+        }
+
+        return await StartWidgetTimelineEntry(item: resolvedItem, playbackItemID: playbackItemID, isPlaying: isPlaying, isStandalone: true)
     }
 }
 

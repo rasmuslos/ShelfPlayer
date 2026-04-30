@@ -14,11 +14,31 @@ struct ShelfPlayerApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     init() {
-        ShelfPlayer.launchHook()
-
         let environment = ProcessInfo.processInfo.environment
 
+        #if DEBUG
+        // UI-testing hook: wipe keychain credentials before any subsystem
+        // (ConnectionStore, AuthorizationSubsystem) can read stale state. Must
+        // run before launchHook for the same reason. Debug-only so the wipe
+        // can never ship in a release binary.
+        if environment["WIPE_CONNECTIONS"] == "YES" {
+            PersistenceManager.AuthorizationSubsystem.debugWipeAllConnections()
+        }
+        #endif
+
+        ShelfPlayer.launchHook()
+
         Task {
+            #if DEBUG
+            if environment["FORCE_OFFLINE_MODE"] == "YES" {
+                // Wait for the initial connection probe to finish; otherwise the
+                // `connectionsChanged` event that fires once the keychain finishes
+                // loading triggers a refreshAvailability that resets forcedEnabled.
+                await OfflineMode.shared.ensureAvailabilityEstablished(reason: "FORCE_OFFLINE_MODE launch argument")
+                OfflineMode.shared.forceEnable(reason: "FORCE_OFFLINE_MODE launch argument")
+            }
+            #endif
+
             if let itemIDDescription = environment["NAVIGATE_TO_ITEM_IDENTIFIER"] {
                 await ItemIdentifier(itemIDDescription).navigate()
             }

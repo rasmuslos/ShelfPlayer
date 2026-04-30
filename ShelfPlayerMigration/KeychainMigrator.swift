@@ -15,7 +15,7 @@ enum KeychainMigrator {
     static func migrate() throws {
         // No keychain migration needed — the app uses the same bundle ID,
         // keychain access groups, and service names as the old ShelfPlayer app.
-        logger.info("Keychain migration skipped (same identifiers)")
+        logger.info("Keychain migration not required (same identifiers used)")
     }
 
 }

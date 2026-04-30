@@ -10,6 +10,7 @@
 			<key>IntentExamples</key>
 			<array>
 				<string>播放有声读物 1984</string>
+				<string>用 ShelfPlayer 播放播客单集&quot;工业社会及其未来&quot;</string>
 			</array>
 		</dict>
 	</array>

@@ -4,14 +4,19 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "Audiobook+Convert")
 
 extension Audiobook {
     convenience init?(payload: ItemPayload, libraryID: ItemIdentifier.LibraryID?, connectionID: ItemIdentifier.ConnectionID) {
         guard let media = payload.media else {
+            logger.warning("Skipping audiobook conversion for \(payload.id, privacy: .public): missing media")
             return nil
         }
 
         guard media.numAudioFiles ?? media.audioFiles?.count ?? 1 > 0 else {
+            logger.warning("Skipping audiobook conversion for \(payload.id, privacy: .public): no audio files present")
             return nil
         }
 

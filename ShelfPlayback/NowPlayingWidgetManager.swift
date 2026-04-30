@@ -24,6 +24,7 @@ final actor NowPlayingWidgetManager: Sendable {
     var metadata = [String: Any]()
 
     nonisolated func update(itemID: ItemIdentifier) {
+        logger.debug("Fetching item for widget: \(itemID, privacy: .public)")
         Task {
             do {
                 guard let item = try await itemID.resolved as? PlayableItem else {

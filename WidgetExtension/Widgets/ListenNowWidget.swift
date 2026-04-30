@@ -7,7 +7,10 @@
 
 import WidgetKit
 import SwiftUI
+import OSLog
 import ShelfPlayerKit
+
+private let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "ListenNowWidget")
 
 struct ListenNowWidget: Widget {
     var body: some WidgetConfiguration {
@@ -26,14 +29,18 @@ struct ListenNowWidgetProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @Sendable @escaping (ListenNowTimelineEntry) -> Void) {
+        logger.info("Generating ListenNow snapshot")
         Task {
             completion(await getCurrent())
         }
     }
 
     func getTimeline(in context: Context, completion: @Sendable @escaping (Timeline<ListenNowTimelineEntry>) -> Void) {
+        logger.info("Generating ListenNow timeline")
         Task {
-            completion(Timeline(entries: [await getCurrent()], policy: .never))
+            let entry = await getCurrent()
+            logger.info("ListenNow timeline generated with \(entry.items.count, privacy: .public) items")
+            completion(Timeline(entries: [entry], policy: .never))
         }
     }
 
@@ -46,7 +53,13 @@ struct ListenNowWidgetProvider: TimelineProvider {
             playbackItem = nil
         }
 
-        guard let items = try? await PersistenceManager.shared.listenNow.current else {
+        logger.debug("Widget render state: playbackItem=\(String(describing: playbackItem?.0), privacy: .public) isPlaying=\(String(describing: playbackItem?.1), privacy: .public)")
+
+        let items: [PlayableItem]
+        do {
+            items = try await PersistenceManager.shared.listenNow.current
+        } catch {
+            logger.warning("Failed to fetch ListenNow items: \(error.localizedDescription, privacy: .public)")
             return ListenNowTimelineEntry(playbackItem: playbackItem, items: [], covers: [:], entities: [:])
         }
 

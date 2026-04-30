@@ -65,8 +65,6 @@ extension PodcastSortOrder {
             "media.numTracks"
         case .addedAt:
             "addedAt"
-        case .duration:
-            "sort.duration"
         }
     }
 }
