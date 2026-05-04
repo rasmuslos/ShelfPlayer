@@ -31,7 +31,7 @@ struct ReauthorizeConnectionSheet: View {
                         VStack(spacing: 12) {
                             Image(systemName: "person.badge.key.fill")
                                 .font(.system(size: 56))
-                                .foregroundStyle(.blue)
+                                .foregroundStyle(Color.accentColor)
                                 .padding(.bottom, 8)
 
                             Text("connection.reauthorize")

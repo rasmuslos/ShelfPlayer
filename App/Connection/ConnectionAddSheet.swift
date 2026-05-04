@@ -23,7 +23,7 @@ struct ConnectionAddSheet: View {
                     VStack(spacing: 12) {
                         Image(systemName: "server.rack")
                             .font(.system(size: 56))
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(Color.accentColor)
                             .padding(.bottom, 8)
 
                         Text("connection.add.title")

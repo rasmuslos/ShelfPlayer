@@ -24,13 +24,6 @@ struct CarPlayPreferences: View {
         List {
             SettingsPageHeader(title: "preferences.carPlay", systemImage: "car.fill", color: .green)
 
-            if showTabBarLimitWarning {
-                Section {
-                    Text("preferences.carPlay.tabBar.warning")
-                        .foregroundStyle(.blue)
-                }
-            }
-
             if !selected.isEmpty {
                 Section {
                     ForEach(selected) { library in
@@ -38,6 +31,12 @@ struct CarPlayPreferences: View {
                     }
                     .onMove(perform: move)
                     .onDelete(perform: remove)
+                } header: {
+                    Text("preferences.carPlay.tabBar")
+                } footer: {
+                    if showTabBarLimitWarning {
+                        Text("preferences.carPlay.tabBar.warning")
+                    }
                 }
             }
 

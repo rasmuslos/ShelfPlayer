@@ -12,6 +12,8 @@ struct PlaybackQueue: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
 
+    @AccessibilityFocusState private var isEpisodeDescriptionFocused: Bool
+
     private var tintColor: TintColor { AppSettings.shared.tintColor }
     private var isMeshActive: Bool {
         AppSettings.shared.animatedNowPlayingBackground && viewModel.nowPlayingMeshColors != nil
@@ -95,6 +97,7 @@ struct PlaybackQueue: View {
                                 .listRowBackground(Color.clear)
                                 .listRowInsets(EdgeInsets(top: 12, leading: 28, bottom: 12, trailing: 28))
                                 .id("playback_episode_description")
+                                .accessibilityFocused($isEpisodeDescriptionFocused)
                         } header: {
                             Text("item.description")
                                 .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
@@ -153,6 +156,7 @@ struct PlaybackQueue: View {
                 .padding(.horizontal, -28)
                 .onAppear {
                     scrollProxy.scrollTo("playback_episode_description")
+                    isEpisodeDescriptionFocused = true
 
                     guard let chapter = satellite.chapter else {
                         return

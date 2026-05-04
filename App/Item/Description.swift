@@ -85,6 +85,7 @@ private struct HTMLTextView: UIViewRepresentable {
         textView.backgroundColor = .clear
 
         textView.isEditable = false
+        textView.isScrollEnabled = false
 
         textView.contentInset = .zero
         textView.layoutMargins = .zero
@@ -100,6 +101,8 @@ private struct HTMLTextView: UIViewRepresentable {
     }
 
     func updateUIView(_ textView: UITextView, context: Context) {
+        textView.textContainer.size = CGSize(width: width, height: .greatestFiniteMagnitude)
+
         DispatchQueue.main.async {
             let data = Data(html.utf8)
 
@@ -124,11 +127,19 @@ private struct HTMLTextView: UIViewRepresentable {
                 textView.attributedText = .init(string: "Failed to parse HTML")
             }
 
+            textView.textContainer.size = CGSize(width: width, height: .greatestFiniteMagnitude)
+            textView.invalidateIntrinsicContentSize()
+
             height = textView.sizeThatFits(.init(
                 width: width,
                 height: 100_000)
             ).height
         }
+    }
+
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: UITextView, context: Context) -> CGSize? {
+        guard let proposedWidth = proposal.width else { return nil }
+        return CGSize(width: proposedWidth, height: height)
     }
 }
 

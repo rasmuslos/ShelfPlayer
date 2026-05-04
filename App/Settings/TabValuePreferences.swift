@@ -14,8 +14,10 @@ struct TabValuePreferences: View {
             SettingsPageHeader(title: "preferences.tabs", systemImage: "rectangle.2.swap", color: .purple)
 
             LibraryEnumerator { name, content in
-                Section(name) {
+                Section {
                     content()
+                } header: {
+                    Text(name)
                 }
             } label: { library in
                 let scopes = PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope.available(for: library.id.type)
@@ -35,6 +37,8 @@ struct TabValuePreferences: View {
                 NavigationLink("panel.home") {
                     CustomTabValuesPreferences()
                 }
+            } header: {
+                Text("home.customization.title")
             }
         }
         .navigationTitle("preferences.tabs")
