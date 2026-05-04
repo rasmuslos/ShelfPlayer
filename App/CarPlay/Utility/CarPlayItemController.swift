@@ -8,6 +8,7 @@
 import Foundation
 @preconcurrency import CarPlay
 
+@MainActor
 protocol CarPlayItemController: AnyObject {
     var row: CPListItem { get }
 }

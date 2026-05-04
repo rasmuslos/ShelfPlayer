@@ -34,7 +34,7 @@ final actor PlaybackReporter {
     private var isFinished: Bool
 
     private(set) var accumulatedServerReportedTimeListening: TimeInterval = 0
-    nonisolated(unsafe) private var finalizeSubscription: AnyCancellable?
+    private var finalizeSubscription: AnyCancellable?
 
     init(itemID: ItemIdentifier, startTime: TimeInterval, sessionID: String?) {
         self.sessionID = sessionID
@@ -46,6 +46,12 @@ final actor PlaybackReporter {
 
         isFinished = false
 
+        Task {
+            await self.installFinalizeSubscription()
+        }
+    }
+
+    private func installFinalizeSubscription() {
         finalizeSubscription = PlaybackLifecycleEventSource.shared.finalizeReporting
             .sink { [weak self] _ in
                 guard let self else {

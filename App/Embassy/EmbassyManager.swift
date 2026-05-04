@@ -18,15 +18,16 @@ import ShelfPlayback
 import UIKit
 #endif
 
-final class EmbassyManager: Sendable {
-    let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "EmbassyManager")
+@MainActor
+final class EmbassyManager {
+    nonisolated let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "EmbassyManager")
 
     private let settings = AppSettings.shared
 
     // Mutex and async do not like each other, which is bad if you need to call `await activity.update()`
-    @MainActor private var isUpdatingActivity = false
-    @MainActor private var activity: Activity<SleepTimerLiveActivityAttributes>?
-    nonisolated(unsafe) private var observerSubscriptions = Set<AnyCancellable>()
+    private var isUpdatingActivity = false
+    private var activity: Activity<SleepTimerLiveActivityAttributes>?
+    private var observerSubscriptions = Set<AnyCancellable>()
 
     private init() {
         Task {

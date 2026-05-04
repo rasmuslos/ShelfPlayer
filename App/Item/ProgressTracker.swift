@@ -135,25 +135,24 @@ final class ProgressTracker {
 }
 
 private actor ProgressCache: Sendable {
-    nonisolated(unsafe) private var observerSubscriptions = Set<AnyCancellable>()
+    private nonisolated let observerSubscriptions: [AnyCancellable]
 
     var cached = [ItemIdentifier: Task<ProgressEntity, Never>]()
 
     private init() {
-        PersistenceManager.shared.progress.events.invalidateEntities
-            .sink { [weak self] connectionID in
+        let invalidateSubscription = PersistenceManager.shared.progress.events.invalidateEntities
+            .sink { connectionID in
                 Task {
-                    await self?.invalidateAndPropagate(connectionID: connectionID)
+                    await ProgressCache.shared.invalidateAndPropagate(connectionID: connectionID)
                 }
             }
-            .store(in: &observerSubscriptions)
-        PersistenceManager.shared.progress.events.entityUpdated
-            .sink { [weak self] payload in
+        let updateSubscription = PersistenceManager.shared.progress.events.entityUpdated
+            .sink { payload in
                 Task {
-                    await self?.invalidate(connectionID: payload.connectionID, primaryID: payload.primaryID, groupingID: payload.groupingID)
+                    await ProgressCache.shared.invalidate(connectionID: payload.connectionID, primaryID: payload.primaryID, groupingID: payload.groupingID)
                 }
             }
-            .store(in: &observerSubscriptions)
+        observerSubscriptions = [invalidateSubscription, updateSubscription]
     }
 
     func entity(for itemID: ItemIdentifier) async -> ProgressEntity {

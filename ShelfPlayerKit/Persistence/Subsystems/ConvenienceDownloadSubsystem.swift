@@ -7,12 +7,18 @@
 
 import Combine
 import Foundation
+import SwiftData
 import OSLog
 @preconcurrency import BackgroundTasks
+
+typealias PersistedConvenienceDownloadRetrieval = ShelfPlayerSchema.PersistedConvenienceDownloadRetrieval
+typealias PersistedConvenienceDownloadDownloaded = ShelfPlayerSchema.PersistedConvenienceDownloadDownloaded
+typealias PersistedConvenienceDownloadAssociation = ShelfPlayerSchema.PersistedConvenienceDownloadAssociation
 
 private let LISTEN_NOW_CONFIGURATION_ID = "listen-now"
 
 extension PersistenceManager {
+    @ModelActor
     public final actor ConvenienceDownloadSubsystem {
         public final class EventSource: @unchecked Sendable {
             public let configurationsChanged = PassthroughSubject<Void, Never>()
@@ -28,27 +34,17 @@ extension PersistenceManager {
         var task: Task<Void, Never>?
         var pendingConfigurationIDs = Set<String>()
         private var observerSubscriptions = Set<AnyCancellable>()
-        nonisolated(unsafe) private var backgroundTaskIterationSubscription: AnyCancellable?
+        private var backgroundTaskIterationSubscription: AnyCancellable?
         public nonisolated let events = EventSource()
 
-        nonisolated(unsafe) var shouldComeToEnd = false
-
-        // In-memory stores replacing key-value subsystem
-        var retrievals = [String: GroupingRetrieval]()
-        var downloadedItemIDs = [String: Set<ItemIdentifier>]()
-        var associatedConfigurationIDs = [ItemIdentifier: Set<String>]()
+        var shouldComeToEnd = false
         var runExtendedBackgroundTask = false
 
-        init() {
-            Task {
-                await setupObserverSubscriptions()
-            }
+        func bootstrap() {
+            setupObserverSubscriptions()
 
-            Task {
-                // Monitor enableListenNowDownloads changes
-                if AppSettings.shared.enableListenNowDownloads {
-                    await scheduleDownload(configurationID: LISTEN_NOW_CONFIGURATION_ID)
-                }
+            if AppSettings.shared.enableListenNowDownloads {
+                scheduleDownload(configurationID: LISTEN_NOW_CONFIGURATION_ID)
             }
         }
 
@@ -89,7 +85,7 @@ extension PersistenceManager {
                             return
                         }
 
-                        guard let configurationIDs = await self.associatedConfigurationIDs[item.id] else {
+                        guard let configurationIDs = await self.getAssociatedConfigurationIDs(for: item.id) else {
                             return
                         }
 
@@ -106,7 +102,7 @@ extension PersistenceManager {
         nonisolated func remove(itemID: ItemIdentifier, configurationID: String?) async {
             await removeOrphans(configurationID: buildGroupingConfigurationID(itemID))
 
-            let associatedConfigs = await self.associatedConfigurationIDs[itemID]
+            let associatedConfigs = await self.getAssociatedConfigurationIDs(for: itemID)
 
             if let associatedConfigs, !associatedConfigs.isEmpty {
                 if (associatedConfigs.count == 1 && associatedConfigs.first == configurationID) || configurationID == nil {
@@ -171,7 +167,7 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
 
             await self.unscheduleTask()
 
-            if !self.shouldComeToEnd {
+            if await !self.shouldComeToEnd {
                 await self.scheduleTask()
             }
         }
@@ -282,7 +278,7 @@ private extension PersistenceManager.ConvenienceDownloadSubsystem {
 public extension PersistenceManager.ConvenienceDownloadSubsystem {
     var currentProgress: Percentage {
         get async {
-            var total = retrievals.count
+            var total = retrievalCount
 
             if AppSettings.shared.enableListenNowDownloads {
                 total += 1
@@ -375,14 +371,14 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
     }
     nonisolated var totalDownloadCount: Int {
         get async {
-            await self.associatedConfigurationIDs.count
+            await self.associationCount
         }
     }
 
     // MARK: Schedule
 
     func scheduleUpdate(itemID: ItemIdentifier) async {
-        guard retrievals[buildGroupingConfigurationID(itemID)] != nil else {
+        guard getRetrieval(for: buildGroupingConfigurationID(itemID)) != nil else {
             return
         }
 
@@ -501,15 +497,20 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
     }
 
     nonisolated func handleBackgroundTask(_ task: BGTask) {
-        task.expirationHandler = {
-            self.logger.info("Expiration handler called on background task for identifier: \(task.identifier)")
-            self.shouldComeToEnd = true
-
+        let identifier = task.identifier
+        task.expirationHandler = { [weak self] in
+            guard let self else { return }
             Task {
-                await self.setRunExtendedBackgroundTask(true)
+                await self.handleBackgroundTaskExpiration(identifier: identifier)
             }
         }
 
+        Task {
+            await self.startBackgroundTask(task)
+        }
+    }
+
+    func startBackgroundTask(_ task: BGTask) {
         backgroundTaskIterationSubscription = events.iteration
             .sink { [weak self] _ in
                 guard let self else {
@@ -524,7 +525,7 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
                     }
 
                     await self.scheduleBackgroundTask(shouldWait: true)
-                    self.backgroundTaskIterationSubscription = nil
+                    await self.clearBackgroundTaskIterationSubscription()
                     task.setTaskCompleted(success: true)
                 }
             }
@@ -532,6 +533,20 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         Task {
             await self.scheduleAll()
         }
+    }
+
+    func handleBackgroundTaskExpiration(identifier: String) async {
+        logger.info("Expiration handler called on background task for identifier: \(identifier)")
+        shouldComeToEnd = true
+        runExtendedBackgroundTask = true
+    }
+
+    func markShouldComeToEnd() {
+        shouldComeToEnd = true
+    }
+
+    func clearBackgroundTaskIterationSubscription() {
+        backgroundTaskIterationSubscription = nil
     }
 
     func purge(connectionID: ItemIdentifier.ConnectionID) async {
@@ -547,9 +562,15 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         task = nil
         pendingConfigurationIDs.removeAll()
 
-        retrievals.removeAll()
-        downloadedItemIDs.removeAll()
-        associatedConfigurationIDs.removeAll()
+        do {
+            try modelContext.delete(model: PersistedConvenienceDownloadRetrieval.self)
+            try modelContext.delete(model: PersistedConvenienceDownloadDownloaded.self)
+            try modelContext.delete(model: PersistedConvenienceDownloadAssociation.self)
+            try modelContext.save()
+        } catch {
+            logger.error("Failed to purge convenience download tables: \(error)")
+        }
+
         runExtendedBackgroundTask = false
 
         shouldComeToEnd = false
@@ -649,41 +670,192 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
         downloadedItemIDs: [String: Set<ItemIdentifier>],
         associatedConfigurationIDs: [ItemIdentifier: Set<String>]
     ) {
-        self.retrievals.merge(retrievals) { _, new in new }
-        self.downloadedItemIDs.merge(downloadedItemIDs) { _, new in new }
-        self.associatedConfigurationIDs.merge(associatedConfigurationIDs) { _, new in new }
+        for (configurationID, retrieval) in retrievals {
+            setRetrieval(retrieval, for: configurationID)
+        }
+        for (configurationID, ids) in downloadedItemIDs {
+            setDownloadedItemIDs(ids, for: configurationID)
+        }
+        for (itemID, ids) in associatedConfigurationIDs {
+            setAssociatedConfigurationIDs(ids, for: itemID)
+        }
+
+        do {
+            try modelContext.save()
+        } catch {
+            logger.error("Failed to save migrated convenience download state: \(error)")
+        }
     }
 }
 
-// MARK: In-memory store accessors
+// MARK: SwiftData store accessors
 
 extension PersistenceManager.ConvenienceDownloadSubsystem {
     func getRetrieval(for configurationID: String) -> GroupingRetrieval? {
-        retrievals[configurationID]
+        guard let entity = retrievalEntity(for: configurationID) else {
+            return nil
+        }
+
+        do {
+            return try JSONDecoder().decode(GroupingRetrieval.self, from: entity.retrievalData)
+        } catch {
+            logger.warning("Failed to decode retrieval for \(configurationID, privacy: .public): \(error, privacy: .public)")
+            return nil
+        }
     }
     func setRetrieval(_ retrieval: GroupingRetrieval?, for configurationID: String) {
-        retrievals[configurationID] = retrieval
+        if let retrieval {
+            do {
+                let data = try JSONEncoder().encode(retrieval)
+
+                if let existing = retrievalEntity(for: configurationID) {
+                    existing.retrievalData = data
+                } else {
+                    modelContext.insert(PersistedConvenienceDownloadRetrieval(configurationID: configurationID, retrievalData: data))
+                }
+            } catch {
+                logger.error("Failed to encode retrieval for \(configurationID, privacy: .public): \(error, privacy: .public)")
+                return
+            }
+        } else {
+            do {
+                try modelContext.delete(model: PersistedConvenienceDownloadRetrieval.self, where: #Predicate { $0.configurationID == configurationID })
+            } catch {
+                logger.warning("Failed to delete retrieval for \(configurationID, privacy: .public): \(error, privacy: .public)")
+            }
+        }
+
+        saveModelContext("retrieval \(configurationID)")
+    }
+    var retrievalCount: Int {
+        (try? modelContext.fetchCount(FetchDescriptor<PersistedConvenienceDownloadRetrieval>())) ?? 0
     }
     var allRetrievals: [String: GroupingRetrieval] {
-        retrievals
+        guard let entities = try? modelContext.fetch(FetchDescriptor<PersistedConvenienceDownloadRetrieval>()) else {
+            return [:]
+        }
+
+        var result = [String: GroupingRetrieval]()
+
+        for entity in entities {
+            do {
+                result[entity.configurationID] = try JSONDecoder().decode(GroupingRetrieval.self, from: entity.retrievalData)
+            } catch {
+                logger.warning("Failed to decode retrieval for \(entity.configurationID, privacy: .public): \(error, privacy: .public)")
+            }
+        }
+
+        return result
     }
 
     func getDownloadedItemIDs(for configurationID: String) -> Set<ItemIdentifier>? {
-        downloadedItemIDs[configurationID]
+        guard let entity = downloadedEntity(for: configurationID) else {
+            return nil
+        }
+
+        do {
+            let strings = try JSONDecoder().decode(Set<String>.self, from: entity.itemIDsData)
+            return Set(strings.map(ItemIdentifier.init))
+        } catch {
+            logger.warning("Failed to decode downloaded item IDs for \(configurationID, privacy: .public): \(error, privacy: .public)")
+            return nil
+        }
     }
     func setDownloadedItemIDs(_ ids: Set<ItemIdentifier>?, for configurationID: String) {
-        downloadedItemIDs[configurationID] = ids
+        if let ids {
+            do {
+                let data = try JSONEncoder().encode(Set(ids.map(\.description)))
+
+                if let existing = downloadedEntity(for: configurationID) {
+                    existing.itemIDsData = data
+                } else {
+                    modelContext.insert(PersistedConvenienceDownloadDownloaded(configurationID: configurationID, itemIDsData: data))
+                }
+            } catch {
+                logger.error("Failed to encode downloaded item IDs for \(configurationID, privacy: .public): \(error, privacy: .public)")
+                return
+            }
+        } else {
+            do {
+                try modelContext.delete(model: PersistedConvenienceDownloadDownloaded.self, where: #Predicate { $0.configurationID == configurationID })
+            } catch {
+                logger.warning("Failed to delete downloaded item IDs for \(configurationID, privacy: .public): \(error, privacy: .public)")
+            }
+        }
+
+        saveModelContext("downloaded \(configurationID)")
     }
 
     func getAssociatedConfigurationIDs(for itemID: ItemIdentifier) -> Set<String>? {
-        associatedConfigurationIDs[itemID]
+        guard let entity = associationEntity(for: itemID) else {
+            return nil
+        }
+
+        do {
+            return try JSONDecoder().decode(Set<String>.self, from: entity.configurationIDsData)
+        } catch {
+            logger.warning("Failed to decode associations for \(itemID, privacy: .public): \(error, privacy: .public)")
+            return nil
+        }
     }
     func setAssociatedConfigurationIDs(_ ids: Set<String>?, for itemID: ItemIdentifier) {
-        associatedConfigurationIDs[itemID] = ids
+        let key = itemID.description
+
+        if let ids, !ids.isEmpty {
+            do {
+                let data = try JSONEncoder().encode(ids)
+
+                if let existing = associationEntity(for: itemID) {
+                    existing.configurationIDsData = data
+                } else {
+                    modelContext.insert(PersistedConvenienceDownloadAssociation(itemID: key, configurationIDsData: data))
+                }
+            } catch {
+                logger.error("Failed to encode associations for \(itemID, privacy: .public): \(error, privacy: .public)")
+                return
+            }
+        } else {
+            do {
+                try modelContext.delete(model: PersistedConvenienceDownloadAssociation.self, where: #Predicate { $0.itemID == key })
+            } catch {
+                logger.warning("Failed to delete associations for \(itemID, privacy: .public): \(error, privacy: .public)")
+            }
+        }
+
+        saveModelContext("association \(itemID)")
+    }
+    var associationCount: Int {
+        (try? modelContext.fetchCount(FetchDescriptor<PersistedConvenienceDownloadAssociation>())) ?? 0
     }
 
     func setRunExtendedBackgroundTask(_ value: Bool) {
         runExtendedBackgroundTask = value
+    }
+
+    // MARK: Internal fetch helpers
+
+    private func retrievalEntity(for configurationID: String) -> PersistedConvenienceDownloadRetrieval? {
+        var descriptor = FetchDescriptor<PersistedConvenienceDownloadRetrieval>(predicate: #Predicate { $0.configurationID == configurationID })
+        descriptor.fetchLimit = 1
+        return (try? modelContext.fetch(descriptor))?.first
+    }
+    private func downloadedEntity(for configurationID: String) -> PersistedConvenienceDownloadDownloaded? {
+        var descriptor = FetchDescriptor<PersistedConvenienceDownloadDownloaded>(predicate: #Predicate { $0.configurationID == configurationID })
+        descriptor.fetchLimit = 1
+        return (try? modelContext.fetch(descriptor))?.first
+    }
+    private func associationEntity(for itemID: ItemIdentifier) -> PersistedConvenienceDownloadAssociation? {
+        let key = itemID.description
+        var descriptor = FetchDescriptor<PersistedConvenienceDownloadAssociation>(predicate: #Predicate { $0.itemID == key })
+        descriptor.fetchLimit = 1
+        return (try? modelContext.fetch(descriptor))?.first
+    }
+    private func saveModelContext(_ context: String) {
+        do {
+            try modelContext.save()
+        } catch {
+            logger.error("Failed to save convenience download \(context, privacy: .public): \(error, privacy: .public)")
+        }
     }
 }
 

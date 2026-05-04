@@ -13,7 +13,7 @@ import ShelfPlayerKit
 enum SwiftDataMigrator {
     private static let logger = Logger(subsystem: "io.rfk.shelfPlayerMigration", category: "SwiftDataMigrator")
 
-    static func migrate(progress: @escaping (Double) -> Void) async throws {
+    static func migrate(progress: @escaping @Sendable (Double) -> Void) async throws {
         logger.info("Starting SwiftData migration")
 
         let oldContainer = try openOldContainer()

@@ -10,6 +10,7 @@ import Combine
 @preconcurrency import CarPlay
 import ShelfPlayback
 
+@MainActor
 final class CarPlayTabBar {
     private let interfaceController: CPInterfaceController
     private let settings = AppSettings.shared

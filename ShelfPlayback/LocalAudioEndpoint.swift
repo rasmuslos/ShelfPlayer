@@ -126,6 +126,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
 
     let audioPlayerVolume: Float = 1
 
+    @MainActor
     init(_ item: AudioPlayerItem) async throws {
         logger.info("Starting up local audio endpoint with item ID \(item.itemID)")
 
@@ -169,7 +170,7 @@ final class LocalAudioEndpoint: AudioEndpoint {
 
         try await start()
     }
-    deinit {
+    isolated deinit {
         observerSubscriptions.forEach { $0.cancel() }
 
         if let audioPlayerSubscription {

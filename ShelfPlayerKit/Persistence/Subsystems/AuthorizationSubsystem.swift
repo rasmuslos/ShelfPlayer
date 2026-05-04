@@ -48,11 +48,11 @@ extension PersistenceManager {
         #if DEBUG
         /// Services we use in the keychain. Exposed so the debug-only
         /// synchronous wipe can reach them without instantiating the actor.
-        nonisolated static let debugKeychainServices: [CFString] = [
-            "io.rfk.shelfPlayer.credentials.v2" as CFString,
-            "io.rfk.shelfPlayer.credentials.tlsCertificate.v2" as CFString,
-            "io.rfk.shelfPlayer.credentials.accessToken.v2" as CFString,
-            "io.rfk.shelfPlayer.credentials.refreshToken.v2" as CFString,
+        nonisolated static let debugKeychainServices: [String] = [
+            "io.rfk.shelfPlayer.credentials.v2",
+            "io.rfk.shelfPlayer.credentials.tlsCertificate.v2",
+            "io.rfk.shelfPlayer.credentials.accessToken.v2",
+            "io.rfk.shelfPlayer.credentials.refreshToken.v2",
         ]
 
         /// Synchronously deletes every keychain item we own. Debug-only —

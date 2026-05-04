@@ -36,5 +36,11 @@ public enum ShelfPlayerSchema: VersionedSchema {
         PersistedTabCustomization.self,
         PersistedLibraryIndex.self,
         PersistedHomeCustomization.self,
+
+        PersistedConvenienceDownloadRetrieval.self,
+        PersistedConvenienceDownloadDownloaded.self,
+        PersistedConvenienceDownloadAssociation.self,
+
+        PersistedHideFromContinueListening.self,
     ]}
 }

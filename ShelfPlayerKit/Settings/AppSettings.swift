@@ -9,6 +9,14 @@ import Foundation
 import Observation
 import OSLog
 
+// `@unchecked Sendable` rationale: every property is backed by `UserDefaults`
+// which is thread-safe, and primitive Bool/Int writes are atomic. The in-memory
+// `@Observable` shadow is read/written from many contexts (MainActor UI,
+// actor-isolated subsystems). Pinning to `@MainActor` would be the type-safe
+// choice but cascades through every framework that reads from a non-MainActor
+// context (PlaybackReporter, ConvenienceDownloadSubsystem, etc.). Revisit when
+// those callers are themselves moved to MainActor or when a settings-snapshot
+// pattern is introduced.
 @Observable
 public final class AppSettings: @unchecked Sendable {
     public static let shared = AppSettings()

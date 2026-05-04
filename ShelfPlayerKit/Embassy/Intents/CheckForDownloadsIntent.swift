@@ -22,7 +22,9 @@ public struct CheckForDownloadsIntent: ProgressReportingIntent {
         await withTaskCancellationHandler {
             await PersistenceManager.shared.convenienceDownload.scheduleAll()
         } onCancel: {
-            PersistenceManager.shared.convenienceDownload.shouldComeToEnd = true
+            Task {
+                await PersistenceManager.shared.convenienceDownload.markShouldComeToEnd()
+            }
         }
 
         while !Task.isCancelled {

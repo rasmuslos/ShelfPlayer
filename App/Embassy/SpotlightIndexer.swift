@@ -42,9 +42,12 @@ final actor SpotlightIndexer: Sendable {
     }
 
     func handleBackgroundTask(_ task: BGTask) {
-        task.expirationHandler = {
-            self.logger.info("Expiration handler called on background task for identifier: \(task.identifier)")
-            self.shouldComeToEnd = true
+        let identifier = task.identifier
+        task.expirationHandler = { [weak self] in
+            guard let self else { return }
+            Task {
+                await self.markShouldComeToEnd(identifier: identifier)
+            }
         }
 
         // Detect finish
@@ -67,6 +70,11 @@ final actor SpotlightIndexer: Sendable {
         // Schedule task
 
         run()
+    }
+
+    func markShouldComeToEnd(identifier: String) {
+        logger.info("Expiration handler called on background task for identifier: \(identifier)")
+        shouldComeToEnd = true
     }
 
     func run() {

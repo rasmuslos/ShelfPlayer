@@ -7,7 +7,7 @@ import Combine
 import UIKit
 import ShelfPlayback
 
-final class DownloadAccessibilityAnnouncer: Sendable {
+final class DownloadAccessibilityAnnouncer: @unchecked Sendable {
     static let shared = DownloadAccessibilityAnnouncer()
 
     private let subscriptions: [AnyCancellable]

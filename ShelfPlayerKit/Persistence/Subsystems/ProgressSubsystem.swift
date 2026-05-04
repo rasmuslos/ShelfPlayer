@@ -11,6 +11,7 @@ import OSLog
 import SwiftData
 
 typealias PersistedProgress = ShelfPlayerSchema.PersistedProgress
+typealias PersistedHideFromContinueListening = ShelfPlayerSchema.PersistedHideFromContinueListening
 
 extension PersistenceManager {
     public final actor ProgressSubsystem: ModelActor {
@@ -122,6 +123,10 @@ extension PersistenceManager.ProgressSubsystem {
                 && $0.groupingID == groupingID
                 && $0.connectionID == connectionID
             })
+            try modelContext.delete(model: PersistedHideFromContinueListening.self, where: #Predicate {
+                $0.primaryID == primaryID
+                && $0.connectionID == connectionID
+            })
             try modelContext.save()
         } catch {
             logger.error("Failed to remove progress entities related to itemID \(itemID): \(error)")
@@ -130,6 +135,9 @@ extension PersistenceManager.ProgressSubsystem {
     func remove(connectionID: ItemIdentifier.ConnectionID) {
         do {
             try modelContext.delete(model: PersistedProgress.self, where: #Predicate {
+                $0.connectionID == connectionID
+            })
+            try modelContext.delete(model: PersistedHideFromContinueListening.self, where: #Predicate {
                 $0.connectionID == connectionID
             })
             try modelContext.save()
@@ -151,8 +159,30 @@ public extension PersistenceManager.ProgressSubsystem {
     }
 
     nonisolated func hiddenFromContinueListening(connectionID: ItemIdentifier.ConnectionID) async -> Set<String> {
-        // Hidden-from-continue-listening data is no longer stored in key-value store
-        []
+        await fetchHiddenFromContinueListening(connectionID: connectionID)
+    }
+
+    func fetchHiddenFromContinueListening(connectionID: ItemIdentifier.ConnectionID) -> Set<String> {
+        let descriptor = FetchDescriptor<PersistedHideFromContinueListening>(predicate: #Predicate { $0.connectionID == connectionID })
+
+        do {
+            return Set(try modelContext.fetch(descriptor).map(\.primaryID))
+        } catch {
+            logger.warning("Failed to fetch hide-from-continue-listening for \(connectionID, privacy: .public): \(error, privacy: .public)")
+            return []
+        }
+    }
+    func replaceHiddenFromContinueListening(_ primaryIDs: Set<String>, connectionID: ItemIdentifier.ConnectionID) {
+        do {
+            try modelContext.delete(model: PersistedHideFromContinueListening.self, where: #Predicate { $0.connectionID == connectionID })
+        } catch {
+            logger.warning("Failed to delete hide-from-continue-listening rows for \(connectionID, privacy: .public): \(error, privacy: .public)")
+            return
+        }
+
+        for primaryID in primaryIDs {
+            modelContext.insert(PersistedHideFromContinueListening(connectionID: connectionID, primaryID: primaryID))
+        }
     }
 
     var activeProgressEntities: [ProgressEntity] {
@@ -177,6 +207,12 @@ public extension PersistenceManager.ProgressSubsystem {
     }
 
     func compareDatabase(against payload: [ProgressPayload], connectionID: ItemIdentifier.ConnectionID) async throws {
+        let hiddenPrimaryIDs = Set(payload.compactMap { entry -> String? in
+            guard entry.hideFromContinueListening == true else { return nil }
+            return entry.episodeId ?? entry.libraryItemId
+        })
+        replaceHiddenFromContinueListening(hiddenPrimaryIDs, connectionID: connectionID)
+
         var remoteDuplicates = [String]()
 
         let keyedPayload = payload.map {

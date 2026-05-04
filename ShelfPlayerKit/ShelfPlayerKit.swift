@@ -34,9 +34,9 @@ public extension ShelfPlayerKit {
     }()
 
     #if ENABLE_CENTRALIZED
-    static nonisolated(unsafe) var enableCentralized = true
+    static let enableCentralized = true
     #else
-    static nonisolated(unsafe) var enableCentralized = false
+    static let enableCentralized = false
     #endif
 
     static let clientBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
@@ -68,16 +68,22 @@ public extension ShelfPlayerKit {
         enableCentralized ? UserDefaults(suiteName: groupContainer)! : .standard
     }
 
-    private static nonisolated(unsafe) var _clientID: String? = nil
+    private static let _clientIDLock = NSLock()
+    nonisolated(unsafe) private static var _clientID: String? = nil
     static var clientID: String {
-        if let clientID = suite.string(forKey: "clientId") {
-            _clientID = clientID
-        } else {
-            _clientID = String(length: 100)
-            suite.set(_clientID, forKey: "clientId")
+        _clientIDLock.withLock {
+            if let cached = _clientID {
+                return cached
+            }
+            if let stored = suite.string(forKey: "clientId") {
+                _clientID = stored
+                return stored
+            }
+            let generated = String(length: 100)
+            suite.set(generated, forKey: "clientId")
+            _clientID = generated
+            return generated
         }
-
-        return _clientID!
     }
 
     static var downloadDirectoryURL: URL {

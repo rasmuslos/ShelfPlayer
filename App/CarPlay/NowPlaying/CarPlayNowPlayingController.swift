@@ -10,6 +10,7 @@ import Combine
 @preconcurrency import CarPlay
 import ShelfPlayback
 
+@MainActor
 final class CarPlayNowPlayingController: NSObject {
     private let template = CPNowPlayingTemplate.shared
 
@@ -154,7 +155,7 @@ private extension CarPlayNowPlayingController {
     }
 }
 
-extension CarPlayNowPlayingController: CPNowPlayingTemplateObserver {
+extension CarPlayNowPlayingController: @preconcurrency CPNowPlayingTemplateObserver {
     func nowPlayingTemplateUpNextButtonTapped(_ nowPlayingTemplate: CPNowPlayingTemplate) {
         Task { [weak self] in
             guard let self else {

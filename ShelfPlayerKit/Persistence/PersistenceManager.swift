@@ -53,7 +53,7 @@ public final class PersistenceManager: Sendable {
         session = .init(modelContainer: modelContainer)
 
         download = .init(modelContainer: modelContainer)
-        convenienceDownload = .init()
+        convenienceDownload = .init(modelContainer: modelContainer)
 
         item = .init(modelContainer: modelContainer)
         bookmark = .init(modelContainer: modelContainer)
@@ -63,6 +63,10 @@ public final class PersistenceManager: Sendable {
         homeCustomization = .init(modelContainer: modelContainer)
 
         webSocket = .init()
+
+        Task { [convenienceDownload] in
+            await convenienceDownload.bootstrap()
+        }
     }
 
     public func remove(itemID: ItemIdentifier) async {

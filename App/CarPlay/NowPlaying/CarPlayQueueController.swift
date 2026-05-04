@@ -9,6 +9,7 @@ import Foundation
 @preconcurrency import CarPlay
 import ShelfPlayback
 
+@MainActor
 final class CarPlayQueueController {
     let template: CPListTemplate
 

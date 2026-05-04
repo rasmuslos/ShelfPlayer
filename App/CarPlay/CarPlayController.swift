@@ -8,6 +8,7 @@
 import Foundation
 @preconcurrency import CarPlay
 
+@MainActor
 final class CarPlayController {
     private let tabBarController: CarPlayTabBar
     private let nowPlayingController: CarPlayNowPlayingController

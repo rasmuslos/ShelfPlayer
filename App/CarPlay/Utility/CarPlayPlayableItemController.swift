@@ -10,6 +10,7 @@ import Combine
 @preconcurrency import CarPlay
 import ShelfPlayback
 
+@MainActor
 final class CarPlayPlayableItemController: CarPlayItemController {
     let item: PlayableItem
     let displayCover: Bool

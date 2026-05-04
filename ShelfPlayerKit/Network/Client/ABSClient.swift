@@ -12,13 +12,15 @@ public let ABSClient = APIClientStore.shared
 
 public final actor APIClientStore: Sendable {
     var storage: [ItemIdentifier.ConnectionID: Task<APIClient, Error>] = [:]
-    nonisolated(unsafe) private var observerSubscriptions = Set<AnyCancellable>()
+    private var observerSubscriptions = Set<AnyCancellable>()
 
     private init() {
-        setupObservers()
+        Task {
+            await self.setupObservers()
+        }
     }
 
-    private nonisolated func setupObservers() {
+    private func setupObservers() {
         OfflineMode.events.changed
             .sink { [weak self] _ in
                 Self.scheduleInvalidation(for: self)

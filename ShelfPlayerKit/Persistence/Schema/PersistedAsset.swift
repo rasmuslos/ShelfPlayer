@@ -78,7 +78,7 @@ extension ShelfPlayerSchema {
             return base
         }
 
-        public enum FileType: Codable {
+        public enum FileType: Codable, Sendable {
             case audio(offset: TimeInterval, duration: TimeInterval, ino: String, fileExtension: String)
             case pdf(name: String, ino: String)
             case image(size: ImageSize)

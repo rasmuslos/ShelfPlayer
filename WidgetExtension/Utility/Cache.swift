@@ -47,9 +47,9 @@ final actor Cache: Sendable {
             }
         }
 
-        let fetched = await withTaskGroup {
+        let fetched: [ItemIdentifier: Data] = await withTaskGroup(of: (ItemIdentifier, Data?).self) { group in
             for itemID in missingItemIDs {
-                $0.addTask { [logger] in
+                group.addTask { [logger] in
                     let data = await itemID.data(size: tiny ? .tiny : .small)
                     if data == nil {
                         logger.error("Failed to fetch cover for item \(itemID, privacy: .public) (tiny=\(tiny, privacy: .public))")
@@ -58,7 +58,13 @@ final actor Cache: Sendable {
                 }
             }
 
-            return await $0.reduce(into: [:]) { $0[$1.0] = $1.1 }
+            var collected: [ItemIdentifier: Data] = [:]
+            for await (itemID, data) in group {
+                if let data {
+                    collected[itemID] = data
+                }
+            }
+            return collected
         }
 
         if tiny {
@@ -92,9 +98,9 @@ final actor Cache: Sendable {
             }
         }
 
-        let fetched = await withTaskGroup {
+        let fetched: [ItemIdentifier: ItemEntity] = await withTaskGroup(of: (ItemIdentifier, ItemEntity?).self) { group in
             for itemID in missingItemIDs {
-                $0.addTask { [logger] in
+                group.addTask { [logger] in
                     do {
                         let entity = try await ItemEntity(item: itemID.resolved)
                         return (itemID, Optional(entity))
@@ -105,7 +111,13 @@ final actor Cache: Sendable {
                 }
             }
 
-            return await $0.reduce(into: [:]) { $0[$1.0] = $1.1 }
+            var collected: [ItemIdentifier: ItemEntity] = [:]
+            for await (itemID, entity) in group {
+                if let entity {
+                    collected[itemID] = entity
+                }
+            }
+            return collected
         }
 
         entities.merge(fetched) { $1 }

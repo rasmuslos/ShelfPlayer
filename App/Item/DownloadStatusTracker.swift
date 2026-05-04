@@ -57,18 +57,17 @@ final class DownloadStatusTracker {
 }
 
 private actor DownloadStatusCache: Sendable {
-    nonisolated(unsafe) private var observerSubscriptions = Set<AnyCancellable>()
+    private nonisolated let observerSubscription: AnyCancellable
 
     var cached = [ItemIdentifier: Task<DownloadStatus, Never>]()
 
     private init() {
-        PersistenceManager.shared.download.events.statusChanged
-            .sink { [weak self] payload in
+        observerSubscription = PersistenceManager.shared.download.events.statusChanged
+            .sink { payload in
                 Task {
-                    await self?.invalidate(payload: payload)
+                    await DownloadStatusCache.shared.invalidate(payload: payload)
                 }
             }
-            .store(in: &observerSubscriptions)
     }
 
     func status(for itemID: ItemIdentifier) async -> DownloadStatus {

@@ -371,7 +371,7 @@ struct PlaybackRatePickerCard: View {
     }
 }
 
-private struct RulerCanvas: View, Animatable {
+private struct RulerCanvas: View, @preconcurrency Animatable {
     var rate: Double
     let minRate: Double
     let maxRate: Double
