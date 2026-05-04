@@ -256,6 +256,8 @@ final class PlaybackViewModel {
                 withAnimation(.smooth.delay(0.2)) {
                     self.controlTranslationY = 0
                 }
+
+                UIAccessibility.post(notification: .screenChanged, argument: nil)
             }
         } else {
             translationY = 0
