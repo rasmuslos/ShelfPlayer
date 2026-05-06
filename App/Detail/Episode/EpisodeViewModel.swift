@@ -52,7 +52,10 @@ extension EpisodeViewModel {
         var information = [(String, String)]()
 
         information.append((ItemIdentifier.ItemType.podcast.label, episode.podcastName))
-        information.append((String(localized: "item.author"), episode.authors.formatted(.list(type: .and, width: .narrow))))
+
+        if !episode.authors.isEmpty {
+            information.append((String(localized: "item.author"), episode.authors.formatted(.list(type: .and, width: .narrow))))
+        }
 
         let episodeIndex = episode.index.episode
         if !episodeIndex.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {

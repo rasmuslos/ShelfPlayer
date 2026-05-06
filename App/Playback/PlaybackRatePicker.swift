@@ -153,8 +153,6 @@ struct PlaybackRatePickerCard: View {
         .fontDesign(.rounded)
         .padding(.horizontal, 20)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .contentShape(.rect)
-        .onTapGesture {} // prevent passthrough
         .hapticFeedback(.success, trigger: notifyGroupingSave)
         .hapticFeedback(.error, trigger: notifyGroupingError)
         .accessibilityElement(children: .contain)

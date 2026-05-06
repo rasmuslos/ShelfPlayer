@@ -22,14 +22,21 @@ struct ConnectionFlowTests {
         self.app = app
     }
 
-    @Test("Launch screen resolves to welcome or tab bar")
+    @Test("Launch screen resolves to welcome or main content")
     func welcomeOrTabBarAppears() async throws {
         let welcome = app.staticTexts["Welcome"]
-        let tabBar = app.tabBars.firstMatch
-        #expect(
-            XCUIElement.waitForEither(welcome, tabBar, timeout: 15),
-            "Neither the welcome screen nor the tab bar appeared"
-        )
+        let deadline = Date().addingTimeInterval(15)
+        var resolved = false
+
+        while Date() < deadline {
+            if welcome.exists || app.isOnMainContent {
+                resolved = true
+                break
+            }
+            usleep(500_000)
+        }
+
+        #expect(resolved, "Neither the welcome screen nor the main content surface appeared")
     }
 
     @Test("Tapping add-connection opens the endpoint sheet")
@@ -61,7 +68,7 @@ struct ConnectionFlowTests {
         #expect(app.textFields["Username"].waitForExistence(timeout: 20), "Authorization step did not appear")
     }
 
-    @Test("Full login flow lands on the main tab bar")
+    @Test("Full login flow lands on the main content surface")
     func fullLoginFlowReachesMainContent() async throws {
         if app.isAlreadyConnected() {
             // Nothing left to prove — the device already has a live connection.
@@ -70,7 +77,7 @@ struct ConnectionFlowTests {
 
         try app.logInToLocalServer()
 
-        #expect(app.tabBars.firstMatch.waitForExistence(timeout: 30), "Did not reach main content after login")
+        #expect(app.waitForMainContent(timeout: 30), "Did not reach main content after login")
     }
 }
 
@@ -92,8 +99,8 @@ struct UserFlowTests {
         }
 
         try #require(
-            app.tabBars.firstMatch.waitForExistence(timeout: 30),
-            "App did not reach the main tab bar after attempting to log in"
+            app.waitForMainContent(timeout: 30),
+            "App did not reach the main content surface after attempting to log in"
         )
 
         self.app = app
@@ -101,12 +108,9 @@ struct UserFlowTests {
 
     @Test("Home content loads")
     func browseHome() async throws {
-        let homeTab = app.tabBars.buttons.matching(
-            NSPredicate(format: "label CONTAINS[c] 'Home' OR label CONTAINS[c] 'Listen'")
-        ).firstMatch
-
-        if homeTab.exists {
-            homeTab.tap()
+        // "Home" or "Listen Now" — try both.
+        if !app.tapTabOrSidebarItem(named: "Home") {
+            _ = app.tapTabOrSidebarItem(named: "Listen")
         }
 
         #expect(app.anyScrollableContent.waitForExistence(timeout: 15), "Home content did not load")
@@ -114,24 +118,14 @@ struct UserFlowTests {
 
     @Test("Library tab shows content")
     func navigateToLibraryTab() async throws {
-        let libraryTab = app.tabBars.buttons.matching(
-            NSPredicate(format: "label CONTAINS[c] 'Library'")
-        ).firstMatch
-
-        guard libraryTab.waitForExistence(timeout: 5) else { return }
-        libraryTab.tap()
+        guard app.tapTabOrSidebarItem(named: "Library") else { return }
 
         #expect(app.anyScrollableContent.waitForExistence(timeout: 15), "Library content did not load")
     }
 
     @Test("Series tab is reachable if present")
     func navigateToSeriesTab() async throws {
-        let seriesTab = app.tabBars.buttons.matching(
-            NSPredicate(format: "label CONTAINS[c] 'Series'")
-        ).firstMatch
-
-        guard seriesTab.waitForExistence(timeout: 5) else { return }
-        seriesTab.tap()
+        guard app.tapTabOrSidebarItem(named: "Series") else { return }
 
         _ = app.staticTexts.firstMatch.waitForExistence(timeout: 10)
     }
@@ -169,41 +163,40 @@ struct UserFlowTests {
 
         let result = app.cells.firstMatch
         try #require(result.waitForExistence(timeout: 20), "No search results")
-        result.tap()
+        result.forceTap()
 
-        let playButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS[c] 'Play' OR label CONTAINS[c] 'play'")
-        ).firstMatch
+        let playButton = app.buttons.matching(playButtonPredicate).firstMatch
         try #require(playButton.waitForExistence(timeout: 15), "Play button not found")
 
         // Tapping should not throw; we don't assert on the audio engine since
         // playback startup depends on the local server and is inherently flaky.
-        playButton.tap()
+        playButton.forceTap()
     }
 
     @Test("Podcast library is reachable if the server has one")
     func navigateToPodcastLibrary() async throws {
-        let podcastElement = app.buttons.matching(
+        // On iPad sidebar, the podcast library is reached by tapping its
+        // section header directly. On iPhone (and iPad floating tab bar) it
+        // requires opening the library picker menu first. Try the direct
+        // path before falling back to the picker.
+        if app.tapTabOrSidebarItem(named: "Podcast", timeout: 1) {
+            _ = app.cells.firstMatch.waitForExistence(timeout: 15)
+            return
+        }
+
+        let libraryPicker = app.buttons.matching(
+            NSPredicate(format: "label CONTAINS[c] 'librar'")
+        ).firstMatch
+
+        guard libraryPicker.waitForExistence(timeout: 5) else { return }
+        libraryPicker.tap()
+
+        let podcastLibrary = app.buttons.matching(
             NSPredicate(format: "label CONTAINS[c] 'Podcast'")
         ).firstMatch
 
-        if !podcastElement.exists {
-            let libraryPicker = app.buttons.matching(
-                NSPredicate(format: "label CONTAINS[c] 'librar'")
-            ).firstMatch
-
-            guard libraryPicker.waitForExistence(timeout: 5) else { return }
-            libraryPicker.tap()
-
-            let podcastLibrary = app.buttons.matching(
-                NSPredicate(format: "label CONTAINS[c] 'Podcast'")
-            ).firstMatch
-
-            guard podcastLibrary.waitForExistence(timeout: 5) else { return }
-            podcastLibrary.tap()
-        } else {
-            podcastElement.tap()
-        }
+        guard podcastLibrary.waitForExistence(timeout: 5) else { return }
+        podcastLibrary.tap()
 
         _ = app.cells.firstMatch.waitForExistence(timeout: 15)
     }
@@ -215,13 +208,11 @@ struct UserFlowTests {
 
         let result = app.cells.firstMatch
         try #require(result.waitForExistence(timeout: 20), "No search results")
-        result.tap()
+        result.forceTap()
 
-        let playButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS[c] 'Play' OR label CONTAINS[c] 'play'")
-        ).firstMatch
+        let playButton = app.buttons.matching(playButtonPredicate).firstMatch
         try #require(playButton.waitForExistence(timeout: 15), "Play button not found")
-        playButton.tap()
+        playButton.forceTap()
 
         _ = app.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'Pause'")).firstMatch
             .waitForExistence(timeout: 10)
@@ -231,13 +222,13 @@ struct UserFlowTests {
         ).firstMatch
 
         guard bookmarkButton.waitForExistence(timeout: 10) else { return }
-        bookmarkButton.tap()
+        bookmarkButton.forceTap()
 
         let createButton = app.buttons.matching(
             NSPredicate(format: "label CONTAINS[c] 'Create'")
         ).firstMatch
         if createButton.waitForExistence(timeout: 5) {
-            createButton.tap()
+            createButton.forceTap()
         }
     }
 
@@ -248,21 +239,21 @@ struct UserFlowTests {
 
         let result = app.cells.firstMatch
         try #require(result.waitForExistence(timeout: 20), "No search results")
-        result.tap()
+        result.forceTap()
 
         let moreButton = app.buttons.matching(
             NSPredicate(format: "label CONTAINS[c] 'More' OR identifier CONTAINS[c] 'menu'")
         ).firstMatch
 
         guard moreButton.waitForExistence(timeout: 5) else { return }
-        moreButton.tap()
+        moreButton.forceTap()
 
         let finishedButton = app.buttons.matching(
             NSPredicate(format: "label CONTAINS[c] 'Finished' OR label CONTAINS[c] 'complete'")
         ).firstMatch
 
         if finishedButton.waitForExistence(timeout: 5) {
-            finishedButton.tap()
+            finishedButton.forceTap()
         }
     }
 }
@@ -281,23 +272,23 @@ struct OfflineModeTests {
         app.dismissSystemAlertsIfPresent()
 
         try #require(app.addConnectionButton.waitForExistence(timeout: 15), "Welcome screen did not appear")
-        #expect(!app.tabBars.firstMatch.exists, "Tab bar should not be visible without connections")
+        #expect(!app.isOnMainContent, "Main content should not be visible without connections")
         #expect(!app.staticTexts["Offline"].exists, "Offline panel should not be visible without connections")
     }
 
     /// With a connection in place, forcing offline mode at launch should drop
     /// the user onto the offline panel and the "Go online" control should
-    /// recover the tab bar once tapped.
+    /// recover the main content surface once tapped.
     @Test("Offline panel appears with a connection and recovers via 'Go online'")
     func offlinePanelTogglesWithConnection() async throws {
-        // Step 1 — fresh simulator state, log in, reach the tab bar.
+        // Step 1 — fresh simulator state, log in, reach the main surface.
         let app = XCUIApplication()
         app.launchForUITesting(wipeConnections: true)
         app.dismissSystemAlertsIfPresent()
 
         try app.logInToLocalServer()
         try #require(
-            app.tabBars.firstMatch.waitForExistence(timeout: 30),
+            app.waitForMainContent(timeout: 30),
             "Did not reach main content after login"
         )
 
@@ -310,13 +301,13 @@ struct OfflineModeTests {
         // pin to the toolbar instance which sits inside the "Offline" nav bar.
         let toolbarGoOnline = app.navigationBars["Offline"].buttons["Go online"]
         try #require(toolbarGoOnline.waitForExistence(timeout: 20), "Offline panel did not appear after forcing offline mode")
-        #expect(!app.tabBars.firstMatch.exists, "Tab bar should be hidden in offline mode")
+        #expect(!app.isOnMainContent, "Main tab/sidebar surface should be hidden in offline mode")
 
-        // Step 3 — tap "Go online" and verify the tab bar returns.
+        // Step 3 — tap "Go online" and verify the main surface returns.
         toolbarGoOnline.tap()
         #expect(
-            app.tabBars.firstMatch.waitForExistence(timeout: 30),
-            "Tab bar did not return after tapping 'Go online'"
+            app.waitForMainContent(timeout: 30),
+            "Main content did not return after tapping 'Go online'"
         )
     }
 }
@@ -393,10 +384,97 @@ extension XCUIApplication {
     var addConnectionButton: XCUIElement { buttons["Add connections"] }
     var endpointTextField: XCUIElement { textFields["Endpoint"] }
 
+    /// Tab / sidebar labels that the app exposes regardless of layout. On
+    /// iPhone they live in the bottom tab bar; on iPad they appear in the
+    /// floating top tab bar (iPadOS 26 default for `.sidebarAdaptable`) or
+    /// the sidebar. SwiftUI exposes these as different element types
+    /// depending on rendering — buttons in tab bars, cells in sidebars.
+    static let knownTabLabels = ["Home", "Listen Now", "Audiobooks", "Podcasts", "Search", "Series", "Library", "Latest"]
+
+    /// `true` when the app has reached its main content surface — independent
+    /// of whether the tab bar lives at the bottom (iPhone), at the top (iPad
+    /// floating tab bar), or in a sidebar (iPad sidebar mode). Probes
+    /// multiple element types because SwiftUI sidebar items render as cells
+    /// rather than buttons.
+    var isOnMainContent: Bool {
+        if tabBars.firstMatch.exists { return true }
+        for label in Self.knownTabLabels {
+            if buttons[label].exists { return true }
+            if cells[label].exists { return true }
+            if staticTexts[label].exists { return true }
+        }
+        return false
+    }
+
+    /// Wait until the app reaches its main content surface. Use this instead
+    /// of `tabBars.firstMatch.waitForExistence` — that tab-bar query times out
+    /// in iPad sidebar mode where the same buttons live in a sidebar instead.
+    @discardableResult
+    func waitForMainContent(timeout: TimeInterval = 30) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if isOnMainContent { return true }
+            usleep(500_000)
+        }
+        return isOnMainContent
+    }
+
     /// Best-effort check for "main content is visible" — used so tests relying
     /// on a prior connection don't trip when the simulator is already set up.
     func isAlreadyConnected(timeout: TimeInterval = 2) -> Bool {
-        tabBars.firstMatch.waitForExistence(timeout: timeout)
+        waitForMainContent(timeout: timeout)
+    }
+
+    /// Tap a tab/section labeled `name`. Tries the compact tab bar first, then
+    /// falls back to a sidebar cell, then any matching button anywhere in the
+    /// hierarchy. Returns `true` if a tap landed. The fallback order is
+    /// important — `buttons.matching(CONTAINS)` over the whole hierarchy can
+    /// hit unrelated buttons (e.g. "Select library"), so cells are tried
+    /// first since iPad sidebar items render as cells.
+    ///
+    /// Exact-label sidebar entries can appear multiple times on iPad (e.g.
+    /// "Home" exists under both the Audiobooks AND Podcasts library
+    /// sections), so every lookup must use `.firstMatch` and tap via a
+    /// coordinate to avoid the "Multiple matching elements" XCUI error and
+    /// the "not hittable" error when another element overlaps.
+    @discardableResult
+    func tapTabOrSidebarItem(named name: String, timeout: TimeInterval = 5) -> Bool {
+        let exactPredicate = NSPredicate(format: "label == %@", name)
+        let substringPredicate = NSPredicate(format: "label CONTAINS[c] %@", name)
+
+        // 1. Compact tab bar (iPhone, iPad floating tab bar).
+        let tabBarButton = tabBars.buttons.matching(substringPredicate).firstMatch
+        if tabBarButton.waitForExistence(timeout: 1) {
+            tabBarButton.forceTap()
+            return true
+        }
+
+        // 2. Sidebar cell (iPad sidebar mode). Use .firstMatch + forceTap so
+        //    duplicates and overlapping headers don't break the tap.
+        let exactCell = cells.matching(exactPredicate).firstMatch
+        if exactCell.waitForExistence(timeout: 1) {
+            exactCell.forceTap()
+            return true
+        }
+        let substringCell = cells.matching(substringPredicate).firstMatch
+        if substringCell.waitForExistence(timeout: 1) {
+            substringCell.forceTap()
+            return true
+        }
+
+        // 3. Any button by exact label, then by substring.
+        let exactButton = buttons.matching(exactPredicate).firstMatch
+        if exactButton.waitForExistence(timeout: 1) {
+            exactButton.forceTap()
+            return true
+        }
+        let anyButton = buttons.matching(substringPredicate).firstMatch
+        if anyButton.waitForExistence(timeout: timeout) {
+            anyButton.forceTap()
+            return true
+        }
+
+        return false
     }
 
     /// The connect button's localization key (`connection.add.connect`) has no
@@ -451,11 +529,7 @@ extension XCUIApplication {
     }
 
     func navigateToSearch() throws {
-        let searchTab = tabBars.buttons.matching(
-            NSPredicate(format: "label CONTAINS[c] 'Search'")
-        ).firstMatch
-        guard searchTab.waitForExistence(timeout: 5) else { return }
-        searchTab.tap()
+        _ = tapTabOrSidebarItem(named: "Search")
     }
 
     func searchFor(_ query: String) {
@@ -491,4 +565,29 @@ extension XCUIElement {
         }
         return a.exists || b.exists
     }
+
+    /// Tap by computing a coordinate inside the element's frame instead of
+    /// going through XCUIElement.tap(). This bypasses XCUITest's hittability
+    /// check, which fails on iPad sidebar cells partially obscured by the
+    /// "Listened today" header. The coordinate is centered within the
+    /// element's frame.
+    func forceTap() {
+        let coordinate = self.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        coordinate.tap()
+    }
 }
+
+/// Predicate that matches the accessibility label of the in-page PlayButton
+/// across item types and progress states. The English labels emitted by
+/// `PlayButton.label` are: "Listen" | "Listen again" | "Resume listening" |
+/// "Play" | "Play again" | "Resume" | "Pause".
+///
+/// Substring matching is required because Menu and PlayButtonStyle wrappers
+/// can postfix the accessibility label with the progress value. Critically,
+/// the iPad sidebar header button has label "Listen Now" — exclude it
+/// explicitly so the test doesn't accidentally tap that and open the
+/// statistics sheet instead of starting playback.
+let playButtonPredicate = NSPredicate(format:
+    "(label CONTAINS[c] 'play' OR label CONTAINS[c] 'pause' OR label CONTAINS[c] 'listen' OR label CONTAINS[c] 'resume')"
+    + " AND NOT label CONTAINS[c] 'now'"
+)

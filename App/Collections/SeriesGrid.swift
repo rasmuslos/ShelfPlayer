@@ -16,7 +16,7 @@ struct SeriesGrid: View {
     let onAppear: ((_: Series) -> Void)
 
     private var minimumWidth: CGFloat {
-        horizontalSizeClass == .compact ? 112.0 : 120.0
+        horizontalSizeClass == .compact ? 112.0 : 160.0
     }
 
     var body: some View {
@@ -50,7 +50,7 @@ struct SeriesHGrid: View {
 
     // Mirrors `AudiobookHGrid` so the row visually matches an audiobook row.
     private var minimumSize: CGFloat {
-        horizontalSizeClass == .compact ? 100.0 : 120.0
+        horizontalSizeClass == .compact ? 100.0 : 160.0
     }
     private var size: CGFloat {
         guard width.isFinite, width > padding * 2 else { return minimumSize }

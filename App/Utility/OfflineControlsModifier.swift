@@ -13,7 +13,12 @@ struct OfflineControlsModifier: ViewModifier {
 
     let startOfflineTimeout: Bool
 
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var offlineTimeout: Task<Void, Never>?
+
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
 
     func body(content: Content) -> some View {
         content
@@ -37,23 +42,25 @@ struct OfflineControlsModifier: ViewModifier {
                     .controlSize(.large)
                     .buttonSizing(.flexible)
 
-                    Menu {
-                        LibraryPicker()
+                    if isCompact {
+                        Menu {
+                            LibraryPicker()
 
-                        Divider()
+                            Divider()
 
-                        Button("navigation.offline.enable", systemImage: "network.slash") {
-                            OfflineMode.shared.forceEnable(reason: "Library picker offline button")
+                            Button("navigation.offline.enable", systemImage: "network.slash") {
+                                OfflineMode.shared.forceEnable(reason: "Library picker offline button")
+                            }
+                            .onAppear {
+                                offlineTimeout?.cancel()
+                            }
+                        } label: {
+                            Text("navigation.library.select")
                         }
-                        .onAppear {
-                            offlineTimeout?.cancel()
-                        }
-                    } label: {
-                        Text("navigation.library.select")
+                        .buttonStyle(.glassProminent)
+                        .controlSize(.large)
+                        .buttonSizing(.flexible)
                     }
-                    .buttonStyle(.glassProminent)
-                    .controlSize(.large)
-                    .buttonSizing(.flexible)
                 }
                 .padding(.horizontal, 20)
             }

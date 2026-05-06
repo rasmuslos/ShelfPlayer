@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayback
 
 struct ListenNowSheet: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(Satellite.self) private var satellite
     @Environment(OfflineMode.self) private var offlineMode
     @Environment(ConnectionStore.self) private var connectionStore
@@ -61,7 +62,7 @@ struct ListenNowSheet: View {
             }
         }
         .presentationDetents([.medium, .large])
-        .presentationDragIndicator(.visible)
+        .presentationDragIndicator(horizontalSizeClass == .compact ? .visible : .hidden)
         .task {
             load(refresh: false)
         }

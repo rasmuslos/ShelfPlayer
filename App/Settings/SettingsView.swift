@@ -7,8 +7,11 @@ import SwiftUI
 import ShelfPlayback
 
 struct SettingsView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(OfflineMode.self) private var offlineMode
     @Bindable private var satellite = Satellite.shared
+
+    @State private var sidebarSelection: SettingsPage?
 
     @ViewBuilder
     private var connectionPreferences: some View {
@@ -33,101 +36,128 @@ struct SettingsView: View {
         }
     }
 
-    var body: some View {
-        NavigationStack(path: $satellite.settingsNavigationPath) {
-            List {
-                Section {
-                    NavigationLink(value: SettingsPage.appearance) {
-                        label("settings.appearance", systemImage: "paintbrush.fill", color: .purple)
-                    }
-                }
+    @ViewBuilder
+    private func destination(for page: SettingsPage) -> some View {
+        switch page {
+        case .appearance:
+            AppearanceSettingsView()
+        case .playback:
+            PlaybackSettingsView()
+        case .sleepTimer:
+            SleepTimerSettingsView()
+        case .connections:
+            connectionPreferences
+        case .downloads:
+            DownloadSettingsView()
+        case .hiddenLibraries:
+            LibraryVisibilityPreferences()
+        case .carPlay:
+            CarPlayPreferences()
+        case .tabs:
+            TabValuePreferences()
+        case .advanced:
+            AdvancedSettingsView()
+        case .support:
+            DebugPreferences()
+        #if DEBUG
+        case .debug:
+            DebugSettingsView()
+        #endif
+        }
+    }
 
-                Section("settings.section.playback") {
-                    NavigationLink(value: SettingsPage.playback) {
-                        label("settings.playback", systemImage: "play.circle.fill", color: .blue)
-                    }
-                    NavigationLink(value: SettingsPage.sleepTimer) {
-                        label("settings.sleepTimer", systemImage: "moon.zzz.fill", color: .indigo)
-                    }
+    @ViewBuilder
+    private func sidebarList(useNavigationLinks: Bool) -> some View {
+        Group {
+            if useNavigationLinks {
+                List {
+                    sidebarRows(useNavigationLinks: true)
                 }
-
-                Section("settings.section.content") {
-                    NavigationLink(value: SettingsPage.connections) {
-                        label("connection.manage", systemImage: "server.rack", color: .teal)
-                    }
-                    NavigationLink(value: SettingsPage.hiddenLibraries) {
-                        label("preferences.hiddenLibraries", systemImage: "eye.slash.fill", color: .gray)
-                    }
-                    
-                    NavigationLink(value: SettingsPage.downloads) {
-                        label("settings.downloads", systemImage: "arrow.down.circle.fill", color: .green)
-                    }
-                    if !offlineMode.isEnabled {
-                        PodcastSortOrderPreference {
-                            label($0, systemImage: $1, color: .orange)
-                        }
-                    }
+            } else {
+                List(selection: $sidebarSelection) {
+                    sidebarRows(useNavigationLinks: false)
                 }
-
-                if !offlineMode.isEnabled {
-                    Section("settings.section.integrations") {
-                        NavigationLink(value: SettingsPage.carPlay) {
-                            label("preferences.carPlay", systemImage: "car.fill", color: .green)
-                        }
-                        NavigationLink(value: SettingsPage.tabs) {
-                            label("preferences.tabs", systemImage: "rectangle.2.swap", color: .purple)
-                        }
-                    }
-                }
-
-                Section {
-                    NavigationLink(value: SettingsPage.advanced) {
-                        label("settings.advanced", systemImage: "gearshape.2.fill", color: .gray)
-                    }
-                    
-                    NavigationLink(value: SettingsPage.support) {
-                        label("preferences.support", systemImage: "questionmark.circle.fill", color: .red)
-                    }
-                }
-
-                #if DEBUG
-                Section {
-                    NavigationLink(value: SettingsPage.debug) {
-                        label("settings.debug", systemImage: "ant.fill", color: .red)
-                    }
-                }
-                #endif
             }
-            .navigationTitle("preferences")
-            .navigationBarTitleDisplayMode(.inline)
-            .foregroundStyle(.primary)
-            .navigationDestination(for: SettingsPage.self) { page in
-                switch page {
-                case .appearance:
-                    AppearanceSettingsView()
-                case .playback:
-                    PlaybackSettingsView()
-                case .sleepTimer:
-                    SleepTimerSettingsView()
-                case .connections:
-                    connectionPreferences
-                case .downloads:
-                    DownloadSettingsView()
-                case .hiddenLibraries:
-                    LibraryVisibilityPreferences()
-                case .carPlay:
-                    CarPlayPreferences()
-                case .tabs:
-                    TabValuePreferences()
-                case .advanced:
-                    AdvancedSettingsView()
-                case .support:
-                    DebugPreferences()
-                #if DEBUG
-                case .debug:
-                    DebugSettingsView()
-                #endif
+        }
+        .navigationTitle("preferences")
+        .navigationBarTitleDisplayMode(.inline)
+        .foregroundStyle(.primary)
+    }
+
+    @ViewBuilder
+    private func sidebarRows(useNavigationLinks: Bool) -> some View {
+        Section {
+            row(.appearance, label: "settings.appearance", systemImage: "paintbrush.fill", color: .purple, useNavigationLinks: useNavigationLinks)
+        }
+
+        Section("settings.section.playback") {
+            row(.playback, label: "settings.playback", systemImage: "play.circle.fill", color: .blue, useNavigationLinks: useNavigationLinks)
+            row(.sleepTimer, label: "settings.sleepTimer", systemImage: "moon.zzz.fill", color: .indigo, useNavigationLinks: useNavigationLinks)
+        }
+
+        Section("settings.section.content") {
+            row(.connections, label: "connection.manage", systemImage: "server.rack", color: .teal, useNavigationLinks: useNavigationLinks)
+            row(.hiddenLibraries, label: "preferences.hiddenLibraries", systemImage: "eye.slash.fill", color: .gray, useNavigationLinks: useNavigationLinks)
+            row(.downloads, label: "settings.downloads", systemImage: "arrow.down.circle.fill", color: .green, useNavigationLinks: useNavigationLinks)
+
+            if !offlineMode.isEnabled {
+                PodcastSortOrderPreference {
+                    label($0, systemImage: $1, color: .orange)
                 }
+            }
+        }
+
+        if !offlineMode.isEnabled {
+            Section("settings.section.integrations") {
+                row(.carPlay, label: "preferences.carPlay", systemImage: "car.fill", color: .green, useNavigationLinks: useNavigationLinks)
+                row(.tabs, label: "preferences.tabs", systemImage: "rectangle.2.swap", color: .purple, useNavigationLinks: useNavigationLinks)
+            }
+        }
+
+        Section {
+            row(.advanced, label: "settings.advanced", systemImage: "gearshape.2.fill", color: .gray, useNavigationLinks: useNavigationLinks)
+            row(.support, label: "preferences.support", systemImage: "questionmark.circle.fill", color: .red, useNavigationLinks: useNavigationLinks)
+        }
+
+        #if DEBUG
+        Section {
+            row(.debug, label: "settings.debug", systemImage: "ant.fill", color: .red, useNavigationLinks: useNavigationLinks)
+        }
+        #endif
+    }
+
+    @ViewBuilder
+    private func row(_ page: SettingsPage, label labelKey: LocalizedStringKey, systemImage: String, color: Color, useNavigationLinks: Bool) -> some View {
+        if useNavigationLinks {
+            NavigationLink(value: page) {
+                label(labelKey, systemImage: systemImage, color: color)
+            }
+        } else {
+            label(labelKey, systemImage: systemImage, color: color)
+                .tag(page)
+        }
+    }
+
+    var body: some View {
+        if horizontalSizeClass == .regular {
+            NavigationSplitView {
+                sidebarList(useNavigationLinks: false)
+            } detail: {
+                NavigationStack {
+                    if let page = sidebarSelection {
+                        destination(for: page)
+                    } else {
+                        ContentUnavailableView("preferences", systemImage: "gear", description: Text("preferences"))
+                    }
+                }
+            }
+            .navigationSplitViewStyle(.balanced)
+        } else {
+            NavigationStack(path: $satellite.settingsNavigationPath) {
+                sidebarList(useNavigationLinks: true)
+                    .navigationDestination(for: SettingsPage.self) { page in
+                        destination(for: page)
+                    }
             }
         }
     }

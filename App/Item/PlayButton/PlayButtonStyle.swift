@@ -23,6 +23,11 @@ protocol PlayButtonStyle: Sendable {
 
     var tint: Bool { get }
     var hideRemainingWhenUnplayed: Bool { get }
+    var hideLabel: Bool { get }
+}
+
+extension PlayButtonStyle {
+    var hideLabel: Bool { false }
 }
 extension PlayButtonStyle where Self == LargePlayButtonStyle {
     static var large: LargePlayButtonStyle { .init() }
@@ -39,6 +44,7 @@ struct AnyPlayButtonStyle: PlayButtonStyle {
 
     private var _tint: Bool
     private var _hideRemainingWhenUnplayed: Bool
+    private var _hideLabel: Bool
 
     init<S: PlayButtonStyle>(style: S) {
         _makeMenu = { configuration in
@@ -51,6 +57,7 @@ struct AnyPlayButtonStyle: PlayButtonStyle {
         _tint = style.tint
         _cornerRadius = style.cornerRadius
         _hideRemainingWhenUnplayed = style.hideRemainingWhenUnplayed
+        _hideLabel = style.hideLabel
     }
 
     @MainActor
@@ -71,6 +78,9 @@ struct AnyPlayButtonStyle: PlayButtonStyle {
     }
     var hideRemainingWhenUnplayed: Bool {
         _hideRemainingWhenUnplayed
+    }
+    var hideLabel: Bool {
+        _hideLabel
     }
 }
 

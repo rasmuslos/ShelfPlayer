@@ -17,22 +17,15 @@ struct AudiobookView: View {
         _viewModel = .init(initialValue: .init(audiobook))
     }
 
-    private let divider: some View = Divider()
-        .padding(.horizontal, 20)
-        .padding(.vertical, 24)
-
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
                 Header()
                     .padding(.horizontal, 20)
 
-                divider
-
                 Description(description: viewModel.audiobook.description)
                     .padding(.horizontal, 20)
-
-                divider
+                    .padding(.top, 32)
 
                 VStack(spacing: 0) {
                     if viewModel.bookmarks.count > 0 {
@@ -61,6 +54,7 @@ struct AudiobookView: View {
                         }
                     }
                 }
+                .padding(.top, 32)
                 .padding(.bottom, 16)
 
                 VStack(spacing: 12) {

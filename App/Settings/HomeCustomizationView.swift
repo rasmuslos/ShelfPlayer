@@ -161,19 +161,21 @@ struct HomeCustomizationView: View {
         } else {
             // Multi-library scope — enumerate every library; audiobook
             // libraries contribute collections, podcast libraries playlists.
-            LibraryEnumerator { _, content in
-                content()
+            LibraryEnumerator { name, content in
+                Section {
+                    content()
+                } header: {
+                    Text(name)
+                }
             } label: { library in
                 let type: ItemCollection.CollectionType = library.id.type == .audiobooks ? .collection : .playlist
-                Section {
+                DisclosureGroup(library.name) {
                     CollectionPickerRows(
                         library: library,
                         type: type,
                         onPick: { itemID in addCollection(type: type, itemID: itemID) },
                         isDisabled: { isCollectionPinned($0.id, type: type) }
                     )
-                } header: {
-                    Text(library.name)
                 }
             }
         }

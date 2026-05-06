@@ -156,7 +156,13 @@ struct RegularPlaybackModifier: ViewModifier {
         VStack(spacing: 0) {
             Spacer(minLength: 20)
 
-            ItemImage(itemID: satellite.nowPlayingItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
+            Rectangle()
+                .fill(.clear)
+                .aspectRatio(1, contentMode: .fit)
+                .overlay {
+                    ItemImage(itemID: satellite.nowPlayingItemID, size: .large, aspectRatio: .none, contrastConfiguration: nil)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
                 .id(satellite.nowPlayingItemID)
                 .shadow(color: .black.opacity(0.4), radius: 20)
                 .scaleEffect(satellite.isPlaying ? 1 : 0.8)
@@ -187,21 +193,32 @@ struct RegularPlaybackModifier: ViewModifier {
                                 VStack(spacing: 40) {
                                     HStack(spacing: 40) {
                                         leftHandContent(height: geometryProxy.size.height)
-                                            .frame(maxWidth: 400)
+                                            .frame(maxWidth: 520)
 
-                                        PlaybackQueue()
+                                        Group {
+                                            switch viewModel.activeCard {
+                                                case .ratePicker:
+                                                    PlaybackRatePickerCard(onMeshBackground: false)
+                                                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                                                case .queue, .none:
+                                                    PlaybackQueue()
+                                                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
+                                            }
+                                        }
+                                        .frame(maxWidth: 720, maxHeight: .infinity)
                                     }
+                                    .frame(maxWidth: .infinity)
 
-                                    HStack(alignment: .firstTextBaseline, spacing: 20) {
+                                    HStack(alignment: .firstTextBaseline, spacing: 32) {
                                         PlaybackAirPlayButton()
-                                        Spacer(minLength: 0)
                                         PlaybackRateButton()
                                         PlaybackSleepTimerButton()
                                     }
                                     .labelStyle(.iconOnly)
                                     .buttonStyle(.plain)
+                                    .frame(maxWidth: .infinity)
                                 }
-                                .padding(.horizontal, 40)
+                                .padding(.horizontal, 24)
                                 .overlay(alignment: .top) {
                                     Button {
                                         viewModel.toggleExpanded()

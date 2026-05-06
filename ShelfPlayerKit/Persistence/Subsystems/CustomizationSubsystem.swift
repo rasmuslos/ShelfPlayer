@@ -15,14 +15,7 @@ typealias PersistedTabCustomization = ShelfPlayerSchema.PersistedTabCustomizatio
 extension PersistenceManager {
     @ModelActor
     public final actor CustomizationSubsystem: Sendable {
-        public final class EventSource: @unchecked Sendable {
-            public let invalidateTabs = PassthroughSubject<Void, Never>()
-
-            init() {}
-        }
-
         let logger = Logger(subsystem: "io.rfk.shelfPlayerKit", category: "CustomizationSubsystem")
-        public nonisolated let events = EventSource()
     }
 }
 
@@ -106,7 +99,17 @@ public extension PersistenceManager.CustomizationSubsystem {
                 ]
 
             case .library:
-                defaultTabs(for: library, scope: .library)
+                [
+                    .audiobookSeries(library),
+                    .audiobookAuthors(library),
+                    .audiobookNarrators(library),
+                    .audiobookBookmarks(library),
+                    .audiobookCollections(library),
+                    .audiobookGenres(library),
+                    .audiobookTags(library),
+                    .playlists(library),
+                    .downloaded(library),
+                ]
             }
         case .podcasts:
             switch scope {
@@ -129,7 +132,7 @@ public extension PersistenceManager.CustomizationSubsystem {
     }
 
     func configuredTabs(for libraryID: LibraryIdentifier, scope: TabValueCustomizationScope) -> [TabValue] {
-        let compositeKey = "\(libraryID)::\(scope.rawValue)"
+        let compositeKey = "\(libraryID.id)::\(scope.rawValue)"
 
         let entity: PersistedTabCustomization?
         do {
@@ -151,7 +154,7 @@ public extension PersistenceManager.CustomizationSubsystem {
         }
     }
     func setConfiguredTabs(_ tabs: [TabValue]?, for libraryID: LibraryIdentifier, scope: TabValueCustomizationScope) async throws {
-        let compositeKey = "\(libraryID)::\(scope.rawValue)"
+        let compositeKey = "\(libraryID.id)::\(scope.rawValue)"
 
         if let tabs {
             let data = try JSONEncoder().encode(tabs)
@@ -168,7 +171,7 @@ public extension PersistenceManager.CustomizationSubsystem {
         try modelContext.save()
 
         await MainActor.run {
-            events.invalidateTabs.send()
+            TabEventSource.shared.invalidateTabs.send()
         }
     }
 

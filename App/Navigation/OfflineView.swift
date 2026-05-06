@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayback
 
 struct OfflineView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(Satellite.self) private var satellite
     @Environment(OfflineMode.self) private var offlineMode
 
@@ -24,6 +25,14 @@ struct OfflineView: View {
 
     @State private var audiobooks = [Audiobook]()
     @State private var podcasts = [Podcast: [Episode]]()
+    @State private var availableWidth: CGFloat = 0
+
+    private let targetContentWidth: CGFloat = 720
+
+    private var horizontalRowInset: CGFloat {
+        guard horizontalSizeClass == .regular, availableWidth > targetContentWidth else { return 12 }
+        return max(12, (availableWidth - targetContentWidth) / 2)
+    }
 
     private var podcastsFlat: [Podcast] {
         Array(podcasts.keys.sorted())
@@ -68,7 +77,7 @@ struct OfflineView: View {
                                     ItemCompactRow(item: audiobook)
                                 }
                                 .buttonStyle(.plain)
-                                .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
+                                .listRowInsets(.init(top: 12, leading: horizontalRowInset, bottom: 12, trailing: horizontalRowInset))
                                 .modifier(ItemStatusModifier(item: audiobook, hoverEffect: nil))
                             }
                         }
@@ -83,7 +92,7 @@ struct OfflineView: View {
                                     ItemCompactRow(item: episode, context: .offlineEpisode)
                                 }
                                 .buttonStyle(.plain)
-                                .listRowInsets(.init(top: 12, leading: 12, bottom: 12, trailing: 12))
+                                .listRowInsets(.init(top: 12, leading: horizontalRowInset, bottom: 12, trailing: horizontalRowInset))
                                 .modifier(ItemStatusModifier(item: episode, hoverEffect: nil))
                             }
                         } header: {
@@ -104,11 +113,20 @@ struct OfflineView: View {
                                     .frame(width: 44)
                             }
                             .accessibilityElement(children: .combine)
+                            .padding(.horizontal, max(0, horizontalRowInset - 20))
                         }
                     }
 
                     goOnlineButton
                     preferencesButton
+                }
+                .background {
+                    GeometryReader { proxy in
+                        Color.clear
+                            .onChange(of: proxy.size.width, initial: true) {
+                                availableWidth = proxy.size.width
+                            }
+                    }
                 }
                 .navigationTitle("panel.offline")
                 .largeTitleDisplayMode()

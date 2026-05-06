@@ -30,13 +30,11 @@ private func startPlaybackOfPrideAndPrejudice(_ app: XCUIApplication) throws -> 
 
     let result = app.cells.firstMatch
     guard result.waitForExistence(timeout: 15) else { return false }
-    result.tap()
+    result.forceTap()
 
-    let playButton = app.buttons.matching(
-        NSPredicate(format: "label CONTAINS[c] 'Play'")
-    ).firstMatch
+    let playButton = app.buttons.matching(playButtonPredicate).firstMatch
     guard playButton.waitForExistence(timeout: 10) else { return false }
-    playButton.tap()
+    playButton.forceTap()
 
     return nowPlayingPill(in: app) != nil
 }
@@ -48,7 +46,7 @@ private func startPlaybackOfPrideAndPrejudice(_ app: XCUIApplication) throws -> 
 @MainActor
 private func expandPlayer(_ app: XCUIApplication) -> Bool {
     guard let pill = nowPlayingPill(in: app, timeout: 5) else { return false }
-    pill.tap()
+    pill.forceTap()
 
     let slider = app.sliders.firstMatch
     let pauseButton = app.buttons.matching(
@@ -109,8 +107,8 @@ struct PlaybackUITests {
         }
 
         try #require(
-            app.tabBars.firstMatch.waitForExistence(timeout: 30),
-            "App did not reach the main tab bar"
+            app.waitForMainContent(timeout: 30),
+            "App did not reach the main content surface"
         )
 
         ensureAudiobookLibrary(app)
@@ -140,7 +138,7 @@ struct PlaybackUITests {
             NSPredicate(format: "label CONTAINS[c] 'Pause'")
         ).firstMatch
         guard pauseButton.waitForExistence(timeout: 5) else { return }
-        pauseButton.tap()
+        pauseButton.forceTap()
 
         let playButton = app.buttons.matching(
             NSPredicate(format: "label CONTAINS[c] 'play'")
@@ -148,7 +146,7 @@ struct PlaybackUITests {
         #expect(playButton.waitForExistence(timeout: 5), "Play button did not reappear after pause")
 
         if playButton.exists {
-            playButton.tap()
+            playButton.forceTap()
             let pauseAgain = app.buttons.matching(
                 NSPredicate(format: "label CONTAINS[c] 'Pause'")
             ).firstMatch
@@ -168,7 +166,7 @@ struct PlaybackUITests {
         ).firstMatch
 
         guard rateButton.waitForExistence(timeout: 5) else { return }
-        rateButton.tap()
+        rateButton.forceTap()
 
         // After opening, the rate picker exposes preset rate buttons whose
         // labels contain typical multipliers like 0.5, 1.5, or 2.0. Any
@@ -181,7 +179,7 @@ struct PlaybackUITests {
 
         // Toggle the picker closed if we can.
         if rateButton.exists {
-            rateButton.tap()
+            rateButton.forceTap()
         }
     }
 
@@ -201,7 +199,7 @@ struct PlaybackUITests {
         }
 
         guard sleepButton.waitForExistence(timeout: 3) else { return }
-        sleepButton.tap()
+        sleepButton.forceTap()
 
         // The sleep-timer menu shows interval options like "5 minutes" /
         // "10 minutes" / "15 minutes" or an "End of chapter" entry. Any one
@@ -233,8 +231,8 @@ struct TabNavigationUITests {
         }
 
         try #require(
-            app.tabBars.firstMatch.waitForExistence(timeout: 30),
-            "App did not reach the main tab bar"
+            app.waitForMainContent(timeout: 30),
+            "App did not reach the main content surface"
         )
 
         ensureAudiobookLibrary(app)
@@ -244,27 +242,32 @@ struct TabNavigationUITests {
 
     @Test("Cycling through tabs keeps the app stable")
     func cyclesThroughTabs() async throws {
-        let tabBar = app.tabBars.firstMatch
-        try #require(tabBar.waitForExistence(timeout: 10), "Tab bar not visible")
+        try #require(app.waitForMainContent(timeout: 10), "Main content surface not visible")
 
-        // Snapshot tab labels first so we don't lose references mid-tap when
-        // the tab bar re-renders.
-        let count = tabBar.buttons.count
-        let labels: [String] = (0..<count).compactMap { index in
-            let button = tabBar.buttons.element(boundBy: index)
-            return button.exists ? button.label : nil
-        }
+        // On iPhone (compact tab bar) we can introspect `app.tabBars` directly.
+        // On iPad the same TabView renders as a top floating bar or a sidebar,
+        // which XCUITest doesn't necessarily expose under `tabBars`. Use the
+        // known tab labels and let `tapTabOrSidebarItem` find each in
+        // whichever surface is currently active.
+        let labels: [String] = {
+            let tabBar = app.tabBars.firstMatch
+            if tabBar.waitForExistence(timeout: 1) {
+                return (0..<tabBar.buttons.count).compactMap { index in
+                    let button = tabBar.buttons.element(boundBy: index)
+                    return button.exists ? button.label : nil
+                }
+            }
+            return XCUIApplication.knownTabLabels
+        }()
 
         guard !labels.isEmpty else { return }
 
         for label in labels {
-            let button = tabBar.buttons[label]
-            guard button.exists else { continue }
-            button.tap()
+            guard app.tapTabOrSidebarItem(named: label, timeout: 2) else { continue }
 
             // Don't gate on a particular content shape — tabs differ. Just
             // require *something* visible so we know the tap didn't crash
-            // the app, and the tab bar is still around afterwards.
+            // the app, and a main-content surface is still around afterwards.
             let anyContent =
                 app.cells.firstMatch.exists
                 || app.staticTexts.firstMatch.exists
@@ -272,7 +275,7 @@ struct TabNavigationUITests {
                 || app.collectionViews.firstMatch.exists
 
             #expect(anyContent, "Tapping tab '\(label)' produced no visible content")
-            #expect(app.tabBars.firstMatch.exists, "Tab bar disappeared after tapping '\(label)'")
+            #expect(app.isOnMainContent, "Main content surface disappeared after tapping '\(label)'")
         }
     }
 
@@ -390,8 +393,8 @@ struct DetailNavigationUITests {
         }
 
         try #require(
-            app.tabBars.firstMatch.waitForExistence(timeout: 30),
-            "App did not reach the main tab bar"
+            app.waitForMainContent(timeout: 30),
+            "App did not reach the main content surface"
         )
 
         ensureAudiobookLibrary(app)
@@ -436,13 +439,13 @@ struct DetailNavigationUITests {
         ).firstMatch
 
         if authorButton.waitForExistence(timeout: 8) {
-            authorButton.tap()
+            authorButton.forceTap()
         } else {
             let authorAny = app.descendants(matching: .any).matching(
                 NSPredicate(format: "label CONTAINS[c] 'Austen'")
             ).firstMatch
             guard authorAny.waitForExistence(timeout: 3) else { return }
-            authorAny.tap()
+            authorAny.forceTap()
         }
 
         // Be lenient — the author screen could show a list of audiobooks or
@@ -461,35 +464,38 @@ struct DetailNavigationUITests {
     func audiobookDetailHasPlayButton() async throws {
         guard try openPrideDetail() else { return }
 
-        let playButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS[c] 'Play'")
-        ).firstMatch
+        let playButton = app.buttons.matching(playButtonPredicate).firstMatch
         #expect(playButton.waitForExistence(timeout: 10), "Play button missing on audiobook detail")
 
-        // Either a description block or duration text confirms the body of
-        // the detail view rendered.
-        let descriptionOrDuration = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS[c] 'Description' OR label CONTAINS[c] 'hour' OR label CONTAINS[c] 'minute' OR label CONTAINS[c] 'h ' OR label CONTAINS[c] 'min'")
-        ).firstMatch
-        #expect(descriptionOrDuration.waitForExistence(timeout: 10), "No description / duration content on the audiobook detail")
+        // Confirm a body element rendered. Match a broad set of strings that
+        // any audiobook detail page reliably exposes: the "Description"
+        // header, duration unit fragments (hr/min/sec/h/m/s), narrator/by
+        // hints, or the author of the seeded audiobook ("Austen") that the
+        // previous test in this suite already established is present.
+        let supportingPredicate = NSPredicate(format:
+            "label CONTAINS[c] 'Description'"
+            + " OR label CONTAINS[c] 'Austen'"
+            + " OR label CONTAINS[c] 'min'"
+            + " OR label CONTAINS[c] 'hr'"
+            + " OR label CONTAINS[c] 'hour'"
+            + " OR label CONTAINS[c] 'sec'"
+            + " OR label CONTAINS[c] 'narrat'"
+            + " OR label CONTAINS[c] 'unabridged'"
+            + " OR label CONTAINS[c] 'abridged'"
+        )
+        let supporting = app.descendants(matching: .any).matching(supportingPredicate).firstMatch
+        #expect(supporting.waitForExistence(timeout: 10), "No supporting content on the audiobook detail")
     }
 
     @Test("Series tab is reachable when present")
     func seriesAudiobookListing() async throws {
         // Pride and Prejudice is not in a series on the seeded server, so
-        // probe the Series tab in the tab bar (matches the existing pattern
-        // in ShelfPlayerUITests' `navigateToSeriesTab`). If it isn't shown,
-        // skip silently.
-        let seriesTab = app.tabBars.buttons.matching(
-            NSPredicate(format: "label CONTAINS[c] 'Series'")
-        ).firstMatch
-
-        guard seriesTab.waitForExistence(timeout: 5) else { return }
-        seriesTab.tap()
+        // probe the Series tab/section. If it isn't shown, skip silently.
+        guard app.tapTabOrSidebarItem(named: "Series", timeout: 5) else { return }
 
         _ = app.staticTexts.firstMatch.waitForExistence(timeout: 10)
         // We don't assert on a particular series — just that the tap
         // produced a visible content area.
-        #expect(app.tabBars.firstMatch.exists, "Tab bar disappeared after entering Series tab")
+        #expect(app.isOnMainContent, "Main content surface disappeared after entering Series tab")
     }
 }

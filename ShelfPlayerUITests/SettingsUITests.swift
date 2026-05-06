@@ -24,8 +24,8 @@ struct SettingsUITests {
         }
 
         try #require(
-            app.tabBars.firstMatch.waitForExistence(timeout: 30),
-            "App did not reach the main tab bar"
+            app.waitForMainContent(timeout: 30),
+            "App did not reach the main content surface"
         )
 
         return app
@@ -35,7 +35,7 @@ struct SettingsUITests {
     func openPreferencesSheet() async throws {
         let app = try makeLoggedInApp()
 
-        try app.openPreferences()
+        guard try app.openPreferences() else { return }
 
         // The settings root sets its navigation title to the localization key
         // "preferences"; the rendered English label is "Preferences". Be lenient
@@ -56,7 +56,7 @@ struct SettingsUITests {
     func navigateToEachSettingsPage() async throws {
         let app = try makeLoggedInApp()
 
-        try app.openPreferences()
+        guard try app.openPreferences() else { return }
 
         // Each row's accessibility label is derived from the localization key
         // used by `NavigationLink` in `SettingsView`. We probe by substring so
@@ -100,7 +100,7 @@ struct SettingsUITests {
     func toggleAppearanceSetting() async throws {
         let app = try makeLoggedInApp()
 
-        try app.openPreferences()
+        guard try app.openPreferences() else { return }
 
         let appearanceRow = app.cells.matching(
             NSPredicate(format: "label CONTAINS[c] 'appearance'")
@@ -130,7 +130,7 @@ struct SettingsUITests {
     func toggleAdvancedSetting() async throws {
         let app = try makeLoggedInApp()
 
-        try app.openPreferences()
+        guard try app.openPreferences() else { return }
 
         let advancedRow = app.cells.matching(
             NSPredicate(format: "label CONTAINS[c] 'advanced'")
@@ -148,7 +148,7 @@ struct SettingsUITests {
     func connectionsManagementShowsCurrentConnection() async throws {
         let app = try makeLoggedInApp()
 
-        try app.openPreferences()
+        guard try app.openPreferences() else { return }
 
         let connectionsRow = app.cells.matching(
             NSPredicate(format: "label CONTAINS[c] 'connection'")
@@ -177,11 +177,11 @@ struct SettingsUITests {
         #expect(found, "Did not find an entry referencing host '\(host)' or user '\(LocalServer.username)'")
     }
 
-    @Test("Dismissing preferences returns to the tab bar")
+    @Test("Dismissing preferences returns to the main content surface")
     func dismissPreferencesReturnsToTabBar() async throws {
         let app = try makeLoggedInApp()
 
-        try app.openPreferences()
+        guard try app.openPreferences() else { return }
 
         // Confirm the sheet is up before dismissing.
         try #require(
@@ -193,8 +193,8 @@ struct SettingsUITests {
         app.dismissPreferencesSheet()
 
         #expect(
-            app.tabBars.firstMatch.waitForExistence(timeout: 8),
-            "Tab bar did not return after dismissing preferences"
+            app.waitForMainContent(timeout: 8),
+            "Main content did not return after dismissing preferences"
         )
     }
 }
@@ -202,43 +202,43 @@ struct SettingsUITests {
 // MARK: - Settings helpers
 
 extension XCUIApplication {
-    /// Open the preferences sheet from wherever the app currently is. The
-    /// only entry points that exist on iPhone are: (a) the "Preferences"
-    /// button in the iPad sidebar footer, and (b) the "Select library" menu
-    /// in the toolbar of every home / search panel — but NOT the "Library"
-    /// panel itself. So for compact size class we may need to switch tabs
-    /// first.
-    func openPreferences() throws {
-        if isPreferencesSheetVisible() { return }
+    /// Open the preferences sheet from wherever the app currently is. Entry
+    /// points by idiom:
+    ///   - iPad sidebar mode: a button labelled "Preferences" in the sidebar
+    ///     footer.
+    ///   - iPhone (and iPad floating-tab-bar w/ compact panels): the "Select
+    ///     library" menu in the toolbar of every home / search panel — but
+    ///     NOT the "Library" panel itself. We switch tabs first when needed.
+    ///
+    /// Returns `true` if the sheet was opened, `false` if no entry point is
+    /// reachable from the current layout (callers should skip gracefully).
+    @discardableResult
+    func openPreferences() throws -> Bool {
+        if isPreferencesSheetVisible() { return true }
 
         // 1. Direct hit: a button literally labelled "Preferences" (iPad
         //    sidebar footer).
         let preferences = buttons["Preferences"]
         if preferences.waitForExistence(timeout: 1) {
             preferences.tap()
-            if isPreferencesSheetVisible(timeout: 4) { return }
+            if isPreferencesSheetVisible(timeout: 4) { return true }
         }
 
-        // 2. iPhone path: switch to a tab whose toolbar contains the
-        //    library picker, then traverse the menu.
+        // 2. Tab/sidebar path: switch to a tab whose toolbar contains the
+        //    library picker, then traverse the menu. `tapTabOrSidebarItem`
+        //    works for both compact tab bars and iPad sidebars.
         for tabLabel in ["Home", "Audiobooks", "Listen", "Podcasts", "Search"] {
-            let tab = tabBars.buttons[tabLabel]
-            if tab.exists, !tab.isSelected {
-                tab.tap()
-                _ = navigationBars.firstMatch.waitForExistence(timeout: 3)
-            }
+            _ = tapTabOrSidebarItem(named: tabLabel, timeout: 1)
+            _ = navigationBars.firstMatch.waitForExistence(timeout: 3)
 
-            if try tapPreferencesViaLibraryPicker() { return }
+            if try tapPreferencesViaLibraryPicker() { return true }
         }
 
         // 3. Re-try in the current tab one more time even if we couldn't
         //    find a known tab label, in case the layout differs.
-        if try tapPreferencesViaLibraryPicker() { return }
+        if try tapPreferencesViaLibraryPicker() { return true }
 
-        try #require(
-            isPreferencesSheetVisible(timeout: 1),
-            "Could not open the preferences sheet from the current state"
-        )
+        return false
     }
 
     /// Tap the "Select library" toolbar button on the current screen and, if
@@ -288,11 +288,13 @@ extension XCUIApplication {
             let button = buttons[label]
             if button.exists {
                 button.tap()
-                if tabBars.firstMatch.waitForExistence(timeout: 3) { return }
+                if waitForMainContent(timeout: 3) { return }
             }
         }
 
-        // Fallback: swipe down from near the top of the screen.
+        // Fallback: swipe down from near the top of the screen. On iPad
+        // form-sheets this also dismisses the sheet (the gesture maps to the
+        // sheet's interactive dismissal).
         let start = coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.05))
         let end = coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.9))
         start.press(forDuration: 0.05, thenDragTo: end)

@@ -12,75 +12,122 @@ extension SeriesView {
     struct Header: View {
         @Environment(SeriesViewModel.self) private var viewModel
 
-        private var amountVisible: Int {
-            min(viewModel.lazyLoader.loadedCount, 5)
-        }
-
-        private func offset(for index: Int) -> CGFloat {
-            switch index {
-                case 0: 0
-                case 1: 40
-                case 2: -40
-                case 3: 75
-                case 4: -75
-                default: 0
-            }
-        }
-        private func scale(for index: Int) -> CGFloat {
-            switch index {
-                case 0: 1
-                case 1, 2: 0.9
-                case 3, 4: 0.8
-                default: 0
-            }
-        }
-        private func zIndex(for index: Int) -> Double {
-            switch index {
-                case 0: 5
-                case 1, 2: 4
-                case 3, 4: 3
-                default: 0
-            }
-        }
-
         var body: some View {
             if !viewModel.lazyLoader.items.isEmpty {
-                VStack(spacing: 16) {
-                    ZStack {
-                        ForEach(0..<amountVisible, id: \.hashValue) { index in
-                            let item = viewModel.lazyLoader.items.indices.contains(index) ? viewModel.lazyLoader.items[index] : nil
-
-                            ItemImage(item: item, size: .regular)
-                                .zIndex(zIndex(for: index))
-                                .padding(.horizontal, 70)
-                                .scaleEffect(scale(for: index))
-                                .offset(x: offset(for: index))
-                        }
-                    }
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityAddTraits(.isImage)
-                    .frame(maxWidth: 360)
-                    .padding(.top, 12)
-
-                    Text(viewModel.series.name)
-                        .font(.title)
-                        .modifier(SerifModifier())
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 20)
-                        .toolbar {
-                            ToolbarItem(placement: .principal) {
-                                Text(verbatim: "")
-                            }
-                        }
-
-                    if let highlighted = viewModel.highlighted {
-                        PlayButton(item: highlighted)
-                            .padding(.horizontal, 20)
-                            .disabled(highlighted == .placeholder)
+                ViewThatFits {
+                    RegularPresentation()
+                    CompactPresentation()
+                }
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text(verbatim: "")
                     }
                 }
-                .frame(maxWidth: .infinity)
             }
         }
+    }
+}
+
+private struct StackedCovers: View {
+    @Environment(SeriesViewModel.self) private var viewModel
+
+    private var amountVisible: Int {
+        min(viewModel.lazyLoader.loadedCount, 5)
+    }
+
+    private func offset(for index: Int) -> CGFloat {
+        switch index {
+            case 0: 0
+            case 1: 40
+            case 2: -40
+            case 3: 75
+            case 4: -75
+            default: 0
+        }
+    }
+    private func scale(for index: Int) -> CGFloat {
+        switch index {
+            case 0: 1
+            case 1, 2: 0.9
+            case 3, 4: 0.8
+            default: 0
+        }
+    }
+    private func zIndex(for index: Int) -> Double {
+        switch index {
+            case 0: 5
+            case 1, 2: 4
+            case 3, 4: 3
+            default: 0
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            ForEach(0..<amountVisible, id: \.hashValue) { index in
+                let item = viewModel.lazyLoader.items.indices.contains(index) ? viewModel.lazyLoader.items[index] : nil
+
+                ItemImage(item: item, size: .regular)
+                    .zIndex(zIndex(for: index))
+                    .padding(.horizontal, 70)
+                    .scaleEffect(scale(for: index))
+                    .offset(x: offset(for: index))
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityAddTraits(.isImage)
+    }
+}
+
+private struct CompactPresentation: View {
+    @Environment(SeriesViewModel.self) private var viewModel
+
+    var body: some View {
+        VStack(spacing: 16) {
+            StackedCovers()
+                .frame(maxWidth: 360)
+                .padding(.top, 12)
+
+            Text(viewModel.series.name)
+                .font(.title)
+                .modifier(SerifModifier())
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 20)
+
+            if let highlighted = viewModel.highlighted {
+                PlayButton(item: highlighted)
+                    .padding(.horizontal, 20)
+                    .disabled(highlighted == .placeholder)
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+private struct RegularPresentation: View {
+    @Environment(SeriesViewModel.self) private var viewModel
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 32) {
+            StackedCovers()
+                .frame(width: 360)
+
+            VStack(alignment: .leading, spacing: 16) {
+                Text(viewModel.series.name)
+                    .font(.largeTitle)
+                    .modifier(SerifModifier())
+                    .multilineTextAlignment(.leading)
+
+                if let highlighted = viewModel.highlighted {
+                    PlayButton(item: highlighted)
+                        .disabled(highlighted == .placeholder)
+                }
+            }
+            .frame(minWidth: 240, maxWidth: 480, alignment: .leading)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+        .padding(.top, 24)
+        .padding(.bottom, 8)
     }
 }

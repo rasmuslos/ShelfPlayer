@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayback
 
 struct GroupingConfigurationSheet: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(Satellite.self) private var satellite
 
     private var settings: AppSettings { .shared }
@@ -117,7 +118,7 @@ struct GroupingConfigurationSheet: View {
             }
         }
         .presentationDetents([.medium, .large])
-        .presentationDragIndicator(.visible)
+        .presentationDragIndicator(horizontalSizeClass == .compact ? .visible : .hidden)
         .interactiveDismissDisabled()
     }
 

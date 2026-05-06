@@ -144,10 +144,12 @@ struct ConnectionEdgeCaseUITests {
             }
         }
 
-        // The tab bar means a successful login — we must not see it.
+        // Reaching the main content surface means a successful login — we
+        // must not see it. `waitForMainContent` polls for either the iPhone
+        // tab bar or any iPad sidebar / floating-tab-bar entry.
         #expect(
-            !app.tabBars.firstMatch.waitForExistence(timeout: 10),
-            "Tab bar should not appear when the password is wrong"
+            !app.waitForMainContent(timeout: 10),
+            "Main content should not appear when the password is wrong"
         )
 
         // We should still be on the authorization step or have an error.

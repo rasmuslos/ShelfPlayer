@@ -130,11 +130,15 @@ struct PlayButton: View {
                 .padding(.trailing, 8)
 
                 Group {
-                    Text(label)
-                        .contentTransition(.opacity)
+                    if !playButtonStyle.hideLabel {
+                        Text(label)
+                            .contentTransition(.opacity)
+                    }
 
                     if let remaining {
-                        Text(verbatim: "•")
+                        if !playButtonStyle.hideLabel {
+                            Text(verbatim: "•")
+                        }
                         Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
                     }
                 }

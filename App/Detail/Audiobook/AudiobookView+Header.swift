@@ -196,39 +196,43 @@ private struct CompactPresentation: View {
 private struct RegularPresentation: View {
     @Environment(AudiobookViewModel.self) private var viewModel
 
-    @State private var availableWidth: CGFloat = .infinity
-
     var body: some View {
-        ZStack {
-            GeometryReader { proxy in
-                Color.clear
-                    .onChange(of: proxy.size.width, initial: true) {
-                        availableWidth = proxy.size.width
-                    }
-            }
-            .frame(height: 0)
+        HStack(alignment: .top, spacing: 32) {
+            ItemImage(item: viewModel.audiobook, size: .large, aspectRatio: .none, contrastConfiguration: .init(shadowRadius: 20, shadowOpacity: 0.4))
+                .frame(width: 256)
 
-            HStack(spacing: 40) {
-                ItemImage(item: viewModel.audiobook, size: .large, aspectRatio: .none, contrastConfiguration: .init(shadowRadius: 20, shadowOpacity: 0.4))
-                    .frame(width: max(0, min(400, (availableWidth - 40) / 2)))
+            Color.clear
+                .frame(minWidth: 280, maxWidth: 560)
+                .overlay {
+                    VStack(alignment: .leading, spacing: 12) {
+                        SeriesName()
+                        Title(largeFont: true, alignment: .leading)
+                            .padding(.trailing, 16)
 
-                Color.clear
-                    .frame(minWidth: 280)
-                    .overlay {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Spacer()
+                        Spacer(minLength: 16)
 
-                            SeriesName()
-                            Title(largeFont: true, alignment: .leading)
-                                .padding(.trailing, 16)
-
-                            Spacer()
-
+                        HStack(spacing: 12) {
                             PlayButton(item: viewModel.audiobook)
+                                .frame(maxWidth: 320)
+
+                            HeaderActionButton {
+                                ProgressButton(itemID: viewModel.audiobook.id)
+                                    .labelStyle(.iconOnly)
+                            }
+
+                            HeaderActionButton {
+                                QueueButton(itemID: viewModel.audiobook.id, short: true)
+                                    .labelStyle(.iconOnly)
+                            }
                         }
                     }
-            }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+            Spacer(minLength: 0)
         }
+        .frame(maxWidth: 1000)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 12)
     }
 }

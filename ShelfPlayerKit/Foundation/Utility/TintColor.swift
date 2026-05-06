@@ -23,10 +23,18 @@ public enum TintColor: Identifiable, Codable, CaseIterable, Sendable {
 
     public var id: Self { self }
 
+    private static let shelfPlayerBrandColor: Color = {
+        #if DEBUG
+        Color("ShelfPlayer Development")
+        #else
+        Color("ShelfPlayer")
+        #endif
+    }()
+
     public var color: Color {
         switch self {
         case .shelfPlayer:
-            Color.accentColor
+            Self.shelfPlayerBrandColor
         case .yellow:
                 .yellow
         case .purple:

@@ -201,24 +201,31 @@ private struct RegularPresentation: View {
     @Environment(PodcastViewModel.self) private var viewModel
 
     var body: some View {
-        HStack(spacing: 40) {
+        HStack(alignment: .top, spacing: 32) {
             ItemImage(item: viewModel.podcast, size: .large, contrastConfiguration: nil)
-                .frame(height: 300)
+                .frame(width: 240, height: 240)
 
-            Color.clear
-                .frame(minWidth: 250)
-                .overlay {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Additional()
-                            .foregroundStyle(.secondary)
-                        Title(largeFont: true, alignment: .leading)
-                        PodcastDescription()
-                        PlayFirstEpisodeButton()
-                    }
-                }
+            VStack(alignment: .leading, spacing: 0) {
+                Title(largeFont: true, alignment: .leading)
+
+                Additional()
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 12)
+
+                PodcastDescription()
+                    .padding(.top, 12)
+
+                Spacer(minLength: 16)
+
+                PlayFirstEpisodeButton()
+                    .padding(.top, 8)
+            }
+            .frame(minWidth: 220, maxWidth: 560, alignment: .topLeading)
         }
-        .padding(20)
+        .frame(maxWidth: 1000, alignment: .leading)
+        .padding(.horizontal, 20)
         .padding(.top, 80)
+        .padding(.bottom, 20)
     }
 }
 

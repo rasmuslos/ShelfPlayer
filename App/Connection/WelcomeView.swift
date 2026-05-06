@@ -9,7 +9,12 @@ import SwiftUI
 import ShelfPlayback
 
 struct WelcomeView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(Satellite.self) private var satellite
+
+    private var logoSize: CGFloat {
+        horizontalSizeClass == .regular ? 140 : 108
+    }
 
     var body: some View {
         NavigationStack {
@@ -20,7 +25,7 @@ struct WelcomeView: View {
                     Image(decorative: "Logo")
                         .resizable()
                         .aspectRatio(1, contentMode: .fit)
-                        .frame(width: 108)
+                        .frame(width: logoSize)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                         .padding(.bottom, 28)
 
@@ -59,6 +64,8 @@ struct WelcomeView: View {
                 .padding(.bottom, 8)
             }
             .padding(.horizontal, 20)
+            .frame(maxWidth: 480)
+            .frame(maxWidth: .infinity)
             .multilineTextAlignment(.center)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {

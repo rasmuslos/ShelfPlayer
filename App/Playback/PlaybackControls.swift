@@ -9,6 +9,7 @@ import SwiftUI
 import ShelfPlayback
 
 struct PlaybackControls: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     @Environment(SkipController.self) private var skipController
@@ -37,11 +38,7 @@ struct PlaybackControls: View {
     }
 
     private var aspectRatio: CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            2.8
-        } else {
-            2
-        }
+        horizontalSizeClass == .regular ? 2.8 : 2
     }
 
     @ViewBuilder

@@ -19,7 +19,7 @@ struct PersonGrid: View {
     private let padding: CGFloat = 20
 
     private var size: CGFloat {
-        let minimumSize = horizontalSizeClass == .compact ? 72.0 : 100.0
+        let minimumSize = horizontalSizeClass == .compact ? 72.0 : 120.0
 
         let usable = width - padding * 2
         let paddedSize = minimumSize + gap

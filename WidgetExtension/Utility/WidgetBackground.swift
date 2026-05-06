@@ -11,7 +11,9 @@ import ShelfPlayerKit
 struct WidgetBackground: View {
     @Environment(\.colorScheme) private var colorScheme
 
-    private var tintColor: TintColor { AppSettings.shared.tintColor }
+    private var tintColor: TintColor {
+        AppSettings.shared.tintColor
+    }
 
     var body: some View {
         if colorScheme == .light {

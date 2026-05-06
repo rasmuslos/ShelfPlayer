@@ -33,6 +33,7 @@ struct PlaybackBackwardButton: View {
                 .padding(12)
                 .contentShape(.rect)
         }
+        .keyboardShortcut(.leftArrow, modifiers: .command)
         .buttonStyle(.plain)
         .onLongPressGesture(minimumDuration: 0.5, perform: {}, onPressingChanged: { pressing in
             if pressing {
@@ -96,5 +97,15 @@ struct PlaybackForwardButton: View {
             .accessibilityRemoveTraits(.isImage)
             .accessibilityAddTraits(.isButton)
             .accessibilityValue(Text(verbatim: "\(viewModel.skipForwardsInterval)"))
+            .background {
+                Button("playback.skip.forward") {
+                    skipController.skipPressed(forwards: true, satellite: satellite)
+                }
+                .keyboardShortcut(.rightArrow, modifiers: .command)
+                .buttonStyle(.plain)
+                .opacity(0)
+                .accessibilityHidden(true)
+                .disabled(isLoading)
+            }
     }
 }

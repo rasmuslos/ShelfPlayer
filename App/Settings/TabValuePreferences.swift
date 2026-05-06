@@ -250,21 +250,23 @@ struct CustomTabValuesPreferences: View {
                 }
             }
 
-            LibraryEnumerator { _, content in
-                content()
+            LibraryEnumerator { name, content in
+                Section {
+                    content()
+                } header: {
+                    Text(name)
+                }
             } label: { library in
                 let available = PersistenceManager.shared.customization.availableTabs(for: library.id, scope: .tabBar)
                 let unselected = available.filter { !pinnedTabValues.contains(.custom($0, library.name)) }
 
                 if !unselected.isEmpty {
-                    Section {
+                    DisclosureGroup(library.name) {
                         ForEach(unselected) { tab in
                             AddRow(systemImage: tab.image, title: tab.label) {
                                 add(.custom(tab, library.name))
                             }
                         }
-                    } header: {
-                        Text(library.name)
                     }
                 }
             }

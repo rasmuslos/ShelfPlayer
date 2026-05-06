@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 import ShelfPlayback
 
 struct TintPicker<Label: View>: View {
@@ -35,6 +36,7 @@ struct TintPicker<Label: View>: View {
             AppSettings.shared.tintColor = tintColor
             onChanged?(tintColor)
             AppEventSource.shared.appearanceDidChange.send()
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 

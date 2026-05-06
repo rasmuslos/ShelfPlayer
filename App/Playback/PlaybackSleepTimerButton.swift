@@ -171,18 +171,18 @@ struct PlaybackSleepTimerButton: View {
     }
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 1)) { context in
-            Menu {
-                menuContent()
-            } label: {
+        Menu {
+            menuContent()
+        } label: {
+            TimelineView(.periodic(from: .now, by: 1)) { context in
                 label(at: context.date)
+                    .accessibilityValue(Text(accessibilityValue(at: context.date)))
             }
-            .menuActionDismissBehavior(.disabled)
-            .hoverEffect(.highlight)
-            .padding(-12)
-            .accessibilityLabel("playback.sleepTimer")
-            .accessibilityValue(Text(accessibilityValue(at: context.date)))
         }
+        .menuActionDismissBehavior(.disabled)
+        .hoverEffect(.highlight)
+        .padding(-12)
+        .accessibilityLabel("playback.sleepTimer")
         .task(id: satellite.queue + satellite.upNextQueue) {
             await refreshUpcomingQueueDuration()
         }

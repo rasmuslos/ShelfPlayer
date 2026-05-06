@@ -16,9 +16,25 @@ struct SearchPanel: View {
     @Environment(ItemNavigationController.self) private var itemNavigationController
 
     @State private var viewModel = SearchViewModel()
+    @State private var availableWidth: CGFloat = 0
+
+    private let targetContentWidth: CGFloat = 720
+
+    private var horizontalRowInset: CGFloat {
+        guard horizontalSizeClass == .regular, availableWidth > targetContentWidth else { return 20 }
+        return max(20, (availableWidth - targetContentWidth) / 2)
+    }
 
     var body: some View {
         ZStack {
+            GeometryReader { proxy in
+                Color.clear
+                    .onChange(of: proxy.size.width, initial: true) {
+                        availableWidth = proxy.size.width
+                    }
+            }
+            .frame(height: 0)
+
             if let result = viewModel.result {
                 List {
                     ForEach(result) { item in
@@ -29,6 +45,9 @@ struct SearchPanel: View {
                         }
                         .buttonStyle(.plain)
                         .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
+                        .listRowInsets(.init(top: 0, leading: horizontalRowInset, bottom: 0, trailing: horizontalRowInset))
+                        .alignmentGuide(.listRowSeparatorLeading) { _ in horizontalRowInset }
+                        .alignmentGuide(.listRowSeparatorTrailing) { d in d[.trailing] - horizontalRowInset }
                     }
                 }
                 .listStyle(.plain)

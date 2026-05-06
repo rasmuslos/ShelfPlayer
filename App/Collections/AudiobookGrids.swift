@@ -15,7 +15,7 @@ struct AudiobookVGrid: View {
     let onAppear: ((_: AudiobookSection) -> Void)
 
     private var minimumWidth: CGFloat {
-        horizontalSizeClass == .compact ? 100.0 : 120.0
+        horizontalSizeClass == .compact ? 100.0 : 160.0
     }
 
     var body: some View {
@@ -63,7 +63,7 @@ struct AudiobookHGrid: View {
         if horizontalSizeClass == .compact {
             small ? 80.0 : 100.0
         } else {
-            small ? 100.0 : 120.0
+            small ? 120.0 : 160.0
         }
     }
     private var size: CGFloat {

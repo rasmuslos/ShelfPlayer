@@ -23,6 +23,7 @@ struct PlaybackTogglePlayButton: View {
         Button(satellite.isPlaying ? "playback.pause" : "playback.play", systemImage: satellite.isPlaying ? "pause" : "play") {
             satellite.togglePlaying()
         }
+        .keyboardShortcut(.space, modifiers: [])
         .contentShape(.rect)
         .buttonStyle(.plain)
         .labelStyle(.iconOnly)

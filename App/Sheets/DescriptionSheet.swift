@@ -9,6 +9,8 @@ import SwiftUI
 import ShelfPlayback
 
 struct DescriptionSheet: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     let item: Item
 
     var body: some View {
@@ -24,12 +26,14 @@ struct DescriptionSheet: View {
 
                     Spacer(minLength: 0)
                 }
-                .frame(maxWidth: .infinity)
                 .padding(.horizontal, 20)
+                .frame(maxWidth: 720)
+                .frame(maxWidth: .infinity)
             }
             .navigationTitle(item.name)
             .navigationBarTitleDisplayMode(.inline)
         }
+        .presentationDragIndicator(horizontalSizeClass == .compact ? .visible : .hidden)
     }
 }
 
