@@ -23,13 +23,18 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
     /// fetch. The new response is still written to the cache (subject to
     /// `ttl`), so subsequent non-bypassing requests can use it.
     public let bypassesCache: Bool
+    /// When true, exhausting `maxAttempts` triggers a connection-availability
+    /// probe whose result may flip the connection into offline mode. Set to
+    /// false for best-effort calls (frequent progress syncs, fire-and-forget
+    /// writes) whose individual failure is a poor signal of server health.
+    public let marksOfflineOnExhaustion: Bool
 
     public let dataBody: Data?
 
     public let id: String
     public let description: String
 
-    public init(path: String, method: HTTPMethod, body: Any? = nil, query: [URLQueryItem] = [], headers: [String: String] = [:], ttl: TimeInterval? = nil, timeout: TimeInterval = 45, maxAttempts: Int = 3, bypassesOffline: Bool = false, bypassesScheduler: Bool = false, bypassesCache: Bool = false) {
+    public init(path: String, method: HTTPMethod, body: Any? = nil, query: [URLQueryItem] = [], headers: [String: String] = [:], ttl: TimeInterval? = nil, timeout: TimeInterval = 45, maxAttempts: Int = 3, bypassesOffline: Bool = false, bypassesScheduler: Bool = false, bypassesCache: Bool = false, marksOfflineOnExhaustion: Bool = true) {
         self.path = path
         self.method = method
 
@@ -44,6 +49,7 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
         self.bypassesOffline = bypassesOffline
         self.bypassesScheduler = bypassesScheduler
         self.bypassesCache = bypassesCache
+        self.marksOfflineOnExhaustion = marksOfflineOnExhaustion
 
         if let body {
             if let encodable = body as? Encodable {
@@ -73,6 +79,7 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
         Max Attempts: \(self.maxAttempts)
         Bypasses Offline: \(bypassesOffline)
         Bypasses Scheduler: \(bypassesScheduler)
+        Marks Offline On Exhaustion: \(marksOfflineOnExhaustion)
         """
 
         let digest = SHA256.hash(data: Data(description.utf8))
@@ -90,6 +97,7 @@ public struct APIRequest<R: Decodable>: APIRequestProtocol, @unchecked Sendable 
         hasher.combine(maxAttempts)
         hasher.combine(bypassesOffline)
         hasher.combine(bypassesScheduler)
+        hasher.combine(marksOfflineOnExhaustion)
     }
 
     public static func == (lhs: APIRequest<R>, rhs: APIRequest<R>) -> Bool {

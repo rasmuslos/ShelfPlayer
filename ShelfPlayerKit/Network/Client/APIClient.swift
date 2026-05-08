@@ -286,7 +286,16 @@ private extension APIClient {
         }
 
         guard await hasAttemptsLeft(request) else {
-            await markAsUnavailableAndInvalidateRequests(reason: "Request \(request.method.value) \(request.path) exhausted all \(request.maxAttempts) attempts")
+            let reason = "Request \(request.method.value) \(request.path) exhausted all \(request.maxAttempts) attempts"
+
+            if request.marksOfflineOnExhaustion {
+                logger.warning("\(reason, privacy: .public). Probing connection availability")
+                Task {
+                    await OfflineMode.shared.probeAvailability(reason: reason)
+                }
+            } else {
+                logger.info("\(reason, privacy: .public). Skipping connection probe (request opted out)")
+            }
 
             guard let previousError else {
                 throw APIClientError.noAttemptsLeft

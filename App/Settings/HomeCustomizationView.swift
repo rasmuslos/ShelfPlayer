@@ -37,7 +37,16 @@ struct HomeCustomizationView: View {
         }
 
         let present = Set(sections.map(\.kind.stableID))
-        return all.filter { !present.contains($0.stableID) }
+        return all.filter { kind in
+            // Server rows in the multi-library scope are pinned per-library,
+            // so the same row id may legitimately appear several times (one
+            // per library). Don't dedupe them — the dedupe-by-stableID
+            // logic still applies to client-derived kinds.
+            if isMultiLibraryScope, case .serverRow = kind {
+                return true
+            }
+            return !present.contains(kind.stableID)
+        }
     }
 
     /// Collection types that can still be pinned. We always allow adding
@@ -198,8 +207,41 @@ struct HomeCustomizationView: View {
     }
 
     private func add(_ kind: HomeSectionKind) {
-        sections.append(.init(kind: kind, libraryID: scope.implicitLibraryID))
+        sections.append(.init(kind: kind, libraryID: defaultLibraryID(for: kind)))
         persist()
+    }
+
+    /// Newly-added rows inherit the scope's implicit library by default.
+    /// Server rows in the multi-library scope have no implicit library, so
+    /// pre-fill them with a sensible one — the row otherwise renders nothing
+    /// and the user wouldn't know they have to set the chip on the
+    /// customization sheet.
+    private func defaultLibraryID(for kind: HomeSectionKind) -> LibraryIdentifier? {
+        if let implicit = scope.implicitLibraryID {
+            return implicit
+        }
+        guard isMultiLibraryScope, case .serverRow(let id) = kind else {
+            return nil
+        }
+
+        let preferredType: LibraryMediaType?
+        switch id {
+        case "newest-episodes":
+            preferredType = .podcasts
+        case "continue-series", "recent-series", "discover", "newest-authors":
+            preferredType = .audiobooks
+        default:
+            preferredType = nil
+        }
+
+        let allLibraries = connectionLibraries.values
+            .flatMap { $0 }
+            .filter { !AppSettings.shared.hiddenLibraries.contains($0.id) }
+        if let preferredType,
+           let match = allLibraries.first(where: { $0.id.type == preferredType }) {
+            return match.id
+        }
+        return allLibraries.first?.id
     }
 
     private func addCollection(type: ItemCollection.CollectionType, itemID: ItemIdentifier) {
@@ -302,7 +344,11 @@ private struct HomeCustomizationRow: View {
             Spacer(minLength: 0)
 
             if showLibraryPicker {
-                HomeSectionLibraryMenu(libraryID: $section.libraryID, connectionLibraries: connectionLibraries)
+                HomeSectionLibraryMenu(
+                    libraryID: $section.libraryID,
+                    allowAnyLibrary: !section.kind.requiresExplicitLibrary,
+                    connectionLibraries: connectionLibraries
+                )
             }
         }
         .contentShape(.rect)
@@ -336,6 +382,10 @@ private struct ResolvedCollectionTitle: View {
 /// `LibraryPicker`'s connection-grouped structure.
 private struct HomeSectionLibraryMenu: View {
     @Binding var libraryID: LibraryIdentifier?
+    /// When false, the "Any Library" option is hidden — server rows require a
+    /// specific library because they can only be fetched from one library at
+    /// a time.
+    var allowAnyLibrary: Bool = true
     let connectionLibraries: [ItemIdentifier.ConnectionID: [Library]]
 
     @Environment(ConnectionStore.self) private var connectionStore
@@ -360,10 +410,12 @@ private struct HomeSectionLibraryMenu: View {
 
     var body: some View {
         Menu {
-            Button {
-                libraryID = nil
-            } label: {
-                Label("home.customization.libraryPicker.any", systemImage: libraryID == nil ? "checkmark" : "square.grid.2x2")
+            if allowAnyLibrary {
+                Button {
+                    libraryID = nil
+                } label: {
+                    Label("home.customization.libraryPicker.any", systemImage: libraryID == nil ? "checkmark" : "square.grid.2x2")
+                }
             }
 
             ForEach(connectionIDs, id: \.hashValue) { connectionID in

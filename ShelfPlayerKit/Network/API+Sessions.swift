@@ -117,7 +117,7 @@ public extension APIClient {
             "duration": duration,
             "currentTime": currentTime,
             "timeListened": timeListened,
-        ], maxAttempts: 1))
+        ], maxAttempts: 1, marksOfflineOnExhaustion: false))
     }
 
     func closeSession(sessionID: String, currentTime: TimeInterval, duration: TimeInterval, timeListened: TimeInterval) async throws {

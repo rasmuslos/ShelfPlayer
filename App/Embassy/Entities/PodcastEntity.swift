@@ -1,11 +1,12 @@
 //
 //  PodcastEntity.swift
-//  ShelfPlayerKit
+//  ShelfPlayer
 //
 
 import Foundation
 import AppIntents
 import CoreTransferable
+import ShelfPlayerKit
 
 public struct PodcastEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {
     public static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "intent.entity.podcast.name", numericFormat: "intent.entity.podcast.count \(placeholder: .int)")

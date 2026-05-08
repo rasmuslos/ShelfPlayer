@@ -118,9 +118,10 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
         ]
     }
 
-    /// Kinds available in the multi-library panel. Server rows are excluded
-    /// because they are per-library; collection/playlist rows are added via
-    /// the dedicated picker flow in the editor.
+    /// Kinds available in the multi-library panel. Server rows are included
+    /// here too — when added in this scope they require a specific library
+    /// (the row picker on each row enforces that). Collection/playlist rows
+    /// are added via the dedicated picker flow in the editor.
     nonisolated func availableMultiLibraryKinds() -> [HomeSectionKind] {
         [
             .listenNowAudiobooks,
@@ -130,6 +131,14 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
             .downloadedAudiobooks,
             .downloadedEpisodes,
             .bookmarks,
+            .serverRow(id: "continue-listening"),
+            .serverRow(id: "continue-series"),
+            .serverRow(id: "recent-series"),
+            .serverRow(id: "recently-added"),
+            .serverRow(id: "newest-episodes"),
+            .serverRow(id: "listen-again"),
+            .serverRow(id: "discover"),
+            .serverRow(id: "newest-authors"),
         ]
     }
 

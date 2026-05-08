@@ -108,9 +108,16 @@ private struct MultiLibraryHomeSectionRow: View {
 
     var body: some View {
         switch section.kind {
-        case .serverRow:
-            // Server rows are per-library and not offered in this panel.
-            EmptyView()
+        case .serverRow(let id):
+            // Server rows in this panel are pinned to a specific library —
+            // the customization sheet enforces a library chip on them.
+            // Without a libraryID there's nothing to fetch, so render
+            // nothing until the user picks one.
+            if let libraryID = section.libraryID {
+                MultiLibraryServerRow(libraryID: libraryID, rowID: id)
+            } else {
+                EmptyView()
+            }
         case .listenNowAudiobooks:
             ListenNowAudiobooksRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle, showEmptyPlaceholder: true)
         case .listenNowEpisodes:

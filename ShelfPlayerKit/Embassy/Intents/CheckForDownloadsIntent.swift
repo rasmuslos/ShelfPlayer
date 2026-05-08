@@ -21,23 +21,21 @@ public struct CheckForDownloadsIntent: ProgressReportingIntent {
 
         await withTaskCancellationHandler {
             await PersistenceManager.shared.convenienceDownload.scheduleAll()
+
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(0.4))
+
+                let currentProgress = await PersistenceManager.shared.convenienceDownload.currentProgress
+                progress.completedUnitCount = Int64(currentProgress * 100)
+
+                if currentProgress >= 1 {
+                    break
+                }
+            }
         } onCancel: {
             Task {
                 await PersistenceManager.shared.convenienceDownload.markShouldComeToEnd()
             }
-        }
-
-        while !Task.isCancelled {
-            try await Task.sleep(for: .seconds(0.4))
-
-            let currentProgress = await PersistenceManager.shared.convenienceDownload.currentProgress
-            progress.completedUnitCount = Int64(currentProgress * 100)
-
-            guard currentProgress >= 1 else {
-                continue
-            }
-
-            break
         }
 
         return .result()

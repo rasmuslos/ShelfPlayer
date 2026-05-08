@@ -1,10 +1,11 @@
 //
 //  StartPodcastIntent.swift
-//  ShelfPlayerKit
+//  ShelfPlayer
 //
 
 import Foundation
 import AppIntents
+import ShelfPlayerKit
 
 public struct StartPodcastIntent: AudioPlaybackIntent {
     public static let title: LocalizedStringResource = "intent.startPodcast.title"

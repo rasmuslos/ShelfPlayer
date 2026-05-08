@@ -61,11 +61,11 @@ public final class IntentAudioPlayer: Sendable {
         await _setPlaying(playing)
     }
 
-    func start(_ item: ItemIdentifier) async throws {
+    public func start(_ item: ItemIdentifier) async throws {
         try await _start(item)
     }
 
-    func startGrouping(_ item: ItemIdentifier) async throws -> ItemIdentifier {
+    public func startGrouping(_ item: ItemIdentifier) async throws -> ItemIdentifier {
         try await _startGrouping(item)
     }
 

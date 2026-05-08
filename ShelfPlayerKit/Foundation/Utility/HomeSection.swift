@@ -46,6 +46,13 @@ public enum HomeSectionKind: Codable, Hashable, Sendable {
     public var isClientDerived: Bool {
         if case .serverRow = self { false } else { true }
     }
+
+    /// Server rows can only be fetched from a single library — the
+    /// multi-library home customization sheet uses this to hide the "Any
+    /// Library" option from the row's library picker.
+    public var requiresExplicitLibrary: Bool {
+        if case .serverRow = self { true } else { false }
+    }
 }
 
 public struct HomeSection: Codable, Identifiable, Hashable, Sendable {

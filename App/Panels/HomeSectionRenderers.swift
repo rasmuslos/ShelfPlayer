@@ -7,7 +7,9 @@
 //  Shared row views that render the client-derived home sections (listen now,
 //  up next, downloads, bookmarks). Server rows are rendered directly by
 //  `AudiobookHomePanel` / `PodcastHomePanel` because they already hold the
-//  fetched `HomeRow<Audiobook>` / `HomeRow<Episode>` data.
+//  fetched `HomeRow<Audiobook>` / `HomeRow<Episode>` data. The multi-library
+//  panel doesn't pre-fetch — it uses `MultiLibraryServerRow` (below) which
+//  fetches the pinned library's home on demand.
 
 import SwiftUI
 import OSLog
@@ -602,5 +604,115 @@ struct PinnedCollectionRow: View {
         } catch {
             withAnimation { didFail = true }
         }
+    }
+}
+
+// MARK: - Multi-library Server Row
+
+/// Multi-library variant of a server-driven home row. Single-library panels
+/// fetch the whole library's home up-front and dispatch matching rows from a
+/// dictionary; the multi-library panel can have N sections pinned to N
+/// different libraries, so each row fetches its own library's home on demand.
+/// API client caching keeps repeat fetches cheap.
+struct MultiLibraryServerRow: View {
+    /// Library this row is pinned to. When nil, the row hasn't been assigned a
+    /// library yet and renders nothing (the user picks via the customization
+    /// sheet's library chip).
+    let libraryID: LibraryIdentifier?
+    let rowID: String
+
+    @State private var audiobookRow: HomeRow<Audiobook>?
+    @State private var personRow: HomeRow<Person>?
+    @State private var seriesRow: HomeRow<Series>?
+    @State private var podcastRow: HomeRow<Podcast>?
+    @State private var episodeRow: HomeRow<Episode>?
+
+    var body: some View {
+        Group {
+            if let row = audiobookRow, !row.entities.isEmpty {
+                AudiobookRow(title: row.localizedLabel, small: false, audiobooks: row.entities)
+            } else if let row = personRow, !row.entities.isEmpty {
+                HomeRowContainer(title: row.localizedLabel) {
+                    PersonGrid(people: row.entities)
+                }
+            } else if let row = seriesRow, !row.entities.isEmpty {
+                HomeRowContainer(title: row.localizedLabel) {
+                    SeriesHGrid(series: row.entities)
+                }
+            } else if let row = podcastRow, !row.entities.isEmpty {
+                HomeRowContainer(title: row.localizedLabel) {
+                    PodcastHGrid(podcasts: row.entities)
+                }
+            } else if let row = episodeRow, !row.entities.isEmpty {
+                HomeRowContainer(title: row.localizedLabel) {
+                    if row.id == "continue-listening" {
+                        EpisodeFeaturedGrid(episodes: row.entities)
+                    } else {
+                        EpisodeGrid(episodes: row.entities)
+                    }
+                }
+            } else {
+                EmptyView()
+            }
+        }
+        .task(id: taskKey) {
+            await load()
+        }
+    }
+
+    private var taskKey: String {
+        guard let libraryID else { return "_::_::\(rowID)" }
+        return "\(libraryID.connectionID)::\(libraryID.libraryID)::\(rowID)"
+    }
+
+    private func load() async {
+        guard let libraryID else {
+            await MainActor.run { clearRows() }
+            return
+        }
+
+        switch libraryID.type {
+        case .audiobooks:
+            do {
+                let home: ([HomeRow<Audiobook>], [HomeRow<Person>], [HomeRow<Series>]) = try await ABSClient[libraryID.connectionID].home(for: libraryID.libraryID)
+                let books = await HomeRow.prepareForPresentation(home.0, connectionID: libraryID.connectionID)
+
+                await MainActor.run {
+                    withAnimation {
+                        clearRows()
+                        audiobookRow = books.first { $0.id == rowID }
+                        personRow = home.1.first { $0.id == rowID }
+                        seriesRow = home.2.first { $0.id == rowID }
+                    }
+                }
+            } catch {
+                homeSectionRenderersLogger.warning("MultiLibraryServerRow audiobook fetch failed for \(libraryID.libraryID, privacy: .public)/\(rowID, privacy: .public): \(error, privacy: .public)")
+                await MainActor.run { clearRows() }
+            }
+        case .podcasts:
+            do {
+                let home: ([HomeRow<Podcast>], [HomeRow<Episode>]) = try await ABSClient[libraryID.connectionID].home(for: libraryID.libraryID)
+                let episodes = await HomeRow.prepareForPresentation(home.1, connectionID: libraryID.connectionID)
+
+                await MainActor.run {
+                    withAnimation {
+                        clearRows()
+                        podcastRow = home.0.first { $0.id == rowID }
+                        episodeRow = episodes.first { $0.id == rowID }
+                    }
+                }
+            } catch {
+                homeSectionRenderersLogger.warning("MultiLibraryServerRow podcast fetch failed for \(libraryID.libraryID, privacy: .public)/\(rowID, privacy: .public): \(error, privacy: .public)")
+                await MainActor.run { clearRows() }
+            }
+        }
+    }
+
+    private func clearRows() {
+        audiobookRow = nil
+        personRow = nil
+        seriesRow = nil
+        podcastRow = nil
+        episodeRow = nil
     }
 }

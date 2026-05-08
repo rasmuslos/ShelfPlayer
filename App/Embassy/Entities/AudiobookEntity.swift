@@ -1,11 +1,12 @@
 //
 //  AudiobookEntity.swift
-//  ShelfPlayerKit
+//  ShelfPlayer
 //
 
 import Foundation
 import AppIntents
 import CoreTransferable
+import ShelfPlayerKit
 
 @AppEntity(schema: .books.audiobook)
 public struct AudiobookEntity: AppEntity, IndexedEntity, PersistentlyIdentifiable {

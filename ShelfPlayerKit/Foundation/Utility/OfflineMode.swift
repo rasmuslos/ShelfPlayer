@@ -27,6 +27,7 @@ public final class OfflineMode: Sendable {
     private var activeLoadingOperations = 0
     private var availabilityEstablished = false
     private var establishAvailabilityTask: Task<Void, Never>?
+    private var probeTask: Task<Void, Never>?
     private var observerSubscriptions = Set<AnyCancellable>()
 
     private init() {
@@ -92,6 +93,31 @@ public extension OfflineMode {
         applyAvailability(availability, reason: "Availability probe completed (\(reason))", file: file, function: function, line: line)
     }
 
+    /// Probe connection availability without resetting forced offline state.
+    /// Concurrent calls share the in-flight probe task. Used by request-failure
+    /// callers that want the global offline flag to depend on a fresh
+    /// reachability check rather than a single failed request.
+    func probeAvailability(reason: String = "Connection probe requested", file: StaticString = #fileID, function: StaticString = #function, line: UInt = #line) async {
+        let task: Task<Void, Never>
+
+        if let probeTask {
+            task = probeTask
+        } else {
+            let newTask = Task(priority: .userInitiated) {
+                await self.runProbe(reason: reason, file: file, function: function, line: line)
+            }
+
+            probeTask = newTask
+            task = newTask
+        }
+
+        await task.value
+
+        if probeTask == task {
+            probeTask = nil
+        }
+    }
+
     func ensureAvailabilityEstablished(reason: String = "Initial availability check requested", file: StaticString = #fileID, function: StaticString = #function, line: UInt = #line) async {
         guard !availabilityEstablished else {
             return
@@ -119,6 +145,22 @@ public extension OfflineMode {
 }
 
 private extension OfflineMode {
+    func runProbe(reason: String, file: StaticString, function: StaticString, line: UInt) async {
+        activeLoadingOperations += 1
+
+        let source = sourceDescription(file: file, function: function, line: line)
+        logger.info("Probing connection availability. Trigger: \(reason, privacy: .public). Source: \(source, privacy: .public)")
+
+        defer {
+            if activeLoadingOperations > 0 {
+                activeLoadingOperations -= 1
+            }
+        }
+
+        let availability = await PersistenceManager.shared.authorization.connectionAvailability()
+        applyAvailability(availability, reason: "Probe completed (\(reason))", file: file, function: function, line: line)
+    }
+
     func setForcedEnabled(_ forcedEnabled: Bool, reason: String, file: StaticString, function: StaticString, line: UInt) {
         let source = sourceDescription(file: file, function: function, line: line)
         let before = isEnabled

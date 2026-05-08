@@ -92,11 +92,11 @@ struct PlaybackCompactExpandedForeground: View {
 
                             Rectangle()
                                 .fill(.clear)
-                                .onChange(of: x, initial: true) { viewModel.expandedImageX = x }
-                                .onChange(of: y, initial: true) { viewModel.expandedImageY = y }
-                                .onChange(of: size, initial: true) { viewModel.expandedImageSize = size }
+                                .onChange(of: x, initial: true) { viewModel.cardThumbnailImageX = x }
+                                .onChange(of: y, initial: true) { viewModel.cardThumbnailImageY = y }
+                                .onChange(of: size, initial: true) { viewModel.cardThumbnailImageSize = size }
 
-                            ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: 8, aspectRatio: .none, contrastConfiguration: nil)
+                            ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: viewModel.CARD_THUMBNAIL_IMAGE_CORNER_RADIUS, aspectRatio: .none, contrastConfiguration: nil)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .opacity(viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
                         }

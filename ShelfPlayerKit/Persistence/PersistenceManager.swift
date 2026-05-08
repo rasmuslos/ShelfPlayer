@@ -88,11 +88,6 @@ public final class PersistenceManager: Sendable {
         } catch {
             logger.debug("Failed to delete ItemEntity intent donations for \(itemID, privacy: .public): \(error, privacy: .public)")
         }
-        do {
-            try await IntentDonationManager.shared.deleteDonations(matching: .entityIdentifier(EntityIdentifier(for: AudiobookEntity.self, identifier: itemID)))
-        } catch {
-            logger.debug("Failed to delete AudiobookEntity intent donations for \(itemID, privacy: .public): \(error, privacy: .public)")
-        }
 
         do {
             try await INInteraction.delete(with: itemID.description)

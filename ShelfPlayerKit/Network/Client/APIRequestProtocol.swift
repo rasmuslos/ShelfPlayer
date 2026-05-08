@@ -23,6 +23,7 @@ public protocol APIRequestProtocol: Identifiable, Hashable, Sendable, Equatable 
     var bypassesOffline: Bool { get }
     var bypassesScheduler: Bool { get }
     var bypassesCache: Bool { get }
+    var marksOfflineOnExhaustion: Bool { get }
 
     func _typecast(_ data: Data) throws -> Response
     func typecast(decodable: Decodable) throws -> Response

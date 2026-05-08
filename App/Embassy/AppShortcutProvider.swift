@@ -1,10 +1,11 @@
 //
 //  AppShortcutProvider.swift
-//  ShelfPlayerKit
+//  ShelfPlayer
 //
 
 import Foundation
 import AppIntents
+import ShelfPlayerKit
 
 public struct AppShortcutProvider: AppShortcutsProvider {
     public static var shortcutTileColor: ShortcutTileColor {

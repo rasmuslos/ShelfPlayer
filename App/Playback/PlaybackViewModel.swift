@@ -38,7 +38,12 @@ final class PlaybackViewModel {
     var expandedImageY: CGFloat = .zero
     var expandedImageSize: CGFloat = .zero
 
+    var cardThumbnailImageX: CGFloat = .zero
+    var cardThumbnailImageY: CGFloat = .zero
+    var cardThumbnailImageSize: CGFloat = .zero
+
     let PILL_IMAGE_CORNER_RADIUS: CGFloat = 8
+    let CARD_THUMBNAIL_IMAGE_CORNER_RADIUS: CGFloat = 8
     let EXPANDED_IMAGE_CORNER_RADIUS: CGFloat = 16
 
     var PILL_CORNER_RADIUS: CGFloat {

@@ -1,10 +1,11 @@
 //
 //  StartAudiobookIntent.swift
-//  ShelfPlayerKit
+//  ShelfPlayer
 //
 
 import Foundation
 import AppIntents
+import ShelfPlayerKit
 
 @AppIntent(schema: .books.playAudiobook)
 public struct StartAudiobookIntent: AudioPlaybackIntent {

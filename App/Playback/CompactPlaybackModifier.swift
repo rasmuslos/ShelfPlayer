@@ -115,12 +115,18 @@ struct CompactPlaybackModifier: ViewModifier {
                         }
                     }
                     .overlay(alignment: .topLeading) {
-                        let imageSize = viewModel.isExpanded ? viewModel.expandedImageSize : viewModel.pillImageSize
+                        let useCardThumbnail = viewModel.activeCard != nil
+                        let expandedImageX = useCardThumbnail ? viewModel.cardThumbnailImageX : viewModel.expandedImageX
+                        let expandedImageY = useCardThumbnail ? viewModel.cardThumbnailImageY : viewModel.expandedImageY
+                        let expandedImageSize = useCardThumbnail ? viewModel.cardThumbnailImageSize : viewModel.expandedImageSize
+                        let expandedCornerRadius = useCardThumbnail ? viewModel.CARD_THUMBNAIL_IMAGE_CORNER_RADIUS : viewModel.EXPANDED_IMAGE_CORNER_RADIUS
 
-                        ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: viewModel.isExpanded ? viewModel.EXPANDED_IMAGE_CORNER_RADIUS : viewModel.PILL_IMAGE_CORNER_RADIUS, aspectRatio: .none)
+                        let imageSize = viewModel.isExpanded ? expandedImageSize : viewModel.pillImageSize
+
+                        ItemImage(itemID: satellite.nowPlayingItemID, size: .regular, cornerRadius: viewModel.isExpanded ? expandedCornerRadius : viewModel.PILL_IMAGE_CORNER_RADIUS, aspectRatio: .none)
                             .frame(width: imageSize, height: imageSize)
-                            .offset(x: viewModel.isExpanded ? viewModel.expandedImageX : viewModel.pillImageX,
-                                    y: viewModel.isExpanded ? viewModel.expandedImageY : viewModel.pillImageY)
+                            .offset(x: viewModel.isExpanded ? expandedImageX : viewModel.pillImageX,
+                                    y: viewModel.isExpanded ? expandedImageY : viewModel.pillImageY)
                             .opacity(viewModel.expansionAnimationCount > 0 ? 1 : 0)
                             .allowsHitTesting(false)
                             .accessibilityHidden(true)
