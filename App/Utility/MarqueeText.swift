@@ -157,13 +157,13 @@ struct MarqueeText: View {
                 }
                 .mask {
                     HStack(spacing: 0) {
-                        LinearGradient(colors: [.clear, .black], startPoint: .leading, endPoint: .trailing)
-                            .frame(width: fadeLeading ? 16 : 0)
+                        LinearGradient(colors: [fadeLeading ? .clear : .black, .black], startPoint: .leading, endPoint: .trailing)
+                            .frame(width: 16)
 
                         Rectangle()
 
-                        LinearGradient(colors: [.black, .clear], startPoint: .leading, endPoint: .trailing)
-                            .frame(width: fadeTrailing ? 16 : 0)
+                        LinearGradient(colors: [.black, fadeTrailing ? .clear : .black], startPoint: .leading, endPoint: .trailing)
+                            .frame(width: 16)
                     }
                 }
             }

@@ -286,6 +286,10 @@ public final class AppSettings: @unchecked Sendable {
         didSet { suite.set(lastToSUpdate, forKey: "lastToSUpdate") }
     }
 
+    public var lastWhatsNewVersion: Int? = nil {
+        didSet { suite.set(lastWhatsNewVersion, forKey: "lastWhatsNewVersion") }
+    }
+
     public var lastCheckedServerVersion: String? = nil {
         didSet { suite.set(lastCheckedServerVersion, forKey: "lastCheckedServerVersion") }
     }
@@ -326,6 +330,10 @@ public final class AppSettings: @unchecked Sendable {
 
     public var animatedNowPlayingBackground = true {
         didSet { suite.set(animatedNowPlayingBackground, forKey: "animatedNowPlayingBackground") }
+    }
+
+    public var hideSearchTab = false {
+        didSet { suite.set(hideSearchTab, forKey: "hideSearchTab") }
     }
 
     // MARK: - Init
@@ -429,6 +437,7 @@ public final class AppSettings: @unchecked Sendable {
         lastConvenienceDownloadRun = suite.object(forKey: "lastConvenienceDownloadRun") as? Date
         lastBuild = suite.string(forKey: "lastBuild")
         lastToSUpdate = suite.object(forKey: "lastToSUpdate") as? Int
+        lastWhatsNewVersion = suite.object(forKey: "lastWhatsNewVersion") as? Int
         lastCheckedServerVersion = suite.string(forKey: "lastCheckedServerVersion")
         durationToggled = suite.object(forKey: "durationToggled") as? Bool ?? false
         if let val: [TabValue] = decodeCodable(forKey: "pinnedTabValues") { pinnedTabValues = val }
@@ -440,6 +449,7 @@ public final class AppSettings: @unchecked Sendable {
         carPlayShowOtherLibraries = suite.object(forKey: "carPlayShowOtherLibraries") as? Bool ?? true
         enableHapticFeedback = suite.object(forKey: "enableHapticFeedback") as? Bool ?? true
         animatedNowPlayingBackground = suite.object(forKey: "animatedNowPlayingBackground") as? Bool ?? true
+        hideSearchTab = suite.object(forKey: "hideSearchTab") as? Bool ?? false
     }
 }
 

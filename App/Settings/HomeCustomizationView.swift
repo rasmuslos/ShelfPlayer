@@ -39,11 +39,12 @@ struct HomeCustomizationView: View {
         let present = Set(sections.map(\.kind.stableID))
         return all.filter { kind in
             // Server rows in the multi-library scope are pinned per-library,
-            // so the same row id may legitimately appear several times (one
-            // per library). Don't dedupe them — the dedupe-by-stableID
-            // logic still applies to client-derived kinds.
+            // so the same row id may legitimately appear once *per library*.
+            // Hide the option once every compatible library already has this
+            // row pinned — otherwise the user can stack up duplicate rows
+            // (e.g. six Discover rows on the same audiobook library).
             if isMultiLibraryScope, case .serverRow = kind {
-                return true
+                return defaultLibraryID(for: kind) != nil
             }
             return !present.contains(kind.stableID)
         }
@@ -215,33 +216,30 @@ struct HomeCustomizationView: View {
     /// Server rows in the multi-library scope have no implicit library, so
     /// pre-fill them with a sensible one — the row otherwise renders nothing
     /// and the user wouldn't know they have to set the chip on the
-    /// customization sheet.
+    /// customization sheet. Skips libraries that already have this kind
+    /// pinned, so adding the same kind twice picks a fresh library instead
+    /// of stacking duplicates on the first one.
     private func defaultLibraryID(for kind: HomeSectionKind) -> LibraryIdentifier? {
         if let implicit = scope.implicitLibraryID {
             return implicit
         }
-        guard isMultiLibraryScope, case .serverRow(let id) = kind else {
+        guard isMultiLibraryScope, case .serverRow = kind else {
             return nil
         }
 
-        let preferredType: LibraryMediaType?
-        switch id {
-        case "newest-episodes":
-            preferredType = .podcasts
-        case "continue-series", "recent-series", "discover", "newest-authors":
-            preferredType = .audiobooks
-        default:
-            preferredType = nil
-        }
+        let usedLibraryIDs = Set(sections.compactMap { section -> LibraryIdentifier? in
+            guard section.kind.stableID == kind.stableID else { return nil }
+            return section.libraryID
+        })
 
-        let allLibraries = connectionLibraries.values
+        let candidates = connectionLibraries.values
             .flatMap { $0 }
             .filter { !AppSettings.shared.hiddenLibraries.contains($0.id) }
-        if let preferredType,
-           let match = allLibraries.first(where: { $0.id.type == preferredType }) {
-            return match.id
+            .filter { !usedLibraryIDs.contains($0.id) }
+        if let supported = kind.supportedLibraryTypes {
+            return candidates.first(where: { supported.contains($0.id.type) })?.id
         }
-        return allLibraries.first?.id
+        return candidates.first?.id
     }
 
     private func addCollection(type: ItemCollection.CollectionType, itemID: ItemIdentifier) {
@@ -347,6 +345,7 @@ private struct HomeCustomizationRow: View {
                 HomeSectionLibraryMenu(
                     libraryID: $section.libraryID,
                     allowAnyLibrary: !section.kind.requiresExplicitLibrary,
+                    supportedLibraryTypes: section.kind.supportedLibraryTypes,
                     connectionLibraries: connectionLibraries
                 )
             }
@@ -386,6 +385,10 @@ private struct HomeSectionLibraryMenu: View {
     /// specific library because they can only be fetched from one library at
     /// a time.
     var allowAnyLibrary: Bool = true
+    /// Library media types this row can produce content for. Libraries of any
+    /// other type are hidden from the picker — e.g. podcast libraries are not
+    /// offered for the `continue-series` row.
+    var supportedLibraryTypes: Set<LibraryMediaType>? = nil
     let connectionLibraries: [ItemIdentifier.ConnectionID: [Library]]
 
     @Environment(ConnectionStore.self) private var connectionStore
@@ -394,6 +397,11 @@ private struct HomeSectionLibraryMenu: View {
 
     private var connectionIDs: [ItemIdentifier.ConnectionID] {
         Array(connectionLibraries.keys.sorted())
+    }
+
+    private func isCompatible(_ library: Library) -> Bool {
+        guard let supportedLibraryTypes else { return true }
+        return supportedLibraryTypes.contains(library.id.type)
     }
 
     private var currentLabel: String {
@@ -421,7 +429,7 @@ private struct HomeSectionLibraryMenu: View {
             ForEach(connectionIDs, id: \.hashValue) { connectionID in
                 if let connection = connectionStore.connections.first(where: { $0.id == connectionID }),
                    let libraries = connectionLibraries[connectionID] {
-                    let visible = libraries.filter { !hiddenLibraries.contains($0.id) }
+                    let visible = libraries.filter { !hiddenLibraries.contains($0.id) && isCompatible($0) }
 
                     if !visible.isEmpty {
                         Section(connection.name) {
@@ -455,9 +463,41 @@ private struct HomeSectionLibraryMenu: View {
 }
 
 #if DEBUG
-#Preview {
+#Preview("HomeCustomizationView") {
     NavigationStack {
         HomeCustomizationView(scope: .library(Library.fixture.id), libraryType: .audiobooks)
+    }
+    .previewEnvironment()
+}
+
+#Preview("HomeCustomizationRow") {
+    @Previewable @State var section = HomeSection(kind: .listenNowAudiobooks, libraryID: Library.fixture.id)
+
+    List {
+        HomeCustomizationRow(
+            section: $section,
+            showLibraryPicker: true,
+            connectionLibraries: [Library.fixture.id.connectionID: [.fixture]]
+        )
+    }
+    .previewEnvironment()
+}
+
+#Preview("ResolvedCollectionTitle") {
+    List {
+        ResolvedCollectionTitle(itemID: .fixture, fallback: "Collection")
+    }
+    .previewEnvironment()
+}
+
+#Preview("HomeSectionLibraryMenu") {
+    @Previewable @State var libraryID: LibraryIdentifier? = Library.fixture.id
+
+    List {
+        HomeSectionLibraryMenu(
+            libraryID: $libraryID,
+            connectionLibraries: [Library.fixture.id.connectionID: [.fixture]]
+        )
     }
     .previewEnvironment()
 }

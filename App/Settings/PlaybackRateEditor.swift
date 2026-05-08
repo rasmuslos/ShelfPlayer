@@ -113,6 +113,16 @@ struct PlaybackRatePicker: View {
     }
 }
 
-#Preview {
+#if DEBUG
+#Preview("PlaybackRateEditor") {
     PlaybackRateEditor()
 }
+
+#Preview("PlaybackRatePicker") {
+    @Previewable @State var selection: Percentage = 1
+
+    List {
+        PlaybackRatePicker(label: "preferences.playbackRate.default", selection: $selection)
+    }
+}
+#endif

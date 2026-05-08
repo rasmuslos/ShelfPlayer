@@ -9,9 +9,19 @@ import SwiftUI
 import ShelfPlayback
 
 struct TabValuePreferences: View {
+    @Environment(ConnectionStore.self) private var connectionStore
+
+    @Bindable private var settings = AppSettings.shared
+
     var body: some View {
         List {
             SettingsPageHeader(title: "preferences.tabs", systemImage: "rectangle.2.swap", color: .purple)
+
+            Section {
+                Toggle("settings.hideSearchTab", isOn: $settings.hideSearchTab)
+            } footer: {
+                Text("settings.hideSearchTab.footer")
+            }
 
             LibraryEnumerator { name, content in
                 Section {
@@ -32,25 +42,16 @@ struct TabValuePreferences: View {
                     }
                 }
             }
-
-            Section {
-                NavigationLink("panel.home") {
-                    CustomTabValuesPreferences()
-                }
-            } header: {
-                Text("home.customization.title")
-            }
         }
         .navigationTitle("preferences.tabs")
         .navigationBarTitleDisplayMode(.inline)
+        .animation(.smooth, value: connectionStore.connections.map(\.id))
     }
 }
 
 struct TabValueLibraryPreferences: View {
     let library: Library
     let scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope
-
-    var callback: (() -> Void)? = nil
 
     @State private var viewModel: TabValueShadow?
 
@@ -90,11 +91,16 @@ struct TabValueLibraryPreferences: View {
         .navigationBarTitleDisplayMode(.inline)
         .environment(\.editMode, .constant(.active))
         .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button("action.save") {
-                    viewModel?.save {
-                        callback?()
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button(role: .destructive) {
+                        viewModel?.reset()
+                    } label: {
+                        Label("action.reset", systemImage: "arrow.counterclockwise")
                     }
+                    .disabled(viewModel == nil)
+                } label: {
+                    Image(systemName: "ellipsis.circle")
                 }
             }
         }
@@ -114,9 +120,6 @@ private final class TabValueShadow {
     /// canonical order defined by the app. Used as a lookup table and to
     /// determine the default order of not-yet-added tabs.
     let available: [TabValue]
-
-    var isLoading = false
-    var notifyError = false
 
     init(library: Library, scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope) async {
         self.library = library
@@ -150,25 +153,32 @@ private final class TabValueShadow {
     func add(_ tabID: TabValue.ID) {
         guard !isFull, !activeIDs.contains(tabID) else { return }
         activeIDs.append(tabID)
+        persist()
     }
 
     func remove(at offsets: IndexSet) {
         let ids = offsets.map { active[$0].id }
         activeIDs.removeAll { ids.contains($0) }
+        persist()
     }
 
     func move(from source: IndexSet, to destination: Int) {
         activeIDs.move(fromOffsets: source, toOffset: destination)
+        persist()
     }
 
-    func save(callback: @escaping () -> Void) {
+    func reset() {
         Task {
-            do {
-                try await PersistenceManager.shared.customization.setConfiguredTabs(active, for: library.id, scope: scope)
-                callback()
-            } catch {
-                notifyError.toggle()
-            }
+            try? await PersistenceManager.shared.customization.setConfiguredTabs(nil, for: library.id, scope: scope)
+            let configured = await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: scope)
+            activeIDs = configured.map(\.id)
+        }
+    }
+
+    private func persist() {
+        let snapshot = active
+        Task {
+            try? await PersistenceManager.shared.customization.setConfiguredTabs(snapshot, for: library.id, scope: scope)
         }
     }
 }
@@ -271,12 +281,32 @@ struct CustomTabValuesPreferences: View {
                 }
             }
         }
-        .navigationTitle("panel.home")
+        .navigationTitle("preferences.pinnedTabs")
         .navigationBarTitleDisplayMode(.inline)
         .environment(\.editMode, .constant(.active))
         .animation(.smooth, value: pinnedTabValues)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button(role: .destructive) {
+                        reset()
+                    } label: {
+                        Label("action.reset", systemImage: "arrow.counterclockwise")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }
+            }
+        }
         .navigationDestination(for: HomeScope.self) { scope in
             HomeCustomizationView(scope: scope, libraryType: nil)
+        }
+    }
+
+    private func reset() {
+        withAnimation {
+            pinnedTabValues = []
+            AppSettings.shared.pinnedTabValues = pinnedTabValues
         }
     }
 
@@ -300,16 +330,29 @@ struct CustomTabValuesPreferences: View {
 }
 
 #if DEBUG
-#Preview {
+#Preview("TabValuePreferences") {
     NavigationStack {
         TabValuePreferences()
     }
     .previewEnvironment()
 }
 
-#Preview {
+#Preview("TabValueLibraryPreferences") {
     NavigationStack {
         TabValueLibraryPreferences(library: .fixture, scope: .tabBar)
+    }
+    .previewEnvironment()
+}
+
+#Preview("AddRow") {
+    List {
+        AddRow(systemImage: "house.fill", title: "Home") {}
+    }
+}
+
+#Preview("CustomTabValuesPreferences") {
+    NavigationStack {
+        CustomTabValuesPreferences()
     }
     .previewEnvironment()
 }

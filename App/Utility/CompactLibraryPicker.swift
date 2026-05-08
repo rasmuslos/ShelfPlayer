@@ -16,7 +16,6 @@ struct CompactLibraryPicker: View {
     @Environment(ConnectionStore.self) private var connectionStore
     @Environment(Satellite.self) private var satellite
 
-    var customizeLibrary = false
     /// When set, the "customize" menu entry presents the home-screen
     /// customization sheet for this library type instead of the tab-bar
     /// customization. Intended for use on home panels.
@@ -69,24 +68,28 @@ struct CompactLibraryPicker: View {
                 Divider()
             }
 
-            if showCustomizeHome, let homeCustomizationScope {
-                Button("home.customization.title", systemImage: "slider.horizontal.3") {
-                    satellite.present(.customizeHome(homeCustomizationScope, customizeHomeLibraryType))
+            Menu {
+                if showCustomizeHome, !tabRouterViewModel.pinnedTabsActive, let homeCustomizationScope {
+                    Button("home.customization.title", systemImage: "slider.horizontal.3") {
+                        satellite.present(.customizeHome(homeCustomizationScope, customizeHomeLibraryType))
+                    }
                 }
-            } else if customizeLibrary {
+
                 if tabRouterViewModel.pinnedTabsActive {
-                    Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
+                    Button("preferences.pinnedTabs", systemImage: "rectangle.2.swap") {
                         satellite.present(.customTabValuePreferences)
                     }
                 } else if let library {
-                    Button("action.customize", systemImage: "list.bullet.badge.ellipsis") {
+                    Button("preferences.tabs", systemImage: "rectangle.2.swap") {
                         satellite.present(.customizeLibrary(library, .tabBar))
                     }
                 }
-            }
 
-            Button("preferences", systemImage: "gearshape") {
-                satellite.present(.preferences)
+                Button("preferences", systemImage: "gearshape") {
+                    satellite.present(.preferences)
+                }
+            } label: {
+                Label("preferences", systemImage: "gearshape")
             }
 
             Divider()

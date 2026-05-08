@@ -108,13 +108,18 @@ public extension PersistenceManager.HomeCustomizationSubsystem {
         }
     }
 
-    /// The multi-library panel starts with a small, obvious set. The user
-    /// picks per-section libraries from the editor.
+    /// The multi-library panel defaults to the cross-library client-derived
+    /// rows. Server rows aren't included because they require a specific
+    /// library — the user adds them per-library from the editor.
     nonisolated func defaultMultiLibrarySections() -> [HomeSection] {
         [
             .init(kind: .listenNowAudiobooks),
             .init(kind: .listenNowEpisodes),
             .init(kind: .upNext),
+            .init(kind: .nextUpPodcasts),
+            .init(kind: .downloadedAudiobooks),
+            .init(kind: .downloadedEpisodes),
+            .init(kind: .bookmarks),
         ]
     }
 

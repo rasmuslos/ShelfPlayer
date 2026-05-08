@@ -45,7 +45,7 @@ struct PlaybackTitle: View {
             }
             .buttonStyle(.plain)
 
-            if satellite.nowPlayingItemID?.type == .audiobook {
+            if satellite.nowPlayingItemID?.type != .episode {
                 Spacer(minLength: 12)
 
                 if viewModel.isCreatingBookmark {

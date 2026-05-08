@@ -55,6 +55,7 @@ struct ShelfPlayer {
         // Fresh install
         if lastBuild == nil {
             settings.lastToSUpdate = ShelfPlayerKit.currentToSVersion
+            settings.lastWhatsNewVersion = ShelfPlayerKit.currentWhatsNewVersion
         }
 
         // Invalidate cache after an update
@@ -65,10 +66,6 @@ struct ShelfPlayer {
             Task {
                 try await ShelfPlayer.invalidateCache()
             }
-
-            Task { @MainActor in
-                Satellite.shared.present(.whatsNew)
-            }
         }
 
         settings.lastBuild = clientBuild
@@ -78,6 +75,14 @@ struct ShelfPlayer {
         if lastToSUpdate < ShelfPlayerKit.currentToSVersion {
             Task { @MainActor in
                 Satellite.shared.warn(.termsOfServiceChanged)
+            }
+        }
+
+        // What's New — shown until acknowledged via the sheet's Proceed button
+        let lastWhatsNewVersion = settings.lastWhatsNewVersion ?? -1
+        if lastWhatsNewVersion < ShelfPlayerKit.currentWhatsNewVersion {
+            Task { @MainActor in
+                Satellite.shared.present(.whatsNew)
             }
         }
 

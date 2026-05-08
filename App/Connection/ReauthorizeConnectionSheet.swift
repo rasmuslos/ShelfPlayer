@@ -16,9 +16,10 @@ struct ReauthorizeConnectionSheet: View {
     @State private var viewModel: ViewModel?
     @State private var notifyError = false
     @State private var authorizeTrigger = false
+    @State private var isRemoving = false
 
     var isLoading: Bool {
-        viewModel == nil || viewModel?.isLoading == true
+        viewModel?.isLoading == true || isRemoving
     }
 
     var body: some View {
@@ -79,21 +80,21 @@ struct ReauthorizeConnectionSheet: View {
             }
             .formStyle(.grouped)
             .safeAreaInset(edge: .bottom) {
-                if viewModel != nil {
-                    VStack(spacing: 12) {
-                        if isLoading {
-                            ProgressView()
-                                .padding(.vertical, 4)
-                        } else {
-                            Button("connection.remove", role: .destructive) {
-                                ConnectionManageView.remove(connectionID: connectionID, isLoading: .init { viewModel?.isLoading ?? false } set: { viewModel?.isLoading = $0 }) {
-                                    dismiss()
-                                }
+                VStack(spacing: 12) {
+                    if isLoading {
+                        ProgressView()
+                            .padding(.vertical, 4)
+                    } else {
+                        Button("connection.remove", role: .destructive) {
+                            ConnectionManageView.remove(connectionID: connectionID, isLoading: $isRemoving) {
+                                dismiss()
                             }
-                            .controlSize(.large)
-                            .buttonStyle(.glass)
-                            .buttonSizing(.flexible)
-                            .foregroundStyle(.red)
+                        }
+                        .controlSize(.large)
+                        .buttonStyle(.glass)
+                        .buttonSizing(.flexible)
+                        .foregroundStyle(.red)
+                        if viewModel != nil {
                             Button("connection.add.proceed") {
                                 authorizeTrigger = true
                             }
@@ -102,9 +103,9 @@ struct ReauthorizeConnectionSheet: View {
                             .buttonSizing(.flexible)
                         }
                     }
-                    .padding(.horizontal)
-                    .padding(.bottom, 8)
                 }
+                .padding(.horizontal)
+                .padding(.bottom, 8)
             }
             .navigationTitle("connection.reauthorize")
             .navigationBarTitleDisplayMode(.inline)

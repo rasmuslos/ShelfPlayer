@@ -6,7 +6,9 @@
 //
 
 import SwiftUI
+import AppIntents
 import CoreSpotlight
+import ShelfPlayback
 
 struct WhatsNewSheet: View {
     @Environment(Satellite.self) private var satellite
@@ -46,15 +48,22 @@ struct WhatsNewSheet: View {
             .font(.largeTitle)
             .padding(.vertical, 40)
 
-            row(systemImage: "wifi.slash", headline: "Seamless Listening Everywhere", text: "ShelfPlayer now delivers a more unified offline and sync experience, so your listening continues smoothly across devices and network conditions.")
+            row(systemImage: "chart.xyaxis.line", headline: "Listening Statistics", text: "A new sheet with charts and totals from your listening history.")
 
-            row(systemImage: "car.fill", headline: "Refined CarPlay Experience", text: "CarPlay interaction is now more polished and dependable, providing confident control during every drive.")
+            row(systemImage: "speedometer", headline: "Playback Controls", text: "A redesigned playback speed picker and home screen.")
 
-            row(systemImage: "sparkles", headline: "Elevated Overall Quality", text: "This release brings broad quality and performance enhancements that make ShelfPlayer feel faster, steadier, and more premium throughout.")
+            row(systemImage: "wand.and.sparkles", headline: "Siri and Shortcuts", text: "More App Intents and widget configurations for Siri, Shortcuts, and the Home Screen.")
+
+            row(systemImage: "accessibility", headline: "Accessibility", text: "Updates to playback, navigation, and onboarding for VoiceOver and assistive technologies.")
         }
         .safeAreaInset(edge: .bottom) {
             Button("action.proceed") {
+                AppSettings.shared.lastWhatsNewVersion = ShelfPlayerKit.currentWhatsNewVersion
                 satellite.dismissSheet()
+
+                Task {
+                    try? await IntentDonationManager.shared.deleteDonations(matching: .intentType(StartIntent.self))
+                }
             }
             .buttonStyle(.glassProminent)
             .controlSize(.extraLarge)
@@ -62,6 +71,7 @@ struct WhatsNewSheet: View {
             .padding(.top, 8)
             .padding(.horizontal, 20)
         }
+        .interactiveDismissDisabled()
     }
 }
 

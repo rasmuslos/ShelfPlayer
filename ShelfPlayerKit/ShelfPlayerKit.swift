@@ -139,4 +139,5 @@ public extension ShelfPlayerKit {
     }
 
     static let currentToSVersion = 1
+    static let currentWhatsNewVersion = 1
 }

@@ -34,38 +34,53 @@ private struct SectionInner<Label: View>: View {
     @State private var libraries = [Library]()
 
     var body: some View {
-        if libraries.isEmpty {
-            if isLoading {
-                ProgressView()
-                    .task {
-                        do {
-                            self.libraries = try await ABSClient[connectionID].libraries()
-                        } catch {
-                            libraryEnumeratorLogger.warning("Failed to fetch libraries for \(connectionID, privacy: .public): \(error, privacy: .public)")
-                        }
+        Group {
+            if libraries.isEmpty {
+                if isLoading {
+                    ProgressView()
+                        .task {
+                            do {
+                                self.libraries = try await ABSClient[connectionID].libraries()
+                            } catch {
+                                libraryEnumeratorLogger.warning("Failed to fetch libraries for \(connectionID, privacy: .public): \(error, privacy: .public)")
+                            }
 
-                        isLoading = false
-                    }
+                            isLoading = false
+                        }
+                } else {
+                    SwiftUI.Label("error.libraryLoadFailed", systemImage: "exclamationmark.triangle")
+                        .foregroundStyle(.secondary)
+                }
             } else {
-                SwiftUI.Label("error.libraryLoadFailed", systemImage: "exclamationmark.triangle")
-                    .foregroundStyle(.secondary)
-            }
-        } else {
-            ForEach(libraries) {
-                label($0)
+                ForEach(libraries) {
+                    label($0)
+                }
             }
         }
+        .animation(.smooth, value: libraries.map(\.id))
+        .animation(.smooth, value: isLoading)
     }
 }
 
 #if DEBUG
-#Preview {
-    LibraryEnumerator { name, content in
-        Section(name) {
-            content()
+#Preview("LibraryEnumerator") {
+    List {
+        LibraryEnumerator { name, content in
+            Section(name) {
+                content()
+            }
+        } label: {
+            Text($0.name)
         }
-    } label: {
-        Text($0.name)
+    }
+    .previewEnvironment()
+}
+
+#Preview("SectionInner") {
+    List {
+        SectionInner(connectionID: Library.fixture.id.connectionID) {
+            Text($0.name)
+        }
     }
     .previewEnvironment()
 }

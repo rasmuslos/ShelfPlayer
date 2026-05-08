@@ -86,9 +86,37 @@ struct AudiobookLibraryPanel: View {
         }
     }
 
+    @ViewBuilder
+    private var searchPresentation: some View {
+        if let results = viewModel.searchResults {
+            if results.isEmpty {
+                ContentUnavailableView.search(text: viewModel.search)
+            } else {
+                List {
+                    ForEach(results) { item in
+                        Button {
+                            NavigationEventSource.shared.navigate.send(item.id)
+                        } label: {
+                            ItemCompactRow(item: item)
+                        }
+                        .buttonStyle(.plain)
+                        .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
+                    }
+                }
+                .listStyle(.plain)
+            }
+        } else if viewModel.isSearching {
+            LoadingView()
+        } else {
+            ContentUnavailableView.search(text: viewModel.search)
+        }
+    }
+
     var body: some View {
         Group {
-            if viewModel.showPlaceholders {
+            if viewModel.isSearchActive {
+                searchPresentation
+            } else if viewModel.showPlaceholders {
                 ScrollView {
                     ZStack {
                         Spacer()
@@ -123,6 +151,7 @@ struct AudiobookLibraryPanel: View {
         .listStyle(.plain)
         .navigationTitle("panel.library")
         .largeTitleDisplayMode()
+        .searchable(text: $viewModel.search, placement: .navigationBarDrawer)
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease" : "line.3.horizontal") {
@@ -210,6 +239,12 @@ private final class LibraryViewModel {
         }
     }
 
+    var search = "" {
+        didSet { performSearch() }
+    }
+    var searchResults: [Item]?
+    private var searchTask: Task<Void, Never>?
+
     private(set) var notifyError = false
 
     init() {
@@ -231,6 +266,14 @@ private final class LibraryViewModel {
         lazyLoader.working && !lazyLoader.failed
     }
 
+    var isSearchActive: Bool {
+        !search.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    var isSearching: Bool {
+        searchTask != nil
+    }
+
     func load() {
         loadTabs()
     }
@@ -244,6 +287,44 @@ private final class LibraryViewModel {
     func loadTabs() {
         Task {
             tabs = await PersistenceManager.shared.customization.configuredTabs(for: library.id, scope: .library)
+        }
+    }
+
+    private func performSearch() {
+        searchTask?.cancel()
+
+        let query = search.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !query.isEmpty, let library else {
+            searchResults = nil
+            searchTask = nil
+            return
+        }
+
+        searchTask = Task {
+            do {
+                try await Task.sleep(for: .seconds(0.5))
+                try Task.checkCancellation()
+
+                let grouped = try await ABSClient[library.id.connectionID].items(in: library.id, search: query)
+                let presort: [Item] = grouped.0 + grouped.1 + grouped.2 + grouped.3
+                let sorted = presort.sorted { $0.name.levenshteinDistanceScore(to: query) > $1.name.levenshteinDistanceScore(to: query) }
+
+                try Task.checkCancellation()
+
+                withAnimation {
+                    self.searchResults = sorted
+                    self.searchTask = nil
+                }
+            } catch is CancellationError {
+                // overridden by a newer search; leave previous results in place
+            } catch {
+                withAnimation {
+                    self.notifyError.toggle()
+                    self.searchResults = []
+                    self.searchTask = nil
+                }
+            }
         }
     }
 }

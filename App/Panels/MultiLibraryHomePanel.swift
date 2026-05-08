@@ -58,7 +58,7 @@ struct MultiLibraryHomePanel: View {
                 ListenNowSheetToggle.toolbarItem()
 
                 ToolbarItem(placement: .topBarTrailing) {
-                    CompactLibraryPicker(customizeLibrary: true, isMultiLibraryScope: true)
+                    CompactLibraryPicker(isMultiLibraryScope: true)
                 }
             }
         }
@@ -111,12 +111,17 @@ private struct MultiLibraryHomeSectionRow: View {
         case .serverRow(let id):
             // Server rows in this panel are pinned to a specific library —
             // the customization sheet enforces a library chip on them.
-            // Without a libraryID there's nothing to fetch, so render
-            // nothing until the user picks one.
+            // Without a libraryID there's nothing to fetch, so surface a
+            // placeholder instead of an invisible row: it can race the
+            // libraries-fetch in the customization sheet and end up nil.
             if let libraryID = section.libraryID {
                 MultiLibraryServerRow(libraryID: libraryID, rowID: id)
             } else {
-                EmptyView()
+                HomeRowContainer(title: section.kind.defaultLocalizedTitle) {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 24)
+                }
             }
         case .listenNowAudiobooks:
             ListenNowAudiobooksRow(libraryID: section.libraryID, title: section.kind.defaultLocalizedTitle, showEmptyPlaceholder: true)

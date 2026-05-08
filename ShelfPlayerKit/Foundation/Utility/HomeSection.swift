@@ -53,6 +53,30 @@ public enum HomeSectionKind: Codable, Hashable, Sendable {
     public var requiresExplicitLibrary: Bool {
         if case .serverRow = self { true } else { false }
     }
+
+    /// Library media types that can produce content for this kind, or nil if
+    /// the kind works for any library. Used by the multi-library customization
+    /// sheet to filter incompatible libraries out of the row's picker (e.g.
+    /// a podcast library cannot back the `continue-series` row).
+    public var supportedLibraryTypes: Set<LibraryMediaType>? {
+        switch self {
+        case .serverRow(let id):
+            switch id {
+            case "continue-series", "recent-series", "discover", "newest-authors":
+                [.audiobooks]
+            case "newest-episodes":
+                [.podcasts]
+            default:
+                nil
+            }
+        case .listenNowAudiobooks, .downloadedAudiobooks, .bookmarks:
+            [.audiobooks]
+        case .listenNowEpisodes, .downloadedEpisodes, .nextUpPodcasts:
+            [.podcasts]
+        case .upNext, .collection, .playlist:
+            nil
+        }
+    }
 }
 
 public struct HomeSection: Codable, Identifiable, Hashable, Sendable {

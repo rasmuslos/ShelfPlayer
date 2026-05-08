@@ -445,8 +445,72 @@ private struct DebugSettingsView: View {
 #endif
 
 #if DEBUG
-#Preview {
+#Preview("SettingsView") {
     SettingsView()
         .previewEnvironment()
+}
+
+#Preview("SettingsPageHeader") {
+    List {
+        SettingsPageHeader(title: "settings.appearance", systemImage: "paintbrush.fill", color: .purple)
+        
+        Text(verbatim: ":)")
+    }
+}
+
+#Preview("SettingsPageHeader Sheet") {
+        Text(verbatim: ":)")
+            .sheet(isPresented: .constant(true)) {
+                NavigationStack {
+                    List {
+                        SettingsPageHeader(title: "settings.appearance", systemImage: "paintbrush.fill", color: .purple)
+                        
+                        Text(verbatim: ":)")
+                            .navigationTitle(":-)")
+                    }
+                }
+            }
+}
+
+#Preview("AppearanceSettingsView") {
+    NavigationStack {
+        AppearanceSettingsView()
+    }
+    .previewEnvironment()
+}
+
+#Preview("PlaybackSettingsView") {
+    NavigationStack {
+        PlaybackSettingsView()
+    }
+    .previewEnvironment()
+}
+
+#Preview("SleepTimerSettingsView") {
+    NavigationStack {
+        SleepTimerSettingsView()
+    }
+    .previewEnvironment()
+}
+
+#Preview("DownloadSettingsView") {
+    NavigationStack {
+        DownloadSettingsView()
+    }
+    .previewEnvironment()
+}
+
+#Preview("AdvancedSettingsView") {
+    NavigationStack {
+        AdvancedSettingsView()
+    }
+    .previewEnvironment()
+}
+
+#Preview("DebugSettingsView") {
+    NavigationStack {
+        DebugSettingsView()
+    }
+    .previewEnvironment()
 }
 #endif

@@ -101,10 +101,6 @@ final class EmbassyManager {
 
                         switch itemID.type {
                         case .episode:
-                            // Episode:
-                            try await StartIntent(item: itemID.resolved).donate()
-
-                            // Podcast:
                             guard let podcast = try? await ItemIdentifier.convertEpisodeIdentifierToPodcastIdentifier(itemID).resolved as? Podcast else {
                                 break
                             }

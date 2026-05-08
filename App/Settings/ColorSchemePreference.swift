@@ -41,3 +41,13 @@ extension ConfiguredColorScheme {
         }
     }
 }
+
+#if DEBUG
+#Preview {
+    List {
+        ColorSchemePreference {
+            Label($0, systemImage: $1)
+        }
+    }
+}
+#endif

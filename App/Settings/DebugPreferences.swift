@@ -292,9 +292,23 @@ private struct FlushButtons: View {
 }
 
 #if DEBUG
-#Preview {
+#Preview("DebugPreferences") {
     NavigationStack {
         DebugPreferences()
+    }
+    .previewEnvironment()
+}
+
+#Preview("CacheSection") {
+    List {
+        CacheSection()
+    }
+    .previewEnvironment()
+}
+
+#Preview("FlushButtons") {
+    List {
+        FlushButtons {}
     }
     .previewEnvironment()
 }

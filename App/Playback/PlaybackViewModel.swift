@@ -19,14 +19,28 @@ final class PlaybackViewModel {
 
     // Pill position
 
-    var pillX: CGFloat = .zero
-    var pillY: CGFloat = .zero
+    var pillX: CGFloat = .zero {
+        didSet { schedulePillSettle() }
+    }
+    var pillY: CGFloat = .zero {
+        didSet { schedulePillSettle() }
+    }
 
-    var pillWidth: CGFloat = .zero
-    var pillHeight: CGFloat = .zero
+    var pillWidth: CGFloat = .zero {
+        didSet { schedulePillSettle() }
+    }
+    var pillHeight: CGFloat = .zero {
+        didSet { schedulePillSettle() }
+    }
 
     var isPillBackButtonVisible = true
     var isUsingLegacyPillDesign = false
+
+    // First-layout settling: the system tabViewBottomAccessory entry animation
+    // can move the pill for several frames after it mounts. Auto-expand waits
+    // on this flag so the floating image doesn't start from a mid-slide position.
+    private(set) var pillFirstLaidOut = false
+    private var pillSettleTask: Task<Void, Never>?
 
     // Image position
 
@@ -128,7 +142,10 @@ final class PlaybackViewModel {
 
                     self.loadIDs(itemID: itemID)
 
-                    try? await Task.sleep(for: .seconds(0.2))
+                    let settleDeadline = Date.now.addingTimeInterval(1.5)
+                    while !self.pillFirstLaidOut, Date.now < settleDeadline {
+                        try? await Task.sleep(for: .milliseconds(50))
+                    }
 
                     if let stoppedPlayingAt = self.stoppedPlayingAt {
                         let distance = stoppedPlayingAt.distance(to: .now)
@@ -161,6 +178,10 @@ final class PlaybackViewModel {
 
                     self?.colorExtractionTask?.cancel()
                     self?.nowPlayingMeshColors = nil
+
+                    self?.pillSettleTask?.cancel()
+                    self?.pillSettleTask = nil
+                    self?.pillFirstLaidOut = false
 
                     self?.stoppedPlayingAt = .now
                 }
@@ -226,6 +247,17 @@ final class PlaybackViewModel {
 
         expansionAnimationCount = 0
         showCompactPlaybackBarOnExpandedViewCount = 0
+    }
+
+    private func schedulePillSettle() {
+        guard !pillFirstLaidOut else { return }
+
+        pillSettleTask?.cancel()
+        pillSettleTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .milliseconds(120))
+            guard !Task.isCancelled, let self, self.pillWidth > 0 else { return }
+            self.pillFirstLaidOut = true
+        }
     }
 
     func toggleExpanded() {

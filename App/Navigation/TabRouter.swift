@@ -25,6 +25,9 @@ struct TabRouter: View {
     private var lastPlayedItemID: ItemIdentifier? {
         AppSettings.shared.lastPlayedItemID
     }
+    private var hideSearchTab: Bool {
+        AppSettings.shared.hideSearchTab
+    }
 
     var isCompact: Bool {
         horizontalSizeClass == .compact
@@ -231,7 +234,7 @@ struct TabRouter: View {
                         SearchPanel()
                     }
                 }
-                .hidden(isCompact ? !isCompactAndReady : false)
+                .hidden(hideSearchTab || (isCompact ? !isCompactAndReady : false))
             }
         }
         .tabViewStyle(.sidebarAdaptable)

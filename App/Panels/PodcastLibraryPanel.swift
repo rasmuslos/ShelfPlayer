@@ -83,9 +83,37 @@ struct PodcastLibraryPanel: View {
         }
     }
 
+    @ViewBuilder
+    private var searchPresentation: some View {
+        if let results = viewModel.searchResults {
+            if results.isEmpty {
+                ContentUnavailableView.search(text: viewModel.search)
+            } else {
+                List {
+                    ForEach(results) { item in
+                        Button {
+                            NavigationEventSource.shared.navigate.send(item.id)
+                        } label: {
+                            ItemCompactRow(item: item)
+                        }
+                        .buttonStyle(.plain)
+                        .modifier(ItemStatusModifier(item: item, hoverEffect: nil))
+                    }
+                }
+                .listStyle(.plain)
+            }
+        } else if viewModel.isSearching {
+            LoadingView()
+        } else {
+            ContentUnavailableView.search(text: viewModel.search)
+        }
+    }
+
     var body: some View {
         Group {
-            if viewModel.showPlaceholders {
+            if viewModel.isSearchActive {
+                searchPresentation
+            } else if viewModel.showPlaceholders {
                 ScrollView {
                     ZStack {
                         Spacer()
@@ -120,6 +148,7 @@ struct PodcastLibraryPanel: View {
         .listStyle(.plain)
         .navigationTitle("panel.library")
         .largeTitleDisplayMode()
+        .searchable(text: $viewModel.search, placement: .navigationBarDrawer)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu("item.options", systemImage: viewModel.filter != .all ? "line.3.horizontal.decrease" : "line.3.horizontal") {
@@ -147,6 +176,7 @@ struct PodcastLibraryPanel: View {
             }
         }
         .modifier(PlaybackSafeAreaPaddingModifier())
+        .hapticFeedback(.error, trigger: viewModel.notifyError)
         .onChange(of: viewModel.sortOrder) {
             viewModel.lazyLoader.sortOrder = viewModel.sortOrder
         }
@@ -197,12 +227,65 @@ private final class LibraryViewModel {
         }
     }
 
+    var search = "" {
+        didSet { performSearch() }
+    }
+    var searchResults: [Item]?
+    private(set) var notifyError = false
+    private var searchTask: Task<Void, Never>?
+
     init() {
         let settings = AppSettings.shared
         filter = settings.podcastsFilter
         displayType = settings.podcastsDisplayType
         sortOrder = settings.podcastsSortOrder
         ascending = settings.podcastsAscending
+    }
+
+    var isSearchActive: Bool {
+        !search.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    var isSearching: Bool {
+        searchTask != nil
+    }
+
+    private func performSearch() {
+        searchTask?.cancel()
+
+        let query = search.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !query.isEmpty, let library else {
+            searchResults = nil
+            searchTask = nil
+            return
+        }
+
+        searchTask = Task {
+            do {
+                try await Task.sleep(for: .seconds(0.5))
+                try Task.checkCancellation()
+
+                let grouped = try await ABSClient[library.id.connectionID].items(in: library.id, search: query)
+                let presort: [Item] = grouped.4 + grouped.5
+                let sorted = presort.sorted { $0.name.levenshteinDistanceScore(to: query) > $1.name.levenshteinDistanceScore(to: query) }
+
+                try Task.checkCancellation()
+
+                withAnimation {
+                    self.searchResults = sorted
+                    self.searchTask = nil
+                }
+            } catch is CancellationError {
+                // overridden by a newer search; leave previous results in place
+            } catch {
+                withAnimation {
+                    self.notifyError.toggle()
+                    self.searchResults = []
+                    self.searchTask = nil
+                }
+            }
+        }
     }
 
     var filteredPodcasts: [Podcast] {

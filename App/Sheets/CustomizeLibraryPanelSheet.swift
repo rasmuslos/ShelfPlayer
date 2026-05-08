@@ -17,10 +17,15 @@ struct CustomizeLibraryPanelSheet: View {
 
     var body: some View {
         NavigationStack {
-            TabValueLibraryPreferences(library: library, scope: scope) {
-                satellite.dismissSheet()
-            }
-            .toolbarTitleDisplayMode(.inline)
+            TabValueLibraryPreferences(library: library, scope: scope)
+                .toolbarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("action.dismiss") {
+                            satellite.dismissSheet()
+                        }
+                    }
+                }
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(horizontalSizeClass == .compact ? .visible : .hidden)
