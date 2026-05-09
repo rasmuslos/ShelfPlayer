@@ -115,7 +115,7 @@ private struct MultiLibraryHomeSectionRow: View {
             // placeholder instead of an invisible row: it can race the
             // libraries-fetch in the customization sheet and end up nil.
             if let libraryID = section.libraryID {
-                MultiLibraryServerRow(libraryID: libraryID, rowID: id)
+                MultiLibraryServerRow(libraryID: libraryID, rowID: id, fallbackTitle: section.kind.defaultLocalizedTitle)
             } else {
                 HomeRowContainer(title: section.kind.defaultLocalizedTitle) {
                     ProgressView()

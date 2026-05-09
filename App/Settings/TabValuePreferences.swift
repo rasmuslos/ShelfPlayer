@@ -245,6 +245,10 @@ extension PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope {
 
 struct CustomTabValuesPreferences: View {
     @State private var pinnedTabValues: [TabValue] = AppSettings.shared.pinnedTabValues
+    // Programmatic navigation: NavigationLink is non-tappable inside an
+    // edit-mode List, so the multi-library customization row drives push via
+    // an item-bound destination instead.
+    @State private var customizingHomeScope: HomeScope?
 
     private var isMultiLibraryPinned: Bool {
         pinnedTabValues.contains(.multiLibrary)
@@ -264,9 +268,20 @@ struct CustomTabValuesPreferences: View {
 
             if isMultiLibraryPinned {
                 Section {
-                    NavigationLink(value: HomeScope.multiLibrary) {
-                        Label("home.customization.title", systemImage: "slider.horizontal.3")
+                    Button {
+                        customizingHomeScope = .multiLibrary
+                    } label: {
+                        HStack {
+                            Label("home.customization.title", systemImage: "slider.horizontal.3")
+                                .foregroundStyle(.primary)
+                            Spacer(minLength: 0)
+                            Image(systemName: "chevron.right")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(.tertiary)
+                        }
+                        .contentShape(.rect)
                     }
+                    .buttonStyle(.plain)
                 } footer: {
                     Text("home.customization.multiLibrarySectionFooter")
                 }
@@ -320,7 +335,7 @@ struct CustomTabValuesPreferences: View {
                 }
             }
         }
-        .navigationDestination(for: HomeScope.self) { scope in
+        .navigationDestination(item: $customizingHomeScope) { scope in
             HomeCustomizationView(scope: scope, libraryType: nil)
         }
     }

@@ -620,12 +620,21 @@ struct MultiLibraryServerRow: View {
     /// sheet's library chip).
     let libraryID: LibraryIdentifier?
     let rowID: String
+    /// Title to display while the row is still loading (or if the server
+    /// returns no matching row). Falls back to the section's default localized
+    /// title so the user always sees a labeled placeholder.
+    let fallbackTitle: String
 
     @State private var audiobookRow: HomeRow<Audiobook>?
     @State private var personRow: HomeRow<Person>?
     @State private var seriesRow: HomeRow<Series>?
     @State private var podcastRow: HomeRow<Podcast>?
     @State private var episodeRow: HomeRow<Episode>?
+    /// Until the first load settles we keep rendering a placeholder rather
+    /// than collapsing to `EmptyView`. An eagerly-mounted view that resolves
+    /// to `EmptyView` does not reliably run `.task` inside a parent VStack —
+    /// always rendering content guarantees the fetch fires.
+    @State private var hasLoaded = false
 
     var body: some View {
         Group {
@@ -651,6 +660,12 @@ struct MultiLibraryServerRow: View {
                         EpisodeGrid(episodes: row.entities)
                     }
                 }
+            } else if !hasLoaded {
+                HomeRowContainer(title: fallbackTitle) {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 24)
+                }
             } else {
                 EmptyView()
             }
@@ -667,7 +682,10 @@ struct MultiLibraryServerRow: View {
 
     private func load() async {
         guard let libraryID else {
-            await MainActor.run { clearRows() }
+            await MainActor.run {
+                clearRows()
+                hasLoaded = true
+            }
             return
         }
 
@@ -683,11 +701,15 @@ struct MultiLibraryServerRow: View {
                         audiobookRow = books.first { $0.id == rowID }
                         personRow = home.1.first { $0.id == rowID }
                         seriesRow = home.2.first { $0.id == rowID }
+                        hasLoaded = true
                     }
                 }
             } catch {
                 homeSectionRenderersLogger.warning("MultiLibraryServerRow audiobook fetch failed for \(libraryID.libraryID, privacy: .public)/\(rowID, privacy: .public): \(error, privacy: .public)")
-                await MainActor.run { clearRows() }
+                await MainActor.run {
+                    clearRows()
+                    hasLoaded = true
+                }
             }
         case .podcasts:
             do {
@@ -699,11 +721,15 @@ struct MultiLibraryServerRow: View {
                         clearRows()
                         podcastRow = home.0.first { $0.id == rowID }
                         episodeRow = episodes.first { $0.id == rowID }
+                        hasLoaded = true
                     }
                 }
             } catch {
                 homeSectionRenderersLogger.warning("MultiLibraryServerRow podcast fetch failed for \(libraryID.libraryID, privacy: .public)/\(rowID, privacy: .public): \(error, privacy: .public)")
-                await MainActor.run { clearRows() }
+                await MainActor.run {
+                    clearRows()
+                    hasLoaded = true
+                }
             }
         }
     }
