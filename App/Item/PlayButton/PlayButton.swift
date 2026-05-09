@@ -115,36 +115,35 @@ struct PlayButton: View {
     @ViewBuilder
     var labelContent: some View {
         ZStack {
-            HStack(spacing: 4) {
-                Group {
-                    if isLoading {
-                        ProgressView()
-                            .tint(foregroundColor)
-                            .frame(height: 0)
-                    } else {
-                        Label(label, systemImage: icon)
-                            .labelStyle(.iconOnly)
-                            .contentTransition(.symbolEffect(.replace.upUp.wholeSymbol))
-                    }
+            HStack(spacing: 8) {
+                if isLoading {
+                    ProgressView()
+                        .tint(foregroundColor)
+                        .frame(height: 0)
+                } else {
+                    Label(label, systemImage: icon)
+                        .labelStyle(.iconOnly)
+                        .contentTransition(.symbolEffect(.replace.upUp.wholeSymbol))
                 }
-                .padding(.trailing, 8)
 
-                Group {
-                    if !playButtonStyle.hideLabel {
-                        Text(label)
-                            .contentTransition(.opacity)
-                    }
+                if !playButtonStyle.hideLabel {
+                    Text(label)
+                        .contentTransition(.opacity)
+                        .modify(if: item.id.isPlaceholder) {
+                            $0.redacted(reason: .placeholder)
+                        }
+                }
 
-                    if let remaining {
+                if let remaining {
+                    HStack(spacing: 4) {
                         if !playButtonStyle.hideLabel {
                             Text(verbatim: "•")
                         }
                         Text(remaining, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))
                     }
-                }
-                .modify(if: item.id.isPlaceholder) {
-                    $0
-                        .redacted(reason: .placeholder)
+                    .modify(if: item.id.isPlaceholder) {
+                        $0.redacted(reason: .placeholder)
+                    }
                 }
             }
             .animation(.smooth, value: label)

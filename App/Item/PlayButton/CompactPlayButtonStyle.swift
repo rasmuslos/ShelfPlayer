@@ -35,8 +35,8 @@ struct CompactPlayButtonStyle: PlayButtonStyle {
     func makeLabel(configuration: Configuration) -> some View {
         configuration.content
             .font(.subheadline.bold())
-            .padding(.vertical, 12)
-            .padding(.horizontal, 18)
+            .padding(.horizontal, 12)
+            .frame(minWidth: 44, minHeight: 44)
     }
 
     var tint: Bool { true }

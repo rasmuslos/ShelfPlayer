@@ -66,8 +66,13 @@ struct HomeCustomizationView: View {
                 ProgressView()
             } else {
                 Section {
-                    ForEach($sections) { $section in
-                        HomeCustomizationRow(section: $section, showLibraryPicker: isMultiLibraryScope, connectionLibraries: connectionLibraries)
+                    ForEach($sections) { sectionBinding in
+                        HomeCustomizationRow(
+                            section: sectionBinding,
+                            showLibraryPicker: isMultiLibraryScope,
+                            connectionLibraries: connectionLibraries,
+                            disabledLibraryIDs: disabledLibraryIDs(for: sectionBinding.wrappedValue)
+                        )
                     }
                     .onMove { indices, destination in
                         moveSections(from: indices, to: destination)
@@ -207,6 +212,20 @@ struct HomeCustomizationView: View {
                 index: 0)
     }
 
+    /// Libraries already pinned to another section of the same kind. Surfaced
+     /// to the per-row library picker so it can disable (but still display)
+    /// them — picking one would silently create a duplicate row that the user
+    /// would have to hunt down to remove.
+    private func disabledLibraryIDs(for section: HomeSection) -> Set<LibraryIdentifier> {
+        var used = Set<LibraryIdentifier>()
+        for other in sections where other.id != section.id && other.kind.stableID == section.kind.stableID {
+            if let libraryID = other.libraryID {
+                used.insert(libraryID)
+            }
+        }
+        return used
+    }
+
     private func add(_ kind: HomeSectionKind) {
         sections.append(.init(kind: kind, libraryID: defaultLibraryID(for: kind)))
         persist()
@@ -313,6 +332,7 @@ private struct HomeCustomizationRow: View {
     @Binding var section: HomeSection
     let showLibraryPicker: Bool
     let connectionLibraries: [ItemIdentifier.ConnectionID: [Library]]
+    let disabledLibraryIDs: Set<LibraryIdentifier>
 
     private var pinnedCollectionID: ItemIdentifier? {
         let raw: String
@@ -346,6 +366,7 @@ private struct HomeCustomizationRow: View {
                     libraryID: $section.libraryID,
                     allowAnyLibrary: !section.kind.requiresExplicitLibrary,
                     supportedLibraryTypes: section.kind.supportedLibraryTypes,
+                    disabledLibraryIDs: disabledLibraryIDs,
                     connectionLibraries: connectionLibraries
                 )
             }
@@ -389,6 +410,10 @@ private struct HomeSectionLibraryMenu: View {
     /// other type are hidden from the picker — e.g. podcast libraries are not
     /// offered for the `continue-series` row.
     var supportedLibraryTypes: Set<LibraryMediaType>? = nil
+    /// Library IDs that another section of the same kind already pins.
+    /// Rendered but not selectable, so the user sees the conflict instead of
+    /// silently producing duplicate rows.
+    var disabledLibraryIDs: Set<LibraryIdentifier> = []
     let connectionLibraries: [ItemIdentifier.ConnectionID: [Library]]
 
     @Environment(ConnectionStore.self) private var connectionStore
@@ -439,6 +464,7 @@ private struct HomeSectionLibraryMenu: View {
                                 } label: {
                                     Label(library.name, systemImage: libraryID == library.id ? "checkmark" : library.icon)
                                 }
+                                .disabled(disabledLibraryIDs.contains(library.id))
                             }
                         }
                     }
@@ -477,7 +503,8 @@ private struct HomeSectionLibraryMenu: View {
         HomeCustomizationRow(
             section: $section,
             showLibraryPicker: true,
-            connectionLibraries: [Library.fixture.id.connectionID: [.fixture]]
+            connectionLibraries: [Library.fixture.id.connectionID: [.fixture]],
+            disabledLibraryIDs: []
         )
     }
     .previewEnvironment()

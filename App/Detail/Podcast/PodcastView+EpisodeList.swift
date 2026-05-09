@@ -11,8 +11,6 @@ import ShelfPlayback
 struct PodcastEpisodesView: View {
     @Environment(PodcastViewModel.self) private var viewModel
 
-    @ScaledMetric private var seasonPickerHeight: CGFloat = 32
-
     private var allLabel: String {
         String(localized: "item.related.podcast.episodes.all")
     }
@@ -41,14 +39,9 @@ struct PodcastEpisodesView: View {
         }
         .safeAreaInset(edge: .top) {
             if !viewModel.seasons.isEmpty {
-                ZStack(alignment: .top) {
-                    Rectangle()
-                        .fill(.bar)
-                        .ignoresSafeArea(edges: .top)
-                        .frame(height: seasonPickerHeight + 8)
-
-                    SlidingSeasonPicker(selection: pickerBinding, values: viewModel.seasons + [allLabel], makeLabel: viewModel.seasonLabel)
-                }
+                SlidingSeasonPicker(selection: pickerBinding, values: viewModel.seasons + [allLabel], makeLabel: viewModel.seasonLabel)
+                    .padding(.top, 4)
+                    .padding(.bottom, 12)
             }
         }
         .searchable(text: $viewModel.search, placement: .toolbar)

@@ -13,6 +13,10 @@ struct TabValuePreferences: View {
 
     @Bindable private var settings = AppSettings.shared
 
+    private var isMultiLibraryPinned: Bool {
+        settings.pinnedTabValues.contains(.multiLibrary)
+    }
+
     var body: some View {
         List {
             SettingsPageHeader(title: "preferences.tabs", systemImage: "rectangle.2.swap", color: .purple)
@@ -21,6 +25,22 @@ struct TabValuePreferences: View {
                 Toggle("settings.hideSearchTab", isOn: $settings.hideSearchTab)
             } footer: {
                 Text("settings.hideSearchTab.footer")
+            }
+
+            // Mirror the customization entries surfaced in the
+            // CompactLibraryPicker settings menu so every destination is
+            // reachable from the settings sheet too.
+            Section {
+                NavigationLink(destination: CustomTabValuesPreferences()) {
+                    Label("preferences.pinnedTabs", systemImage: "pin.fill")
+                }
+                // Übersicht customization is only meaningful when the
+                // multi-library tab is actually visible in the tab bar.
+                if isMultiLibraryPinned {
+                    NavigationLink(destination: HomeCustomizationView(scope: .multiLibrary, libraryType: nil)) {
+                        Label("home.customization.multiLibraryTitle", systemImage: "slider.horizontal.3")
+                    }
+                }
             }
 
             LibraryEnumerator { name, content in
@@ -32,12 +52,13 @@ struct TabValuePreferences: View {
             } label: { library in
                 let scopes = PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope.available(for: library.id.type)
 
-                if scopes.count == 1, let scope = scopes.first {
-                    NavigationLink(library.name, destination: TabValueLibraryPreferences(library: library, scope: scope))
-                } else {
-                    DisclosureGroup(library.name) {
-                        ForEach(scopes) { scope in
-                            NavigationLink(scope.label, destination: TabValueLibraryPreferences(library: library, scope: scope))
+                DisclosureGroup(library.name) {
+                    NavigationLink(destination: HomeCustomizationView(scope: .library(library.id), libraryType: library.id.type)) {
+                        Label("home.customization.title", systemImage: "slider.horizontal.3")
+                    }
+                    ForEach(scopes) { scope in
+                        NavigationLink(destination: TabValueLibraryPreferences(library: library, scope: scope)) {
+                            Label(scope.label, systemImage: "rectangle.2.swap")
                         }
                     }
                 }
@@ -46,6 +67,7 @@ struct TabValuePreferences: View {
         .navigationTitle("preferences.tabs")
         .navigationBarTitleDisplayMode(.inline)
         .animation(.smooth, value: connectionStore.connections.map(\.id))
+        .animation(.smooth, value: isMultiLibraryPinned)
     }
 }
 

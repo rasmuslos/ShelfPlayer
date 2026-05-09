@@ -82,6 +82,11 @@ private struct PodcastLink: View {
 
 private struct ActionRow: View {
     @Environment(EpisodeViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
+
+    private var isPlaying: Bool {
+        satellite.nowPlayingItem == viewModel.episode
+    }
 
     var body: some View {
         HStack(spacing: 12) {
@@ -89,8 +94,13 @@ private struct ActionRow: View {
                 .playButtonSize(.compact)
 
             HeaderActionButton {
-                QueueButton(itemID: viewModel.episode.id, short: true)
-                    .labelStyle(.iconOnly)
+                if isPlaying {
+                    ProgressButton(itemID: viewModel.episode.id)
+                        .labelStyle(.iconOnly)
+                } else {
+                    QueueButton(itemID: viewModel.episode.id, short: true)
+                        .labelStyle(.iconOnly)
+                }
             }
 
             HeaderActionButton {

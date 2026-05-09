@@ -233,14 +233,16 @@ struct MarqueeText: View {
             withAnimation(.easeOut(duration: 0.3)) {
                 progress = 0
             }
-        case .scrollingForward(let duration):
-            withAnimation(.linear(duration: duration)) {
+        case .scrollingForward:
+            guard let controller, overflow > 0 else { return }
+            withAnimation(.linear(duration: overflow / controller.speed)) {
                 progress = 1
             }
         case .pausedAtEnd:
             break
-        case .scrollingBack(let duration):
-            withAnimation(.linear(duration: duration)) {
+        case .scrollingBack:
+            guard let controller, overflow > 0 else { return }
+            withAnimation(.linear(duration: overflow / controller.speed)) {
                 progress = 0
             }
         }

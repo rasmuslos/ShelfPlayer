@@ -69,19 +69,30 @@ struct CompactLibraryPicker: View {
             }
 
             Menu {
-                if showCustomizeHome, !tabRouterViewModel.pinnedTabsActive, let homeCustomizationScope {
-                    Button("home.customization.title", systemImage: "slider.horizontal.3") {
+                // Customize home — shown on every home panel: per-library home
+                // panels (audiobook / podcast) AND the multi-library Übersicht.
+                // The previous `!pinnedTabsActive` gate hid this entry on the
+                // Übersicht because `.multiLibrary` reports as a pinned tab,
+                // even though customizing the Übersicht is the *primary*
+                // customization action there.
+                if showCustomizeHome, let homeCustomizationScope {
+                    Button(
+                        isMultiLibraryScope ? "home.customization.multiLibraryTitle" : "home.customization.title",
+                        systemImage: "slider.horizontal.3"
+                    ) {
                         satellite.present(.customizeHome(homeCustomizationScope, customizeHomeLibraryType))
+                    }
+                }
+
+                if !tabRouterViewModel.pinnedTabsActive, let library {
+                    Button("preferences.tabs", systemImage: "rectangle.2.swap") {
+                        satellite.present(.customizeLibrary(library, .tabBar))
                     }
                 }
 
                 if tabRouterViewModel.pinnedTabsActive {
                     Button("preferences.pinnedTabs", systemImage: "rectangle.2.swap") {
                         satellite.present(.customTabValuePreferences)
-                    }
-                } else if let library {
-                    Button("preferences.tabs", systemImage: "rectangle.2.swap") {
-                        satellite.present(.customizeLibrary(library, .tabBar))
                     }
                 }
 

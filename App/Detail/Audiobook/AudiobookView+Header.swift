@@ -195,6 +195,11 @@ private struct CompactPresentation: View {
 
 private struct RegularPresentation: View {
     @Environment(AudiobookViewModel.self) private var viewModel
+    @Environment(Satellite.self) private var satellite
+
+    private var isPlaying: Bool {
+        satellite.nowPlayingItem == viewModel.audiobook
+    }
 
     var body: some View {
         HStack(alignment: .top, spacing: 32) {
@@ -221,8 +226,13 @@ private struct RegularPresentation: View {
                             }
 
                             HeaderActionButton {
-                                QueueButton(itemID: viewModel.audiobook.id, short: true)
-                                    .labelStyle(.iconOnly)
+                                if isPlaying {
+                                    ProgressButton(itemID: viewModel.audiobook.id)
+                                        .labelStyle(.iconOnly)
+                                } else {
+                                    QueueButton(itemID: viewModel.audiobook.id, short: true)
+                                        .labelStyle(.iconOnly)
+                                }
                             }
                         }
                     }
