@@ -36,6 +36,10 @@ private struct Title: View {
     let largeFont: Bool
     let alignment: HorizontalAlignment
 
+    private var libraryID: LibraryIdentifier {
+        LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(viewModel.audiobook.id)
+    }
+
     @ViewBuilder
     private var authorLabel: some View {
         if !viewModel.audiobook.authors.isEmpty {
@@ -78,14 +82,14 @@ private struct Title: View {
             Group {
                 if viewModel.audiobook.authors.count > 1 {
                     Menu {
-                        ItemMenu.MenuInner(authors: viewModel.audiobook.authors)
+                        ItemMenu.MenuInner(authors: viewModel.audiobook.authors, libraryID: libraryID)
                     } label: {
                         authorLabel
                     }
                     .menuStyle(.button)
                     .buttonStyle(.plain)
                 } else if let authorName = viewModel.audiobook.authors.first {
-                    NavigationLink(value: NavigationDestination.itemName(authorName, .author)) {
+                    NavigationLink(value: NavigationDestination.itemName(authorName, .author, libraryID)) {
                         authorLabel
                     }
                     .buttonStyle(.plain)
@@ -110,14 +114,14 @@ private struct Title: View {
                 Group {
                     if viewModel.audiobook.narrators.count > 1 {
                         Menu {
-                            ItemMenu.MenuInner(narrators: viewModel.audiobook.narrators)
+                            ItemMenu.MenuInner(narrators: viewModel.audiobook.narrators, libraryID: libraryID)
                         } label: {
                             narratorLabel
                         }
                         .menuStyle(.button)
                         .buttonStyle(.plain)
                     } else if let first = viewModel.audiobook.narrators.first {
-                        NavigationLink(value: NavigationDestination.itemName(first, .narrator)) {
+                        NavigationLink(value: NavigationDestination.itemName(first, .narrator, libraryID)) {
                             narratorLabel
                         }
                         .buttonStyle(.plain)
@@ -145,18 +149,22 @@ private struct Title: View {
 private struct SeriesName: View {
     @Environment(AudiobookViewModel.self) private var viewModel
 
+    private var libraryID: LibraryIdentifier {
+        LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(viewModel.audiobook.id)
+    }
+
     var body: some View {
         if !viewModel.audiobook.series.isEmpty, let seriesName = viewModel.audiobook.seriesName {
             Group {
                 if viewModel.audiobook.series.count == 1, let series = viewModel.audiobook.series.first {
-                    NavigationLink(value: NavigationDestination.itemName(series.name, .series)) {
+                    NavigationLink(value: NavigationDestination.itemName(series.name, .series, libraryID)) {
                         seriesNameComponent(series.formattedName)
                     }
                     .buttonStyle(.plain)
                 } else {
                     Menu {
                         ForEach(viewModel.audiobook.series, id: \.name) { series in
-                            NavigationLink(value: NavigationDestination.itemName(series.name, .series)) {
+                            NavigationLink(value: NavigationDestination.itemName(series.name, .series, libraryID)) {
                                 seriesNameComponent(series.name)
                             }
                         }

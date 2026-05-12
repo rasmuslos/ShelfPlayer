@@ -14,7 +14,7 @@ struct NowPlayingMeshBackground: View {
     private static let speedMultiplier: Float = 15
 
     @State private var seeds: [DriftSeed] = (0..<Self.dim * Self.dim).map { _ in .random() }
-    @State private var startDate = Date()
+    @State private var startDate = Date(timeIntervalSinceNow: -.random(in: 0...600))
 
     var body: some View {
         TimelineView(.animation) { timeline in

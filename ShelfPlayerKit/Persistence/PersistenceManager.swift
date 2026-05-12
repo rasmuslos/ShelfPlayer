@@ -31,6 +31,8 @@ public final class PersistenceManager: Sendable {
     public let customization: CustomizationSubsystem
     public let homeCustomization: HomeCustomizationSubsystem
 
+    public let listeningGoal: ListeningGoalSubsystem
+
     public let webSocket: WebSocketSubsystem
 
     private init() {
@@ -61,6 +63,8 @@ public final class PersistenceManager: Sendable {
         listenNow = .init()
         customization = .init(modelContainer: modelContainer)
         homeCustomization = .init(modelContainer: modelContainer)
+
+        listeningGoal = .init(modelContainer: modelContainer)
 
         webSocket = .init()
 
@@ -106,6 +110,8 @@ public final class PersistenceManager: Sendable {
 
         await download.remove(connectionID: connectionID)
         await convenienceDownload.purge(connectionID: connectionID)
+
+        await listeningGoal.remove(connectionID: connectionID)
 
         await authorization.remove(connectionID: connectionID)
 

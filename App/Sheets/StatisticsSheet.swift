@@ -12,6 +12,7 @@ import ShelfPlayback
 struct StatisticsView: View {
     @Environment(ConnectionStore.self) private var connectionStore
 
+    @State private var listenedTodayTracker = ListenedTodayTracker.shared
     @State private var viewModel: StatisticsViewModel
 
     init(connectionID: ItemIdentifier.ConnectionID) {
@@ -42,6 +43,15 @@ struct StatisticsView: View {
                         Text("statistics.yearActivity")
                     } footer: {
                         Text("statistics.yearActivity.count \(viewModel.activeDayCount)")
+                    }
+
+                    Section {
+                        ReadingGoalCalendar(days: viewModel.combinedDays(todaySeconds: TimeInterval(listenedTodayTracker.totalMinutesListenedToday) * 60), targetSeconds: TimeInterval(listenedTodayTracker.listenTimeTarget) * 60)
+                            .listRowInsets(.init(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    } header: {
+                        Text("statistics.readingGoalCalendar")
+                    } footer: {
+                        Text("statistics.readingGoalCalendar.footer \(listenedTodayTracker.listenTimeTarget)")
                     }
 
                     Section("statistics.dailyActivity") {
@@ -406,6 +416,221 @@ private struct TopItemsChart: View {
     }
 }
 
+// MARK: - Reading Goal Calendar
+
+private struct ReadingGoalCalendar: View {
+    let days: [Date: Double]
+    let targetSeconds: TimeInterval
+
+    @State private var monthAnchor: Date = Calendar.current.startOfDay(for: .now)
+    /// Sign of the most recent month transition. +1 = forward, -1 = backward.
+    /// Picks the edge `.transition(.move(edge:))` slides toward.
+    @State private var stepDirection: Int = 1
+
+    private var calendar: Calendar { .current }
+
+    private var monthRange: Range<Int>? {
+        calendar.range(of: .day, in: .month, for: monthAnchor)
+    }
+
+    private var monthStart: Date? {
+        let comps = calendar.dateComponents([.year, .month], from: monthAnchor)
+        return calendar.date(from: comps)
+    }
+
+    private var monthLabel: String {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.setLocalizedDateFormatFromTemplate("yMMMM")
+        return formatter.string(from: monthAnchor)
+    }
+
+    private var canStepForward: Bool {
+        guard let monthStart,
+              let nextMonth = calendar.date(byAdding: .month, value: 1, to: monthStart) else { return false }
+        return nextMonth <= calendar.startOfDay(for: .now)
+    }
+
+    private var weekdaySymbols: [String] {
+        let symbols = calendar.veryShortStandaloneWeekdaySymbols
+        let firstWeekday = calendar.firstWeekday
+        return (0..<7).map { symbols[(firstWeekday - 1 + $0) % 7] }
+    }
+
+    private var leadingBlanks: Int {
+        guard let monthStart else { return 0 }
+        let weekday = calendar.component(.weekday, from: monthStart)
+        return ((weekday - calendar.firstWeekday) + 7) % 7
+    }
+
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Button {
+                    step(by: -1)
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.headline)
+                }
+                .buttonStyle(.borderless)
+
+                Text(monthLabel)
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .animation(nil, value: monthLabel)
+
+                Button {
+                    step(by: 1)
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.headline)
+                        .foregroundStyle(canStepForward ? .primary : .tertiary)
+                }
+                .buttonStyle(.borderless)
+                .disabled(!canStepForward)
+            }
+
+            HStack(spacing: 0) {
+                ForEach(Array(weekdaySymbols.enumerated()), id: \.offset) { _, label in
+                    Text(label)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+
+            ZStack {
+                MonthGrid(
+                    monthAnchor: monthAnchor,
+                    days: days,
+                    targetSeconds: targetSeconds,
+                    calendar: calendar
+                )
+                .id(monthAnchor)
+                .transition(.asymmetric(
+                    insertion: .move(edge: stepDirection >= 0 ? .trailing : .leading),
+                    removal: .move(edge: stepDirection >= 0 ? .leading : .trailing)
+                ))
+            }
+            .clipped()
+        }
+        .padding(.vertical, 8)
+    }
+
+    private struct MonthGrid: View {
+        let monthAnchor: Date
+        let days: [Date: Double]
+        let targetSeconds: TimeInterval
+        let calendar: Calendar
+
+        private var monthRange: Range<Int>? {
+            calendar.range(of: .day, in: .month, for: monthAnchor)
+        }
+
+        private var monthStart: Date? {
+            let comps = calendar.dateComponents([.year, .month], from: monthAnchor)
+            return calendar.date(from: comps)
+        }
+
+        private var leadingBlanks: Int {
+            guard let monthStart else { return 0 }
+            let weekday = calendar.component(.weekday, from: monthStart)
+            return ((weekday - calendar.firstWeekday) + 7) % 7
+        }
+
+        var body: some View {
+            if let monthStart, let monthRange {
+                let totalCells = leadingBlanks + monthRange.count
+                let rows = Int(ceil(Double(totalCells) / 7.0))
+
+                VStack(spacing: 6) {
+                    ForEach(0..<rows, id: \.self) { row in
+                        HStack(spacing: 6) {
+                            ForEach(0..<7, id: \.self) { col in
+                                let cellIndex = row * 7 + col
+                                let dayOffset = cellIndex - leadingBlanks
+                                if dayOffset >= 0 && dayOffset < monthRange.count,
+                                   let date = calendar.date(byAdding: .day, value: dayOffset, to: monthStart) {
+                                    DayCell(
+                                        date: date,
+                                        seconds: days[calendar.startOfDay(for: date)] ?? 0,
+                                        targetSeconds: targetSeconds
+                                    )
+                                } else {
+                                    Color.clear.aspectRatio(1, contentMode: .fit)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func step(by months: Int) {
+        guard let next = calendar.date(byAdding: .month, value: months, to: monthAnchor) else { return }
+        if months > 0 {
+            let today = calendar.startOfDay(for: .now)
+            let comps = calendar.dateComponents([.year, .month], from: next)
+            if let nextStart = calendar.date(from: comps), nextStart > today { return }
+        }
+        stepDirection = months
+        withAnimation(.spring(response: 0.55, dampingFraction: 0.85)) {
+            monthAnchor = next
+        }
+    }
+
+    private struct DayCell: View {
+        let date: Date
+        let seconds: TimeInterval
+        let targetSeconds: TimeInterval
+
+        private var calendar: Calendar { .current }
+
+        private var hit: Bool { targetSeconds > 0 && seconds >= targetSeconds }
+        private var partial: Bool { !hit && seconds > 0 }
+        private var isToday: Bool { calendar.isDateInToday(date) }
+        private var isFuture: Bool { date > calendar.startOfDay(for: .now) }
+
+        private var fill: Color {
+            if hit { .accentColor }
+            else if partial { .accentColor.opacity(0.25) }
+            else { .clear }
+        }
+
+        private var stroke: Color {
+            if isToday { .accentColor }
+            else if !hit && !partial && !isFuture { .secondary.opacity(0.18) }
+            else { .clear }
+        }
+
+        private var foreground: Color {
+            if hit { .white }
+            else if isFuture { .secondary.opacity(0.5) }
+            else { .primary }
+        }
+
+        var body: some View {
+            ZStack {
+                Circle().fill(fill)
+                Circle().strokeBorder(stroke, lineWidth: 1.5)
+
+                Text(verbatim: "\(calendar.component(.day, from: date))")
+                    .font(.caption.bold())
+                    .foregroundStyle(foreground)
+            }
+            .aspectRatio(1, contentMode: .fit)
+            .accessibilityLabel(date.formatted(date: .complete, time: .omitted))
+            .accessibilityValue(
+                hit
+                ? Text("statistics.readingGoalCalendar.dayHit")
+                : Text(seconds > 0 ? "statistics.readingGoalCalendar.dayPartial" : "statistics.readingGoalCalendar.dayMiss")
+            )
+        }
+    }
+}
+
 // MARK: - ViewModel
 
 @Observable @MainActor
@@ -415,8 +640,21 @@ final class StatisticsViewModel {
     private(set) var stats: ListeningStatsPayload?
     private(set) var isLoading = false
 
+    private(set) var lockedDays: [Date: Double] = [:]
+
     init(connectionID: ItemIdentifier.ConnectionID) {
         self.connectionID = connectionID
+    }
+
+    /// Historical days from the locked subsystem (stable across midnight),
+    /// overlaid with today's live `todaySeconds` so the calendar's "today" cell
+    /// reflects in-flight listening.
+    func combinedDays(todaySeconds: TimeInterval) -> [Date: Double] {
+        var result = lockedDays
+        if !lockedDays.isEmpty || todaySeconds > 0 {
+            result[Calendar.current.startOfDay(for: .now)] = todaySeconds
+        }
+        return result
     }
 
     var activeDayCount: Int {
@@ -506,9 +744,16 @@ final class StatisticsViewModel {
 
         do {
             stats = try await ABSClient[connectionID].listeningStats()
+            // Capture completed days first so the calendar uses stable values
+            // even when post-midnight listening has inflated yesterday's API
+            // total. captureCompletedDays only locks days the subsystem hasn't
+            // already seen, so this is idempotent.
+            try? await PersistenceManager.shared.listeningGoal.capture(stats: stats!, connectionID: connectionID)
         } catch {
             stats = nil
         }
+
+        lockedDays = await PersistenceManager.shared.listeningGoal.historicalDays(connectionID: connectionID)
     }
 }
 

@@ -53,10 +53,12 @@ public final class ListenedTodayTracker {
                 }
 
                 self?.refresh()
+                self?.captureCompletedDays()
             }
             .store(in: &observerSubscriptions)
 
         scheduleResetTimer()
+        captureCompletedDays()
     }
 
     public var totalMinutesListenedToday: Int {
@@ -90,6 +92,7 @@ public final class ListenedTodayTracker {
         timer = DispatchSource.makeTimerSource(flags: .strict, queue: .main)
         timer!.setEventHandler {
             self.refresh()
+            self.captureCompletedDays()
             self.scheduleResetTimer()
         }
 
@@ -98,6 +101,28 @@ public final class ListenedTodayTracker {
 
         timer!.schedule(deadline: .now().advanced(by: .seconds(timeIntervalToMidnight)))
         timer!.activate()
+    }
+
+    /// Pulls listening stats for every connection and freezes any day that is
+    /// no longer "today" in the user's local zone. Runs at app launch, on
+    /// scene-becomes-active, and at the midnight rollover. The subsystem
+    /// itself ignores days it has already locked, so spamming this call is
+    /// cheap.
+    private nonisolated func captureCompletedDays() {
+        Task {
+            let connections = await PersistenceManager.shared.authorization.friendlyConnections
+            await withTaskGroup(of: Void.self) { group in
+                for connection in connections {
+                    group.addTask { [logger] in
+                        do {
+                            try await PersistenceManager.shared.listeningGoal.captureCompletedDays(connectionID: connection.id)
+                        } catch {
+                            logger.warning("Failed to capture completed days for \(connection.id, privacy: .public): \(error, privacy: .public)")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public static let shared = ListenedTodayTracker()

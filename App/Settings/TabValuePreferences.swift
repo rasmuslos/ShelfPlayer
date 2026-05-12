@@ -132,7 +132,7 @@ struct TabValueLibraryPreferences: View {
 
 @Observable @MainActor
 private final class TabValueShadow {
-    let MAXIMUM_TAB_COUNT = 5
+    let MAXIMUM_TAB_COUNT = 4
 
     let library: Library
     let scope: PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope

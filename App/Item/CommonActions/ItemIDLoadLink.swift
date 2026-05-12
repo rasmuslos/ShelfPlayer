@@ -15,6 +15,7 @@ struct ItemIDLoadLink: View {
 
     let name: String
     let type: ItemIdentifier.ItemType
+    let libraryID: LibraryIdentifier
     var footer: String? = nil
 
     @ViewBuilder
@@ -29,7 +30,7 @@ struct ItemIDLoadLink: View {
     var body: some View {
         if let navigationContext {
             Button {
-                navigationContext.path.append(.itemName(name, type))
+                navigationContext.path.append(.itemName(name, type, libraryID))
             } label: {
                 labelContent
             }

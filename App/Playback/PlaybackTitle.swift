@@ -84,9 +84,9 @@ struct PlaybackMenuActions: View {
 
             if let audiobook = currentItem as? Audiobook {
                 ItemLoadLink(itemID: audiobook.id)
-                ItemMenu(authors: viewModel.authorIDs)
-                ItemMenu(narrators: viewModel.narratorIDs)
-                ItemMenu(series: viewModel.seriesIDs)
+                ItemMenu(authors: viewModel.authorIDs, libraryID: LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(audiobook.id))
+                ItemMenu(narrators: viewModel.narratorIDs, libraryID: LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(audiobook.id))
+                ItemMenu(series: viewModel.seriesIDs, libraryID: LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(audiobook.id))
             } else if let episode = currentItem as? Episode {
                 ItemLoadLink(itemID: episode.id)
                 ItemLoadLink(itemID: episode.podcastID)

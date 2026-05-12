@@ -46,20 +46,22 @@ struct PlayableItemContextMenuInner: View {
         Divider()
 
         if let audiobook = item as? Audiobook {
+            let libraryID = LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(item.id)
+
             if library != nil {
                 NavigationLink(value: NavigationDestination.item(audiobook)) {
                     Label(ItemIdentifier.ItemType.audiobook.viewLabel, systemImage: ItemIdentifier.ItemType.audiobook.icon)
                 }
 
-                ItemMenu(authors: audiobook.authors)
-                ItemMenu(narrators: audiobook.narrators)
+                ItemMenu(authors: audiobook.authors, libraryID: libraryID)
+                ItemMenu(narrators: audiobook.narrators, libraryID: libraryID)
             } else {
                 ItemLoadLink(itemID: item.id)
 
-                ItemMenu(narrators: audiobook.narrators.map { (Person.convertNarratorToID($0, libraryID: item.id.libraryID, connectionID: item.id.connectionID), $0) })
+                ItemMenu(narrators: audiobook.narrators.map { (Person.convertNarratorToID($0, libraryID: item.id.libraryID, connectionID: item.id.connectionID), $0) }, libraryID: libraryID)
             }
 
-            ItemMenu(series: audiobook.series)
+            ItemMenu(series: audiobook.series, libraryID: libraryID)
         } else if let episode = item as? Episode {
             ItemLoadLink(itemID: episode.id)
             ItemLoadLink(itemID: episode.podcastID, footer: episode.podcastName)

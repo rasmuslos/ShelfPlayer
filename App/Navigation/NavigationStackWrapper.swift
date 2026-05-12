@@ -30,15 +30,19 @@ struct NavigationStackWrapper<Content: View>: View {
                     switch destination {
                         case .item(let item, let zoomID):
                             ItemView(item: item, zoomID: zoomID)
+                                .environment(\.library, tabRouterViewModel.libraryLookup[.convertItemIdentifierToLibraryIdentifier(item.id)])
                         case .itemID(let itemID):
                             ItemLoadView(itemID)
+                                .environment(\.library, tabRouterViewModel.libraryLookup[.convertItemIdentifierToLibraryIdentifier(itemID)])
 
-                        case .itemName(let name, let type):
-                            ItemIDLoadView(name: name, type: type)
+                        case .itemName(let name, let type, let libraryID):
+                            ItemIDLoadView(name: name, type: type, libraryID: libraryID)
+                                .environment(\.library, tabRouterViewModel.libraryLookup[libraryID])
 
                         case .podcastEpisodes(let viewModel):
                             PodcastEpisodesView()
                                 .environment(viewModel)
+                                .environment(\.library, tabRouterViewModel.libraryLookup[.convertItemIdentifierToLibraryIdentifier(viewModel.podcast.id)])
                         case .tabValue(let tabValue):
                             TabRouter.panel(for: tabValue)
 
@@ -90,7 +94,7 @@ enum NavigationDestination: Hashable {
     case item(Item, UUID?)
     case itemID(ItemIdentifier)
 
-    case itemName(String, ItemIdentifier.ItemType)
+    case itemName(String, ItemIdentifier.ItemType, LibraryIdentifier)
 
     case podcastEpisodes(PodcastViewModel)
     case tabValue(TabValue)
@@ -122,7 +126,7 @@ enum NavigationDestination: Hashable {
                 item.name
             case .itemID(let itemID):
                 itemID.type.label
-            case .itemName(let name, _):
+            case .itemName(let name, _, _):
                 name
             case .podcastEpisodes(let viewModel):
                 "\(String(localized: "item.related.podcast.episodes")): \(viewModel.podcast.name)"

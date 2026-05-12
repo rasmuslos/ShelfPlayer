@@ -104,9 +104,9 @@ extension AudiobookView {
 
                             Divider()
 
-                            ItemMenu(authors: viewModel.audiobook.authors)
-                            ItemMenu(narrators: viewModel.audiobook.narrators)
-                            ItemMenu(series: viewModel.audiobook.series)
+                            ItemMenu(authors: viewModel.audiobook.authors, libraryID: LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(viewModel.audiobook.id))
+                            ItemMenu(narrators: viewModel.audiobook.narrators, libraryID: LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(viewModel.audiobook.id))
+                            ItemMenu(series: viewModel.audiobook.series, libraryID: LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(viewModel.audiobook.id))
 
                             Divider()
 

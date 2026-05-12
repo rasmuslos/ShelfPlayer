@@ -9,10 +9,9 @@ import SwiftUI
 import ShelfPlayback
 
 struct ItemIDLoadView: View {
-    @Environment(\.library) private var library
-
     let name: String
     let type: ItemIdentifier.ItemType
+    let libraryID: LibraryIdentifier
 
     @State private var failed = false
     @State private var itemID: ItemIdentifier?
@@ -43,17 +42,15 @@ struct ItemIDLoadView: View {
             }
 
             do {
-                guard let library = library else { return }
-
                 let itemID: ItemIdentifier
 
                 switch type {
                 case .author:
-                    itemID = try await ABSClient[library.id.connectionID].authorID(from: library.id, name: name)
+                    itemID = try await ABSClient[libraryID.connectionID].authorID(from: libraryID, name: name)
                 case .narrator:
-                    itemID = Person.convertNarratorToID(name, libraryID: library.id.libraryID, connectionID: library.id.connectionID)
+                    itemID = Person.convertNarratorToID(name, libraryID: libraryID.libraryID, connectionID: libraryID.connectionID)
                 case .series:
-                    itemID = try await ABSClient[library.id.connectionID].seriesID(from: library.id.libraryID, name: name)
+                    itemID = try await ABSClient[libraryID.connectionID].seriesID(from: libraryID.libraryID, name: name)
                 default:
                     throw LoadError.unsupportedItemType
                 }

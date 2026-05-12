@@ -42,5 +42,7 @@ public enum ShelfPlayerSchema: VersionedSchema {
         PersistedConvenienceDownloadAssociation.self,
 
         PersistedHideFromContinueListening.self,
+
+        PersistedListeningDay.self,
     ]}
 }
