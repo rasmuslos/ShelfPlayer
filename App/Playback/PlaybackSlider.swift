@@ -29,13 +29,14 @@ struct PlaybackSlider<MiddleContent: View>: View {
     let complete: (_: Percentage) -> Void
 
     @State private var dragStartValue: Percentage?
-    @State private var lastDragVelocity: CGFloat? = nil
 
     @ScaledMetric private var mutedHeight = 11
     @ScaledMetric private var activeHeight = 14
 
     private let height: CGFloat = 8
     private let hitTargetPadding: CGFloat = 12
+
+    private var isSeeking: Bool { seeking != nil }
 
     private var trailingTime: TimeInterval? {
         guard let currentTime, let duration else {
@@ -100,19 +101,36 @@ struct PlaybackSlider<MiddleContent: View>: View {
             }
 
             GeometryReader { geometry in
-                let width = geometry.size.width * min(1, max(0, CGFloat(seeking ?? percentage)))
+                let currentSeeking = seeking
+                let isSeeking = currentSeeking != nil
+                let displayValue: Percentage = min(1, max(0, currentSeeking ?? percentage))
+                let width = geometry.size.width * CGFloat(displayValue)
+                let lensWidth: CGFloat = adjustedHeight * 1.6
+                let lensHeight: CGFloat = adjustedHeight + 8
 
                 ZStack(alignment: .leading) {
-                    Rectangle()
-                        .fill(.primary.opacity(0.2))
+                    Capsule()
+                        .fill(.primary.opacity(0.18))
 
-                    Rectangle()
+                    Capsule()
+                        .fill(.primary)
                         .frame(width: width)
-                        .foregroundStyle(.primary)
-                        .animation(.smooth, value: width)
                 }
                 .frame(height: adjustedHeight, alignment: textFirst ? .bottom : .top)
-                .clipShape(.rect(cornerRadius: .infinity))
+                .overlay(alignment: .leading) {
+                    if isSeeking {
+                        Capsule()
+                            .fill(.clear)
+                            .frame(width: lensWidth, height: lensHeight)
+                            .glassEffect(.regular.tint(.primary.opacity(0.32)), in: .capsule)
+                            .shadow(color: .black.opacity(0.18), radius: 4, y: 1)
+                            .offset(x: width - lensWidth / 2)
+                            .transition(.scale(scale: 0.5, anchor: .center).combined(with: .opacity))
+                            .allowsHitTesting(false)
+                    }
+                }
+                .animation(.spring(duration: 0.28, bounce: 0.22), value: isSeeking)
+                .transaction(value: width) { $0.animation = nil }
                 .padding(.vertical, hitTargetPadding)
                 .contentShape(.rect)
                 .accessibilityRepresentation {
@@ -146,36 +164,16 @@ struct PlaybackSlider<MiddleContent: View>: View {
 
                         let width = geometry.size.width
                         let offset = min(width, max(-width, $0.translation.width))
-
                         let moved: Percentage = .init(offset / width)
-                        let velocity = abs($0.velocity.width)
-                        let acceleration: Percentage
 
-                        lastDragVelocity = velocity
-
-                        if velocity < 600 {
-                            acceleration = 1
-                        } else if velocity < 1000 {
-                            acceleration = 2
-                        } else {
-                            acceleration = 3
-                        }
-
-                        let modifier = moved * acceleration
-                        seeking = min(1, max(0, dragStartValue! + modifier))
+                        seeking = min(1, max(0, dragStartValue! + moved))
                     }
-                    .onEnded {
-                        if let lastDragVelocity, lastDragVelocity > 1000, let seeking {
-                            let modifier = $0.translation.width < 0 ? -1.1 : 1.1
-                            self.seeking = min(1, seeking * modifier)
-                        }
-
+                    .onEnded { _ in
                         if let seeking {
                             complete(seeking)
                         }
 
                         dragStartValue = nil
-                        lastDragVelocity = nil
                     })
             }
             .frame(height: hitTargetPadding * 2 + adjustedHeight)
@@ -187,7 +185,6 @@ struct PlaybackSlider<MiddleContent: View>: View {
         }
         .frame(height: height * 2 + activeHeight + 6)
         .compositingGroup()
-        .animation(.smooth, value: seeking)
     }
 }
 

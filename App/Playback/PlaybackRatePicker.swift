@@ -41,7 +41,7 @@ struct PlaybackRateButton: View {
         }
         .hoverEffect(.highlight)
         .modify(if: isOpen) {
-            $0.glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .circle)
+            $0.glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .capsule)
         }
         .padding(-12)
         .accessibilityLabel("preferences.playbackRate")

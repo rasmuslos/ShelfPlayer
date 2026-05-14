@@ -120,6 +120,11 @@ struct PlaybackCompactExpandedForeground: View {
                             .padding(.vertical, 12)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .transition(.move(edge: .bottom).combined(with: .opacity))
+                    case .sleepTimerPicker:
+                        PlaybackSleepTimerPickerCard(onMeshBackground: isMeshActive)
+                            .padding(.vertical, 12)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
                     case .queue, .none:
                         PlaybackQueue()
                             .padding(.vertical, 12)

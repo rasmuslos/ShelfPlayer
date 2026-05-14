@@ -116,7 +116,6 @@ struct PlaybackControls: View {
         }
         .aspectRatio(aspectRatio, contentMode: .fit)
         .compositingGroup()
-        .drawingGroup()
     }
 }
 

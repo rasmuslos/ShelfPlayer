@@ -25,7 +25,7 @@ struct PlaybackActions: View {
                 .contentShape(.rect)
         }
         .modify(if: viewModel.activeCard == .queue) {
-            $0.glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .circle)
+            $0.glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .capsule)
         }
         .padding(-12)
     }
@@ -33,7 +33,7 @@ struct PlaybackActions: View {
     var body: some View {
         LazyVGrid(columns: .init(repeating: .init(alignment: .centerFirstTextBaseline), count: 4)) {
             PlaybackRateButton(onMeshBackground: onMeshBackground)
-            PlaybackSleepTimerButton()
+            PlaybackSleepTimerButton(onMeshBackground: onMeshBackground)
             PlaybackAirPlayButton()
             queueButton
         }

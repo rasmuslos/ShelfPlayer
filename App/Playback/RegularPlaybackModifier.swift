@@ -200,6 +200,9 @@ struct RegularPlaybackModifier: ViewModifier {
                                                 case .ratePicker:
                                                     PlaybackRatePickerCard(onMeshBackground: false)
                                                         .transition(.move(edge: .bottom).combined(with: .opacity))
+                                                case .sleepTimerPicker:
+                                                    PlaybackSleepTimerPickerCard(onMeshBackground: false)
+                                                        .transition(.move(edge: .bottom).combined(with: .opacity))
                                                 case .queue, .none:
                                                     PlaybackQueue()
                                                         .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))

@@ -90,56 +90,111 @@ private struct RowLabel: View {
     @Environment(Satellite.self) private var satellite
 
     @ScaledMetric(relativeTo: .headline) private var imageSize: CGFloat = 96
+    @ScaledMetric(relativeTo: .headline) private var rightImageSize: CGFloat = 84
 
     let episode: Episode
     let context: EpisodeList.PresentationContext
     let zoomID: UUID?
 
-    var body: some View {
-        HStack(spacing: 0) {
-            if context.isImageVisible {
-                Button {
-                    satellite.start(episode.id, origin: displayContext.origin)
-                } label: {
-                    ItemImage(item: episode, size: .small)
-                        .frame(width: imageSize)
-                        .overlay {
-                            if satellite.isLoading(observing: episode.id) {
-                                ZStack {
-                                    Color.black
-                                        .opacity(0.2)
-                                        .clipShape(.rect(cornerRadius: 8))
+    @ViewBuilder
+    private var imageView: some View {
+        Button {
+            satellite.start(episode.id, origin: displayContext.origin)
+        } label: {
+            ItemImage(item: episode, size: .small)
+                .overlay {
+                    if satellite.isLoading(observing: episode.id) {
+                        ZStack {
+                            Color.black
+                                .opacity(0.2)
+                                .clipShape(.rect(cornerRadius: 8))
 
-                                    ProgressView()
-                                        .tint(.white)
-                                }
-                            }
+                            ProgressView()
+                                .tint(.white)
                         }
+                    }
                 }
-                .buttonStyle(.plain)
-                .disabled(satellite.isLoading(observing: episode.id))
-                .hoverEffect(.highlight)
-                .padding(.trailing, 8)
+        }
+        .buttonStyle(.plain)
+        .disabled(satellite.isLoading(observing: episode.id))
+        .hoverEffect(.highlight)
+    }
+
+    @ViewBuilder
+    private var titleColumn: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            if context.dateAboveTitle, let releaseDate = episode.releaseDate {
+                HStack(spacing: 6) {
+                    Text(releaseDate, format: .relative(presentation: .named, unitsStyle: .abbreviated))
+
+                    if episode.type == .trailer {
+                        Label("item.trailer", systemImage: "movieclapper.fill")
+                            .labelStyle(.iconOnly)
+                    } else if episode.type == .bonus {
+                        Label("item.bonus", systemImage: "fireworks")
+                            .labelStyle(.iconOnly)
+                    }
+                }
+                .font(.footnote.smallCaps())
+                .foregroundStyle(.secondary)
             }
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(episode.name)
-                    .lineLimit(2)
-                    .font(.headline)
+            Text(episode.name)
+                .lineLimit(context.titleLineLimit)
+                .font(.headline)
 
-                if let description = episode.descriptionText {
-                    Text(description)
-                        .font(.subheadline)
-                        .lineLimit(context == .podcast ? 3 : 1)
-                        .multilineTextAlignment(.leading)
-                        .foregroundStyle(.secondary)
+            if let description = episode.descriptionText {
+                Text(description)
+                    .font(.subheadline)
+                    .lineLimit(context.descriptionLineLimit)
+                    .multilineTextAlignment(.leading)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    var body: some View {
+        if context.isImageOnRight {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .top, spacing: 12) {
+                    titleColumn
+
+                    Spacer(minLength: 0)
+
+                    if context.isImageVisible {
+                        imageView
+                            .frame(width: rightImageSize, height: rightImageSize)
+                    }
                 }
 
                 EpisodeItemActions(episode: episode, context: context)
-                    .padding(.top, context == .podcast ? 2 : 0)
             }
+        } else {
+            HStack(spacing: 0) {
+                if context.isImageVisible {
+                    imageView
+                        .frame(width: imageSize)
+                        .padding(.trailing, 8)
+                }
 
-            Spacer(minLength: 0)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(episode.name)
+                        .lineLimit(context.titleLineLimit)
+                        .font(.headline)
+
+                    if let description = episode.descriptionText {
+                        Text(description)
+                            .font(.subheadline)
+                            .lineLimit(context.descriptionLineLimit)
+                            .multilineTextAlignment(.leading)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    EpisodeItemActions(episode: episode, context: context)
+                }
+
+                Spacer(minLength: 0)
+            }
         }
     }
 }
@@ -179,16 +234,18 @@ struct EpisodeItemActions: View {
 
             Spacer(minLength: 4)
 
-            Group {
-                if episode.type == .trailer {
-                    Label("item.trailer", systemImage: "movieclapper.fill")
-                } else if episode.type == .bonus {
-                    Label("item.bonus", systemImage: "fireworks")
+            if !context.dateAboveTitle {
+                Group {
+                    if episode.type == .trailer {
+                        Label("item.trailer", systemImage: "movieclapper.fill")
+                    } else if episode.type == .bonus {
+                        Label("item.bonus", systemImage: "fireworks")
+                    }
                 }
+                .imageScale(.small)
+                .font(.caption)
+                .labelStyle(.iconOnly)
             }
-            .imageScale(.small)
-            .font(.caption)
-            .labelStyle(.iconOnly)
 
             if let status = download.status {
                 switch status {
@@ -232,14 +289,38 @@ private extension EpisodeList.PresentationContext {
     }
     var isImageVisible: Bool {
         switch self {
+            case .featured, .grid: true
+            case .latest, .collection: true
             case .podcast: false
-            default: true
         }
+    }
+    var isImageOnRight: Bool {
+        switch self {
+            case .podcast, .latest, .collection: true
+            case .featured, .grid: false
+        }
+    }
+    var dateAboveTitle: Bool {
+        isImageOnRight
     }
     var isActionDateHidden: Bool {
         switch self {
             case .featured: true
-            default: false
+            case .podcast, .latest, .collection: true
+            case .grid: false
+        }
+    }
+    var titleLineLimit: Int {
+        switch self {
+            case .podcast, .latest, .collection: 3
+            case .grid, .featured: 2
+        }
+    }
+    var descriptionLineLimit: Int {
+        switch self {
+            case .podcast: 2
+            case .latest, .collection: 1
+            case .grid, .featured: 1
         }
     }
 
@@ -250,3 +331,62 @@ private extension EpisodeList.PresentationContext {
         }
     }
 }
+
+#if DEBUG
+#Preview("Podcast") {
+    NavigationStack {
+        List {
+            EpisodeList(episodes: [.fixture, .fixture, .fixture], context: .podcast, selected: .constant(nil))
+        }
+        .listStyle(.plain)
+    }
+    .previewEnvironment()
+}
+
+#Preview("Latest") {
+    NavigationStack {
+        List {
+            EpisodeList(episodes: [.fixture, .fixture, .fixture], context: .latest, selected: .constant(nil))
+        }
+        .listStyle(.plain)
+    }
+    .previewEnvironment()
+}
+
+#Preview("Collection") {
+    NavigationStack {
+        List {
+            EpisodeList(episodes: [.fixture, .fixture, .fixture], context: .collection, selected: .constant(nil))
+        }
+        .listStyle(.plain)
+    }
+    .previewEnvironment()
+}
+
+#Preview("Featured") {
+    NavigationStack {
+        List {
+            EpisodeList(episodes: [.fixture], context: .featured, selected: .constant(nil))
+        }
+        .listStyle(.plain)
+    }
+    .previewEnvironment()
+}
+
+#Preview("Grid") {
+    NavigationStack {
+        EpisodeGrid(episodes: [.fixture, .fixture, .fixture, .fixture])
+    }
+    .previewEnvironment()
+}
+
+#Preview("Bulk select") {
+    NavigationStack {
+        List {
+            EpisodeList(episodes: [.fixture, .fixture, .fixture], context: .podcast, selected: .constant([]))
+        }
+        .listStyle(.plain)
+    }
+    .previewEnvironment()
+}
+#endif

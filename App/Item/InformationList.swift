@@ -12,23 +12,16 @@ struct InformationListRow: View {
     let value: String
 
     var body: some View {
-        Self.label(title: title) {
-            Text(value)
-        }
+        LabeledContent(title, value: value)
+            .font(.footnote)
+            .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
     }
 
     @ViewBuilder
     static func label<C: View>(title: String, @ViewBuilder content: () -> C) -> some View {
-        HStack(spacing: 0) {
-            Text(title)
-                .foregroundStyle(.secondary)
-
-            Spacer(minLength: 8)
-
-            content()
-        }
-        .font(.footnote)
-        .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
+        LabeledContent(title, content: content)
+            .font(.footnote)
+            .listRowInsets(.init(top: 8, leading: 20, bottom: 8, trailing: 20))
     }
 }
 

@@ -91,6 +91,7 @@ final class PlaybackViewModel {
     enum ActiveCard {
         case queue
         case ratePicker
+        case sleepTimerPicker
     }
 
     // Bookmark
@@ -544,13 +545,14 @@ private extension PlaybackViewModel {
         }
     }
 
-    /// Builds 9 dimmed mesh colors, streaming the most dominant color along a
-    /// top-left → center → bottom-right diagonal and allocating the remaining slots
-    /// proportionally to each color's share of the image.
+    /// Builds 9 dimmed mesh colors, allocating slots proportionally to each
+    /// extracted color's share of the artwork. Slot positions are shuffled
+    /// every time so the same cover doesn't always paint the same picture
+    /// (and avoids the diagonal banding the fixed order produced).
     static func makeMeshColors(from colors: [RFKVisuals.DetailedColor]) -> [Color]? {
         guard !colors.isEmpty else { return nil }
 
-        let order = [0, 4, 8, 2, 6, 3, 5, 1, 7]
+        let order = Array(0..<9).shuffled()
 
         let total = max(1, colors.reduce(0) { $0 + $1.percentage })
         var mesh = Array(repeating: Color.clear, count: 9)
@@ -583,8 +585,8 @@ private extension PlaybackViewModel {
     }
 
     nonisolated static func dim(_ color: RFKVisuals.DetailedColor) -> Color {
-        let saturation = max(0.16, min(color.saturation * 0.5, 0.32))
-        let brightness = max(0.34, min(color.brightness * 0.7, 0.52))
+        let saturation = max(0.20, min(color.saturation * 0.6, 0.42))
+        let brightness = max(0.40, min(color.brightness * 0.8, 0.60))
         return Color(hue: color.hue, saturation: saturation, brightness: brightness)
     }
 }

@@ -39,8 +39,10 @@ extension PodcastView {
                         }
                     }
 
-                    ToolbarItemGroup(placement: .topBarTrailing) {
+                    ToolbarItem(placement: .topBarTrailing) {
                         ItemConfigureButton(itemID: viewModel.podcast.id)
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
                         OptionsMenu()
                     }
                 }
