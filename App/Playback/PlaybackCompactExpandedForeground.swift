@@ -72,7 +72,7 @@ struct PlaybackCompactExpandedForeground: View {
                     Spacer(minLength: 12)
 
                     PlaybackControls()
-                        .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
+                        .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .bottom).combined(with: .opacity)))
                 }
                 .offset(y: viewModel.controlTranslationY)
 
@@ -114,24 +114,24 @@ struct PlaybackCompactExpandedForeground: View {
                 .padding(.top, 20)
                 .modifier(PlaybackDragGestureCatcher(height: height))
 
-                switch viewModel.activeCard {
-                    case .ratePicker:
-                        PlaybackRatePickerCard(onMeshBackground: isMeshActive)
-                            .padding(.vertical, 12)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
-                    case .sleepTimerPicker:
-                        PlaybackSleepTimerPickerCard(onMeshBackground: isMeshActive)
-                            .padding(.vertical, 12)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
-                    case .queue, .none:
-                        PlaybackQueue()
-                            .padding(.vertical, 12)
-                            .frame(maxHeight: height - 140)
-                            .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
-                            .offset(y: viewModel.controlTranslationY * 2)
+                Group {
+                    switch viewModel.activeCard {
+                        case .ratePicker:
+                            PlaybackRatePickerCard(onMeshBackground: isMeshActive)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .bottom).combined(with: .opacity)))
+                        case .sleepTimerPicker:
+                            PlaybackSleepTimerPickerCard(onMeshBackground: isMeshActive)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .bottom).combined(with: .opacity)))
+                        case .queue, .none:
+                            PlaybackQueue()
+                                .frame(maxHeight: height - 140)
+                                .transition(.asymmetric(insertion: .move(edge: .bottom), removal: .move(edge: .bottom).combined(with: .opacity)))
+                    }
                 }
+                .padding(.vertical, 12)
+                .offset(y: viewModel.controlTranslationY * 2)
             }
 
             PlaybackActions(onMeshBackground: isMeshActive)

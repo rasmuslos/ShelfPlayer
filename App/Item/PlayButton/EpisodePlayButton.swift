@@ -144,7 +144,7 @@ struct EpisodePlayButton: View {
                 .padding(.vertical, 6)
                 .padding(.horizontal, 10)
                 .background(highlighted ? .white : .secondary.opacity(0.2))
-                .foregroundStyle(highlighted ? .black : .accentColor)
+                .foregroundStyle(highlighted ? .black : .primary)
                 .modify(if: highlighted) {
                     $0
                         .reverseMask {

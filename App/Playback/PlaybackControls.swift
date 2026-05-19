@@ -14,6 +14,9 @@ struct PlaybackControls: View {
     @Environment(Satellite.self) private var satellite
     @Environment(SkipController.self) private var skipController
 
+    @State private var displayedRemaining: TimeInterval?
+    @State private var hasSettled = false
+
     private var currentTime: TimeInterval {
         if let seeking = viewModel.seeking {
             satellite.chapterDuration * seeking
@@ -86,9 +89,8 @@ struct PlaybackControls: View {
                         .lineLimit(1)
                         .truncationMode(.middle)
                 } else {
-                    Text(remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+                    Text(displayedRemaining ?? remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
                         .contentTransition(.numericText())
-                        .animation(.smooth, value: remaining)
                 }
             } complete: {
                 satellite.seek(to: satellite.chapterDuration * $0, insideChapter: true) {
@@ -97,18 +99,34 @@ struct PlaybackControls: View {
                     }
                 }
             }
+            .onChange(of: remaining, initial: true) { _, newValue in
+                if hasSettled {
+                    withAnimation(.smooth) {
+                        displayedRemaining = newValue
+                    }
+                } else {
+                    displayedRemaining = newValue
+                }
+            }
+            .task {
+                try? await Task.sleep(for: .milliseconds(500))
+                hasSettled = true
+            }
 
             Spacer(minLength: 8)
 
-            LazyVGrid(columns: [.init(alignment: .trailing), .init(alignment: .center), .init(alignment: .leading)]) {
+            HStack(spacing: 0) {
                 backwardButton
                     .font(.title)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
 
                 PlaybackTogglePlayButton()
                     .font(.largeTitle)
+                    .frame(maxWidth: .infinity, alignment: .center)
 
                 forwardButton
                     .font(.title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             Spacer(minLength: 8)
 
@@ -122,6 +140,9 @@ struct PlaybackControls: View {
 private struct BottomSlider: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
+
+    @State private var displayedRemaining: TimeInterval?
+    @State private var hasSettled = false
 
     private var replaceVolumeWithTotalProgress: Bool { AppSettings.shared.replaceVolumeWithTotalProgress }
 
@@ -153,16 +174,27 @@ private struct BottomSlider: View {
 
         if replaceVolumeWithTotalProgress, satellite.chapter != nil {
             PlaybackSlider(percentage: satellite.playedTotal, seeking: $viewModel.seekingTotal, currentTime: currentTime, duration: duration, textFirst: true) {
-                Text(remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+                Text(displayedRemaining ?? remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
                     .contentTransition(.numericText())
-                    .transition(.opacity)
-                    .animation(.smooth, value: remaining)
             } complete: {
                 satellite.seek(to: satellite.duration * $0, insideChapter: false) {
                     Task { @MainActor in
                         viewModel.seekingTotal = nil
                     }
                 }
+            }
+            .onChange(of: remaining, initial: true) { _, newValue in
+                if hasSettled {
+                    withAnimation(.smooth) {
+                        displayedRemaining = newValue
+                    }
+                } else {
+                    displayedRemaining = newValue
+                }
+            }
+            .task {
+                try? await Task.sleep(for: .milliseconds(500))
+                hasSettled = true
             }
         } else {
             PlaybackSlider(percentage: satellite.volume, seeking: $viewModel.volumePreview, currentTime: nil, duration: nil, textFirst: true) {

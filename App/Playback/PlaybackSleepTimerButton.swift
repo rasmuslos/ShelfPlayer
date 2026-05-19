@@ -151,7 +151,8 @@ struct PlaybackSleepTimerPickerCard: View {
 
     private var rulerAnchorMinutes: Double {
         if let interval = activeInterval {
-            return max(minMinutes, min(maxMinutes, interval.extend / 60))
+            let remainingMinutes = interval.expiresAt.timeIntervalSinceNow / 60
+            return max(minMinutes, min(maxMinutes, remainingMinutes))
         }
         return pendingMinutes
     }
@@ -220,7 +221,7 @@ struct PlaybackSleepTimerPickerCard: View {
         }
         .onAppear {
             if let interval = activeInterval {
-                pendingMinutes = snappedMinutes(interval.extend / 60)
+                pendingMinutes = snappedMinutes(interval.expiresAt.timeIntervalSinceNow / 60)
             }
         }
     }

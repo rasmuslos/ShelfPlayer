@@ -133,6 +133,7 @@ struct MarqueeText: View {
             .font(font)
             .lineLimit(1)
             .hidden()
+            .frame(maxWidth: .infinity, alignment: .leading)
             .overlay(alignment: .leading) {
                 GeometryReader { containerGeo in
                     Text(text)
@@ -233,16 +234,16 @@ struct MarqueeText: View {
             withAnimation(.easeOut(duration: 0.3)) {
                 progress = 0
             }
-        case .scrollingForward:
-            guard let controller, overflow > 0 else { return }
-            withAnimation(.linear(duration: overflow / controller.speed)) {
+        case .scrollingForward(let duration):
+            guard overflow > 0 else { return }
+            withAnimation(.linear(duration: duration)) {
                 progress = 1
             }
         case .pausedAtEnd:
             break
-        case .scrollingBack:
-            guard let controller, overflow > 0 else { return }
-            withAnimation(.linear(duration: overflow / controller.speed)) {
+        case .scrollingBack(let duration):
+            guard overflow > 0 else { return }
+            withAnimation(.linear(duration: duration)) {
                 progress = 0
             }
         }

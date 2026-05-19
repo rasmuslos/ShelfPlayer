@@ -58,11 +58,13 @@ struct PlaybackSlider<MiddleContent: View>: View {
     private var text: some View {
         Group {
             if let currentTime, let trailingTime {
-                LazyVGrid(columns: [.init(alignment: .leading), .init(alignment: .center), .init(alignment: .trailing)]) {
+                HStack(spacing: 0) {
                     Text(currentTime, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3))
                         .accessibilityHidden(true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
                     middleContent()
+                        .frame(maxWidth: .infinity, alignment: .center)
 
                     Button {
                         AppSettings.shared.durationToggled.toggle()
@@ -78,6 +80,7 @@ struct PlaybackSlider<MiddleContent: View>: View {
                         }
                     }
                     .buttonStyle(.plain)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             } else {
                 Text(verbatim: "PLACEHOLDER")
@@ -105,32 +108,34 @@ struct PlaybackSlider<MiddleContent: View>: View {
                 let isSeeking = currentSeeking != nil
                 let displayValue: Percentage = min(1, max(0, currentSeeking ?? percentage))
                 let width = geometry.size.width * CGFloat(displayValue)
-                let lensWidth: CGFloat = adjustedHeight * 1.6
-                let lensHeight: CGFloat = adjustedHeight + 8
+                let lensWidth: CGFloat = height * 2 * 1.6
+                let lensHeight: CGFloat = height * 2 + 8
 
                 ZStack(alignment: .leading) {
                     Capsule()
                         .fill(.primary.opacity(0.18))
 
-                    Capsule()
+                    Rectangle()
                         .fill(.primary)
                         .frame(width: width)
                 }
                 .frame(height: adjustedHeight, alignment: textFirst ? .bottom : .top)
-                .overlay(alignment: .leading) {
-                    if isSeeking {
-                        Capsule()
-                            .fill(.clear)
-                            .frame(width: lensWidth, height: lensHeight)
-                            .glassEffect(.regular.tint(.primary.opacity(0.32)), in: .capsule)
-                            .shadow(color: .black.opacity(0.18), radius: 4, y: 1)
-                            .offset(x: width - lensWidth / 2)
-                            .transition(.scale(scale: 0.5, anchor: .center).combined(with: .opacity))
-                            .allowsHitTesting(false)
-                    }
-                }
-                .animation(.spring(duration: 0.28, bounce: 0.22), value: isSeeking)
+                .clipShape(.capsule)
+                .animation(.spring(duration: 0.28, bounce: 0.22), value: adjustedHeight)
                 .transaction(value: width) { $0.animation = nil }
+                .overlay(alignment: .leading) {
+                    Capsule()
+                        .fill(.clear)
+                        .frame(width: lensWidth, height: lensHeight)
+                        .glassEffect(.regular.tint(.primary.opacity(0.32)), in: .capsule)
+                        .shadow(color: .black.opacity(0.18), radius: 4, y: 1)
+                        .scaleEffect(isSeeking ? 1 : 0.5, anchor: .center)
+                        .opacity(isSeeking ? 1 : 0)
+                        .animation(.spring(duration: 0.28, bounce: 0.22), value: isSeeking)
+                        .offset(x: width - lensWidth / 2)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(!isSeeking)
+                }
                 .padding(.vertical, hitTargetPadding)
                 .contentShape(.rect)
                 .accessibilityRepresentation {
