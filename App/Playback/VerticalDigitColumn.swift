@@ -33,12 +33,36 @@ struct VerticalDigitColumn: View {
     var onDragStart: () -> Void = {}
     var onCommit: (Int) -> Void = { _ in }
 
+    /// Vertical pitch of each row and the visible height of the bold center row.
+    var rowHeight: CGFloat = 36
+    /// Number of rows rendered around the center; the top/bottom are softly masked so
+    /// only the center plus a hint of neighbors reads clearly.
+    var visibleRows: Int = 5
+    /// Point size of the digit text. Driven separately from `rowHeight` so callers can
+    /// tune the bold-row visual weight independently of the wheel pitch.
+    var fontSize: CGFloat = 22
+    /// Whether to draw the rounded background "ring" around the selected row. The card
+    /// hides it during the live countdown to read as a static number instead of an input.
+    var showsRing: Bool = true
+    /// When false the column ignores drag/adjustable input — it's a read-only display.
+    /// The sleep-timer card uses this for the seconds wheels, which only mirror the
+    /// live countdown and aren't part of the user-set value.
+    var isInteractive: Bool = true
+
     @State private var dragAnchor: Double?
     @State private var dragTranslation: CGFloat = 0
     @State private var isDragging = false
-
-    private let rowHeight: CGFloat = 36
-    private let visibleRows = 5
+    /// Monotonic counter incremented only when a user drag snaps to a new digit. We
+    /// fire haptics off this instead of `snappedValue` so external value changes (e.g.
+    /// the live sleep-timer countdown driving the column) don't fire haptics per tick.
+    @State private var hapticTick: Int = 0
+    /// Offset in points used to glide the canvas from the finger's release position
+    /// into the snapped slot. The `.animation(value: smoothPosition)` modifier alone
+    /// can't drive that animation reliably — by the time `dragAnchor` clears and the
+    /// computed `smoothPosition` jumps, the modifier still reads `isDragging == true`
+    /// on that render and picks the no-animation branch. Routing the snap through a
+    /// dedicated `withAnimation`-driven offset sidesteps that race entirely.
+    @State private var landingOffset: CGFloat = 0
 
     private var enabledBounds: ClosedRange<Int> {
         let enabled = range.filter { !disabledValues.contains($0) }
@@ -47,9 +71,14 @@ struct VerticalDigitColumn: View {
     }
 
     private var smoothPosition: Double {
-        guard let anchor = dragAnchor else { return Double(value) }
-        let delta = -dragTranslation / rowHeight
-        return clamp(anchor + delta)
+        if let anchor = dragAnchor {
+            let delta = -dragTranslation / rowHeight
+            return clamp(anchor + delta)
+        }
+        // Idle path: anchored on the integer value, with any in-flight landing offset
+        // pulling the canvas back to where the finger released. When the spring settles
+        // to landingOffset == 0 the position equals Double(value) exactly.
+        return Double(value) + (-landingOffset / rowHeight)
     }
 
     private var snappedValue: Int {
@@ -77,26 +106,44 @@ struct VerticalDigitColumn: View {
 
     var body: some View {
         let height = rowHeight * CGFloat(visibleRows)
+        let ringRadius = min(16, rowHeight * 0.22)
+        // The border is always drawn on every column so the center row stays
+        // outlined whether the timer is active or idle. The fill on top is what
+        // toggles to advertise drag input: interactive columns get the soft fill
+        // while showing the input affordance; read-only columns never fill.
+        let fillOpacity = (showsRing && isInteractive) ? 0.08 : 0
+        let strokeOpacity: Double = 0.22
 
         ZStack {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(primaryColor.opacity(0.08))
+            RoundedRectangle(cornerRadius: ringRadius, style: .continuous)
+                .fill(primaryColor.opacity(fillOpacity))
                 .frame(height: rowHeight)
+                .animation(.easeInOut(duration: 0.2), value: fillOpacity)
+
+            RoundedRectangle(cornerRadius: ringRadius, style: .continuous)
+                .strokeBorder(primaryColor.opacity(strokeOpacity), lineWidth: 1)
+                .frame(height: rowHeight)
+                .animation(.easeInOut(duration: 0.2), value: strokeOpacity)
 
             DigitCanvas(
                 smoothPosition: smoothPosition,
                 rangeLower: range.lowerBound,
                 rangeUpper: range.upperBound,
                 rowHeight: rowHeight,
+                fontSize: fontSize,
                 primaryColor: primaryColor,
                 disabledValues: disabledValues
             )
             .frame(height: height)
             .mask(
+                // Fade only the half-row that hangs off each edge so 2 preview digits
+                // stay readable above and below the center. The opaque zone covers all
+                // row centers while the gradient soft-fades just the outer halves of
+                // the topmost and bottommost rows.
                 LinearGradient(stops: [
                     .init(color: .clear, location: 0),
-                    .init(color: .black, location: 0.22),
-                    .init(color: .black, location: 0.78),
+                    .init(color: .black, location: max(0.04, 0.5 / Double(visibleRows))),
+                    .init(color: .black, location: min(0.96, 1 - 0.5 / Double(visibleRows))),
                     .init(color: .clear, location: 1)
                 ], startPoint: .top, endPoint: .bottom)
             )
@@ -104,48 +151,77 @@ struct VerticalDigitColumn: View {
         }
         .frame(height: height)
         .contentShape(.rect)
-        .hapticFeedback(.selection, trigger: snappedValue)
-        .gesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { g in
-                    if dragAnchor == nil {
-                        dragAnchor = Double(value)
-                        isDragging = true
-                        onDragStart()
-                    }
-                    dragTranslation = g.translation.height
+        .hapticFeedback(.selection, trigger: hapticTick)
+        .modify(if: isInteractive) {
+            $0.gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { g in
+                        if dragAnchor == nil {
+                            dragAnchor = Double(value)
+                            isDragging = true
+                            // Cancel any in-flight landing animation. We snap to the
+                            // current value as the new anchor — if the user re-grabs
+                            // mid-settle they pick up from the slot, not from the
+                            // animation's current frame.
+                            landingOffset = 0
+                            onDragStart()
+                        }
+                        dragTranslation = g.translation.height
 
-                    let snapped = snappedValue
-                    if value != snapped {
-                        value = snapped
+                        let snapped = snappedValue
+                        if value != snapped {
+                            value = snapped
+                            hapticTick &+= 1
+                        }
                     }
-                }
-                .onEnded { _ in
-                    let final = snappedValue
-                    dragAnchor = nil
-                    value = final
-                    onCommit(final)
-                    withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
-                        isDragging = false
+                    .onEnded { _ in
+                        let final = snappedValue
+                        // Capture the on-screen position the finger released at so the
+                        // hand-off from the drag formula to the idle formula doesn't
+                        // visually jump.
+                        let releaseSmooth = smoothPosition
+                        onCommit(final)
+
+                        // Pick the landing offset that keeps smoothPosition unchanged at
+                        // the switchover instant: Double(final) + (-offset / rowHeight)
+                        // = releaseSmooth  =>  offset = -(releaseSmooth - Double(final)) * rowHeight.
+                        let initialLanding = -CGFloat(releaseSmooth - Double(final)) * rowHeight
+
+                        dragAnchor = nil
                         dragTranslation = 0
+                        value = final
+                        landingOffset = initialLanding
+                        isDragging = false
+
+                        // Spring the offset to zero — this glides smoothPosition the
+                        // last fractional step into Double(final) without depending on
+                        // the .animation(value: smoothPosition) modifier seeing the
+                        // right isDragging state at the right moment.
+                        withAnimation(.spring(response: 0.42, dampingFraction: 0.78)) {
+                            landingOffset = 0
+                        }
                     }
-                }
-        )
+            )
+        }
         .accessibilityElement()
         .accessibilityLabel(accessibilityLabel)
         .accessibilityValue(Text(verbatim: "\(value)"))
-        .accessibilityAdjustableAction { direction in
-            switch direction {
-                case .increment:
-                    let next = nextEnabled(after: value, ascending: true)
-                    value = next
-                    onCommit(next)
-                case .decrement:
-                    let next = nextEnabled(after: value, ascending: false)
-                    value = next
-                    onCommit(next)
-                @unknown default:
-                    break
+        .modify(if: isInteractive) {
+            $0.accessibilityAdjustableAction { direction in
+                switch direction {
+                    case .increment:
+                        let next = nextEnabled(after: value, ascending: true)
+                        value = next
+                        hapticTick &+= 1
+                        onCommit(next)
+                    case .decrement:
+                        let next = nextEnabled(after: value, ascending: false)
+                        value = next
+                        hapticTick &+= 1
+                        onCommit(next)
+                    @unknown default:
+                        break
+                }
             }
         }
         .onChange(of: disabledValues) { _, _ in
@@ -172,6 +248,7 @@ private struct DigitCanvas: View, @preconcurrency Animatable {
     let rangeLower: Int
     let rangeUpper: Int
     let rowHeight: CGFloat
+    let fontSize: CGFloat
     let primaryColor: Color
     let disabledValues: Set<Int>
 
@@ -197,7 +274,7 @@ private struct DigitCanvas: View, @preconcurrency Animatable {
                 let opacity: Double = disabled ? 0.18 : baseOpacity
 
                 let text = Text(verbatim: "\(v)")
-                    .font(.system(.title2, weight: weight))
+                    .font(.system(size: fontSize, weight: weight))
                     .monospacedDigit()
                     .foregroundStyle(primaryColor.opacity(opacity))
 

@@ -934,7 +934,13 @@ private extension Satellite {
                     self?.playbackRate = 0
 
                     self?.route = nil
-                    self?.sleepTimer = nil
+
+                    // Intentionally NOT clearing `sleepTimer` here: the engine carries
+                    // the active timer across queued-item advances (its `sleepTimer`
+                    // property survives the `start()` re-entry, and chapter timers
+                    // decrement on chapter-end events rather than item changes). The
+                    // `sleepTimerChanged` event is the authoritative signal — only
+                    // wipe the UI when it actually goes nil.
 
                     self?.upNextOrigin = nil
                     self?.upNextStrategy = nil

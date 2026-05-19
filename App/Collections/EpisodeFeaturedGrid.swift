@@ -108,7 +108,7 @@ private struct Title: View {
             VStack(alignment: .leading, spacing: 2) {
                 if let releaseDate = episode.releaseDate {
                     Text(releaseDate, style: .date)
-                        .font(.caption)
+                        .font(.footnote.smallCaps())
                         .foregroundStyle(.regularMaterial)
                 }
 

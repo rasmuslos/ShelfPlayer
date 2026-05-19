@@ -111,18 +111,29 @@ struct PlaybackSleepTimerPickerCard: View {
     @State private var hours: Int = 0
     @State private var minutesTens: Int = 3
     @State private var minutesOnes: Int = 0
+    @State private var secondsTens: Int = 0
+    @State private var secondsOnes: Int = 0
 
     @State private var activeDragCount: Int = 0
     @State private var lastNearestPreset: Double?
 
     private var isCardDragging: Bool { activeDragCount > 0 }
 
-    private var totalMinutes: Int {
-        hours * 60 + minutesTens * 10 + minutesOnes
+    private var totalSeconds: TimeInterval {
+        TimeInterval(
+            hours * 3600
+            + minutesTens * 600
+            + minutesOnes * 60
+            + secondsTens * 10
+            + secondsOnes
+        )
     }
 
-    private var totalSeconds: TimeInterval {
-        TimeInterval(totalMinutes * 60)
+    /// Whole-minute representation used by the preset chips and their auto-centering
+    /// scroll. Rounded up so the chip the user just tapped stays highlighted until the
+    /// next whole minute elapses, instead of going stale 1 second after selection.
+    private var totalMinutes: Int {
+        Int((totalSeconds / 60).rounded(.up))
     }
 
     private var presetMinutes: [Double] {
@@ -164,22 +175,25 @@ struct PlaybackSleepTimerPickerCard: View {
             topControls
                 .padding(.bottom, 8)
 
-            Spacer(minLength: 8)
+            // Equal-share spacers above and below the display so the timer sits at
+            // the geometric center of the card rather than being pulled toward the
+            // shorter top-controls strip.
+            Spacer(minLength: 12)
 
-            display
+            if activeChapterAmount != nil {
+                chapterDisplay
+                    .frame(maxWidth: .infinity)
 
-            Spacer(minLength: 20)
+                Spacer(minLength: 20)
 
-            Group {
-                if activeChapterAmount != nil {
-                    chapterStepper
-                } else {
-                    timeColumns
-                }
+                chapterStepper
+                    .frame(maxWidth: .infinity)
+            } else {
+                unifiedTimerDisplay
+                    .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity)
 
-            Spacer(minLength: 16)
+            Spacer(minLength: 12)
 
             presetButtons
                 .padding(.top, 8)
@@ -203,26 +217,50 @@ struct PlaybackSleepTimerPickerCard: View {
             guard !isCardDragging else { return }
             seedFromExternalState()
         }
+        .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
+            // Animate the per-second tick so the seconds-ones wheel glides between
+            // digits instead of snapping. The 0.45s spring response is shorter than
+            // the 1Hz tick rate, so the wheel always settles before the next update.
+            withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) {
+                syncFromCountdown()
+            }
+        }
     }
 
+    /// Single, large H:MM display used for both the live countdown ("active") and the
+    /// drag-to-set picker ("inactive"). The two states render identically — same fonts,
+    /// same wheel layout, same neighbor digits — except the inactive state draws the
+    /// rounded "rings" behind the selected row to read as an input affordance.
     @ViewBuilder
-    private var timeColumns: some View {
-        HStack(alignment: .center, spacing: 8) {
+    private var unifiedTimerDisplay: some View {
+        let showsRing = !isTimerActive || isCardDragging
+        let columnRowHeight: CGFloat = 40
+        let columnFontSize: CGFloat = 32
+        // Match the digit font size so the colons share the same baseline metrics —
+        // a smaller separator font shifts ":" off the digits' visual midline.
+        let separatorFontSize: CGFloat = 32
+
+        HStack(alignment: .center, spacing: 2) {
             VerticalDigitColumn(
                 value: $hours,
                 range: 0...9,
                 primaryColor: primaryColor,
                 secondaryColor: secondaryColor,
                 accessibilityLabel: "preferences.sleepTimer.hours",
-                onDragStart: startDrag,
-                onCommit: { _ in endDrag() }
+                onDragStart: handleColumnDragStart,
+                onCommit: { _ in endDrag() },
+                rowHeight: columnRowHeight,
+                visibleRows: 5,
+                fontSize: columnFontSize,
+                showsRing: showsRing
             )
             .frame(maxWidth: .infinity)
 
             Text(verbatim: ":")
-                .font(.system(.title, weight: .bold))
+                .font(.system(size: separatorFontSize, weight: .bold))
                 .monospacedDigit()
                 .foregroundStyle(primaryColor.opacity(0.6))
+                .padding(.horizontal, 4)
                 .accessibilityHidden(true)
 
             VerticalDigitColumn(
@@ -231,8 +269,12 @@ struct PlaybackSleepTimerPickerCard: View {
                 primaryColor: primaryColor,
                 secondaryColor: secondaryColor,
                 accessibilityLabel: "preferences.sleepTimer.minutes.tens",
-                onDragStart: startDrag,
-                onCommit: { _ in endDrag() }
+                onDragStart: handleColumnDragStart,
+                onCommit: { _ in endDrag() },
+                rowHeight: columnRowHeight,
+                visibleRows: 5,
+                fontSize: columnFontSize,
+                showsRing: showsRing
             )
             .frame(maxWidth: .infinity)
 
@@ -243,18 +285,78 @@ struct PlaybackSleepTimerPickerCard: View {
                 secondaryColor: secondaryColor,
                 accessibilityLabel: "preferences.sleepTimer.minutes.ones",
                 disabledValues: minutesTens == 6 ? Set(1...9) : [],
-                onDragStart: startDrag,
-                onCommit: { _ in endDrag() }
+                onDragStart: handleColumnDragStart,
+                onCommit: { _ in endDrag() },
+                rowHeight: columnRowHeight,
+                visibleRows: 5,
+                fontSize: columnFontSize,
+                showsRing: showsRing
+            )
+            .frame(maxWidth: .infinity)
+
+            Text(verbatim: ":")
+                .font(.system(size: separatorFontSize, weight: .bold))
+                .monospacedDigit()
+                .foregroundStyle(primaryColor.opacity(0.6))
+                .padding(.horizontal, 4)
+                .accessibilityHidden(true)
+
+            // Seconds wheels are read-only — they mirror the live countdown but the user
+            // sets the sleep timer to whole-minute precision via the H/M columns or a
+            // preset chip. `isInteractive: false` strips the drag & adjustable action so
+            // these columns are purely a display element.
+            VerticalDigitColumn(
+                value: $secondsTens,
+                range: 0...5,
+                primaryColor: primaryColor,
+                secondaryColor: secondaryColor,
+                accessibilityLabel: "preferences.sleepTimer.seconds.tens",
+                rowHeight: columnRowHeight,
+                visibleRows: 5,
+                fontSize: columnFontSize,
+                showsRing: showsRing,
+                isInteractive: false
+            )
+            .frame(maxWidth: .infinity)
+
+            VerticalDigitColumn(
+                value: $secondsOnes,
+                range: 0...9,
+                primaryColor: primaryColor,
+                secondaryColor: secondaryColor,
+                accessibilityLabel: "preferences.sleepTimer.seconds.ones",
+                rowHeight: columnRowHeight,
+                visibleRows: 5,
+                fontSize: columnFontSize,
+                showsRing: showsRing,
+                isInteractive: false
             )
             .frame(maxWidth: .infinity)
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 8)
         .onChange(of: minutesTens) { _, tens in
             if tens == 6, minutesOnes != 0 {
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
                     minutesOnes = 0
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var chapterDisplay: some View {
+        if let amount = activeChapterAmount {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Text(amount, format: .number)
+                    .font(.system(size: 96, weight: .bold))
+                    .monospacedDigit()
+                    .contentTransition(.numericText(value: Double(amount)))
+
+                Text("sleepTimer.chapter")
+                    .font(.system(size: 24, weight: .regular))
+                    .foregroundStyle(secondaryColor)
+            }
+            .accessibilityHidden(true)
         }
     }
 
@@ -298,56 +400,6 @@ struct PlaybackSleepTimerPickerCard: View {
         }
         .frame(maxWidth: .infinity)
         .animation(.spring(response: 0.45, dampingFraction: 0.65), value: isTimerActive)
-    }
-
-    private func durationFormat(for seconds: TimeInterval) -> DurationComponentsFormatter {
-        if seconds >= 3600 {
-            return .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 3)
-        } else {
-            return .duration(unitsStyle: .positional, allowedUnits: [.minute, .second], maximumUnitCount: 2)
-        }
-    }
-
-    @ViewBuilder
-    private var display: some View {
-        Group {
-            if let amount = activeChapterAmount {
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(amount, format: .number)
-                        .font(.system(size: 96, weight: .bold))
-                        .monospacedDigit()
-                        .contentTransition(.numericText(value: Double(amount)))
-
-                    Text("sleepTimer.chapter")
-                        .font(.system(size: 24, weight: .regular))
-                        .foregroundStyle(secondaryColor)
-                }
-            } else if let interval = activeInterval, !isCardDragging {
-                TimelineView(.periodic(from: .now, by: 1)) { context in
-                    let remaining = max(0, interval.expiresAt.timeIntervalSince(context.date))
-                    Text(remaining, format: durationFormat(for: remaining))
-                        .font(.system(size: 72, weight: .bold))
-                        .monospacedDigit()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .contentTransition(.numericText())
-                }
-            } else {
-                let seconds = totalSeconds
-                Text(seconds, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute], maximumUnitCount: 2))
-                    .font(.system(size: 72, weight: .bold))
-                    .monospacedDigit()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
-                    .modify(if: !isCardDragging) {
-                        $0.contentTransition(.numericText(value: Double(totalMinutes)))
-                    }
-            }
-        }
-        .scaleEffect(isCardDragging ? 1.05 : 1)
-        .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.6), value: totalMinutes)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isCardDragging)
-        .accessibilityHidden(true)
     }
 
     @ViewBuilder
@@ -477,6 +529,47 @@ struct PlaybackSleepTimerPickerCard: View {
         viewModel.isCardSliderInUse = true
     }
 
+    /// Drag-start hook for the unified timer columns. When a live interval is running,
+    /// snap our manual state to the countdown's current value *first*, then mark the card
+    /// as dragging and cancel the timer. The order matters: the child column has already
+    /// captured `dragAnchor = Double(value)` and we must not change `value` out from
+    /// under it. By syncing while the binding still reads from the live countdown (which
+    /// hands back the same value the anchor was just set to), then setting the drag flag
+    /// (which freezes the countdown sync) and finally clearing the timer, the in-flight
+    /// drag keeps its momentum and just continues against manual state.
+    ///
+    /// Finally clear the seconds wheels: once the user touches the timer they're in
+    /// whole-minute input mode (the seconds columns aren't even interactive), so any
+    /// leftover seconds from the live countdown would otherwise survive into `commitTime`
+    /// and the new timer would inherit an arbitrary 0–59 second offset.
+    private func handleColumnDragStart() {
+        if activeInterval != nil {
+            syncFromCountdown(force: true)
+        }
+        startDrag()
+        if activeInterval != nil {
+            satellite.setSleepTimer(nil)
+        }
+        if secondsTens != 0 || secondsOnes != 0 {
+            withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
+                secondsTens = 0
+                secondsOnes = 0
+            }
+        }
+    }
+
+    /// Pulls the live countdown's remaining time into the wheel state. Called once per
+    /// second while a timer is active and the card is not being dragged; the wheels then
+    /// animate to the new digit positions via their built-in spring. Rounded up so the
+    /// final second reads "1" for a full beat before the timer ends, the way Apple's
+    /// own timers behave.
+    private func syncFromCountdown(force: Bool = false) {
+        guard let interval = activeInterval else { return }
+        if !force && isCardDragging { return }
+        let totalSec = max(0, Int(interval.expiresAt.timeIntervalSinceNow.rounded(.up)))
+        applyTotalSeconds(totalSec)
+    }
+
     private func endDrag() {
         activeDragCount = max(0, activeDragCount - 1)
         guard activeDragCount == 0 else { return }
@@ -485,9 +578,9 @@ struct PlaybackSleepTimerPickerCard: View {
     }
 
     private func commitTime() {
-        let total = totalMinutes
+        let total = totalSeconds
         guard total > 0 else { return }
-        satellite.setSleepTimer(.interval(TimeInterval(total * 60)))
+        satellite.setSleepTimer(.interval(total))
     }
 
     private func applyPresetMinutes(_ minutes: Double) {
@@ -495,18 +588,35 @@ struct PlaybackSleepTimerPickerCard: View {
         satellite.setSleepTimer(.interval(minutes * 60))
     }
 
+    /// Decomposes a whole-minute count (used by presets and the legacy seed path) into
+    /// the five wheels. Seconds always reset to zero — presets are minute-granular and
+    /// any leftover seconds from a previous countdown should clear when the user picks
+    /// a fresh duration.
     private func decompose(totalMinutes: Double) {
         let m = max(0, Int(totalMinutes.rounded()))
-        hours = min(9, m / 60)
-        let rem = min(59, m % 60)
-        minutesTens = rem / 10
-        minutesOnes = rem % 10
+        applyTotalSeconds(m * 60)
+    }
+
+    private func applyTotalSeconds(_ total: Int) {
+        let clamped = max(0, total)
+        let newHours = min(9, clamped / 3600)
+        let afterHours = min(3599, clamped % 3600)
+        let newMinutesTens = afterHours / 600
+        let newMinutesOnes = (afterHours % 600) / 60
+        let secondsPart = afterHours % 60
+        let newSecondsTens = secondsPart / 10
+        let newSecondsOnes = secondsPart % 10
+        if hours != newHours { hours = newHours }
+        if minutesTens != newMinutesTens { minutesTens = newMinutesTens }
+        if minutesOnes != newMinutesOnes { minutesOnes = newMinutesOnes }
+        if secondsTens != newSecondsTens { secondsTens = newSecondsTens }
+        if secondsOnes != newSecondsOnes { secondsOnes = newSecondsOnes }
     }
 
     private func seedFromExternalState() {
         if case .interval(let expiresAt, _) = satellite.sleepTimer {
-            let remainingMinutes = max(0, expiresAt.timeIntervalSinceNow) / 60
-            decompose(totalMinutes: remainingMinutes)
+            let remaining = max(0, expiresAt.timeIntervalSinceNow)
+            applyTotalSeconds(Int(remaining.rounded(.up)))
         }
     }
 }
