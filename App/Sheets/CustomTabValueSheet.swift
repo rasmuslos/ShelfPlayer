@@ -15,7 +15,7 @@ struct CustomTabValueSheet: View {
         NavigationStack {
             CustomTabValuesPreferences()
                 .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
+                    ToolbarItem(placement: .confirmationAction) {
                         Button("action.dismiss") {
                             dismiss()
                         }

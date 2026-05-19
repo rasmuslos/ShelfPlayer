@@ -19,11 +19,74 @@ struct PlaybackQueue: View {
         AppSettings.shared.animatedNowPlayingBackground && viewModel.nowPlayingMeshColors != nil
     }
 
+    private enum QueueSection: Hashable, Identifiable {
+        case bookmarks, description, chapters, queue, upNextQueue
+
+        var id: String {
+            switch self {
+                case .bookmarks: "section_bookmarks"
+                case .description: "section_description"
+                case .chapters: "section_chapters"
+                case .queue: "section_queue"
+                case .upNextQueue: "section_upNextQueue"
+            }
+        }
+
+        var label: LocalizedStringKey {
+            switch self {
+                case .bookmarks: "item.bookmarks"
+                case .description: "item.description"
+                case .chapters: "item.chapters"
+                case .queue: "playback.queue"
+                case .upNextQueue: "playback.nextUpQueue"
+            }
+        }
+    }
+
+    private var visibleSections: [QueueSection] {
+        var sections: [QueueSection] = []
+
+        if !satellite.bookmarks.isEmpty {
+            sections.append(.bookmarks)
+        }
+        if satellite.nowPlayingItem is Episode {
+            sections.append(.description)
+        } else if !satellite.chapters.isEmpty {
+            sections.append(.chapters)
+        }
+        if !satellite.queue.isEmpty {
+            sections.append(.queue)
+        }
+        if !satellite.upNextQueue.isEmpty {
+            sections.append(.upNextQueue)
+        }
+
+        return sections
+    }
+
+    private func nextSection(after section: QueueSection) -> QueueSection? {
+        let sections = visibleSections
+        guard sections.count > 1, let idx = sections.firstIndex(of: section) else {
+            return nil
+        }
+        return sections[(idx + 1) % sections.count]
+    }
+
     @ViewBuilder
-    static func header(label: LocalizedStringKey, subtitle: String? = nil, clear: @escaping () -> Void) -> some View {
-        HStack(spacing: 0) {
+    private func sectionLabel(_ section: QueueSection, subtitle: String? = nil, scrollProxy: ScrollViewProxy) -> some View {
+        Menu {
+            ForEach(visibleSections) { other in
+                Button {
+                    withAnimation {
+                        scrollProxy.scrollTo(other.id, anchor: .top)
+                    }
+                } label: {
+                    Text(other.label)
+                }
+            }
+        } label: {
             VStack(alignment: .leading) {
-                Text(label)
+                Text(section.label)
 
                 if let subtitle {
                     Text(subtitle)
@@ -32,6 +95,29 @@ struct PlaybackQueue: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            .foregroundStyle(.primary)
+            .contentShape(.rect)
+        } primaryAction: {
+            if let next = nextSection(after: section) {
+                withAnimation {
+                    scrollProxy.scrollTo(next.id, anchor: .top)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    private func sectionHeader(_ section: QueueSection, scrollProxy: ScrollViewProxy) -> some View {
+        sectionLabel(section, scrollProxy: scrollProxy)
+            .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
+            .id(section.id)
+    }
+
+    @ViewBuilder
+    private func sectionHeaderWithClear(_ section: QueueSection, subtitle: String? = nil, scrollProxy: ScrollViewProxy, clear: @escaping () -> Void) -> some View {
+        HStack(spacing: 0) {
+            sectionLabel(section, subtitle: subtitle, scrollProxy: scrollProxy)
 
             Spacer(minLength: 12)
 
@@ -40,6 +126,7 @@ struct PlaybackQueue: View {
             }
         }
         .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
+        .id(section.id)
     }
 
     private var upNextQueueSubtitle: String? {
@@ -85,8 +172,7 @@ struct PlaybackQueue: View {
                                 }
                             }
                         } header: {
-                            Text("item.bookmarks")
-                                .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
+                            sectionHeader(.bookmarks, scrollProxy: scrollProxy)
                         }
                     }
 
@@ -99,8 +185,7 @@ struct PlaybackQueue: View {
                                 .id("playback_episode_description")
                                 .accessibilityFocused($isEpisodeDescriptionFocused)
                         } header: {
-                            Text("item.description")
-                                .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
+                            sectionHeader(.description, scrollProxy: scrollProxy)
                         }
                     } else if !satellite.chapters.isEmpty {
                         Section {
@@ -108,8 +193,7 @@ struct PlaybackQueue: View {
                                 QueueChapterRow(chapter: $0)
                             }
                         } header: {
-                            Text("item.chapters")
-                                .listRowInsets(.init(top: 12, leading: 28, bottom: 12, trailing: 28))
+                            sectionHeader(.chapters, scrollProxy: scrollProxy)
                         }
                     }
 
@@ -127,7 +211,7 @@ struct PlaybackQueue: View {
                                 }
                             }
                         } header: {
-                            Self.header(label: "playback.queue") {
+                            sectionHeaderWithClear(.queue, scrollProxy: scrollProxy) {
                                 satellite.clearQueue()
                             }
                         }
@@ -144,7 +228,7 @@ struct PlaybackQueue: View {
                                 }
                             }
                         } header: {
-                            Self.header(label: "playback.nextUpQueue", subtitle: upNextQueueSubtitle) {
+                            sectionHeaderWithClear(.upNextQueue, subtitle: upNextQueueSubtitle, scrollProxy: scrollProxy) {
                                 satellite.clearUpNextQueue()
                             }
                         }
@@ -217,6 +301,7 @@ private struct QueueChapterRow: View {
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             sleepTimerButton
+                .labelStyle(.iconOnly)
                 .tint(.accentColor)
         }
     }
@@ -313,17 +398,21 @@ private struct QueueItemRow: View {
         .id(itemID)
         .swipeActions(edge: .leading, allowsFullSwipe: true) {
             playButton
+                .labelStyle(.iconOnly)
                 .tint(tintColor.color)
         }
         .swipeActions(edge: .leading, allowsFullSwipe: true) {
             queueButton
+                .labelStyle(.iconOnly)
                 .tint(tintColor.accent)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             removeFromQueueButton
+                .labelStyle(.iconOnly)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
             ProgressButton(itemID: itemID, tint: true)
+                .labelStyle(.iconOnly)
         }
         .contextMenu {
             playButton

@@ -91,7 +91,12 @@ struct TabValueLibraryPreferences: View {
                 let unselected = viewModel.unselected
                 if !unselected.isEmpty {
                     Section {
-                        ForEach(unselected) { tab in
+                        // Namespace the row identity so it cannot collide with
+                        // the active section's ForEach. Sharing TabValue.id
+                        // across both ForEaches makes SwiftUI treat tap-to-add
+                        // as a cross-section identity move, which strips the
+                        // EditMode decorations off the inserted row.
+                        ForEach(unselected, id: \.addRowID) { tab in
                             AddRow(systemImage: tab.image, title: tab.label) {
                                 viewModel.add(tab.id)
                             }
@@ -113,7 +118,7 @@ struct TabValueLibraryPreferences: View {
         .navigationBarTitleDisplayMode(.inline)
         .environment(\.editMode, .constant(.active))
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .topBarLeading) {
                 Menu {
                     Button(role: .destructive) {
                         viewModel?.reset()
@@ -230,6 +235,10 @@ struct AddRow: View {
     }
 }
 
+private extension TabValue {
+    var addRowID: String { "add_\(id)" }
+}
+
 extension PersistenceManager.CustomizationSubsystem.TabValueCustomizationScope {
     var label: LocalizedStringKey {
         switch self {
@@ -323,7 +332,7 @@ struct CustomTabValuesPreferences: View {
         .environment(\.editMode, .constant(.active))
         .animation(.smooth, value: pinnedTabValues)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .topBarLeading) {
                 Menu {
                     Button(role: .destructive) {
                         reset()

@@ -20,7 +20,7 @@ struct CustomizeLibraryPanelSheet: View {
             TabValueLibraryPreferences(library: library, scope: scope)
                 .toolbarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
+                    ToolbarItem(placement: .confirmationAction) {
                         Button("action.dismiss") {
                             satellite.dismissSheet()
                         }

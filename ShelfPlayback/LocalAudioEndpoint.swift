@@ -328,6 +328,8 @@ extension LocalAudioEndpoint {
         }
 
         activeOperationCount += 1
+        defer { activeOperationCount -= 1 }
+
         audioPlayer.pause()
 
         let index = try! audioTrackIndex(at: time)
@@ -366,8 +368,6 @@ extension LocalAudioEndpoint {
         }
 
         await playbackReporter.update(currentTime: time, isSeeking: true)
-
-        activeOperationCount -= 1
     }
 
     func setVolume(_ volume: Percentage) {

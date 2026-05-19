@@ -653,7 +653,7 @@ extension Satellite {
     }
     func setSleepTimerToChapter(_ chapter: Chapter) {
         Task {
-            guard let currentItemID = nowPlayingItemID else {
+            guard nowPlayingItemID != nil else {
                 return
             }
 
@@ -662,7 +662,6 @@ extension Satellite {
             guard let index = chapters.firstIndex(of: chapter),
                   let currentChapterIndex = await AudioPlayer.shared.activeChapterIndex,
                   index >= currentChapterIndex else {
-                endWorking(on: currentItemID, successfully: false)
                 return
             }
 

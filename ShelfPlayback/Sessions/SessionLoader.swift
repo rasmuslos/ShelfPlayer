@@ -50,6 +50,10 @@ public final class SessionLoader {
     }
 
     public func refresh() {
+        #if DEBUG
+        if previewLocked { return }
+        #endif
+
         guard !isLoading else {
             return
         }
@@ -62,6 +66,10 @@ public final class SessionLoader {
 
         beginLoading()
     }
+
+    #if DEBUG
+    private var previewLocked = false
+    #endif
 
     private nonisolated func beginLoading() {
         Task {
@@ -178,3 +186,30 @@ public final class SessionLoader {
         }
     }
 }
+
+#if DEBUG
+public extension SessionLoader {
+    enum PreviewState: Sendable {
+        case loading
+        case empty
+        case populated
+    }
+
+    static func preview(_ state: PreviewState) -> SessionLoader {
+        let loader = SessionLoader(filter: .fixture)
+        loader.previewLocked = true
+
+        switch state {
+            case .loading:
+                loader.isLoading = true
+            case .empty:
+                loader.finished["fixture"] = true
+            case .populated:
+                loader.finished["fixture"] = true
+                loader.sessions = [SessionPayload.fixture]
+        }
+
+        return loader
+    }
+}
+#endif

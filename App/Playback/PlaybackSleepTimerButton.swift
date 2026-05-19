@@ -108,17 +108,22 @@ struct PlaybackSleepTimerPickerCard: View {
 
     let onMeshBackground: Bool
 
-    @State private var pendingMinutes: Double = 30
-    @State private var dragAnchorMinutes: Double?
-    @State private var dragTranslation: CGFloat = 0
-    @State private var isDragging = false
-    @State private var lastNearestPreset: Double?
-    @State private var lastAppliedMinutes: Double = 0
+    @State private var hours: Int = 0
+    @State private var minutesTens: Int = 3
+    @State private var minutesOnes: Int = 0
 
-    private let minMinutes: Double = 1
-    private let maxMinutes: Double = 180
-    private let step: Double = 1
-    private let tickSpacing: CGFloat = 12
+    @State private var activeDragCount: Int = 0
+    @State private var lastNearestPreset: Double?
+
+    private var isCardDragging: Bool { activeDragCount > 0 }
+
+    private var totalMinutes: Int {
+        hours * 60 + minutesTens * 10 + minutesOnes
+    }
+
+    private var totalSeconds: TimeInterval {
+        TimeInterval(totalMinutes * 60)
+    }
 
     private var presetMinutes: [Double] {
         AppSettings.shared.sleepTimerIntervals.map { $0 / 60 }
@@ -149,33 +154,6 @@ struct PlaybackSleepTimerPickerCard: View {
     private var hasChapter: Bool { satellite.chapter != nil }
     private var isTimerActive: Bool { satellite.sleepTimer != nil }
 
-    private var rulerAnchorMinutes: Double {
-        if let interval = activeInterval {
-            let remainingMinutes = interval.expiresAt.timeIntervalSinceNow / 60
-            return max(minMinutes, min(maxMinutes, remainingMinutes))
-        }
-        return pendingMinutes
-    }
-
-    private var rulerDisplayMinutes: Double {
-        guard isDragging, let anchor = dragAnchorMinutes else {
-            return rulerAnchorMinutes
-        }
-        let delta = -dragTranslation / tickSpacing * step
-        return max(minMinutes, min(maxMinutes, anchor + delta))
-    }
-
-    private func snappedMinutes(_ value: Double) -> Double {
-        let clamped = max(minMinutes, min(maxMinutes, value))
-        return (clamped / step).rounded() * step
-    }
-
-    private func applyMinutes(_ minutes: Double) {
-        let snapped = snappedMinutes(minutes)
-        pendingMinutes = snapped
-        satellite.setSleepTimer(.interval(snapped * 60))
-    }
-
     private func presetGlass(isSelected: Bool) -> Glass {
         let base: Glass = onMeshBackground ? .clear.interactive() : .regular.interactive()
         return isSelected ? base.tint(primaryColor.opacity(0.12)) : base
@@ -196,11 +174,10 @@ struct PlaybackSleepTimerPickerCard: View {
                 if activeChapterAmount != nil {
                     chapterStepper
                 } else {
-                    ruler
+                    timeColumns
                 }
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 84)
 
             Spacer(minLength: 16)
 
@@ -220,8 +197,63 @@ struct PlaybackSleepTimerPickerCard: View {
             UIAccessibility.post(notification: .screenChanged, argument: nil)
         }
         .onAppear {
-            if let interval = activeInterval {
-                pendingMinutes = snappedMinutes(interval.expiresAt.timeIntervalSinceNow / 60)
+            seedFromExternalState()
+        }
+        .onChange(of: satellite.sleepTimer) { _, _ in
+            guard !isCardDragging else { return }
+            seedFromExternalState()
+        }
+    }
+
+    @ViewBuilder
+    private var timeColumns: some View {
+        HStack(alignment: .center, spacing: 8) {
+            VerticalDigitColumn(
+                value: $hours,
+                range: 0...9,
+                primaryColor: primaryColor,
+                secondaryColor: secondaryColor,
+                accessibilityLabel: "preferences.sleepTimer.hours",
+                onDragStart: startDrag,
+                onCommit: { _ in endDrag() }
+            )
+            .frame(maxWidth: .infinity)
+
+            Text(verbatim: ":")
+                .font(.system(.title, weight: .bold))
+                .monospacedDigit()
+                .foregroundStyle(primaryColor.opacity(0.6))
+                .accessibilityHidden(true)
+
+            VerticalDigitColumn(
+                value: $minutesTens,
+                range: 0...6,
+                primaryColor: primaryColor,
+                secondaryColor: secondaryColor,
+                accessibilityLabel: "preferences.sleepTimer.minutes.tens",
+                onDragStart: startDrag,
+                onCommit: { _ in endDrag() }
+            )
+            .frame(maxWidth: .infinity)
+
+            VerticalDigitColumn(
+                value: $minutesOnes,
+                range: 0...9,
+                primaryColor: primaryColor,
+                secondaryColor: secondaryColor,
+                accessibilityLabel: "preferences.sleepTimer.minutes.ones",
+                disabledValues: minutesTens == 6 ? Set(1...9) : [],
+                onDragStart: startDrag,
+                onCommit: { _ in endDrag() }
+            )
+            .frame(maxWidth: .infinity)
+        }
+        .padding(.horizontal, 24)
+        .onChange(of: minutesTens) { _, tens in
+            if tens == 6, minutesOnes != 0 {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                    minutesOnes = 0
+                }
             }
         }
     }
@@ -290,7 +322,7 @@ struct PlaybackSleepTimerPickerCard: View {
                         .font(.system(size: 24, weight: .regular))
                         .foregroundStyle(secondaryColor)
                 }
-            } else if let interval = activeInterval, !isDragging {
+            } else if let interval = activeInterval, !isCardDragging {
                 TimelineView(.periodic(from: .now, by: 1)) { context in
                     let remaining = max(0, interval.expiresAt.timeIntervalSince(context.date))
                     Text(remaining, format: durationFormat(for: remaining))
@@ -301,99 +333,21 @@ struct PlaybackSleepTimerPickerCard: View {
                         .contentTransition(.numericText())
                 }
             } else {
-                let seconds = rulerAnchorMinutes * 60
-                Text(seconds, format: durationFormat(for: seconds))
+                let seconds = totalSeconds
+                Text(seconds, format: .duration(unitsStyle: .positional, allowedUnits: [.hour, .minute], maximumUnitCount: 2))
                     .font(.system(size: 72, weight: .bold))
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
-                    .contentTransition(.numericText(value: rulerAnchorMinutes))
+                    .modify(if: !isCardDragging) {
+                        $0.contentTransition(.numericText(value: Double(totalMinutes)))
+                    }
             }
         }
-        .scaleEffect(isDragging ? 1.05 : 1)
-        .animation(.spring(response: 0.35, dampingFraction: 0.6), value: rulerAnchorMinutes)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isDragging)
-    }
-
-    @ViewBuilder
-    private var ruler: some View {
-        GeometryReader { geo in
-            let width = geo.size.width
-            let tickHeight: CGFloat = 40
-            let labelSpacing: CGFloat = 6
-            let labelHeight: CGFloat = 14
-
-            VStack(spacing: labelSpacing) {
-                Image(systemName: "arrowtriangle.down.fill")
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(primaryColor)
-                    .frame(width: width, height: 10)
-
-                SleepTimerRulerCanvas(minutes: rulerDisplayMinutes,
-                                      minMinutes: minMinutes,
-                                      maxMinutes: maxMinutes,
-                                      step: step,
-                                      tickSpacing: tickSpacing,
-                                      tickHeight: tickHeight,
-                                      labelSpacing: labelSpacing,
-                                      labelHeight: labelHeight,
-                                      primaryColor: primaryColor,
-                                      secondaryColor: secondaryColor)
-                    .frame(width: width, height: tickHeight + labelSpacing + labelHeight)
-                    .mask(alignment: .leading) {
-                        LinearGradient(stops: [
-                            .init(color: .clear, location: 0),
-                            .init(color: .black, location: 0.12),
-                            .init(color: .black, location: 0.88),
-                            .init(color: .clear, location: 1)
-                        ], startPoint: .leading, endPoint: .trailing)
-                        .frame(width: width)
-                    }
-                    .animation(isDragging ? nil : .spring(response: 0.45, dampingFraction: 0.85), value: rulerDisplayMinutes)
-            }
-            .frame(width: width, height: geo.size.height, alignment: .top)
-            .contentShape(.rect)
-            .hapticFeedback(.selection, trigger: lastAppliedMinutes)
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { value in
-                        if dragAnchorMinutes == nil {
-                            dragAnchorMinutes = rulerAnchorMinutes
-                            lastAppliedMinutes = rulerAnchorMinutes
-                            isDragging = true
-                        }
-                        dragTranslation = value.translation.width
-
-                        let delta = -value.translation.width / tickSpacing * step
-                        let target = snappedMinutes(dragAnchorMinutes! + delta)
-
-                        if abs(target - lastAppliedMinutes) > 0.001 {
-                            lastAppliedMinutes = target
-                            applyMinutes(target)
-                        }
-                    }
-                    .onEnded { _ in
-                        dragAnchorMinutes = nil
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
-                            isDragging = false
-                            dragTranslation = 0
-                        }
-                    }
-            )
-            .accessibilityElement()
-            .accessibilityLabel("playback.sleepTimer")
-            .accessibilityValue(Text(rulerDisplayMinutes * 60, format: .duration(unitsStyle: .full, allowedUnits: [.hour, .minute])))
-            .accessibilityAdjustableAction { direction in
-                switch direction {
-                    case .increment:
-                        applyMinutes(snappedMinutes(rulerAnchorMinutes + step))
-                    case .decrement:
-                        applyMinutes(snappedMinutes(rulerAnchorMinutes - step))
-                    @unknown default:
-                        break
-                }
-            }
-        }
+        .scaleEffect(isCardDragging ? 1.05 : 1)
+        .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.6), value: totalMinutes)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isCardDragging)
+        .accessibilityHidden(true)
     }
 
     @ViewBuilder
@@ -462,10 +416,10 @@ struct PlaybackSleepTimerPickerCard: View {
                     ForEach(presetMinutes, id: \.self) { minutes in
                         let isSelected = activeChapterAmount == nil
                             && isTimerActive
-                            && abs(rulerAnchorMinutes - minutes) < 0.001
+                            && abs(Double(totalMinutes) - minutes) < 0.001
 
                         Button {
-                            applyMinutes(minutes)
+                            applyPresetMinutes(minutes)
                         } label: {
                             Text(minutes * 60, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute]))
                                 .font(.system(.subheadline, weight: isSelected ? .bold : .medium))
@@ -480,7 +434,7 @@ struct PlaybackSleepTimerPickerCard: View {
                                 .scaleEffect(isSelected ? 1.04 : 1)
                         }
                         .buttonStyle(.plain)
-                        .animation(.spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
+                        .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
                         .id(minutes)
                     }
                 }
@@ -494,86 +448,99 @@ struct PlaybackSleepTimerPickerCard: View {
                     scrollProxy.scrollTo(nearest, anchor: .center)
                 }
             }
-            .onChange(of: rulerAnchorMinutes) { _, minutes in
-                let nearest = presetMinutes.min(by: { abs($0 - minutes) < abs($1 - minutes) })
-                guard let nearest, nearest != lastNearestPreset else { return }
-                lastNearestPreset = nearest
-                withAnimation(.smooth) {
-                    scrollProxy.scrollTo(nearest, anchor: .center)
-                }
+            .onChange(of: totalMinutes) { _, _ in
+                guard !isCardDragging else { return }
+                scrollToNearest(using: scrollProxy)
+            }
+            .onChange(of: isCardDragging) { _, dragging in
+                guard !dragging else { return }
+                scrollToNearest(using: scrollProxy)
             }
         }
         .frame(height: 48)
     }
 
     private var nearestPreset: Double? {
-        presetMinutes.min(by: { abs($0 - rulerAnchorMinutes) < abs($1 - rulerAnchorMinutes) })
-    }
-}
-
-private struct SleepTimerRulerCanvas: View, @preconcurrency Animatable {
-    var minutes: Double
-    let minMinutes: Double
-    let maxMinutes: Double
-    let step: Double
-    let tickSpacing: CGFloat
-    let tickHeight: CGFloat
-    let labelSpacing: CGFloat
-    let labelHeight: CGFloat
-    let primaryColor: Color
-    let secondaryColor: Color
-
-    var animatableData: Double {
-        get { minutes }
-        set { minutes = newValue }
+        presetMinutes.min(by: { abs($0 - Double(totalMinutes)) < abs($1 - Double(totalMinutes)) })
     }
 
-    var body: some View {
-        Canvas(rendersAsynchronously: false) { context, size in
-            let centerX = size.width / 2
-            let tickCount = Int(((maxMinutes - minMinutes) / step).rounded()) + 1
-            let currentIndex = (minutes - minMinutes) / step
-            let offsetX = centerX - CGFloat(currentIndex) * tickSpacing - tickSpacing / 2
+    private func scrollToNearest(using scrollProxy: ScrollViewProxy) {
+        guard let nearest = nearestPreset, nearest != lastNearestPreset else { return }
+        lastNearestPreset = nearest
+        withAnimation(.smooth) {
+            scrollProxy.scrollTo(nearest, anchor: .center)
+        }
+    }
 
-            let majorHeight: CGFloat = 24
-            let minorHeight: CGFloat = 10
-            let labelY = tickHeight + labelSpacing + labelHeight / 2
+    private func startDrag() {
+        activeDragCount += 1
+        viewModel.isCardSliderInUse = true
+    }
 
-            for index in 0..<tickCount {
-                let tickX = offsetX + CGFloat(index) * tickSpacing + tickSpacing / 2
-                if tickX < -8 || tickX > size.width + 8 { continue }
+    private func endDrag() {
+        activeDragCount = max(0, activeDragCount - 1)
+        guard activeDragCount == 0 else { return }
+        viewModel.isCardSliderInUse = false
+        commitTime()
+    }
 
-                let minuteValue = minMinutes + Double(index) * step
-                let rounded = Int(minuteValue.rounded())
-                let major = rounded % 5 == 0
+    private func commitTime() {
+        let total = totalMinutes
+        guard total > 0 else { return }
+        satellite.setSleepTimer(.interval(TimeInterval(total * 60)))
+    }
 
-                let height: CGFloat = major ? majorHeight : minorHeight
-                let width: CGFloat = major ? 1.75 : 1
-                let opacity: Double = major ? 0.9 : 0.3
+    private func applyPresetMinutes(_ minutes: Double) {
+        decompose(totalMinutes: minutes)
+        satellite.setSleepTimer(.interval(minutes * 60))
+    }
 
-                let barRect = CGRect(x: tickX - width / 2, y: tickHeight - height, width: width, height: height)
-                context.fill(Path(barRect), with: .color(primaryColor.opacity(opacity)))
+    private func decompose(totalMinutes: Double) {
+        let m = max(0, Int(totalMinutes.rounded()))
+        hours = min(9, m / 60)
+        let rem = min(59, m % 60)
+        minutesTens = rem / 10
+        minutesOnes = rem % 10
+    }
 
-                if major && rounded % 15 == 0 {
-                    let text = Text(verbatim: "\(rounded)")
-                        .font(.caption)
-                        .monospacedDigit()
-                        .foregroundStyle(secondaryColor)
-                    context.draw(text, at: CGPoint(x: tickX, y: labelY), anchor: .center)
-                }
-            }
+    private func seedFromExternalState() {
+        if case .interval(let expiresAt, _) = satellite.sleepTimer {
+            let remainingMinutes = max(0, expiresAt.timeIntervalSinceNow) / 60
+            decompose(totalMinutes: remainingMinutes)
         }
     }
 }
 
 #if DEBUG
-#Preview {
+#Preview("Sleep-timer button") {
     PlaybackSleepTimerButton()
         .previewEnvironment()
 }
 
-#Preview {
+#Preview("Sleep-timer button on mesh") {
+    ZStack {
+        LinearGradient(colors: [.indigo, .purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+            .ignoresSafeArea()
+        PlaybackSleepTimerButton(onMeshBackground: true)
+            .foregroundStyle(.white)
+    }
+    .preferredColorScheme(.dark)
+    .previewEnvironment()
+}
+
+#Preview("Sleep-timer card") {
     PlaybackSleepTimerPickerCard(onMeshBackground: false)
         .previewEnvironment()
+}
+
+#Preview("Sleep-timer card on mesh") {
+    ZStack {
+        LinearGradient(colors: [.indigo, .purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+            .ignoresSafeArea()
+        PlaybackSleepTimerPickerCard(onMeshBackground: true)
+            .foregroundStyle(.white)
+    }
+    .preferredColorScheme(.dark)
+    .previewEnvironment()
 }
 #endif

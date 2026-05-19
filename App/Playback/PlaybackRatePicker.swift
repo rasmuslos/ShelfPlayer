@@ -57,9 +57,8 @@ struct PlaybackRatePickerCard: View {
 
     let onMeshBackground: Bool
 
-    @State private var dragAnchorRate: Double?
-    @State private var dragTranslation: CGFloat = 0
-    @State private var isDragging = false
+    @State private var liveRate: Double = 1.0
+    @State private var isCardDragging = false
     @State private var notifyGroupingSave = false
     @State private var notifyGroupingError = false
     @State private var storedGroupingRate: Double?
@@ -121,14 +120,6 @@ struct PlaybackRatePickerCard: View {
         return isSelected ? base.tint(primaryColor.opacity(0.12)) : base
     }
 
-    private var rulerDisplayRate: Double {
-        guard isDragging, let anchor = dragAnchorRate else {
-            return satellite.playbackRate
-        }
-        let delta = -dragTranslation / tickSpacing * step
-        return max(minRate, min(maxRate, anchor + delta))
-    }
-
     var body: some View {
         VStack(spacing: 0) {
             groupingDefaultControl
@@ -140,9 +131,30 @@ struct PlaybackRatePickerCard: View {
 
             Spacer(minLength: 20)
 
-            ruler
-                .frame(maxWidth: .infinity)
-                .frame(height: 84)
+            RulerSlider(
+                value: $liveRate,
+                range: minRate...maxRate,
+                step: step,
+                tickSpacing: tickSpacing,
+                majorStep: 0.5,
+                labelStep: 0.5,
+                labelText: { Text($0, format: .playbackRate.hideX().fractionDigits(1)) },
+                primaryColor: primaryColor,
+                secondaryColor: secondaryColor,
+                accessibilityLabel: "preferences.playbackRate",
+                accessibilityValue: { Text($0.formatted(.playbackRate)) },
+                onDragStart: {
+                    viewModel.isCardSliderInUse = true
+                    isCardDragging = true
+                },
+                onCommit: { final in
+                    isCardDragging = false
+                    viewModel.isCardSliderInUse = false
+                    satellite.setPlaybackRate(final)
+                }
+            )
+            .frame(maxWidth: .infinity)
+            .frame(height: 84)
 
             Spacer(minLength: 16)
 
@@ -169,6 +181,13 @@ struct PlaybackRatePickerCard: View {
             } else {
                 storedGroupingRate = nil
             }
+        }
+        .onAppear {
+            liveRate = satellite.playbackRate
+        }
+        .onChange(of: satellite.playbackRate) { _, newRate in
+            guard !isCardDragging else { return }
+            liveRate = newRate
         }
     }
 
@@ -206,98 +225,21 @@ struct PlaybackRatePickerCard: View {
                 .padding(.trailing, 4)
                 .hidden()
 
-            Text(satellite.playbackRate, format: .playbackRate.hideX().fractionDigits(1))
+            Text(liveRate, format: .playbackRate.hideX().fractionDigits(1))
                 .font(.system(size: 96, weight: .bold))
                 .monospacedDigit()
-                .contentTransition(.numericText(value: satellite.playbackRate))
+                .modify(if: !isCardDragging) {
+                    $0.contentTransition(.numericText(value: liveRate))
+                }
 
             Image(decorative: "xsign")
                 .font(.system(size: 40, weight: .regular))
                 .foregroundStyle(.secondary)
                 .padding(.leading, 4)
         }
-        .scaleEffect(isDragging ? 1.05 : 1)
-        .animation(.spring(response: 0.35, dampingFraction: 0.6), value: satellite.playbackRate)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isDragging)
-    }
-
-    @ViewBuilder
-    private var ruler: some View {
-        GeometryReader { geo in
-            let width = geo.size.width
-            let tickHeight: CGFloat = 40
-            let labelSpacing: CGFloat = 6
-            let labelHeight: CGFloat = 14
-
-            VStack(spacing: labelSpacing) {
-                Image(systemName: "arrowtriangle.down.fill")
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(primaryColor)
-                    .frame(width: width, height: 10)
-
-                RulerCanvas(rate: rulerDisplayRate,
-                            minRate: minRate,
-                            maxRate: maxRate,
-                            step: step,
-                            tickSpacing: tickSpacing,
-                            tickHeight: tickHeight,
-                            labelSpacing: labelSpacing,
-                            labelHeight: labelHeight,
-                            primaryColor: primaryColor,
-                            secondaryColor: secondaryColor)
-                    .frame(width: width, height: tickHeight + labelSpacing + labelHeight)
-                    .mask(alignment: .leading) {
-                        LinearGradient(stops: [
-                            .init(color: .clear, location: 0),
-                            .init(color: .black, location: 0.12),
-                            .init(color: .black, location: 0.88),
-                            .init(color: .clear, location: 1)
-                        ], startPoint: .leading, endPoint: .trailing)
-                        .frame(width: width)
-                    }
-                    .animation(isDragging ? nil : .spring(response: 0.45, dampingFraction: 0.85), value: rulerDisplayRate)
-            }
-            .frame(width: width, height: geo.size.height, alignment: .top)
-            .contentShape(.rect)
-            .hapticFeedback(.selection, trigger: satellite.playbackRate)
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { value in
-                        if dragAnchorRate == nil {
-                            dragAnchorRate = satellite.playbackRate
-                            isDragging = true
-                        }
-                        dragTranslation = value.translation.width
-
-                        let delta = -value.translation.width / tickSpacing * step
-                        let target = snappedRate(dragAnchorRate! + delta)
-
-                        if abs(satellite.playbackRate - target) > 0.001 {
-                            satellite.setPlaybackRate(target)
-                        }
-                    }
-                    .onEnded { _ in
-                        dragAnchorRate = nil
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
-                            isDragging = false
-                            dragTranslation = 0
-                        }
-                    }
-            )
-            .accessibilityElement()
-            .accessibilityLabel("preferences.playbackRate")
-            .accessibilityValue(Text(satellite.playbackRate.formatted(.playbackRate)))
-            .accessibilityAdjustableAction { direction in
-                switch direction {
-                    case .increment:
-                        satellite.setPlaybackRate(snappedRate(satellite.playbackRate + step))
-                    case .decrement:
-                        satellite.setPlaybackRate(snappedRate(satellite.playbackRate - step))
-                    @unknown default:
-                        break
-                }
-            }
-        }
+        .scaleEffect(isCardDragging ? 1.05 : 1)
+        .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.6), value: liveRate)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isCardDragging)
     }
 
     @ViewBuilder
@@ -306,9 +248,10 @@ struct PlaybackRatePickerCard: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(presets, id: \.self) { rate in
-                        let isSelected = abs(satellite.playbackRate - rate) < 0.001
+                        let isSelected = abs(liveRate - rate) < 0.001
 
                         Button {
+                            liveRate = rate
                             satellite.setPlaybackRate(rate)
                         } label: {
                             Text(rate, format: .playbackRate.hideX().fractionDigits(1))
@@ -324,7 +267,7 @@ struct PlaybackRatePickerCard: View {
                                 .scaleEffect(isSelected ? 1.04 : 1)
                         }
                         .buttonStyle(.plain)
-                        .animation(.spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
+                        .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
                         .id(rate)
                     }
                 }
@@ -338,20 +281,28 @@ struct PlaybackRatePickerCard: View {
                     scrollProxy.scrollTo(nearest, anchor: .center)
                 }
             }
-            .onChange(of: satellite.playbackRate) { _, rate in
-                let nearest = presets.min(by: { abs($0 - rate) < abs($1 - rate) })
-                guard let nearest, nearest != lastNearestPreset else { return }
-                lastNearestPreset = nearest
-                withAnimation(.smooth) {
-                    scrollProxy.scrollTo(nearest, anchor: .center)
-                }
+            .onChange(of: liveRate) { _, _ in
+                guard !isCardDragging else { return }
+                scrollToNearest(using: scrollProxy)
+            }
+            .onChange(of: isCardDragging) { _, dragging in
+                guard !dragging else { return }
+                scrollToNearest(using: scrollProxy)
             }
         }
         .frame(height: 48)
     }
 
     private var nearestPreset: Double? {
-        presets.min(by: { abs($0 - satellite.playbackRate) < abs($1 - satellite.playbackRate) })
+        presets.min(by: { abs($0 - liveRate) < abs($1 - liveRate) })
+    }
+
+    private func scrollToNearest(using scrollProxy: ScrollViewProxy) {
+        guard let nearest = nearestPreset, nearest != lastNearestPreset else { return }
+        lastNearestPreset = nearest
+        withAnimation(.smooth) {
+            scrollProxy.scrollTo(nearest, anchor: .center)
+        }
     }
 
     private func setAsGroupingDefault(itemID: ItemIdentifier) {
@@ -369,68 +320,36 @@ struct PlaybackRatePickerCard: View {
     }
 }
 
-private struct RulerCanvas: View, @preconcurrency Animatable {
-    var rate: Double
-    let minRate: Double
-    let maxRate: Double
-    let step: Double
-    let tickSpacing: CGFloat
-    let tickHeight: CGFloat
-    let labelSpacing: CGFloat
-    let labelHeight: CGFloat
-    let primaryColor: Color
-    let secondaryColor: Color
-
-    var animatableData: Double {
-        get { rate }
-        set { rate = newValue }
-    }
-
-    var body: some View {
-        Canvas(rendersAsynchronously: false) { context, size in
-            let centerX = size.width / 2
-            let tickCount = Int(((maxRate - minRate) / step).rounded()) + 1
-            let currentIndex = (rate - minRate) / step
-            let offsetX = centerX - CGFloat(currentIndex) * tickSpacing - tickSpacing / 2
-
-            let majorHeight: CGFloat = 24
-            let minorHeight: CGFloat = 10
-            let labelY = tickHeight + labelSpacing + labelHeight / 2
-
-            for index in 0..<tickCount {
-                let tickX = offsetX + CGFloat(index) * tickSpacing + tickSpacing / 2
-                if tickX < -8 || tickX > size.width + 8 { continue }
-
-                let rateValue = minRate + Double(index) * step
-                let major = (Int((rateValue * 10).rounded()) % 5) == 0
-
-                let height: CGFloat = major ? majorHeight : minorHeight
-                let width: CGFloat = major ? 1.75 : 1
-                let opacity: Double = major ? 0.9 : 0.3
-
-                let barRect = CGRect(x: tickX - width / 2, y: tickHeight - height, width: width, height: height)
-                context.fill(Path(barRect), with: .color(primaryColor.opacity(opacity)))
-
-                if major {
-                    let text = Text(rateValue, format: .playbackRate.hideX().fractionDigits(1))
-                        .font(.caption)
-                        .monospacedDigit()
-                        .foregroundStyle(secondaryColor)
-                    context.draw(text, at: CGPoint(x: tickX, y: labelY), anchor: .center)
-                }
-            }
-        }
-    }
-}
-
 #if DEBUG
-#Preview {
+#Preview("Rate button") {
     PlaybackRateButton()
         .previewEnvironment()
 }
 
-#Preview {
+#Preview("Rate button on mesh") {
+    ZStack {
+        LinearGradient(colors: [.purple, .indigo, .pink], startPoint: .topLeading, endPoint: .bottomTrailing)
+            .ignoresSafeArea()
+        PlaybackRateButton(onMeshBackground: true)
+            .foregroundStyle(.white)
+    }
+    .preferredColorScheme(.dark)
+    .previewEnvironment()
+}
+
+#Preview("Rate picker card") {
     PlaybackRatePickerCard(onMeshBackground: false)
         .previewEnvironment()
+}
+
+#Preview("Rate picker on mesh") {
+    ZStack {
+        LinearGradient(colors: [.purple, .indigo, .pink], startPoint: .topLeading, endPoint: .bottomTrailing)
+            .ignoresSafeArea()
+        PlaybackRatePickerCard(onMeshBackground: true)
+            .foregroundStyle(.white)
+    }
+    .preferredColorScheme(.dark)
+    .previewEnvironment()
 }
 #endif
