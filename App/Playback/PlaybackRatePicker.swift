@@ -62,7 +62,6 @@ struct PlaybackRatePickerCard: View {
     @State private var notifyGroupingSave = false
     @State private var notifyGroupingError = false
     @State private var storedGroupingRate: Double?
-    @State private var lastNearestPreset: Double?
 
     private let minRate: Double = 0.1
     private let maxRate: Double = 4.0
@@ -144,12 +143,10 @@ struct PlaybackRatePickerCard: View {
                 accessibilityLabel: "preferences.playbackRate",
                 accessibilityValue: { Text($0.formatted(.playbackRate)) },
                 onDragStart: {
-                    viewModel.isCardSliderInUse = true
                     isCardDragging = true
                 },
                 onCommit: { final in
                     isCardDragging = false
-                    viewModel.isCardSliderInUse = false
                     satellite.setPlaybackRate(final)
                 }
             )
@@ -244,64 +241,27 @@ struct PlaybackRatePickerCard: View {
 
     @ViewBuilder
     private var presetButtons: some View {
-        ScrollViewReader { scrollProxy in
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(presets, id: \.self) { rate in
-                        let isSelected = abs(liveRate - rate) < 0.001
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 64), spacing: 8)], spacing: 8) {
+            ForEach(presets, id: \.self) { rate in
+                let isSelected = abs(liveRate - rate) < 0.001
 
-                        Button {
-                            liveRate = rate
-                            satellite.setPlaybackRate(rate)
-                        } label: {
-                            Text(rate, format: .playbackRate.hideX().fractionDigits(1))
-                                .font(.system(.subheadline, weight: isSelected ? .bold : .medium))
-                                .monospacedDigit()
-                                .foregroundStyle(isSelected ? primaryColor : secondaryColor)
-                                .lineLimit(1)
-                                .fixedSize()
-                                .frame(minWidth: 44)
-                                .padding(.horizontal, 14)
-                                .frame(height: 40)
-                                .glassEffect(presetGlass(isSelected: isSelected), in: .capsule)
-                                .scaleEffect(isSelected ? 1.04 : 1)
-                        }
-                        .buttonStyle(.plain)
-                        .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
-                        .id(rate)
-                    }
+                Button {
+                    liveRate = rate
+                    satellite.setPlaybackRate(rate)
+                } label: {
+                    Text(rate, format: .playbackRate.hideX().fractionDigits(1))
+                        .font(.system(.subheadline, weight: isSelected ? .bold : .medium))
+                        .monospacedDigit()
+                        .foregroundStyle(isSelected ? primaryColor : secondaryColor)
+                        .lineLimit(1)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 40)
+                        .glassEffect(presetGlass(isSelected: isSelected), in: .capsule)
+                        .scaleEffect(isSelected ? 1.04 : 1)
                 }
-                .padding(.vertical, 4)
+                .buttonStyle(.plain)
+                .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
             }
-            .scrollIndicators(.hidden)
-            .scrollClipDisabled()
-            .onAppear {
-                if let nearest = nearestPreset {
-                    lastNearestPreset = nearest
-                    scrollProxy.scrollTo(nearest, anchor: .center)
-                }
-            }
-            .onChange(of: liveRate) { _, _ in
-                guard !isCardDragging else { return }
-                scrollToNearest(using: scrollProxy)
-            }
-            .onChange(of: isCardDragging) { _, dragging in
-                guard !dragging else { return }
-                scrollToNearest(using: scrollProxy)
-            }
-        }
-        .frame(height: 48)
-    }
-
-    private var nearestPreset: Double? {
-        presets.min(by: { abs($0 - liveRate) < abs($1 - liveRate) })
-    }
-
-    private func scrollToNearest(using scrollProxy: ScrollViewProxy) {
-        guard let nearest = nearestPreset, nearest != lastNearestPreset else { return }
-        lastNearestPreset = nearest
-        withAnimation(.smooth) {
-            scrollProxy.scrollTo(nearest, anchor: .center)
         }
     }
 

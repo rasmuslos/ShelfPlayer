@@ -9,17 +9,15 @@ import SwiftUI
 
 struct NowPlayingMeshBackground: View {
     let colors: [Color]
-    var isPaused: Bool = false
 
     private static let dim = 3
     private static let speedMultiplier: Float = 15
 
     @State private var seeds: [DriftSeed] = (0..<Self.dim * Self.dim).map { _ in .random() }
     @State private var startDate = Date(timeIntervalSinceNow: -.random(in: 0...600))
-    @State private var pauseStartedAt: Date?
 
     var body: some View {
-        TimelineView(.animation(paused: isPaused)) { timeline in
+        TimelineView(.animation) { timeline in
             let t = Float(timeline.date.timeIntervalSince(startDate))
 
             MeshGradient(
@@ -27,14 +25,6 @@ struct NowPlayingMeshBackground: View {
                 points: Self.driftedPoints(t: t, seeds: seeds),
                 colors: colors
             )
-        }
-        .onChange(of: isPaused) { _, paused in
-            if paused {
-                pauseStartedAt = .now
-            } else if let pauseStartedAt {
-                startDate = startDate.addingTimeInterval(Date.now.timeIntervalSince(pauseStartedAt))
-                self.pauseStartedAt = nil
-            }
         }
     }
 

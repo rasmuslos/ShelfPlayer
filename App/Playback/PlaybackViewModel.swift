@@ -108,8 +108,6 @@ final class PlaybackViewModel {
     var seekingTotal: Percentage?
     var volumePreview: Percentage?
 
-    var isCardSliderInUse = false
-
     var skipBackwardsInterval: Int { settings.skipBackwardsInterval }
     var skipForwardsInterval: Int { settings.skipForwardsInterval }
 

@@ -41,8 +41,10 @@ struct VerticalDigitColumn: View {
     /// Point size of the digit text. Driven separately from `rowHeight` so callers can
     /// tune the bold-row visual weight independently of the wheel pitch.
     var fontSize: CGFloat = 22
-    /// Whether to draw the rounded background "ring" around the selected row. The card
-    /// hides it during the live countdown to read as a static number instead of an input.
+    /// Whether to draw the rounded background "ring" around the selected row. When
+    /// `false`, the column draws no center-row affordance at all — the parent is
+    /// expected to render a single continuous selection rectangle that spans the
+    /// row across multiple columns.
     var showsRing: Bool = true
     /// When false the column ignores drag/adjustable input — it's a read-only display.
     /// The sleep-timer card uses this for the seconds wheels, which only mirror the
@@ -110,23 +112,20 @@ struct VerticalDigitColumn: View {
     var body: some View {
         let height = rowHeight * CGFloat(visibleRows)
         let ringRadius = min(16, rowHeight * 0.22)
-        // The border is always drawn on every column so the center row stays
-        // outlined whether the timer is active or idle. The fill on top is what
-        // toggles to advertise drag input: interactive columns get the soft fill
-        // while showing the input affordance; read-only columns never fill.
-        let fillOpacity = (showsRing && isInteractive) ? 0.08 : 0
+        // Read-only columns never get the soft fill (no input to advertise).
+        let fillOpacity: Double = isInteractive ? 0.08 : 0
         let strokeOpacity: Double = 0.22
 
         ZStack {
-            RoundedRectangle(cornerRadius: ringRadius, style: .continuous)
-                .fill(primaryColor.opacity(fillOpacity))
-                .frame(height: rowHeight)
-                .animation(.easeInOut(duration: 0.2), value: fillOpacity)
+            if showsRing {
+                RoundedRectangle(cornerRadius: ringRadius, style: .continuous)
+                    .fill(primaryColor.opacity(fillOpacity))
+                    .frame(height: rowHeight)
 
-            RoundedRectangle(cornerRadius: ringRadius, style: .continuous)
-                .strokeBorder(primaryColor.opacity(strokeOpacity), lineWidth: 1)
-                .frame(height: rowHeight)
-                .animation(.easeInOut(duration: 0.2), value: strokeOpacity)
+                RoundedRectangle(cornerRadius: ringRadius, style: .continuous)
+                    .strokeBorder(primaryColor.opacity(strokeOpacity), lineWidth: 1)
+                    .frame(height: rowHeight)
+            }
 
             DigitCanvas(
                 smoothPosition: smoothPosition,

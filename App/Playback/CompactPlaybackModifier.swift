@@ -49,7 +49,7 @@ struct CompactPlaybackModifier: ViewModifier {
             }
             .overlay {
                 if settings.animatedNowPlayingBackground, let meshColors = viewModel.nowPlayingMeshColors {
-                    NowPlayingMeshBackground(colors: meshColors, isPaused: viewModel.isCardSliderInUse)
+                    NowPlayingMeshBackground(colors: meshColors)
                         .clipShape(RoundedRectangle(cornerRadius: nowPlayingCornerRadius, style: .continuous))
                         .opacity(viewModel.isExpanded ? 1 : 0)
                         .transition(.opacity)
