@@ -500,7 +500,7 @@ private struct ReadingGoalCalendar: View {
                 }
             }
 
-            ZStack {
+            ZStack(alignment: .top) {
                 MonthGrid(
                     monthAnchor: monthAnchor,
                     days: days,
@@ -513,6 +513,7 @@ private struct ReadingGoalCalendar: View {
                     removal: .move(edge: stepDirection >= 0 ? .leading : .trailing)
                 ))
             }
+            .animation(.spring(response: 0.45, dampingFraction: 0.85), value: monthAnchor)
             .clipped()
         }
         .padding(.vertical, 8)
@@ -541,8 +542,10 @@ private struct ReadingGoalCalendar: View {
 
         var body: some View {
             if let monthStart, let monthRange {
-                let totalCells = leadingBlanks + monthRange.count
-                let rows = Int(ceil(Double(totalCells) / 7.0))
+                // Always render 6 rows so the grid height is stable across
+                // months — otherwise the ZStack resizes mid-transition and the
+                // slide animation looks broken.
+                let rows = 6
 
                 VStack(spacing: 6) {
                     ForEach(0..<rows, id: \.self) { row in
@@ -576,9 +579,7 @@ private struct ReadingGoalCalendar: View {
             if let nextStart = calendar.date(from: comps), nextStart > today { return }
         }
         stepDirection = months
-        withAnimation(.spring(response: 0.55, dampingFraction: 0.85)) {
-            monthAnchor = next
-        }
+        monthAnchor = next
     }
 
     private struct DayCell: View {

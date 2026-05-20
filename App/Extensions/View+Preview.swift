@@ -12,13 +12,13 @@ import ShelfPlayback
 extension View {
     #if DEBUG
     @ViewBuilder
-    func previewEnvironment() -> some View {
+    func previewEnvironment(sleepTimer: SleepTimerConfiguration? = nil) -> some View {
         @Namespace var namespace
 
         self
             .environment(OfflineMode.shared)
             .environment(ConnectionStore.shared)
-            .environment(Satellite.shared.debugPlayback())
+            .environment(Satellite.shared.debugPlayback(sleepTimer: sleepTimer))
 
             .environment(PlaybackViewModel.shared.debugPlayback())
             .environment(BookmarkEditor())

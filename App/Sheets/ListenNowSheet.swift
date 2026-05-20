@@ -61,7 +61,6 @@ struct ListenNowSheet: View {
                 }
             }
         }
-        .presentationDetents([.medium, .large])
         .presentationDragIndicator(horizontalSizeClass == .compact ? .visible : .hidden)
         .task {
             load(refresh: false)

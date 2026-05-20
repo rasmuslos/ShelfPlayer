@@ -105,7 +105,7 @@ private struct Title: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 if let releaseDate = episode.releaseDate {
                     Text(releaseDate, style: .date)
                         .font(.footnote.smallCaps())
@@ -124,7 +124,7 @@ private struct Title: View {
                 }
 
                 EpisodeItemActions(episode: episode, context: .featured)
-                    .padding(.top, 6)
+                    .padding(.top, 4)
             }
 
             Spacer(minLength: 0)
@@ -152,3 +152,23 @@ private struct Background: View {
         }
     }
 }
+
+#if DEBUG
+#Preview("Single") {
+    NavigationStack {
+        ScrollView {
+            EpisodeFeaturedGrid(episodes: [.fixture])
+        }
+    }
+    .previewEnvironment()
+}
+
+#Preview("Multiple") {
+    NavigationStack {
+        ScrollView {
+            EpisodeFeaturedGrid(episodes: [.fixture, .fixture, .fixture, .fixture])
+        }
+    }
+    .previewEnvironment()
+}
+#endif

@@ -16,9 +16,8 @@ struct SleepTimerEditor: View {
     @State private var sleepTimerExtendChapterAmount: Int = AppSettings.shared.sleepTimerExtendChapterAmount
     @State private var extendSleepTimerByPreviousSetting: Bool = AppSettings.shared.extendSleepTimerByPreviousSetting
 
-    @State private var hourOne: Int = 0
-    @State private var minuteOne: Int = 0
-    @State private var minuteTwo: Int = 0
+    @State private var hours: Int = 0
+    @State private var minutes: Int = 0
 
     @State private var notifyError = false
 
@@ -48,8 +47,8 @@ struct SleepTimerEditor: View {
             }
 
             Section {
-                HStack {
-                    Picker("preferences.sleepTimer.hours", selection: $hourOne) {
+                HStack(spacing: 0) {
+                    Picker("preferences.sleepTimer.hours", selection: $hours) {
                         ForEach(0..<10) { hour in
                             Text(hour, format: .number)
                         }
@@ -57,18 +56,11 @@ struct SleepTimerEditor: View {
 
                     Text(verbatim: ":")
 
-                    Picker("preferences.sleepTimer.minutes", selection: $minuteTwo) {
-                        ForEach(0..<7) { minute in
-                            Text(minute, format: .number)
+                    Picker("preferences.sleepTimer.minutes", selection: $minutes) {
+                        ForEach(0..<60) { minute in
+                            Text(String(format: "%02d", minute))
                         }
                     }
-                    .accessibilityLabel("preferences.sleepTimer.minutes.tens")
-                    Picker("preferences.sleepTimer.minutes", selection: $minuteOne) {
-                        ForEach(0..<10) { minute in
-                            Text(minute, format: .number)
-                        }
-                    }
-                    .accessibilityLabel("preferences.sleepTimer.minutes.ones")
                 }
                 .pickerStyle(.wheel)
                 .alignmentGuide(.listRowSeparatorLeading) { _ in
@@ -76,7 +68,7 @@ struct SleepTimerEditor: View {
                 }
 
                 Button("preferences.sleepTimer.add", systemImage: "plus") {
-                    let time = Double(minuteOne) * 60 + Double(minuteTwo) * 60 * 10 + Double(hourOne) * 60 * 60
+                    let time = Double(hours) * 3600 + Double(minutes) * 60
 
                     guard time > 0 && !sleepTimerIntervals.contains(time) else {
                         notifyError.toggle()

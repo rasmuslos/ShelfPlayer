@@ -1179,7 +1179,9 @@ extension Satellite {
 
 #if DEBUG
 extension Satellite {
-    func debugPlayback() -> Self {
+    func debugPlayback(sleepTimer: SleepTimerConfiguration? = nil) -> Self {
+        self.sleepTimer = sleepTimer
+
         nowPlayingItemID = .fixture
         nowPlayingItem = Episode.fixture
 

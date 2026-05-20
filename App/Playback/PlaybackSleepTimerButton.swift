@@ -109,10 +109,9 @@ struct PlaybackSleepTimerPickerCard: View {
     let onMeshBackground: Bool
 
     @State private var hours: Int = 0
-    @State private var minutesTens: Int = 3
-    @State private var minutesOnes: Int = 0
-    @State private var secondsTens: Int = 0
-    @State private var secondsOnes: Int = 0
+    @State private var minutes: Int = 30
+    @State private var seconds: Int = 0
+    @State private var chapterCount: Int = 1
 
     @State private var activeDragCount: Int = 0
     @State private var lastNearestPreset: Double?
@@ -120,13 +119,7 @@ struct PlaybackSleepTimerPickerCard: View {
     private var isCardDragging: Bool { activeDragCount > 0 }
 
     private var totalSeconds: TimeInterval {
-        TimeInterval(
-            hours * 3600
-            + minutesTens * 600
-            + minutesOnes * 60
-            + secondsTens * 10
-            + secondsOnes
-        )
+        TimeInterval(hours * 3600 + minutes * 60 + seconds)
     }
 
     /// Whole-minute representation used by the preset chips and their auto-centering
@@ -181,12 +174,7 @@ struct PlaybackSleepTimerPickerCard: View {
             Spacer(minLength: 12)
 
             if activeChapterAmount != nil {
-                chapterDisplay
-                    .frame(maxWidth: .infinity)
-
-                Spacer(minLength: 20)
-
-                chapterStepper
+                chapterPicker
                     .frame(maxWidth: .infinity)
             } else {
                 unifiedTimerDisplay
@@ -218,9 +206,9 @@ struct PlaybackSleepTimerPickerCard: View {
             seedFromExternalState()
         }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
-            // Animate the per-second tick so the seconds-ones wheel glides between
-            // digits instead of snapping. The 0.45s spring response is shorter than
-            // the 1Hz tick rate, so the wheel always settles before the next update.
+            // Animate the per-second tick so the seconds wheel glides between values
+            // instead of snapping. The 0.45s spring response is shorter than the 1Hz
+            // tick rate, so the wheel always settles before the next update.
             withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) {
                 syncFromCountdown()
             }
@@ -264,33 +252,18 @@ struct PlaybackSleepTimerPickerCard: View {
                 .accessibilityHidden(true)
 
             VerticalDigitColumn(
-                value: $minutesTens,
-                range: 0...6,
+                value: $minutes,
+                range: 0...59,
                 primaryColor: primaryColor,
                 secondaryColor: secondaryColor,
-                accessibilityLabel: "preferences.sleepTimer.minutes.tens",
+                accessibilityLabel: "preferences.sleepTimer.minutes",
                 onDragStart: handleColumnDragStart,
                 onCommit: { _ in endDrag() },
                 rowHeight: columnRowHeight,
                 visibleRows: 5,
                 fontSize: columnFontSize,
-                showsRing: showsRing
-            )
-            .frame(maxWidth: .infinity)
-
-            VerticalDigitColumn(
-                value: $minutesOnes,
-                range: 0...9,
-                primaryColor: primaryColor,
-                secondaryColor: secondaryColor,
-                accessibilityLabel: "preferences.sleepTimer.minutes.ones",
-                disabledValues: minutesTens == 6 ? Set(1...9) : [],
-                onDragStart: handleColumnDragStart,
-                onCommit: { _ in endDrag() },
-                rowHeight: columnRowHeight,
-                visibleRows: 5,
-                fontSize: columnFontSize,
-                showsRing: showsRing
+                showsRing: showsRing,
+                displayWidth: 2
             )
             .frame(maxWidth: .infinity)
 
@@ -301,62 +274,52 @@ struct PlaybackSleepTimerPickerCard: View {
                 .padding(.horizontal, 4)
                 .accessibilityHidden(true)
 
-            // Seconds wheels are read-only — they mirror the live countdown but the user
+            // Seconds wheel is read-only — it mirrors the live countdown but the user
             // sets the sleep timer to whole-minute precision via the H/M columns or a
             // preset chip. `isInteractive: false` strips the drag & adjustable action so
-            // these columns are purely a display element.
+            // this column is purely a display element.
             VerticalDigitColumn(
-                value: $secondsTens,
-                range: 0...5,
+                value: $seconds,
+                range: 0...59,
                 primaryColor: primaryColor,
                 secondaryColor: secondaryColor,
-                accessibilityLabel: "preferences.sleepTimer.seconds.tens",
+                accessibilityLabel: "preferences.sleepTimer.seconds",
                 rowHeight: columnRowHeight,
                 visibleRows: 5,
                 fontSize: columnFontSize,
                 showsRing: showsRing,
-                isInteractive: false
-            )
-            .frame(maxWidth: .infinity)
-
-            VerticalDigitColumn(
-                value: $secondsOnes,
-                range: 0...9,
-                primaryColor: primaryColor,
-                secondaryColor: secondaryColor,
-                accessibilityLabel: "preferences.sleepTimer.seconds.ones",
-                rowHeight: columnRowHeight,
-                visibleRows: 5,
-                fontSize: columnFontSize,
-                showsRing: showsRing,
-                isInteractive: false
+                isInteractive: false,
+                displayWidth: 2
             )
             .frame(maxWidth: .infinity)
         }
         .padding(.horizontal, 8)
-        .onChange(of: minutesTens) { _, tens in
-            if tens == 6, minutesOnes != 0 {
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                    minutesOnes = 0
-                }
-            }
-        }
     }
 
     @ViewBuilder
-    private var chapterDisplay: some View {
-        if let amount = activeChapterAmount {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(amount, format: .number)
-                    .font(.system(size: 96, weight: .bold))
-                    .monospacedDigit()
-                    .contentTransition(.numericText(value: Double(amount)))
+    private var chapterPicker: some View {
+        let columnRowHeight: CGFloat = 40
+        let columnFontSize: CGFloat = 32
 
-                Text("sleepTimer.chapter")
-                    .font(.system(size: 24, weight: .regular))
-                    .foregroundStyle(secondaryColor)
-            }
-            .accessibilityHidden(true)
+        HStack(alignment: .center, spacing: 16) {
+            VerticalDigitColumn(
+                value: $chapterCount,
+                range: 1...99,
+                primaryColor: primaryColor,
+                secondaryColor: secondaryColor,
+                accessibilityLabel: "sleepTimer.chapter",
+                onDragStart: handleChapterDragStart,
+                onCommit: { _ in endDrag() },
+                rowHeight: columnRowHeight,
+                visibleRows: 5,
+                fontSize: columnFontSize,
+                showsRing: true
+            )
+            .frame(width: 80)
+
+            Text("sleepTimer.chapter")
+                .font(.system(size: 24, weight: .regular))
+                .foregroundStyle(secondaryColor)
         }
     }
 
@@ -400,42 +363,6 @@ struct PlaybackSleepTimerPickerCard: View {
         }
         .frame(maxWidth: .infinity)
         .animation(.spring(response: 0.45, dampingFraction: 0.65), value: isTimerActive)
-    }
-
-    @ViewBuilder
-    private var chapterStepper: some View {
-        HStack(spacing: 32) {
-            Button {
-                guard let amount = activeChapterAmount else { return }
-                if amount > 1 {
-                    satellite.setSleepTimer(.chapters(amount - 1))
-                } else {
-                    satellite.setSleepTimer(nil)
-                }
-            } label: {
-                Image(systemName: "minus")
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundStyle(primaryColor)
-                    .frame(width: 56, height: 56)
-                    .glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .circle)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("action.decrease")
-
-            Button {
-                guard let amount = activeChapterAmount else { return }
-                satellite.setSleepTimer(.chapters(amount + 1))
-            } label: {
-                Image(systemName: "plus")
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundStyle(primaryColor)
-                    .frame(width: 56, height: 56)
-                    .glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .circle)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("action.increase")
-        }
-        .frame(maxWidth: .infinity)
     }
 
     @ViewBuilder
@@ -538,8 +465,8 @@ struct PlaybackSleepTimerPickerCard: View {
     /// (which freezes the countdown sync) and finally clearing the timer, the in-flight
     /// drag keeps its momentum and just continues against manual state.
     ///
-    /// Finally clear the seconds wheels: once the user touches the timer they're in
-    /// whole-minute input mode (the seconds columns aren't even interactive), so any
+    /// Finally clear the seconds wheel: once the user touches the timer they're in
+    /// whole-minute input mode (the seconds column isn't even interactive), so any
     /// leftover seconds from the live countdown would otherwise survive into `commitTime`
     /// and the new timer would inherit an arbitrary 0–59 second offset.
     private func handleColumnDragStart() {
@@ -550,10 +477,9 @@ struct PlaybackSleepTimerPickerCard: View {
         if activeInterval != nil {
             satellite.setSleepTimer(nil)
         }
-        if secondsTens != 0 || secondsOnes != 0 {
+        if seconds != 0 {
             withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
-                secondsTens = 0
-                secondsOnes = 0
+                seconds = 0
             }
         }
     }
@@ -574,7 +500,11 @@ struct PlaybackSleepTimerPickerCard: View {
         activeDragCount = max(0, activeDragCount - 1)
         guard activeDragCount == 0 else { return }
         viewModel.isCardSliderInUse = false
-        commitTime()
+        if activeChapterAmount != nil {
+            commitChapter()
+        } else {
+            commitTime()
+        }
     }
 
     private func commitTime() {
@@ -583,13 +513,25 @@ struct PlaybackSleepTimerPickerCard: View {
         satellite.setSleepTimer(.interval(total))
     }
 
+    private func commitChapter() {
+        let amount = max(1, chapterCount)
+        satellite.setSleepTimer(.chapters(amount))
+    }
+
+    /// Chapter wheel only mounts while a chapter timer is already active, so unlike the
+    /// time wheels we don't need to cancel an in-flight interval or zero out neighbor
+    /// columns — just mark the card as dragging so the live-state sync stays paused.
+    private func handleChapterDragStart() {
+        startDrag()
+    }
+
     private func applyPresetMinutes(_ minutes: Double) {
         decompose(totalMinutes: minutes)
         satellite.setSleepTimer(.interval(minutes * 60))
     }
 
     /// Decomposes a whole-minute count (used by presets and the legacy seed path) into
-    /// the five wheels. Seconds always reset to zero — presets are minute-granular and
+    /// the three wheels. Seconds always reset to zero — presets are minute-granular and
     /// any leftover seconds from a previous countdown should clear when the user picks
     /// a fresh duration.
     private func decompose(totalMinutes: Double) {
@@ -601,22 +543,22 @@ struct PlaybackSleepTimerPickerCard: View {
         let clamped = max(0, total)
         let newHours = min(9, clamped / 3600)
         let afterHours = min(3599, clamped % 3600)
-        let newMinutesTens = afterHours / 600
-        let newMinutesOnes = (afterHours % 600) / 60
-        let secondsPart = afterHours % 60
-        let newSecondsTens = secondsPart / 10
-        let newSecondsOnes = secondsPart % 10
+        let newMinutes = afterHours / 60
+        let newSeconds = afterHours % 60
         if hours != newHours { hours = newHours }
-        if minutesTens != newMinutesTens { minutesTens = newMinutesTens }
-        if minutesOnes != newMinutesOnes { minutesOnes = newMinutesOnes }
-        if secondsTens != newSecondsTens { secondsTens = newSecondsTens }
-        if secondsOnes != newSecondsOnes { secondsOnes = newSecondsOnes }
+        if minutes != newMinutes { minutes = newMinutes }
+        if seconds != newSeconds { seconds = newSeconds }
     }
 
     private func seedFromExternalState() {
-        if case .interval(let expiresAt, _) = satellite.sleepTimer {
-            let remaining = max(0, expiresAt.timeIntervalSinceNow)
-            applyTotalSeconds(Int(remaining.rounded(.up)))
+        switch satellite.sleepTimer {
+            case .interval(let expiresAt, _):
+                let remaining = max(0, expiresAt.timeIntervalSinceNow)
+                applyTotalSeconds(Int(remaining.rounded(.up)))
+            case .chapters(let amount, _):
+                chapterCount = max(1, amount)
+            case nil:
+                break
         }
     }
 }
@@ -652,5 +594,21 @@ struct PlaybackSleepTimerPickerCard: View {
     }
     .preferredColorScheme(.dark)
     .previewEnvironment()
+}
+
+#Preview("Sleep-timer card (chapter)") {
+    PlaybackSleepTimerPickerCard(onMeshBackground: false)
+        .previewEnvironment(sleepTimer: .chapters(3))
+}
+
+#Preview("Sleep-timer card (chapter) on mesh") {
+    ZStack {
+        LinearGradient(colors: [.indigo, .purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+            .ignoresSafeArea()
+        PlaybackSleepTimerPickerCard(onMeshBackground: true)
+            .foregroundStyle(.white)
+    }
+    .preferredColorScheme(.dark)
+    .previewEnvironment(sleepTimer: .chapters(3))
 }
 #endif

@@ -20,6 +20,11 @@ struct LibraryVisibilityPreferences: View {
             )
 
             Section {
+            } footer: {
+                Text("preferences.hiddenLibraries.footer")
+            }
+
+            Section {
                 LibraryEnumerator { name, content in
                     Section(name) {
                         content()

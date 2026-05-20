@@ -48,6 +48,9 @@ struct VerticalDigitColumn: View {
     /// The sleep-timer card uses this for the seconds wheels, which only mirror the
     /// live countdown and aren't part of the user-set value.
     var isInteractive: Bool = true
+    /// Minimum digit count for the rendered value, zero-padded. Use 2 for mm/ss-style
+    /// columns that should display "00"–"59".
+    var displayWidth: Int = 1
 
     @State private var dragAnchor: Double?
     @State private var dragTranslation: CGFloat = 0
@@ -132,7 +135,8 @@ struct VerticalDigitColumn: View {
                 rowHeight: rowHeight,
                 fontSize: fontSize,
                 primaryColor: primaryColor,
-                disabledValues: disabledValues
+                disabledValues: disabledValues,
+                displayWidth: displayWidth
             )
             .frame(height: height)
             .mask(
@@ -251,6 +255,7 @@ private struct DigitCanvas: View, @preconcurrency Animatable {
     let fontSize: CGFloat
     let primaryColor: Color
     let disabledValues: Set<Int>
+    let displayWidth: Int
 
     var animatableData: Double {
         get { smoothPosition }
@@ -273,7 +278,10 @@ private struct DigitCanvas: View, @preconcurrency Animatable {
                 let baseOpacity: Double = max(0.25, 1.0 - absDist * 0.28)
                 let opacity: Double = disabled ? 0.18 : baseOpacity
 
-                let text = Text(verbatim: "\(v)")
+                let formatted = displayWidth > 1
+                    ? String(format: "%0\(displayWidth)d", v)
+                    : "\(v)"
+                let text = Text(verbatim: formatted)
                     .font(.system(size: fontSize, weight: weight))
                     .monospacedDigit()
                     .foregroundStyle(primaryColor.opacity(opacity))
@@ -314,18 +322,17 @@ private struct VerticalDigitColumnSinglePreview: View {
 
 private struct VerticalDigitColumnTimerPreview: View {
     @State private var hours: Int = 1
-    @State private var minutesTens: Int = 3
-    @State private var minutesOnes: Int = 0
+    @State private var minutes: Int = 30
     var onMeshBackground: Bool = false
 
     private var primary: Color { onMeshBackground ? .white : .primary }
     private var secondary: Color { onMeshBackground ? .white.opacity(0.6) : .secondary }
 
-    private var totalMinutes: Int { hours * 60 + minutesTens * 10 + minutesOnes }
+    private var totalMinutes: Int { hours * 60 + minutes }
 
     var body: some View {
         VStack(spacing: 20) {
-            Text(verbatim: String(format: "%d:%d%d", hours, minutesTens, minutesOnes))
+            Text(verbatim: String(format: "%d:%02d", hours, minutes))
                 .font(.system(size: 64, weight: .bold))
                 .monospacedDigit()
                 .foregroundStyle(primary)
@@ -346,20 +353,12 @@ private struct VerticalDigitColumnTimerPreview: View {
                     .foregroundStyle(primary.opacity(0.6))
 
                 VerticalDigitColumn(
-                    value: $minutesTens,
-                    range: 0...5,
+                    value: $minutes,
+                    range: 0...59,
                     primaryColor: primary,
                     secondaryColor: secondary,
-                    accessibilityLabel: "Minute tens"
-                )
-                .frame(maxWidth: .infinity)
-
-                VerticalDigitColumn(
-                    value: $minutesOnes,
-                    range: 0...9,
-                    primaryColor: primary,
-                    secondaryColor: secondary,
-                    accessibilityLabel: "Minute ones"
+                    accessibilityLabel: "Minutes",
+                    displayWidth: 2
                 )
                 .frame(maxWidth: .infinity)
             }
