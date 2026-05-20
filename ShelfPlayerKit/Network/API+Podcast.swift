@@ -42,6 +42,22 @@ public extension APIClient {
         return (podcast, episodes.compactMap { Episode(episode: $0, item: item, connectionID: connectionID) })
     }
 
+    /// Random sample of podcasts from a library, used to power the client-
+    /// derived "Explore" home row. The server reshuffles on every call (the
+    /// `sort=random` branch is also exempt from the API cache server-side), so
+    /// successive loads surface different items.
+    func podcastsRandom(from libraryID: String, limit: Int) async throws -> [Podcast] {
+        let query: [URLQueryItem] = [
+            .init(name: "sort", value: "random"),
+            .init(name: "desc", value: "0"),
+            .init(name: "limit", value: String(limit)),
+            .init(name: "include", value: "numEpisodesIncomplete"),
+        ]
+
+        let response = try await response(APIRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query, bypassesCache: true))
+        return response.results.map { Podcast(payload: $0, connectionID: connectionID) }
+    }
+
     func podcasts(from libraryID: String, sortOrder: PodcastSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Podcast], Int) {
         var query: [URLQueryItem] = [
             .init(name: "sort", value: sortOrder.queryValue),

@@ -22,7 +22,7 @@ struct PlaybackActions: View {
         } label: {
             Label("playback.queue", systemImage: "list.number")
                 .padding(12)
-                .contentShape(.rect)
+                .contentShape(.capsule)
         }
         .modify(if: viewModel.activeCard == .queue) {
             $0.glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .capsule)
@@ -31,11 +31,17 @@ struct PlaybackActions: View {
     }
 
     var body: some View {
-        LazyVGrid(columns: .init(repeating: .init(alignment: .centerFirstTextBaseline), count: 4)) {
+        // Non-lazy HStack so the icons stay mounted across selection changes —
+        // a lazy grid recycles them and breaks the glass / scale animations.
+        HStack(alignment: .firstTextBaseline, spacing: 0) {
             PlaybackRateButton(onMeshBackground: onMeshBackground)
+                .frame(maxWidth: .infinity)
             PlaybackSleepTimerButton(onMeshBackground: onMeshBackground)
+                .frame(maxWidth: .infinity)
             PlaybackAirPlayButton()
+                .frame(maxWidth: .infinity)
             queueButton
+                .frame(maxWidth: .infinity)
         }
         .buttonStyle(.plain)
         .labelStyle(.iconOnly)

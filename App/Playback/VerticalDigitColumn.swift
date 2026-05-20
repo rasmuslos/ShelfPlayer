@@ -177,12 +177,25 @@ struct VerticalDigitColumn: View {
                             hapticTick &+= 1
                         }
                     }
-                    .onEnded { _ in
-                        let final = snappedValue
+                    .onEnded { g in
                         // Capture the on-screen position the finger released at so the
                         // hand-off from the drag formula to the idle formula doesn't
                         // visually jump.
                         let releaseSmooth = smoothPosition
+
+                        // Project where the wheel should settle using SwiftUI's
+                        // velocity-aware predicted end. Without this, a short fast
+                        // flick only moves the wheel by the small finger-travel
+                        // distance — there's no momentum and the wheel feels dead.
+                        // The predicted overshoot is dampened because SwiftUI's
+                        // projection tends to overshoot what reads naturally for a
+                        // chip-sized wheel.
+                        let anchor = dragAnchor ?? Double(value)
+                        let momentum = (g.predictedEndTranslation.height - g.translation.height) * 0.6
+                        let projectedTranslation = g.translation.height + momentum
+                        let projectedSmooth = clamp(anchor + (-projectedTranslation / rowHeight))
+                        let final = nearestEnabled(to: Int(projectedSmooth.rounded()))
+
                         onCommit(final)
 
                         // Pick the landing offset that keeps smoothPosition unchanged at
@@ -192,7 +205,10 @@ struct VerticalDigitColumn: View {
 
                         dragAnchor = nil
                         dragTranslation = 0
-                        value = final
+                        if value != final {
+                            value = final
+                            hapticTick &+= 1
+                        }
                         landingOffset = initialLanding
                         isDragging = false
 
@@ -200,7 +216,7 @@ struct VerticalDigitColumn: View {
                         // last fractional step into Double(final) without depending on
                         // the .animation(value: smoothPosition) modifier seeing the
                         // right isDragging state at the right moment.
-                        withAnimation(.spring(response: 0.42, dampingFraction: 0.78)) {
+                        withAnimation(.spring(response: 0.5, dampingFraction: 0.82)) {
                             landingOffset = 0
                         }
                     }

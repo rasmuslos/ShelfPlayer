@@ -72,7 +72,7 @@ struct PlaybackSleepTimerButton: View {
                         let remainingSleepTime = remainingSleepTime(at: date)
 
                         if let remainingSleepTime {
-                            Text(remainingSleepTime, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
+                            sleepTimerLiveLabel(remaining: remainingSleepTime)
                                 .fontDesign(.rounded)
                                 .contentTransition(.numericText())
                                 .modify(if: viewModel.expansionAnimationCount == 0) {
@@ -89,7 +89,7 @@ struct PlaybackSleepTimerButton: View {
             }
         }
         .padding(12)
-        .contentShape(.rect(cornerRadius: 4))
+        .contentShape(.capsule)
     }
 
     var body: some View {
@@ -119,6 +119,21 @@ struct PlaybackSleepTimerButton: View {
         .accessibilityAddTraits(isOpen ? .isSelected : [])
         .onChange(of: satellite.isPlaying, initial: true) { _, playing in
             pauseFreezeDate = playing ? nil : .now
+        }
+    }
+
+    /// Sub-hour timers show the single largest unit ("59m" / "12s"), matching the
+    /// abbreviated countdown style used everywhere else in the app. At one hour or
+    /// more, the abbreviated single-unit format collapses to "60m" / "120m", which
+    /// reads as broken — switch to a compact H:MM clock so the hour count is
+    /// always visible at a glance.
+    @ViewBuilder
+    private func sleepTimerLiveLabel(remaining: TimeInterval) -> some View {
+        if remaining >= 3600 {
+            let totalMinutes = Int((remaining / 60).rounded())
+            Text(verbatim: String(format: "%d:%02d", totalMinutes / 60, totalMinutes % 60))
+        } else {
+            Text(remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.minute, .second], maximumUnitCount: 1))
         }
     }
 }
@@ -210,8 +225,6 @@ struct PlaybackSleepTimerPickerCard: View {
             Spacer(minLength: 12)
 
             presetButtons
-                .padding(.top, 8)
-                .padding(.bottom, 4)
             
             Spacer(minLength: 12)
         }
@@ -386,7 +399,7 @@ struct PlaybackSleepTimerPickerCard: View {
 
     @ViewBuilder
     private var topControls: some View {
-        ZStack {
+        GlassEffectContainer {
             if isTimerActive {
                 HStack(spacing: 8) {
                     Button {
@@ -400,6 +413,7 @@ struct PlaybackSleepTimerPickerCard: View {
                             .padding(.horizontal, 14)
                             .padding(.vertical, 8)
                             .glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .capsule)
+                            .contentShape(.capsule)
                     }
                     .buttonStyle(.plain)
 
@@ -414,6 +428,7 @@ struct PlaybackSleepTimerPickerCard: View {
                             .padding(.horizontal, 14)
                             .padding(.vertical, 8)
                             .glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .capsule)
+                            .contentShape(.capsule)
                     }
                     .buttonStyle(.plain)
                 }
@@ -443,35 +458,78 @@ struct PlaybackSleepTimerPickerCard: View {
                         .frame(maxWidth: .infinity)
                         .frame(height: 40)
                         .glassEffect(presetGlass(isSelected: isSelected), in: .capsule)
+                        .contentShape(.capsule)
                         .scaleEffect(isSelected ? 1.04 : 1)
                 }
                 .buttonStyle(.plain)
                 .animation(.spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
             }
+            
+            // Chunked HStack rows instead of LazyVGrid — lazy grids recycle
+            // children as they scroll in and out of the viewport, which kills the
+            // selection / scale / glass-effect animations on the chips.
+            GlassEffectContainer {
+                let columns = 5
+                let rows = stride(from: 0, to: presetMinutes.count, by: columns).map {
+                    Array(presetMinutes[$0..<min($0 + columns, presetMinutes.count)])
+                }
 
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 64), spacing: 8)], spacing: 8) {
-                ForEach(presetMinutes, id: \.self) { minutes in
-                    let isSelected = activeChapterAmount == nil
-                        && isTimerActive
-                        && abs(Double(totalMinutes) - minutes) < 0.001
-
-                    Button {
-                        applyPresetMinutes(minutes)
-                    } label: {
-                        Text(minutes * 60, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute]))
-                            .font(.system(.subheadline, weight: isSelected ? .bold : .medium))
-                            .monospacedDigit()
-                            .foregroundStyle(isSelected ? primaryColor : secondaryColor)
-                            .lineLimit(1)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 40)
-                            .glassEffect(presetGlass(isSelected: isSelected), in: .capsule)
-                            .scaleEffect(isSelected ? 1.04 : 1)
+                VStack(spacing: 8) {
+                    ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                        HStack(spacing: 8) {
+                            ForEach(row, id: \.self) { minutes in
+                                presetChip(minutes: minutes)
+                            }
+                            // Pad short rows with invisible cells so every chip
+                            // keeps its column width — without this the last
+                            // row's chips would stretch to fill the row.
+                            if row.count < columns {
+                                ForEach(0..<(columns - row.count), id: \.self) { _ in
+                                    Color.clear
+                                        .frame(maxWidth: .infinity, minHeight: 40)
+                                }
+                            }
+                        }
                     }
-                    .buttonStyle(.plain)
-                    .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private func presetChip(minutes: Double) -> some View {
+        let isSelected = activeChapterAmount == nil
+            && isTimerActive
+            && abs(Double(totalMinutes) - minutes) < 0.001
+
+        Button {
+            applyPresetMinutes(minutes)
+        } label: {
+            presetChipLabel(minutes: minutes)
+                .font(.system(.subheadline, weight: isSelected ? .bold : .medium))
+                .monospacedDigit()
+                .foregroundStyle(isSelected ? primaryColor : secondaryColor)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity)
+                .frame(height: 40)
+                .glassEffect(presetGlass(isSelected: isSelected), in: .capsule)
+                .contentShape(.capsule)
+                .scaleEffect(isSelected ? 1.04 : 1)
+        }
+        .buttonStyle(.plain)
+        .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
+    }
+
+    /// Anything one hour or longer renders as "H:MM" so a long preset (e.g. 90 min,
+    /// 120 min) shows as "1:30" / "2:00" instead of "1 hr 30 min" / "2 hr". Sub-hour
+    /// presets keep the localized short unit format ("30 min").
+    @ViewBuilder
+    private func presetChipLabel(minutes: Double) -> some View {
+        let total = Int(minutes)
+        if total >= 60 {
+            Text(verbatim: String(format: "%d:%02d", total / 60, total % 60))
+        } else {
+            Text(minutes * 60, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute]))
         }
     }
 

@@ -77,6 +77,18 @@ struct PodcastView: View {
                 EpisodeList(episodes: viewModel.preview, context: .podcast, selected: .constant(nil))
             }
 
+            if !viewModel.explore.isEmpty {
+                VStack(alignment: .leading, spacing: 0) {
+                    RowTitle(title: String(localized: "item.related.podcast.explore"))
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 12)
+                    PodcastHGrid(podcasts: viewModel.explore)
+                }
+                .padding(.top, 16)
+                .listRowSeparator(.hidden)
+                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+            }
+
             Footer()
         }
         .listStyle(.plain)

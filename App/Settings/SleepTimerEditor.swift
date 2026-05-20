@@ -21,9 +21,17 @@ struct SleepTimerEditor: View {
 
     @State private var notifyError = false
 
+    /// Anything one hour or longer renders as "H:MM" (e.g. "1:30", "3:11"). Sub-hour
+    /// intervals keep the prose unit format ("30 minutes").
     @ViewBuilder
     func row(index: Int) -> some View {
-        Text(sleepTimerIntervals[index], format: .duration(unitsStyle: .full, allowedUnits: [.hour, .minute]))
+        let interval = sleepTimerIntervals[index]
+        let totalMinutes = Int(interval / 60)
+        if totalMinutes >= 60 {
+            Text(verbatim: String(format: "%d:%02d", totalMinutes / 60, totalMinutes % 60))
+        } else {
+            Text(interval, format: .duration(unitsStyle: .full, allowedUnits: [.hour, .minute]))
+        }
     }
 
     var body: some View {
@@ -87,9 +95,15 @@ struct SleepTimerEditor: View {
 
                 Group {
                     Picker("sleepTimer.extend.interval", selection: $sleepTimerExtendInterval) {
-                        ForEach(sleepTimerIntervals, id: \.hashValue) {
-                            Text($0, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute]))
-                                .tag($0)
+                        ForEach(sleepTimerIntervals, id: \.hashValue) { interval in
+                            let totalMinutes = Int(interval / 60)
+                            if totalMinutes >= 60 {
+                                Text(verbatim: String(format: "%d:%02d", totalMinutes / 60, totalMinutes % 60))
+                                    .tag(interval)
+                            } else {
+                                Text(interval, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute]))
+                                    .tag(interval)
+                            }
                         }
                     }
                     .onChange(of: sleepTimerExtendInterval) { settings.sleepTimerExtendInterval = sleepTimerExtendInterval }

@@ -109,6 +109,24 @@ public extension APIClient {
         return (result.results.compactMap { AudiobookSection.parse(payload: $0, libraryID: libraryID, connectionID: connectionID) }, result.total)
     }
 
+    /// Random sample of audiobooks from a library, used to power the client-
+    /// derived "Explore" home row. The server reshuffles on every call (the
+    /// `sort=random` branch is also exempt from the API cache server-side), so
+    /// successive loads surface different items.
+    func audiobooksRandom(from libraryID: String, limit: Int) async throws -> [Audiobook] {
+        let query: [URLQueryItem] = [
+            .init(name: "sort", value: "random"),
+            .init(name: "desc", value: "0"),
+            .init(name: "limit", value: String(limit)),
+        ]
+
+        // bypassesCache: the server already skips its cache for random sorts;
+        // letting our client cache the response would freeze the row to the
+        // first roll for the cache lifetime.
+        let result = try await response(APIRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query, bypassesCache: true))
+        return result.results.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) }
+    }
+
     func audiobooks(filtered identifier: ItemIdentifier, sortOrder: AudiobookSortOrder?, ascending: Bool?, groupSeries: Bool = false, limit: Int?, page: Int?) async throws -> ([Audiobook], Int) {
         var query = [URLQueryItem]()
 

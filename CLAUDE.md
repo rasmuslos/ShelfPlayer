@@ -80,6 +80,10 @@ Item (base)
 - All "backend" code (networking, persistence, data models) belongs in the relevant frameworks (ShelfPlayerKit, ShelfPlayback), not in the app target
 - The app target contains only SwiftUI views, ViewModels, and navigation
 
+### Playback components (`App/Playback/`)
+
+- **No lazy containers.** `LazyVStack`, `LazyVGrid`, `LazyHGrid`, etc. recycle children as they enter and leave the viewport, which breaks selection / scale / glass-effect animations on chips and pills. Use `VStack` + `HStack` (with manually chunked rows when the layout is grid-shaped) or a non-lazy `Grid` instead.
+
 ## Tests
 
 Both test targets hit the local Audiobookshelf dev server at `http://localhost:3333` (credentials: `root` / `root`). Make sure the server is running and seeded with the public-domain audiobook collection (Pride and Prejudice, Alice in Wonderland, …) before running tests — see [Local Audiobookshelf dev server](#local-audiobookshelf-dev-server) below.

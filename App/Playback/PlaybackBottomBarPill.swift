@@ -104,7 +104,7 @@ struct PlaybackBottomBarPill: View {
                 .font(.title3)
                 .frame(width: 24)
         }
-        .contentShape(.rect)
+        .contentShape(.capsule)
         .font(.subheadline)
         .padding(.horizontal, 16)
         .id((satellite.nowPlayingItemID?.description ?? "wejjfnwioejf") + "_nowPlaying_bottom_pill")

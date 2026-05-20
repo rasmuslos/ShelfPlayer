@@ -26,6 +26,7 @@ struct SlidingSeasonPicker: View {
                                 .font(.subheadline)
                                 .padding(.horizontal, 14)
                                 .padding(.vertical, 8)
+                                .contentShape(.capsule)
                         }
                         .buttonStyle(.plain)
                         .background {

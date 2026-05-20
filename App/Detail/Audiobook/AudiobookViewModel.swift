@@ -33,6 +33,8 @@ final class AudiobookViewModel: Sendable {
     private(set) var sameSeries: [(Audiobook.SeriesFragment, [Audiobook])]
     private(set) var sameNarrator: [(String, [Audiobook])]
 
+    private(set) var explore: [Audiobook]
+
     private(set) var loadingPDF: Bool
 
     private(set) var bookmarks: [Bookmark]
@@ -56,6 +58,8 @@ final class AudiobookViewModel: Sendable {
         sameAuthor = []
         sameSeries = []
         sameNarrator = []
+
+        explore = []
 
         loadingPDF = false
 
@@ -101,6 +105,7 @@ extension AudiobookViewModel {
                 $0.addTask { await self.loadAuthors() }
                 $0.addTask { await self.loadSeries() }
                 $0.addTask { await self.loadNarrators() }
+                $0.addTask { await self.loadExplore() }
 
                 $0.addTask { await self.loadBookmarks() }
 
@@ -295,6 +300,23 @@ private extension AudiobookViewModel {
 
         withAnimation {
             self.sameNarrator = resolved
+        }
+    }
+
+    /// Random sample of audiobooks from this book's library, used to surface
+    /// other things the user might enjoy. Pull-to-refresh reshuffles because
+    /// the underlying `sort=random` API call already bypasses the API cache.
+    /// Asking for 11 keeps us at 10 even after dropping the current book.
+    func loadExplore() async {
+        do {
+            let books = try await ABSClient[audiobook.id.connectionID].audiobooksRandom(from: audiobook.id.libraryID, limit: 11)
+            let filtered = books.filter { $0 != audiobook }.prefix(10)
+
+            withAnimation {
+                self.explore = Array(filtered)
+            }
+        } catch {
+            logger.warning("Failed to load explore audiobooks for \(self.audiobook.id, privacy: .public): \(error, privacy: .public)")
         }
     }
 

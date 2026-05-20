@@ -33,7 +33,7 @@ struct PlaybackRateButton: View {
             }
             .padding(12)
             .contentTransition(.numericText())
-            .contentShape(.rect(cornerRadius: 4))
+            .contentShape(.capsule)
             .modify(if: viewModel.expansionAnimationCount == 0) {
                 $0
                     .animation(.smooth, value: satellite.playbackRate)
@@ -64,7 +64,7 @@ struct PlaybackRatePickerCard: View {
     @State private var storedGroupingRate: Double?
 
     private let minRate: Double = 0.1
-    private let maxRate: Double = 4.0
+    private let maxRate: Double = 7.0
     private let step: Double = 0.1
     private let tickSpacing: CGFloat = 16
 
@@ -156,8 +156,8 @@ struct PlaybackRatePickerCard: View {
             Spacer(minLength: 16)
 
             presetButtons
-                .padding(.top, 8)
-                .padding(.bottom, 4)
+            
+            Spacer(minLength: 16)
         }
         .fontDesign(.rounded)
         .padding(.horizontal, 20)
@@ -202,6 +202,7 @@ struct PlaybackRatePickerCard: View {
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
                         .glassEffect(onMeshBackground ? .clear.interactive() : .regular.interactive(), in: .capsule)
+                        .contentShape(.capsule)
                 }
                 .buttonStyle(.plain)
                 .transition(.scale(scale: 0.4, anchor: .top).combined(with: .opacity))
@@ -241,28 +242,48 @@ struct PlaybackRatePickerCard: View {
 
     @ViewBuilder
     private var presetButtons: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 64), spacing: 8)], spacing: 8) {
-            ForEach(presets, id: \.self) { rate in
-                let isSelected = abs(liveRate - rate) < 0.001
+        // Chunked HStack rows instead of LazyVGrid — lazy grids recycle children
+        // as they enter/leave the viewport and break the selection / scale /
+        // glass-effect animations on the chips.
+        GlassEffectContainer {
+            let columns = 5
+            let rows = stride(from: 0, to: presets.count, by: columns).map {
+                Array(presets[$0..<min($0 + columns, presets.count)])
+            }
 
-                Button {
-                    liveRate = rate
-                    satellite.setPlaybackRate(rate)
-                } label: {
-                    Text(rate, format: .playbackRate.hideX().fractionDigits(1))
-                        .font(.system(.subheadline, weight: isSelected ? .bold : .medium))
-                        .monospacedDigit()
-                        .foregroundStyle(isSelected ? primaryColor : secondaryColor)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 40)
-                        .glassEffect(presetGlass(isSelected: isSelected), in: .capsule)
-                        .scaleEffect(isSelected ? 1.04 : 1)
+            VStack(spacing: 8) {
+                ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                    HStack(spacing: 8) {
+                        ForEach(row, id: \.self) { rate in
+                            presetChip(rate: rate)
+                        }
+                    }
                 }
-                .buttonStyle(.plain)
-                .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
             }
         }
+    }
+
+    @ViewBuilder
+    private func presetChip(rate: Double) -> some View {
+        let isSelected = abs(liveRate - rate) < 0.001
+
+        Button {
+            liveRate = rate
+            satellite.setPlaybackRate(rate)
+        } label: {
+            Text(rate, format: .playbackRate.hideX().fractionDigits(1))
+                .font(.system(.subheadline, weight: isSelected ? .bold : .medium))
+                .monospacedDigit()
+                .foregroundStyle(isSelected ? primaryColor : secondaryColor)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity)
+                .frame(height: 40)
+                .glassEffect(presetGlass(isSelected: isSelected), in: .capsule)
+                .contentShape(.capsule)
+                .scaleEffect(isSelected ? 1.04 : 1)
+        }
+        .buttonStyle(.plain)
+        .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
     }
 
     private func setAsGroupingDefault(itemID: ItemIdentifier) {

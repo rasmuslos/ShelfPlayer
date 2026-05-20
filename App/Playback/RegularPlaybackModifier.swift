@@ -101,14 +101,15 @@ struct RegularPlaybackBarModifier: ViewModifier {
                                 }
                                 .buttonStyle(.plain)
                             }
-                            .universalContentShape(.rect(cornerRadius: 16, style: .continuous))
                             .modify {
                                 if #available(iOS 26 , *) {
                                     $0
+                                        .universalContentShape(.capsule)
                                         .padding(.horizontal, 4)
                                         .glassEffect()
                                 } else {
                                     $0
+                                        .universalContentShape(.rect(cornerRadius: 12, style: .continuous))
                                 }
                             }
                             .contextMenu {

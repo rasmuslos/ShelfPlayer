@@ -26,6 +26,8 @@ final class PodcastViewModel: Equatable, Hashable {
 
     private(set) var channelPodcasts = [Podcast]()
 
+    private(set) var explore = [Podcast]()
+
     var bulkSelected: [ItemIdentifier]? = nil
     private(set) var performingBulkAction = false
 
@@ -227,6 +229,7 @@ extension PodcastViewModel {
             await withTaskGroup {
                 $0.addTask { await self.extractColor() }
                 $0.addTask { await self.fetchEpisodes() }
+                $0.addTask { await self.loadExplore() }
             }
 
             if refresh {
@@ -280,6 +283,29 @@ private extension PodcastViewModel {
 
         withAnimation {
             self.dominantColor = color
+        }
+    }
+
+    /// Random sample of podcasts from this podcast's library, used to surface
+    /// other things the user might enjoy. Pull-to-refresh reshuffles because
+    /// the underlying `sort=random` API call already bypasses the API cache.
+    /// Asking for 11 keeps us at 10 even after dropping the current podcast.
+    func loadExplore() async {
+        #if DEBUG
+        if podcast.id.libraryID == "fixture" {
+            return
+        }
+        #endif
+
+        do {
+            let casts = try await ABSClient[podcast.id.connectionID].podcastsRandom(from: podcast.id.libraryID, limit: 11)
+            let filtered = casts.filter { $0.id != podcast.id }.prefix(10)
+
+            withAnimation {
+                self.explore = Array(filtered)
+            }
+        } catch {
+            logger.warning("Failed to load explore podcasts for \(self.podcast.id, privacy: .public): \(error, privacy: .public)")
         }
     }
 

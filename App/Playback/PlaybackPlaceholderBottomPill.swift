@@ -51,7 +51,7 @@ struct PlaybackPlaceholderBottomPill: View {
                     ProgressView()
                 }
             }
-            .contentShape(.rect)
+            .contentShape(.capsule)
             .padding(.horizontal, 16)
         }
         .buttonStyle(.plain)

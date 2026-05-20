@@ -67,6 +67,10 @@ struct AudiobookView: View {
                     ForEach(viewModel.sameNarrator, id: \.0.hashValue) { (narrator, audiobooks) in
                         AudiobookRow(title: String(localized: "item.related.audiobook.narrator \(narrator)"), small: true, audiobooks: audiobooks)
                     }
+
+                    if !viewModel.explore.isEmpty {
+                        AudiobookRow(title: String(localized: "item.related.audiobook.explore"), small: true, audiobooks: viewModel.explore)
+                    }
                 }
                 .padding(.vertical, 16)
                 .background(.background.secondary)
