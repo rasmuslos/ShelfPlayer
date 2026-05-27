@@ -61,6 +61,7 @@ struct ReauthorizeConnectionSheet: View {
                                 try await PersistenceManager.shared.authorization.updateConnection(connectionID, accessToken: accessToken, refreshToken: refreshToken)
                                 dismiss()
                             } catch {
+                                viewModel.isLoading = false
                                 notifyError.toggle()
                             }
                         }

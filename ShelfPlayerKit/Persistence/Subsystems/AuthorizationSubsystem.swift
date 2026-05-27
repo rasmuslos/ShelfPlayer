@@ -210,7 +210,25 @@ public extension PersistenceManager.AuthorizationSubsystem {
             kSecValueData: try JSONEncoder().encode(connection) as CFData,
         ] as! [String: Any] as CFDictionary
 
-        let status = SecItemAdd(query, nil)
+        var status = SecItemAdd(query, nil)
+
+        if status == errSecDuplicateItem {
+            // The user re-added a connection they already have (same host + user). Update it in place
+            // rather than failing, so re-logging in re-authorizes the existing connection.
+            logger.info("Connection \(connection.id, privacy: .public) already exists in keychain; updating it in place.")
+
+            let updateQuery = [
+                kSecClass: kSecClassGenericPassword,
+                kSecAttrSynchronizable: kSecAttrSynchronizableAny,
+
+                kSecAttrService: connectionService,
+                kSecAttrAccount: connection.id as CFString,
+            ] as! [String: Any] as CFDictionary
+
+            status = SecItemUpdate(updateQuery, [
+                kSecValueData: try JSONEncoder().encode(connection) as CFData,
+            ] as! [String: Any] as CFDictionary)
+        }
 
         guard status == errSecSuccess else {
             logger.error("Error adding connection to keychain: \(SecCopyErrorMessageString(status, nil))")
@@ -218,6 +236,15 @@ public extension PersistenceManager.AuthorizationSubsystem {
         }
 
         if let identity {
+            // Drop any identity stored for this connection so a re-add can replace it cleanly.
+            let deleteQuery = [
+                kSecClass: kSecClassIdentity,
+                kSecAttrSynchronizable: kSecAttrSynchronizableAny,
+
+                kSecAttrAccount: connection.id as CFString,
+            ] as! [String: Any] as CFDictionary
+            SecItemDelete(deleteQuery)
+
             let query = [
                 kSecClass: kSecClassIdentity,
                 kSecAttrSynchronizable: kCFBooleanTrue as Any,
@@ -238,8 +265,18 @@ public extension PersistenceManager.AuthorizationSubsystem {
             }
         }
 
+        do {
+            try removeToken(for: connection.id, service: accessTokenService)
+        } catch {
+            logger.warning("Failed to remove existing access token for \(connection.id, privacy: .public): \(error, privacy: .public)")
+        }
         try storeToken(accessToken, for: connection.id, service: accessTokenService)
 
+        do {
+            try removeToken(for: connection.id, service: refreshTokenService)
+        } catch {
+            logger.warning("Failed to remove existing refresh token for \(connection.id, privacy: .public): \(error, privacy: .public)")
+        }
         if let refreshToken {
             try storeToken(refreshToken, for: connection.id, service: refreshTokenService)
         }

@@ -147,7 +147,19 @@ struct ConnectionAddSheet: View {
             if let strategies = viewModel.strategies, let apiClient = viewModel.apiClient {
                 ConnectionAuthorizer(strategies: strategies, isLoading: $viewModel.isLoading, username: $viewModel.username, showButton: false, authorizeTrigger: $authorizeTrigger, apiClient: apiClient, callback: viewModel.storeConnection)
             }
-            
+
+            if let error = viewModel.error {
+                Section {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.red)
+                        Text(error.localizedDescription)
+                            .foregroundStyle(.secondary)
+                    }
+                    .font(.footnote)
+                }
+            }
+
             if let version = viewModel.version {
                 Section {
                     HStack(spacing: 8) {
@@ -271,6 +283,10 @@ private final class ViewModel: Sendable {
                 try await PersistenceManager.shared.authorization.addConnection(host: url!, username: username, headers: headers.compactMap(\.materialized), identity: identity, accessToken: accessToken, refreshToken: refreshToken)
                 notifyFinished.toggle()
             } catch {
+                withAnimation {
+                    self.error = error
+                    isLoading = false
+                }
                 notifyError.toggle()
             }
         }
