@@ -48,6 +48,7 @@ struct CollectionView: View {
             }
         }
         .listStyle(.plain)
+        .navigationLinkIndicatorVisibility(.hidden)
     }
 
     var body: some View {

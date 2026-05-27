@@ -290,6 +290,7 @@ final class PlaybackViewModel {
                 self.expansionAnimationCount -= 1
                 self.showCompactPlaybackBarOnExpandedViewCount -= 1
                 self.translationY = 0
+                self.activeCard = nil
 
                 withAnimation(.smooth.delay(0.2)) {
                     self.controlTranslationY = 0

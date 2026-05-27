@@ -39,6 +39,7 @@ struct DownloadedPanel: View {
                     }
                 }
                 .listStyle(.plain)
+                .navigationLinkIndicatorVisibility(.hidden)
             }
         }
         .navigationTitle("item.downloaded")

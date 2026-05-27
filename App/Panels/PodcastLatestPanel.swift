@@ -38,6 +38,7 @@ struct PodcastLatestPanel: View {
                     EpisodeList(episodes: episodes, context: .latest, selected: .constant(nil))
                 }
                 .listStyle(.plain)
+                .navigationLinkIndicatorVisibility(.hidden)
                 .refreshable {
                     fetchItems()
                 }

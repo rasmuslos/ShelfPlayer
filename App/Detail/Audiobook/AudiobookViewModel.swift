@@ -105,7 +105,10 @@ extension AudiobookViewModel {
                 $0.addTask { await self.loadAuthors() }
                 $0.addTask { await self.loadSeries() }
                 $0.addTask { await self.loadNarrators() }
-                $0.addTask { await self.loadExplore() }
+
+                if refresh || explore.isEmpty {
+                    $0.addTask { await self.loadExplore() }
+                }
 
                 $0.addTask { await self.loadBookmarks() }
 

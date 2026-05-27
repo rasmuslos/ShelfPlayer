@@ -99,6 +99,10 @@ struct PlaybackRatePicker: View {
     let label: LocalizedStringKey
     @Binding var selection: Percentage
 
+    private var isSelectionPreset: Bool {
+        playbackRates.contains { abs($0 - selection) < 0.001 }
+    }
+
     var body: some View {
         Picker(label, selection: $selection) {
             ForEach(playbackRates, id: \.hashValue) { value in
@@ -108,6 +112,18 @@ struct PlaybackRatePicker: View {
                     Text(value, format: .playbackRate)
                 }
                 .tag(value)
+            }
+
+            // The current speed can be a custom value (e.g. set via the slider) that
+            // isn't one of the presets — surface it in its own section so it stays selectable.
+            if !isSelectionPreset {
+                Divider()
+
+                Button {
+                } label: {
+                    Text(selection, format: .playbackRate)
+                }
+                .tag(selection)
             }
         }
     }

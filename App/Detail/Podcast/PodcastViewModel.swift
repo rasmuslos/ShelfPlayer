@@ -229,7 +229,10 @@ extension PodcastViewModel {
             await withTaskGroup {
                 $0.addTask { await self.extractColor() }
                 $0.addTask { await self.fetchEpisodes() }
-                $0.addTask { await self.loadExplore() }
+
+                if refresh || explore.isEmpty {
+                    $0.addTask { await self.loadExplore() }
+                }
             }
 
             if refresh {

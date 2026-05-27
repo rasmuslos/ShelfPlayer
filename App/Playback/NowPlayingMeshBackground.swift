@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NowPlayingMeshBackground: View {
     let colors: [Color]
+    var paused: Bool = false
 
     private static let dim = 3
     private static let speedMultiplier: Float = 15
@@ -17,7 +18,7 @@ struct NowPlayingMeshBackground: View {
     @State private var startDate = Date(timeIntervalSinceNow: -.random(in: 0...600))
 
     var body: some View {
-        TimelineView(.animation) { timeline in
+        TimelineView(.animation(paused: paused)) { timeline in
             let t = Float(timeline.date.timeIntervalSince(startDate))
 
             MeshGradient(

@@ -11,6 +11,7 @@ import ShelfPlayback
 struct CompactPlaybackModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.scenePhase) private var scenePhase
 
     @Environment(Satellite.self) private var satellite
     @Environment(OfflineMode.self) private var offlineMode
@@ -18,12 +19,24 @@ struct CompactPlaybackModifier: ViewModifier {
 
     @Bindable private var settings = AppSettings.shared
 
+    private var isTransitioning: Bool {
+        viewModel.expansionAnimationCount > 0 || viewModel.translationY > 0 || viewModel.translateYAnimationCount > 0
+    }
+
+    /// Drives `NowPlayingMeshBackground`'s `TimelineView`. Halt the drift render
+    /// loop whenever the gradient isn't actually visible: while collapsed it sits
+    /// at `opacity 0`, during the expand/collapse morph it's redundant, and a
+    /// backgrounded scene must not spend energy animating an off-screen view.
+    private var isMeshPaused: Bool {
+        isTransitioning || !viewModel.isExpanded || scenePhase != .active
+    }
+
     private var nowPlayingCornerRadius: CGFloat {
         guard viewModel.isExpanded else {
             return viewModel.PILL_CORNER_RADIUS
         }
 
-        if viewModel.expansionAnimationCount > 0 || viewModel.translationY > 0 || viewModel.translateYAnimationCount > 0 {
+        if isTransitioning {
             return UIApplication.shared.connectedScenes
                 .compactMap { $0 as? UIWindowScene }
                 .first?.screen.displayCornerRadius ?? 0
@@ -49,7 +62,7 @@ struct CompactPlaybackModifier: ViewModifier {
             }
             .overlay {
                 if settings.animatedNowPlayingBackground, let meshColors = viewModel.nowPlayingMeshColors {
-                    NowPlayingMeshBackground(colors: meshColors)
+                    NowPlayingMeshBackground(colors: meshColors, paused: isMeshPaused)
                         .clipShape(RoundedRectangle(cornerRadius: nowPlayingCornerRadius, style: .continuous))
                         .opacity(viewModel.isExpanded ? 1 : 0)
                         .transition(.opacity)

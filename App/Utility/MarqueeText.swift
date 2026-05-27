@@ -111,6 +111,7 @@ struct MarqueeText: View {
     @State private var progress: Double = 0
     @State private var animating = false
     @State private var entryID: UUID?
+    @State private var widthChangeTask: Task<Void, Never>?
 
     private var overflow: CGFloat {
         max(0, textWidth - containerWidth)
@@ -206,12 +207,18 @@ struct MarqueeText: View {
                     }
                 }
             }
+            .onChange(of: containerWidth) { oldValue, newValue in
+                guard abs(oldValue - newValue) > 0.5 else { return }
+                scheduleWidthChangeRestart()
+            }
             .onDisappear {
                 if let entryID, let controller {
                     controller.unregister(id: entryID)
                     self.entryID = nil
                 }
                 animating = false
+                widthChangeTask?.cancel()
+                widthChangeTask = nil
             }
     }
 
@@ -223,6 +230,35 @@ struct MarqueeText: View {
             let id = controller.register()
             entryID = id
             controller.update(id: id, overflow: overflow)
+        }
+    }
+
+    // MARK: - Container resize
+
+    // When the container width changes mid-cycle the running animation still
+    // references the old overflow, so the scroll speed and end position drift.
+    // Interrupt the cycle, then restart once the resize has settled — the
+    // debounce avoids restart-thrashing across the per-frame width updates of
+    // the tab view accessory's expand/collapse animation.
+    private func scheduleWidthChangeRestart() {
+        if let controller {
+            controller.stop()
+        } else {
+            stopStandaloneAnimation()
+        }
+
+        widthChangeTask?.cancel()
+        widthChangeTask = Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(150))
+            guard !Task.isCancelled else { return }
+
+            if let controller {
+                if needsMarquee {
+                    controller.startIfNeeded()
+                }
+            } else if needsMarquee {
+                startStandaloneAnimation()
+            }
         }
     }
 
