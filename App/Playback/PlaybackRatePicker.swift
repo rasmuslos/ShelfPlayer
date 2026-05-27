@@ -52,6 +52,8 @@ struct PlaybackRateButton: View {
 }
 
 struct PlaybackRatePickerCard: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
 
@@ -156,8 +158,12 @@ struct PlaybackRatePickerCard: View {
             Spacer(minLength: 16)
 
             presetButtons
-            
-            Spacer(minLength: 16)
+
+            // On iPad (regular width) the presets pin to the bottom of the card;
+            // on iPhone the trailing spacer keeps the block vertically centered.
+            if horizontalSizeClass != .regular {
+                Spacer(minLength: 16)
+            }
         }
         .fontDesign(.rounded)
         .padding(.horizontal, 20)

@@ -85,7 +85,7 @@ struct PlaybackControls: View {
         VStack(spacing: 0) {
             PlaybackSlider(percentage: satellite.played, seeking: $viewModel.seeking, currentTime: currentTime, duration: duration, textFirst: false) {
                 if let chapter = satellite.chapter, viewModel.seeking == nil {
-                    MarqueeText(text: chapter.title, font: .caption2, foregroundStyle: .init(.secondary))
+                    MarqueeText(text: chapter.title, font: .caption2, foregroundStyle: .init(.secondary), alignment: .center)
                 } else {
                     Text(displayedRemaining ?? remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
                         .contentTransition(.numericText())

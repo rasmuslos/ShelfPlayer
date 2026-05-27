@@ -99,6 +99,11 @@ struct MarqueeText: View {
     let text: String
     var font: Font = .body
     var foregroundStyle: AnyShapeStyle = .init(.primary)
+    /// Horizontal alignment of the text while it fits the container (no marquee needed).
+    /// Once the text overflows it always scrolls from the leading edge, so this only
+    /// affects the resting position of short strings — e.g. centering the chapter title
+    /// in the wide center slot of the iPad scrubber.
+    var alignment: HorizontalAlignment = .leading
     var controller: MarqueeController?
 
     var delay: TimeInterval = 2
@@ -115,6 +120,16 @@ struct MarqueeText: View {
 
     private var overflow: CGFloat {
         max(0, textWidth - containerWidth)
+    }
+
+    /// Where the text rests when it fits. The overlay is pinned leading, so a non-leading
+    /// alignment is expressed as a positive offset into the slack. When the text overflows
+    /// `slack` is zero, so this collapses to leading and the marquee scroll is unaffected.
+    private var restingOffset: CGFloat {
+        let slack = max(0, containerWidth - textWidth)
+        if alignment == .center { return slack / 2 }
+        if alignment == .trailing { return slack }
+        return 0
     }
 
     private var needsMarquee: Bool {
@@ -147,7 +162,7 @@ struct MarqueeText: View {
                                     .preference(key: TextWidthKey.self, value: textGeo.size.width)
                             }
                         }
-                        .offset(x: -progress * overflow)
+                        .offset(x: restingOffset - progress * overflow)
                         .onPreferenceChange(TextWidthKey.self) { newValue in
                             textWidth = newValue
                             syncEntry()

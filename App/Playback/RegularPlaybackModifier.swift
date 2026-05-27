@@ -140,9 +140,12 @@ struct RegularPlaybackModifier: ViewModifier {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.namespace) private var namespace
+    @Environment(\.scenePhase) private var scenePhase
 
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
+
+    @Bindable private var settings = AppSettings.shared
 
     @State private var didAppear = false
 
@@ -150,6 +153,10 @@ struct RegularPlaybackModifier: ViewModifier {
         .init {
             viewModel.isExpanded
         } set: { _ in }
+    }
+
+    private var isMeshActive: Bool {
+        settings.animatedNowPlayingBackground && viewModel.nowPlayingMeshColors != nil
     }
 
     @ViewBuilder
@@ -186,8 +193,16 @@ struct RegularPlaybackModifier: ViewModifier {
                     GeometryReader { geometryProxy in
                         Rectangle()
                             .fill(.background)
+                            .overlay {
+                                if isMeshActive, let meshColors = viewModel.nowPlayingMeshColors {
+                                    NowPlayingMeshBackground(colors: meshColors, paused: scenePhase != .active)
+                                        .transition(.opacity)
+                                }
+                            }
+                            .animation(.smooth(duration: 1.0), value: viewModel.nowPlayingMeshColors)
                             .contentShape(.rect)
                             .modifier(PlaybackDragGestureCatcher(height: geometryProxy.size.height))
+                            .ignoresSafeArea()
 
                         Group {
                             if geometryProxy.size.width > geometryProxy.size.height {
@@ -199,10 +214,10 @@ struct RegularPlaybackModifier: ViewModifier {
                                         Group {
                                             switch viewModel.activeCard {
                                                 case .ratePicker:
-                                                    PlaybackRatePickerCard(onMeshBackground: false)
+                                                    PlaybackRatePickerCard(onMeshBackground: isMeshActive)
                                                         .transition(.move(edge: .bottom).combined(with: .opacity))
                                                 case .sleepTimerPicker:
-                                                    PlaybackSleepTimerPickerCard(onMeshBackground: false)
+                                                    PlaybackSleepTimerPickerCard(onMeshBackground: isMeshActive)
                                                         .transition(.move(edge: .bottom).combined(with: .opacity))
                                                 case .queue, .none:
                                                     PlaybackQueue()
@@ -213,10 +228,13 @@ struct RegularPlaybackModifier: ViewModifier {
                                     }
                                     .frame(maxWidth: .infinity)
 
-                                    HStack(alignment: .firstTextBaseline, spacing: 32) {
+                                    HStack(alignment: .bottom, spacing: 32) {
                                         PlaybackAirPlayButton()
-                                        PlaybackRateButton()
-                                        PlaybackSleepTimerButton()
+
+                                        Spacer(minLength: 0)
+
+                                        PlaybackRateButton(onMeshBackground: isMeshActive)
+                                        PlaybackSleepTimerButton(onMeshBackground: isMeshActive)
                                     }
                                     .labelStyle(.iconOnly)
                                     .buttonStyle(.plain)
@@ -239,6 +257,9 @@ struct RegularPlaybackModifier: ViewModifier {
                                     .modifier(PlaybackDragGestureCatcher(height: geometryProxy.size.height))
                                     .padding(-40)
                                     .accessibilityLabel("action.dismiss")
+                                }
+                                .modify(if: isMeshActive) {
+                                    $0.foregroundStyle(.white)
                                 }
                             } else {
                                 HStack(spacing: 0) {

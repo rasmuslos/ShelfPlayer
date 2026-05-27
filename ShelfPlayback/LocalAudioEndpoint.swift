@@ -168,7 +168,16 @@ final class LocalAudioEndpoint: AudioEndpoint {
 
         setupObservers()
 
-        try await start()
+        do {
+            try await start()
+        } catch {
+            // start() may have begun the buffer-check timer (it strongly captures self and is
+            // retained by the run loop). Since a throwing init never assigns this endpoint to
+            // AudioPlayer.current, nobody can stop() it later — tear the timer down here so the
+            // endpoint deallocates instead of leaking and logging buffer health forever.
+            cancelUpdateBufferingCheck()
+            throw error
+        }
     }
     isolated deinit {
         observerSubscriptions.forEach { $0.cancel() }

@@ -165,6 +165,8 @@ public extension AudioPlayer {
         }
 
         startTask = .init {
+            defer { self.startTask = nil }
+
             await self.stop()
 
             do {
@@ -174,8 +176,6 @@ public extension AudioPlayer {
                 await self.stop()
                 throw error
             }
-
-            startTask = nil
         }
 
         return try await startTask!.value

@@ -139,6 +139,8 @@ struct PlaybackSleepTimerButton: View {
 }
 
 struct PlaybackSleepTimerPickerCard: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
 
@@ -209,9 +211,8 @@ struct PlaybackSleepTimerPickerCard: View {
             topControls
                 .padding(.bottom, 8)
 
-            // Equal-share spacers above and below the display so the timer sits at
-            // the geometric center of the card rather than being pulled toward the
-            // shorter top-controls strip.
+            // Equal-share spacers above and below the display center the timer in
+            // the space between the top-controls strip and the presets.
             Spacer(minLength: 12)
 
             if activeChapterAmount != nil {
@@ -225,8 +226,12 @@ struct PlaybackSleepTimerPickerCard: View {
             Spacer(minLength: 12)
 
             presetButtons
-            
-            Spacer(minLength: 12)
+
+            // On iPad (regular width) the presets pin to the bottom of the card;
+            // on iPhone the trailing spacer keeps the block vertically centered.
+            if horizontalSizeClass != .regular {
+                Spacer(minLength: 12)
+            }
         }
         .fontDesign(.rounded)
         .padding(.horizontal, 20)
