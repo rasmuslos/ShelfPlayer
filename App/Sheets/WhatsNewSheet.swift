@@ -50,7 +50,7 @@ struct WhatsNewSheet: View {
 
             row(systemImage: "chart.xyaxis.line", headline: "Listening Statistics", text: "A new sheet with charts and totals from your listening history.")
 
-            row(systemImage: "speedometer", headline: "Playback Controls", text: "A redesigned playback speed picker and home screen.")
+            row(systemImage: "speedometer", headline: "Playback Controls", text: "A redesigned playback speed picker, sleep timer, and home screen.")
 
             row(systemImage: "wand.and.sparkles", headline: "Siri and Shortcuts", text: "More App Intents and widget configurations for Siri, Shortcuts, and the Home Screen.")
 
