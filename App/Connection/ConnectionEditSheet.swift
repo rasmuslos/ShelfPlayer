@@ -27,10 +27,6 @@ struct ConnectionEditSheet: View {
                     @Bindable var viewModel = viewModel
 
                     List {
-                        Section {
-
-                        }
-
                         #if DEBUG
                         CertificateEditor(identity: .constant(nil))
                         #endif
@@ -40,7 +36,7 @@ struct ConnectionEditSheet: View {
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
                             Button("action.save") {
-                                viewModel.save {
+                                viewModel.save(onError: { notifyError.toggle() }) {
                                     satellite.dismissSheet()
                                 }
                             }
@@ -88,12 +84,18 @@ private final class ViewModel: Sendable {
         self.headers = headers.map { .init(key: $0.key, value: $0.value) }
     }
 
-    func save(_ callback: @MainActor @escaping () -> Void) {
+    func save(onError: @MainActor @escaping () -> Void, _ callback: @MainActor @escaping () -> Void) {
         Task {
             isLoading = true
             let headers = self.headers.compactMap(\.materialized)
 
-            try! await PersistenceManager.shared.authorization.updateConnection(connectionID, headers: headers)
+            do {
+                try await PersistenceManager.shared.authorization.updateConnection(connectionID, headers: headers)
+            } catch {
+                isLoading = false
+                onError()
+                return
+            }
 
             withAnimation {
                 isLoading = false

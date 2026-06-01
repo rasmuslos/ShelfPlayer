@@ -9,7 +9,12 @@ import OSLog
 private let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "Series+Convert")
 
 extension Series {
-    convenience init(payload: ItemPayload, libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) {
+    convenience init?(payload: ItemPayload, libraryID: ItemIdentifier.LibraryID, connectionID: ItemIdentifier.ConnectionID) {
+        guard let name = payload.name else {
+            logger.warning("Skipping series conversion for \(payload.id, privacy: .public): missing name")
+            return nil
+        }
+
         let audiobooks = payload.books?.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) } ?? []
 
         if let books = payload.books, !books.isEmpty, audiobooks.isEmpty {
@@ -18,14 +23,14 @@ extension Series {
 
         self.init(
             id: .init(primaryID: payload.id, groupingID: nil, libraryID: libraryID, connectionID: connectionID, type: .series),
-            name: payload.name!,
+            name: name,
             authors: [],
             description: payload.description,
             addedAt: Date(timeIntervalSince1970: (payload.addedAt ?? 0) / 1000),
             audiobooks: audiobooks)
     }
 
-    convenience init(item: ItemPayload, audiobooks: [ItemPayload], libraryID: LibraryIdentifier, connectionID: ItemIdentifier.ConnectionID) {
+    convenience init?(item: ItemPayload, audiobooks: [ItemPayload], libraryID: LibraryIdentifier, connectionID: ItemIdentifier.ConnectionID) {
         var item = item
         item.books = audiobooks
 

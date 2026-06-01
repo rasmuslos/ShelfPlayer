@@ -59,7 +59,7 @@ struct ListenedTodayWidgetProvider: TimelineProvider {
             return empty
         }
 
-        guard tomorrowMidnight.distance(to: current.updated) < 0 else {
+        guard current.updated >= Calendar.current.startOfDay(for: .now) else {
             logger.warning("listenedTodayWidgetValue stale (updated=\(current.updated, privacy: .public)); resetting")
             AppSettings.shared.listenedTodayWidgetValue = nil
             return empty

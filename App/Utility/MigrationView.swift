@@ -14,6 +14,7 @@ struct MigrationView: View {
     @Binding var migrationState: MigrationManager.State
 
     @State private var progress: Double = 0
+    @State private var migrationTask: Task<Void, Never>?
 
     private var isFailed: Bool {
         if case .failed = migrationState { return true }
@@ -94,30 +95,34 @@ struct MigrationView: View {
     }
 
     private func startMigration() {
-        Task {
+        // Cancel any in-flight migration so a retry doesn't run a second one concurrently.
+        migrationTask?.cancel()
+
+        migrationTask = Task {
+            // Poll progress for the duration of the migration; stops automatically
+            // once the migration finishes (or the task is cancelled).
+            let pollingTask = Task {
+                while !Task.isCancelled {
+                    try? await Task.sleep(for: .milliseconds(100))
+
+                    let current = await MigrationManager.shared.state
+                    migrationState = current
+
+                    if case .inProgress(let value) = current {
+                        progress = value
+                    }
+                }
+            }
+
+            defer { pollingTask.cancel() }
+
             do {
                 try await MigrationManager.shared.performMigration()
-                migrationState = await MigrationManager.shared.state
             } catch {
-                migrationState = await MigrationManager.shared.state
+                // Final state is read below regardless of success or failure.
             }
-        }
 
-        Task {
-            while true {
-                try await Task.sleep(for: .milliseconds(100))
-
-                let current = await MigrationManager.shared.state
-                migrationState = current
-
-                if case .inProgress(let value) = current {
-                    progress = value
-                }
-
-                if case .completed = current { break }
-                if case .failed = current { break }
-                if case .notNeeded = current { break }
-            }
+            migrationState = await MigrationManager.shared.state
         }
     }
 }

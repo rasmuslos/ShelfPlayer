@@ -95,7 +95,7 @@ struct SleepTimerEditor: View {
 
                 Group {
                     Picker("sleepTimer.extend.interval", selection: $sleepTimerExtendInterval) {
-                        ForEach(sleepTimerIntervals, id: \.hashValue) { interval in
+                        ForEach(sleepTimerIntervals, id: \.self) { interval in
                             let totalMinutes = Int(interval / 60)
                             if totalMinutes >= 60 {
                                 Text(verbatim: String(format: "%d:%02d", totalMinutes / 60, totalMinutes % 60))

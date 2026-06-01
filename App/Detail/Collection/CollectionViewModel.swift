@@ -12,7 +12,7 @@ import SwiftUI
 import ShelfPlayback
 
 @Observable @MainActor
-final class CollectionViewModel: Sendable {
+final class CollectionViewModel {
     private let logger = Logger(subsystem: "io.rfk.shelfPlayer", category: "CollectionViewModel")
 
     private var observerSubscriptions = Set<AnyCancellable>()

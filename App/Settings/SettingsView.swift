@@ -419,7 +419,7 @@ private struct DebugSettingsView: View {
     var body: some View {
         List {
             Section {
-                ForEach(Array(general.keys).sorted(), id: \.hashValue) { key in
+                ForEach(Array(general.keys).sorted(), id: \.self) { key in
                     LabeledContent(key, value: general[key]!)
                 }
             }

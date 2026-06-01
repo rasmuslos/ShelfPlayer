@@ -9,7 +9,8 @@ import SwiftUI
 
 struct HeroBackButton: View {
     @Environment(\.navigationContext) private var navigationContext
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.isPresented) private var isPresented
+    @Environment(\.dismiss) private var dismiss
 
     @ViewBuilder
     private var label: some View {
@@ -18,7 +19,7 @@ struct HeroBackButton: View {
     }
 
     var body: some View {
-        if presentationMode.wrappedValue.isPresented {
+        if isPresented {
             if let navigationContext {
                 Menu {
                     ForEach(navigationContext.path.prefix(max(0, navigationContext.path.count - 1)).enumerated().reversed(), id: \.offset) { index, destination in
@@ -33,11 +34,11 @@ struct HeroBackButton: View {
                 } label: {
                     label
                 } primaryAction: {
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss()
                 }
             } else {
                 Button {
-                    presentationMode.wrappedValue.dismiss()
+                    dismiss()
                 } label: {
                     label
                 }

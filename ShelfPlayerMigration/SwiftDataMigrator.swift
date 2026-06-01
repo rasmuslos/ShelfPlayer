@@ -374,7 +374,10 @@ enum SwiftDataMigrator {
         logger.info("Fetched \(entities.count, privacy: .public) playback rates; migrating...")
 
         for entity in entities {
-            guard let rate = try? JSONDecoder().decode(Double.self, from: entity.value) else { continue }
+            guard let rate = try? JSONDecoder().decode(Double.self, from: entity.value) else {
+                logger.warning("Skipping undecodable playback rate for \(entity.key, privacy: .public)")
+                continue
+            }
 
             let new = ShelfPlayerSchema.PersistedPlaybackRate(itemID: entity.key, rate: rate)
             newContext.insert(new)
@@ -458,7 +461,10 @@ enum SwiftDataMigrator {
         logger.info("Fetched \(entities.count, privacy: .public) podcast filter/sort configs; migrating...")
 
         for entity in entities {
-            guard let config = try? JSONDecoder().decode(OldPodcastFilterSortConfig.self, from: entity.value) else { continue }
+            guard let config = try? JSONDecoder().decode(OldPodcastFilterSortConfig.self, from: entity.value) else {
+                logger.warning("Skipping undecodable podcast filter/sort config for \(entity.key, privacy: .public)")
+                continue
+            }
 
             let new = ShelfPlayerSchema.PersistedPodcastFilterSort(
                 podcastID: entity.key,
@@ -505,7 +511,10 @@ enum SwiftDataMigrator {
         logger.info("Fetched \(entities.count, privacy: .public) library indices; migrating...")
 
         for entity in entities {
-            guard let index = try? JSONDecoder().decode(OldLibraryIndexMetadata.self, from: entity.value) else { continue }
+            guard let index = try? JSONDecoder().decode(OldLibraryIndexMetadata.self, from: entity.value) else {
+                logger.warning("Skipping undecodable library index for \(entity.key, privacy: .public)")
+                continue
+            }
 
             let new = ShelfPlayerSchema.PersistedLibraryIndex(
                 libraryKey: entity.key,
@@ -536,7 +545,10 @@ enum SwiftDataMigrator {
         logger.info("Fetched \(retrievalEntities.count, privacy: .public) convenience-download retrievals; migrating...")
 
         for entity in retrievalEntities {
-            guard let retrieval = try? JSONDecoder().decode(GroupingRetrieval.self, from: entity.value) else { continue }
+            guard let retrieval = try? JSONDecoder().decode(GroupingRetrieval.self, from: entity.value) else {
+                logger.warning("Skipping undecodable convenience-download retrieval for \(entity.key, privacy: .public)")
+                continue
+            }
 
             // Old key: "convenienceDownloadRetrieval-{configurationID}", new store uses raw configurationID
             let configurationID = entity.key.replacingOccurrences(of: "convenienceDownloadRetrieval-", with: "")
@@ -547,7 +559,10 @@ enum SwiftDataMigrator {
         let downloadedEntities = try oldContext.fetch(downloadedDescriptor)
 
         for entity in downloadedEntities {
-            guard let ids = try? JSONDecoder().decode(Set<ItemIdentifier>.self, from: entity.value) else { continue }
+            guard let ids = try? JSONDecoder().decode(Set<ItemIdentifier>.self, from: entity.value) else {
+                logger.warning("Skipping undecodable downloaded item IDs for \(entity.key, privacy: .public)")
+                continue
+            }
 
             // Old key: "downloadedItemIDs-{configurationID}", new store uses raw configurationID
             let configurationID = entity.key.replacingOccurrences(of: "downloadedItemIDs-", with: "")
@@ -558,7 +573,10 @@ enum SwiftDataMigrator {
         let associatedEntities = try oldContext.fetch(associatedDescriptor)
 
         for entity in associatedEntities {
-            guard let ids = try? JSONDecoder().decode(Set<String>.self, from: entity.value) else { continue }
+            guard let ids = try? JSONDecoder().decode(Set<String>.self, from: entity.value) else {
+                logger.warning("Skipping undecodable associated configuration IDs for \(entity.key, privacy: .public)")
+                continue
+            }
 
             // Old key: "associatedConfigurationIDs-{itemID}", new store uses ItemIdentifier
             let itemIDString = entity.key.replacingOccurrences(of: "associatedConfigurationIDs-", with: "")

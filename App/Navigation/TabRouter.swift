@@ -74,13 +74,13 @@ struct TabRouter: View {
             .toolbarVisibility(isCompact ? .hidden : .automatic, for: .tabBar)
             .modifier(OfflineControlsModifier(startOfflineTimeout: startOfflineTimeout))
     }
-    private func loadingTab(step: LocalizedStringKey? = nil, task: (() async -> Void)? = nil) -> some TabContent<TabValue?> {
-        Tab("loading", systemImage: "teddybear.fill", value: .loading) {
-            loadingView(startOfflineTimeout: true, step: step)
-                .task {
-                    await task?()
-                }
-        }
+    @ViewBuilder
+    private func placeholder(step: LocalizedStringKey? = nil, task: @escaping () async -> Void) -> some View {
+        LoadingView(step: step)
+            .modifier(OfflineControlsModifier(startOfflineTimeout: true))
+            .task {
+                await task()
+            }
     }
     @ViewBuilder
     private func errorView(startOfflineTimeout: Bool) -> some View {
@@ -199,43 +199,90 @@ struct TabRouter: View {
     }
 
     var body: some View {
-        TabView(selection: $viewModel.tabValue) {
+        Group {
             if viewModel.connectionLibraries.isEmpty {
-                loadingTab(step: "loading.step.libraries") {
+                placeholder(step: "loading.step.libraries") {
                     await viewModel.loadLibraries()
                 }
             } else if isCompact, !isCompactAndReady {
-                loadingTab(step: "loading.step.preparing") {
+                placeholder(step: "loading.step.preparing") {
                     viewModel.selectLastOrFirstCompactLibrary()
                 }
             } else if !isCompact, viewModel.tabValue == nil {
-                loadingTab(step: "loading.step.preparing") {
+                placeholder(step: "loading.step.preparing") {
                     viewModel.selectLastOrFirstSidebarLibrary()
                 }
             } else {
-                if isCompact {
-                    if let selectedLibraryID = viewModel.selectedLibraryID, let tabBar = viewModel.tabBar[selectedLibraryID] {
-                        ForEach(tabBar) {
-                            tab(for: $0)
-                        }
-                        .hidden(!isCompactAndReady || viewModel.pinnedTabsActive)
-                    }
-                } else {
-                    sidebarTabs()
-                }
-
-                ForEach(viewModel.pinnedTabValues) {
-                    tab(for: $0)
-                }
-                .hidden(isCompact ? !viewModel.pinnedTabsActive && isCompactAndReady : false)
-
-                Tab(value: .search, role: .search) {
-                    NavigationStack {
-                        SearchPanel()
-                    }
-                }
-                .hidden(hideSearchTab || (isCompact ? !isCompactAndReady : false))
+                tabView
             }
+        }
+        .environment(viewModel)
+        .environment(\.optionalTabRouter, viewModel)
+        .environment(listenedTodayTracker)
+        .environment(\.playbackBottomOffset, 52)
+        .onChange(of: itemNavigationController.itemID, initial: true) {
+            guard let itemID: ItemIdentifier = itemNavigationController.consume() else {
+                return
+            }
+
+            let targetLibraryID = LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(itemID)
+            if viewModel.tabValue?.libraryID != targetLibraryID {
+                if isCompact {
+                    viewModel.selectFirstCompactTab(for: targetLibraryID, allowPinned: true)
+                } else {
+                    viewModel.selectFirstSidebarTab(for: targetLibraryID, allowPinned: true)
+                }
+            }
+
+            viewModel.navigateToWhenReady = itemID
+            navigateToWaitingItemID()
+        }
+        .onChange(of: viewModel.tabValue) {
+            navigateToWaitingItemID()
+        }
+        .onChange(of: viewModel.currentConnectionStatus) {
+            navigateToWaitingItemID()
+        }
+        .onChange(of: itemNavigationController.search?.0, initial: true) {
+            navigateToWaitingSearch()
+        }
+        .onChange(of: viewModel.selectedLibraryID) {
+           navigateToWaitingSearch()
+        }
+        .onChange(of: isAtLeastOneConnectionSynchronized, initial: true) {
+            guard isAtLeastOneConnectionSynchronized else {
+                return
+            }
+
+            ShelfPlayer.initOnlineUIHook()
+        }
+    }
+
+    @ViewBuilder
+    private var tabView: some View {
+        TabView(selection: $viewModel.tabValue) {
+            if isCompact {
+                if let selectedLibraryID = viewModel.selectedLibraryID, let tabBar = viewModel.tabBar[selectedLibraryID] {
+                    ForEach(tabBar) {
+                        tab(for: $0)
+                    }
+                    .hidden(!isCompactAndReady || viewModel.pinnedTabsActive)
+                }
+            } else {
+                sidebarTabs()
+            }
+
+            ForEach(viewModel.pinnedTabValues) {
+                tab(for: $0)
+            }
+            .hidden(isCompact ? !viewModel.pinnedTabsActive && isCompactAndReady : false)
+
+            Tab(value: .search, role: .search) {
+                NavigationStack {
+                    SearchPanel()
+                }
+            }
+            .hidden(hideSearchTab || (isCompact ? !isCompactAndReady : false))
         }
         .tabViewStyle(.sidebarAdaptable)
         .tabViewCustomization($customization)
@@ -299,46 +346,6 @@ struct TabRouter: View {
         }
         .modifier(CompactPlaybackModifier())
         .modifier(RegularPlaybackModifier())
-        .environment(viewModel)
-        .environment(\.optionalTabRouter, viewModel)
-        .environment(listenedTodayTracker)
-        .environment(\.playbackBottomOffset, 52)
-        .onChange(of: itemNavigationController.itemID, initial: true) {
-            guard let itemID: ItemIdentifier = itemNavigationController.consume() else {
-                return
-            }
-
-            let targetLibraryID = LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(itemID)
-            if viewModel.tabValue?.libraryID != targetLibraryID {
-                if isCompact {
-                    viewModel.selectFirstCompactTab(for: targetLibraryID, allowPinned: true)
-                } else {
-                    viewModel.selectFirstSidebarTab(for: targetLibraryID, allowPinned: true)
-                }
-            }
-
-            viewModel.navigateToWhenReady = itemID
-            navigateToWaitingItemID()
-        }
-        .onChange(of: viewModel.tabValue) {
-            navigateToWaitingItemID()
-        }
-        .onChange(of: viewModel.currentConnectionStatus) {
-            navigateToWaitingItemID()
-        }
-        .onChange(of: itemNavigationController.search?.0, initial: true) {
-            navigateToWaitingSearch()
-        }
-        .onChange(of: viewModel.selectedLibraryID) {
-           navigateToWaitingSearch()
-        }
-        .onChange(of: isAtLeastOneConnectionSynchronized, initial: true) {
-            guard isAtLeastOneConnectionSynchronized else {
-                return
-            }
-
-            ShelfPlayer.initOnlineUIHook()
-        }
     }
 
     func navigateToWaitingItemID() {

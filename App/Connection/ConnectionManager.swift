@@ -36,12 +36,12 @@ struct ConnectionManager: View {
                 let connectionID = connectionStore.connections[index].id
 
                 Task {
-                    loading = false
+                    loading = true
 
                     Self.logger.info("Removing connection \(connectionID, privacy: .public)")
                     await PersistenceManager.shared.remove(connectionID: connectionID)
 
-                    loading = true
+                    loading = false
                 }
             }
         }

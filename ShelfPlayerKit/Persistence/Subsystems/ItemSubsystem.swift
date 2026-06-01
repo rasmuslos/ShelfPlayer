@@ -210,7 +210,15 @@ public extension PersistenceManager.ItemSubsystem {
             }
         }
 
-        return await colorCache[itemID]?.value
+        let color = await colorCache[itemID]?.value
+
+        if color == nil {
+            // A nil result is transient (image not loaded yet, or extraction failed),
+            // so don't keep it cached — let a later request recompute the color.
+            colorCache[itemID] = nil
+        }
+
+        return color
     }
 
     func libraryIndexMetadata(for libraryID: LibraryIdentifier) -> LibraryIndexMetadata? {

@@ -25,7 +25,13 @@ public final actor ImageLoader {
             }
         }
 
-        return try await cached[request]!.value
+        do {
+            return try await cached[request]!.value
+        } catch {
+            // Don't cache a transient failure forever — evict so a later request retries.
+            cached[request] = nil
+            throw error
+        }
     }
 
     private nonisolated(unsafe) let platformImageCache = NSCache<ImageRequest, PlatformImage>()

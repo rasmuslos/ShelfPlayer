@@ -341,7 +341,7 @@ extension LocalAudioEndpoint {
 
         audioPlayer.pause()
 
-        let index = try! audioTrackIndex(at: time)
+        let index = try audioTrackIndex(at: time)
 
         if index != activeAudioTrackIndex {
             let playerItems = audioPlayer.items()

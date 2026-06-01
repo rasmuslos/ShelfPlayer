@@ -41,7 +41,7 @@ struct CompactLegacyCollapsedForeground: View {
 
                 ItemImage(itemID: satellite.nowPlayingItemID, size: .small, cornerRadius: viewModel.PILL_IMAGE_CORNER_RADIUS)
                     .opacity(!viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
-                    .id((satellite.nowPlayingItemID?.description ?? "huzgfuzgw") + "_nowPlaying_image_compact_legacy")
+                    .id((satellite.nowPlayingItemID?.description ?? "placeholder") + "_nowPlaying_image_compact_legacy")
             }
             .frame(width: 40, height: 40)
 
@@ -53,7 +53,7 @@ struct CompactLegacyCollapsedForeground: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .id((satellite.nowPlayingItem?.sortName ?? "wwf2foijwvkjw") + "_nowPlaying_text_legacy_compact")
+            .id((satellite.nowPlayingItem?.sortName ?? "placeholder") + "_nowPlaying_text_legacy_compact")
 
             Spacer()
 

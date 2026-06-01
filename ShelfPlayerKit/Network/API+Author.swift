@@ -7,7 +7,11 @@ import Foundation
 
 public extension APIClient {
     func author(with identifier: ItemIdentifier) async throws -> Person {
-        Person(author: try await response(APIRequest(path: "api/authors/\(identifier.pathComponent)", method: .get, ttl: 12)), connectionID: connectionID)
+        guard let person = Person(author: try await response(APIRequest(path: "api/authors/\(identifier.pathComponent)", method: .get, ttl: 12)), connectionID: connectionID) else {
+            throw APIClientError.notFound
+        }
+
+        return person
     }
 
     func authors(from libraryID: String, sortOrder: AuthorSortOrder, ascending: Bool, limit: Int, page: Int) async throws -> ([Person], Int) {
@@ -18,7 +22,7 @@ public extension APIClient {
             .init(name: "page", value: String(page)),
         ], ttl: 12))
 
-        return (response.results.map { Person(author: $0, connectionID: connectionID) }, response.total)
+        return (response.results.compactMap { Person(author: $0, connectionID: connectionID) }, response.total)
     }
 
     func authorID(from libraryID: String, name: String) async throws -> ItemIdentifier {

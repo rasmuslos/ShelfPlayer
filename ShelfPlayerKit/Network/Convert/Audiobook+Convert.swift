@@ -20,15 +20,26 @@ extension Audiobook {
             return nil
         }
 
+        guard let resolvedLibraryID = libraryID ?? payload.libraryId else {
+            logger.warning("Skipping audiobook conversion for \(payload.id, privacy: .public): missing libraryId")
+            return nil
+        }
+
+        guard let title = media.metadata.title else {
+            logger.warning("Skipping audiobook conversion for \(payload.id, privacy: .public): missing title")
+            return nil
+        }
+
         var resolvedSeries = [SeriesFragment]()
 
         if let series = payload.media?.metadata.series, !series.isEmpty {
-            resolvedSeries += series.map {
-                let name = $0.name!
+            resolvedSeries += series.compactMap {
+                guard let name = $0.name else { return nil }
+
                 let id: ItemIdentifier?
 
                 if let seriesID = $0.id {
-                    id = .init(primaryID: seriesID, groupingID: nil, libraryID: libraryID ?? payload.libraryId!, connectionID: connectionID, type: .series)
+                    id = .init(primaryID: seriesID, groupingID: nil, libraryID: resolvedLibraryID, connectionID: connectionID, type: .series)
                 } else {
                     id = nil
                 }
@@ -55,8 +66,8 @@ extension Audiobook {
         let duration = media.duration ?? 0
 
         self.init(
-            id: .init(primaryID: payload.id, groupingID: nil, libraryID: payload.libraryId!, connectionID: connectionID, type: .audiobook),
-            name: media.metadata.title!,
+            id: .init(primaryID: payload.id, groupingID: nil, libraryID: resolvedLibraryID, connectionID: connectionID, type: .audiobook),
+            name: title,
             authors: media.metadata.authorName?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: media.metadata.description?.trimmingCharacters(in: .whitespacesAndNewlines),
             genres: media.metadata.genres,

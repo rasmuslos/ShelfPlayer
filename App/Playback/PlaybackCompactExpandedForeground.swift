@@ -18,8 +18,8 @@ struct PlaybackCompactExpandedForeground: View {
     @Bindable private var settings = AppSettings.shared
 
     let height: CGFloat
-    let safeAreTopInset: CGFloat
-    let safeAreBottomInset: CGFloat
+    let safeAreaTopInset: CGFloat
+    let safeAreaBottomInset: CGFloat
 
     private var isMeshActive: Bool {
         settings.animatedNowPlayingBackground && viewModel.nowPlayingMeshColors != nil
@@ -28,7 +28,7 @@ struct PlaybackCompactExpandedForeground: View {
     var body: some View {
         VStack(spacing: 0) {
             Rectangle()
-                .frame(height: safeAreTopInset)
+                .frame(height: safeAreaTopInset)
                 .hidden()
 
             Spacer(minLength: 12)
@@ -55,7 +55,7 @@ struct PlaybackCompactExpandedForeground: View {
                                 .opacity(viewModel.isExpanded && viewModel.expansionAnimationCount <= 0 ? 1 : 0)
                         }
                         .aspectRatio(1, contentMode: .fit)
-                        .id((satellite.nowPlayingItemID?.description ?? "wwf2foijwvkjw") + "_nowPlaying_image_expanded_large")
+                        .id((satellite.nowPlayingItemID?.description ?? "placeholder") + "_nowPlaying_image_expanded_large")
                         .shadow(color: .black.opacity(0.4), radius: 20)
                         .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
                         .padding(.horizontal, satellite.isPlaying ? 0 : 40)
@@ -103,7 +103,7 @@ struct PlaybackCompactExpandedForeground: View {
                         .aspectRatio(1, contentMode: .fit)
                         .frame(width: 72)
                         .shadow(color: .black.opacity(0.32), radius: 12)
-                        .id((satellite.nowPlayingItemID?.description ?? "jhiiuwghdf") + "_nowPlaying_image_expanded_small")
+                        .id((satellite.nowPlayingItemID?.description ?? "placeholder") + "_nowPlaying_image_expanded_small")
                     }
                     .buttonStyle(.plain)
                     .matchedGeometryEffect(id: "image", in: namespace!, properties: .frame, anchor: viewModel.isExpanded ? .topLeading : .topTrailing)
@@ -136,7 +136,7 @@ struct PlaybackCompactExpandedForeground: View {
 
             PlaybackActions(onMeshBackground: isMeshActive)
                 .transition(.move(edge: .bottom).combined(with: .opacity).animation(.snappy(duration: 0.1)))
-                .padding(.bottom, safeAreBottomInset + 12)
+                .padding(.bottom, safeAreaBottomInset + 12)
                 .offset(y: viewModel.controlTranslationY)
         }
         .overlay(alignment: .top) {
@@ -154,7 +154,7 @@ struct PlaybackCompactExpandedForeground: View {
             .contentShape(.rect)
             .modifier(PlaybackDragGestureCatcher(height: height))
             .padding(-40)
-            .offset(y: safeAreTopInset)
+            .offset(y: safeAreaTopInset)
             .accessibilityLabel("action.dismiss")
         }
         .padding(.horizontal, 28)
@@ -167,7 +167,7 @@ struct PlaybackCompactExpandedForeground: View {
 #if DEBUG
 #Preview {
     GeometryReader { geometryProxy in
-        PlaybackCompactExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: geometryProxy.safeAreaInsets.top, safeAreBottomInset: geometryProxy.safeAreaInsets.bottom)
+        PlaybackCompactExpandedForeground(height: geometryProxy.size.height, safeAreaTopInset: geometryProxy.safeAreaInsets.top, safeAreaBottomInset: geometryProxy.safeAreaInsets.bottom)
             .ignoresSafeArea()
     }
     .previewEnvironment()

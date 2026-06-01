@@ -20,7 +20,7 @@ public extension APIClient {
             if row.type == "episode" {
                 episodes.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap { Episode(payload: $0, connectionID: connectionID) }))
             } else if row.type == "podcast" {
-                podcasts.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map { Podcast(payload: $0, connectionID: connectionID) }))
+                podcasts.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap { Podcast(payload: $0, connectionID: connectionID) }))
             }
         }
 
@@ -33,8 +33,10 @@ public extension APIClient {
 
     func podcast(with identifier: ItemIdentifier.PrimaryID) async throws -> (Podcast, [Episode]) {
         let item: ItemPayload = try await response(APIRequest<ItemPayload>(path: "api/items/\(identifier)", method: .get, ttl: 12))
-        let podcast = Podcast(payload: item, connectionID: connectionID)
 
+        guard let podcast = Podcast(payload: item, connectionID: connectionID) else {
+            throw APIClientError.notFound
+        }
         guard let episodes = item.media?.episodes else {
             throw APIClientError.notFound
         }
@@ -55,7 +57,7 @@ public extension APIClient {
         ]
 
         let response = try await response(APIRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query, bypassesCache: true))
-        return response.results.map { Podcast(payload: $0, connectionID: connectionID) }
+        return response.results.compactMap { Podcast(payload: $0, connectionID: connectionID) }
     }
 
     func podcasts(from libraryID: String, sortOrder: PodcastSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Podcast], Int) {
@@ -74,6 +76,6 @@ public extension APIClient {
         query.append(.init(name: "include", value: "numEpisodesIncomplete"))
 
         let response = try await response(APIRequest<ResultResponse>(path: "api/libraries/\(libraryID)/items", method: .get, query: query, ttl: 12))
-        return (response.results.map { Podcast(payload: $0, connectionID: connectionID) }, response.total)
+        return (response.results.compactMap { Podcast(payload: $0, connectionID: connectionID) }, response.total)
     }
 }

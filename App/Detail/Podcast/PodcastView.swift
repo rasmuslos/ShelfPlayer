@@ -30,7 +30,7 @@ struct PodcastView: View {
             if !viewModel.episodes.isEmpty {
                 HStack {
                     Menu {
-                        ForEach(viewModel.seasons, id: \.hashValue) { season in
+                        ForEach(viewModel.seasons, id: \.self) { season in
                             Toggle(viewModel.seasonLabel(of: season), isOn: .init { viewModel.seasonFilter == season } set: {
                                 if $0 {
                                     viewModel.seasonFilter = season

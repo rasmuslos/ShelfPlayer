@@ -8,13 +8,7 @@
 import SwiftUI
 
 extension View {
-    @ViewBuilder
     func largeTitleDisplayMode() -> some View {
-        if #available(iOS 26, *) {
-            self
-                .toolbarTitleDisplayMode(.inlineLarge)
-        } else {
-            self
-        }
+        toolbarTitleDisplayMode(.inlineLarge)
     }
 }

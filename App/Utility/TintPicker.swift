@@ -45,14 +45,11 @@ struct TintPicker<Label: View>: View {
         let labelStyle: S
 
         var body: some View {
-            Button(tint.title, systemImage: "circle.fill") {
-                AppSettings.shared.tintColor = tint
-            }
-            .buttonStyle(.plain)
-            .labelStyle(labelStyle)
-            .tag(tint)
-            .foregroundStyle(tint.color)
-            .symbolRenderingMode(.palette)
+            SwiftUI.Label(tint.title, systemImage: "circle.fill")
+                .labelStyle(labelStyle)
+                .tag(tint)
+                .foregroundStyle(tint.color)
+                .symbolRenderingMode(.palette)
         }
     }
 }

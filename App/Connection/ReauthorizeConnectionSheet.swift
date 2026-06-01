@@ -17,6 +17,7 @@ struct ReauthorizeConnectionSheet: View {
     @State private var notifyError = false
     @State private var authorizeTrigger = false
     @State private var isRemoving = false
+    @State private var selectedStrategy: AuthorizationStrategy?
 
     var isLoading: Bool {
         viewModel?.isLoading == true || isRemoving
@@ -47,15 +48,10 @@ struct ReauthorizeConnectionSheet: View {
                         .listRowBackground(Color.clear)
                     }
 
-                    ConnectionAuthorizer(strategies: viewModel.strategies, isLoading: $viewModel.isLoading, username: .constant(viewModel.username), allowUsernameEdit: false, showButton: false, authorizeTrigger: $authorizeTrigger, apiClient: viewModel.apiClient) {
-                        guard viewModel.username == $0 else {
-                            notifyError.toggle()
-                            return
-                        }
-
-                        let accessToken = $1
-                        let refreshToken = $2
-
+                    ConnectionAuthorizer(strategies: viewModel.strategies, isLoading: $viewModel.isLoading, username: .constant(viewModel.username), allowUsernameEdit: false, showButton: false, authorizeTrigger: $authorizeTrigger, selectedStrategy: $selectedStrategy, apiClient: viewModel.apiClient) { _, accessToken, refreshToken in
+                        // Accept whoever completed the flow and just refresh the tokens. The username is
+                        // baked into the connection's identity (connectionID = hash of host + user), so we
+                        // can't rewrite it here without re-keying everything — don't block reauth on a mismatch.
                         Task {
                             do {
                                 try await PersistenceManager.shared.authorization.updateConnection(connectionID, accessToken: accessToken, refreshToken: refreshToken)
@@ -102,6 +98,7 @@ struct ReauthorizeConnectionSheet: View {
                             .controlSize(.large)
                             .buttonStyle(.glassProminent)
                             .buttonSizing(.flexible)
+                            .disabled(selectedStrategy == nil)
                         }
                     }
                 }

@@ -302,7 +302,8 @@ private extension PodcastViewModel {
 
         do {
             let casts = try await ABSClient[podcast.id.connectionID].podcastsRandom(from: podcast.id.libraryID, limit: 11)
-            let filtered = casts.filter { $0.id != podcast.id }.prefix(10)
+            // Drop the current podcast and any fully-finished ones (no incomplete episodes left to discover).
+            let filtered = casts.filter { $0.id != podcast.id && ($0.incompleteEpisodeCount ?? -1) != 0 }.prefix(10)
 
             withAnimation {
                 self.explore = Array(filtered)

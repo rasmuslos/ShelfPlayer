@@ -27,7 +27,11 @@ struct ConnectionAuthorizer: View {
 
     @Binding var authorizeTrigger: Bool
 
-    init(strategies: [AuthorizationStrategy], isLoading: Binding<Bool>, username: Binding<String>, allowUsernameEdit: Bool = true, showButton: Bool = true, authorizeTrigger: Binding<Bool> = .constant(false), apiClient: APIClient, callback: @escaping Callback) {
+    /// Mirrors the internally selected strategy outward so a host sheet can, e.g.,
+    /// disable its own proceed button until a strategy is picked. Write-only from here.
+    @Binding private var selectedStrategy: AuthorizationStrategy?
+
+    init(strategies: [AuthorizationStrategy], isLoading: Binding<Bool>, username: Binding<String>, allowUsernameEdit: Bool = true, showButton: Bool = true, authorizeTrigger: Binding<Bool> = .constant(false), selectedStrategy: Binding<AuthorizationStrategy?> = .constant(nil), apiClient: APIClient, callback: @escaping Callback) {
         _strategies = .init(initialValue: strategies)
         _isLoading = isLoading
         _username = username
@@ -36,6 +40,7 @@ struct ConnectionAuthorizer: View {
         self.showButton = showButton
 
         _authorizeTrigger = authorizeTrigger
+        _selectedStrategy = selectedStrategy
 
         self.apiClient = apiClient
         self.callback = callback
@@ -48,7 +53,6 @@ struct ConnectionAuthorizer: View {
     @State private var strategy: AuthorizationStrategy?
 
     @State private var password = ""
-    @State private var verifier = String.random(length: 100)
 
     @State private var error: Error?
     @State private var notifyError = false
@@ -56,86 +60,95 @@ struct ConnectionAuthorizer: View {
     private let authenticationSessionPresentationContextProvider = AuthenticationSessionPresentationContextProvider()
 
     var body: some View {
-        if let strategy {
-            if strategies.count > 1 {
-                Section {
-                    Button("connection.add.strategy.change") {
-                        self.strategy = nil
+        Group {
+            if let strategy {
+                if strategies.count > 1 {
+                    Section {
+                        Button("connection.add.strategy.change") {
+                            self.strategy = nil
+                        }
                     }
                 }
-            }
 
-            Section {
-                switch strategy {
-                    case .usernamePassword:
-                        TextField("connection.add.username", text: $username)
-                            .textContentType(.username)
-                            .autocorrectionDisabled()
-                            .textInputAutocapitalization(.never)
-                            .disabled(!allowUsernameEdit)
+                Section {
+                    switch strategy {
+                        case .usernamePassword:
+                            TextField("connection.add.username", text: $username)
+                                .textContentType(.username)
+                                .autocorrectionDisabled()
+                                .textInputAutocapitalization(.never)
+                                .disabled(!allowUsernameEdit)
 
-                        SecureField("connection.add.password", text: $password)
-                            .textContentType(.password)
-                    case .openID:
-                        EmptyView()
-                            .onAppear {
-                                authorize()
-                            }
+                            SecureField("connection.add.password", text: $password)
+                                .textContentType(.password)
+                        case .openID:
+                            // No auto-launch: the browser is started explicitly by the
+                            // proceed button (here or in the host sheet) via authorize().
+                            Label("connection.strategy.oAuth", systemImage: "person.badge.key.fill")
+                                .foregroundStyle(.secondary)
+                    }
+                } header: {
+                    Text(strategy.label)
+                } footer: {
+                    if strategy == .openID {
+                        Text("connection.add.strategy.openID.hint")
+                    }
                 }
-            } header: {
-                Text(strategy.label)
-            } footer: {
-                if strategy == .openID {
-                    Text("connection.add.strategy.openID.hint")
-                }
-            }
-            .onSubmit {
-                authorize()
-            }
-            .disabled(isLoading)
-            .onChange(of: authorizeTrigger) {
-                if authorizeTrigger {
-                    authorizeTrigger = false
+                .onSubmit {
                     authorize()
                 }
-            }
-
-            if showButton && strategy == .usernamePassword {
-                Section {
-                    if isLoading {
-                        HStack {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
-                        }
-                        .listRowBackground(Color.clear)
-                    } else {
-                        Button("connection.add.proceed") {
-                            authorize()
-                        }
-                        .controlSize(.large)
-                        .buttonStyle(.glassProminent)
-                        .buttonSizing(.flexible)
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets())
+                .disabled(isLoading)
+                .onChange(of: authorizeTrigger) {
+                    if authorizeTrigger {
+                        authorizeTrigger = false
+                        authorize()
                     }
                 }
+
+                if showButton {
+                    Section {
+                        if isLoading {
+                            HStack {
+                                Spacer()
+                                ProgressView()
+                                Spacer()
+                            }
+                            .listRowBackground(Color.clear)
+                        } else {
+                            Button("connection.add.proceed") {
+                                authorize()
+                            }
+                            .controlSize(.large)
+                            .buttonStyle(.glassProminent)
+                            .buttonSizing(.flexible)
+                            .listRowBackground(Color.clear)
+                            .listRowInsets(EdgeInsets())
+                        }
+                    }
+                }
+            } else {
+                Picker("connection.add.strategy.select", selection: $strategy) {
+                    ForEach(strategies) {
+                        Text($0.label)
+                            .tag($0)
+                    }
+                }
+                .pickerStyle(.inline)
             }
-        } else {
-            Picker("connection.add.strategy.select", selection: $strategy) {
-                ForEach(strategies) {
-                    Text($0.label)
-                        .tag($0)
+
+            if let error {
+                Section {
+                    Text(error.localizedDescription)
+                        .foregroundStyle(.red)
                 }
             }
-            .pickerStyle(.inline)
         }
-
-        if let error {
-            Section {
-                Text(error.localizedDescription)
-                    .foregroundStyle(.red)
-            }
+        .hapticFeedback(.error, trigger: notifyError)
+        .onAppear {
+            selectedStrategy = strategy
+        }
+        .onChange(of: strategy) {
+            selectedStrategy = strategy
         }
     }
 
@@ -175,6 +188,9 @@ struct ConnectionAuthorizer: View {
             callback(username, accessToken, refreshToken)
         }
         func authorizeOpenID() async throws {
+            // Fresh PKCE verifier per attempt so a cancelled or failed flow never reuses a stale one.
+            let verifier = String.random(length: 100)
+
             let session = try await ASWebAuthenticationSession(url: apiClient.openIDLoginURL(verifier: verifier), callback: .customScheme("shelfplayer"), completionHandler: urlCallback)
 
             session.presentationContextProvider = authenticationSessionPresentationContextProvider
@@ -225,7 +241,7 @@ private final class AuthenticationSessionPresentationContextProvider: NSObject, 
         guard let scene = UIApplication.shared.connectedScenes
             .compactMap({ $0 as? UIWindowScene })
             .first else {
-            return ASPresentationAnchor(windowScene: UIApplication.shared.connectedScenes.first as! UIWindowScene)
+            return ASPresentationAnchor()
         }
 
         return scene.windows.first { $0.isKeyWindow }

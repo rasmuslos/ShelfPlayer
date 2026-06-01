@@ -66,7 +66,7 @@ struct PodcastHGrid: View {
             .frame(height: 0)
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: gap) {
+                HStack(alignment: .top, spacing: gap) {
                     ForEach(podcasts) {
                         PodcastGridItem(podcast: $0)
                             .frame(width: size)

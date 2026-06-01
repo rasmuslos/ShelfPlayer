@@ -31,7 +31,11 @@ public extension APIClient {
     }
 
     func series(with identifier: ItemIdentifier) async throws -> Series {
-        Series(payload: try await response(APIRequest<ItemPayload>(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get, ttl: 12)), libraryID: identifier.libraryID, connectionID: connectionID)
+        guard let series = Series(payload: try await response(APIRequest<ItemPayload>(path: "api/libraries/\(identifier.libraryID)/series/\(identifier.primaryID)", method: .get, ttl: 12)), libraryID: identifier.libraryID, connectionID: connectionID) else {
+            throw APIClientError.notFound
+        }
+
+        return series
     }
 
     func series(in libraryID: String, filtered identifier: ItemIdentifier? = nil, sortOrder: SeriesSortOrder, ascending: Bool, limit: Int?, page: Int?) async throws -> ([Series], Int) {
@@ -64,6 +68,6 @@ public extension APIClient {
         }
 
         let response = try await response(APIRequest<ResultResponse>(path: "api/libraries/\(libraryID)/series", method: .get, query: query, ttl: 12))
-        return (response.results.map { Series(payload: $0, libraryID: libraryID, connectionID: connectionID) }, response.total)
+        return (response.results.compactMap { Series(payload: $0, libraryID: libraryID, connectionID: connectionID) }, response.total)
     }
 }

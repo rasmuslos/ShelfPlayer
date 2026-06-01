@@ -8,15 +8,19 @@
 import SwiftUI
 
 struct EmptyCollectionView: View {
+    var systemImage = "questionmark.folder"
+
     var body: some View {
         UnavailableWrapper {
-            Inner()
+            Inner(systemImage: systemImage)
         }
     }
 
     struct Inner: View {
+        var systemImage = "questionmark.folder"
+
         var body: some View {
-            ContentUnavailableView("item.empty", systemImage: "questionmark.folder", description: Text("item.empty.description"))
+            ContentUnavailableView("item.empty", systemImage: systemImage, description: Text("item.empty.description"))
         }
     }
 }

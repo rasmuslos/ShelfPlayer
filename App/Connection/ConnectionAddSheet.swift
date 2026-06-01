@@ -13,6 +13,7 @@ struct ConnectionAddSheet: View {
     @State private var viewModel = ViewModel()
     @State private var showAuthorization = false
     @State private var authorizeTrigger = false
+    @State private var selectedStrategy: AuthorizationStrategy?
 
     var body: some View {
         NavigationStack {
@@ -48,8 +49,12 @@ struct ConnectionAddSheet: View {
                         .textInputAutocapitalization(.never)
                         .disabled(viewModel.isLoading)
 
-                    NavigationLink("connection.add.customHeaders") {
+                    NavigationLink {
                         CustomHeaderPage(headers: $viewModel.headers)
+                    } label: {
+                        LabeledContent("connection.add.customHeaders") {
+                            Text(viewModel.headers.filter(\.isValid).count, format: .number)
+                        }
                     }
                     .disabled(viewModel.isLoading)
                 }
@@ -145,7 +150,7 @@ struct ConnectionAddSheet: View {
     private var authorizationStep: some View {
         Form {
             if let strategies = viewModel.strategies, let apiClient = viewModel.apiClient {
-                ConnectionAuthorizer(strategies: strategies, isLoading: $viewModel.isLoading, username: $viewModel.username, showButton: false, authorizeTrigger: $authorizeTrigger, apiClient: apiClient, callback: viewModel.storeConnection)
+                ConnectionAuthorizer(strategies: strategies, isLoading: $viewModel.isLoading, username: $viewModel.username, showButton: false, authorizeTrigger: $authorizeTrigger, selectedStrategy: $selectedStrategy, apiClient: apiClient, callback: viewModel.storeConnection)
             }
 
             if let error = viewModel.error {
@@ -187,6 +192,7 @@ struct ConnectionAddSheet: View {
                 .controlSize(.large)
                 .buttonStyle(.glassProminent)
                 .buttonSizing(.flexible)
+                .disabled(selectedStrategy == nil)
                 .padding(.horizontal)
                 .padding(.bottom, 8)
             }

@@ -29,6 +29,21 @@ xcodebuild -scheme ShelfPlayer -configuration Debug -destination 'platform=iOS S
 - `ENABLE_CENTRALIZED` — enables features requiring a paid developer account (app groups, iCloud, Siri, CarPlay). Without it, the app uses `FREE_DEVELOPER_ACCOUNT.entitlements`.
 - Build number is auto-set from git commit count via a post-compile script.
 
+## Tooling (MCP)
+
+Prefer the **Xcode MCP** over raw `xcodebuild`/`grep` when Xcode is open — it drives the live workspace, so builds and tests reuse the warm index and report issues the way the IDE does. Most tools need a `tabIdentifier`; get it from `XcodeListWindows` first.
+
+- **Build / test:** `BuildProject`, `RunAllTests`, `RunSomeTests` (discover identifiers via `GetTestList`), `GetBuildLog` (filter by `severity`/`glob`/`pattern`), `XcodeListNavigatorIssues`.
+- **Search / read:** `XcodeGrep`, `XcodeGlob`, `XcodeRead`, `XcodeGetCurrentFile` — operate on the Xcode project organization, not the raw filesystem.
+- **Previews:** `RenderPreview` to snapshot a `#Preview` and confirm UI changes visually.
+
+### Searching docs before writing code
+
+Don't guess at Apple API shapes — look them up:
+
+- **`DocumentationSearch`** (Xcode MCP) — semantic search over Apple Developer Documentation; scope with `frameworks: ["SwiftUI"]` etc. Use it to find the system-provided API for a need before reaching for a custom implementation.
+- **context7** (`resolve-library-id` → `query-docs`) — current docs for third-party libraries and SDKs (SwiftSoup, SocketIO, …).
+
 ## Architecture
 
 ### Module dependency graph
@@ -76,6 +91,8 @@ Item (base)
 
 - **4-unit spacing system** for all UI layout
 - UI should look and feel like a native Apple-made iOS app — minimal, clean, familiar
+- **Prefer system styling; avoid custom.** Reach for stock SwiftUI controls, modifiers, and materials (`Form`, `Label`, `LabeledContent`, `.foregroundStyle`, system symbols, semantic colors) before building a bespoke equivalent. Custom views are a last resort once the system genuinely can't express the need — and `DocumentationSearch` should confirm that first.
+- **Search the docs before reinventing.** When you need an API, look it up (`DocumentationSearch` / context7) rather than hand-rolling from memory — the system usually already provides it.
 - Write minimal, lean, expressive Swift 6 code using modern language features: async/await, actors, Combine, @Observable, Sendable
 - All "backend" code (networking, persistence, data models) belongs in the relevant frameworks (ShelfPlayerKit, ShelfPlayback), not in the app target
 - The app target contains only SwiftUI views, ViewModels, and navigation

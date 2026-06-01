@@ -64,7 +64,7 @@ private struct StackedCovers: View {
 
     var body: some View {
         ZStack {
-            ForEach(0..<amountVisible, id: \.hashValue) { index in
+            ForEach(0..<amountVisible, id: \.self) { index in
                 let item = viewModel.lazyLoader.items.indices.contains(index) ? viewModel.lazyLoader.items[index] : nil
 
                 ItemImage(item: item, size: .regular)

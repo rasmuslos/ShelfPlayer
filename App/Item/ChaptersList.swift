@@ -29,7 +29,7 @@ struct ChaptersList: View {
 
     @ViewBuilder
     private func row(for chapter: Chapter) -> some View {
-        TimeRow(title: chapter.title, time: chapter.startOffset, isActive: currentTime >= chapter.startOffset, isFinished: currentTime > chapter.endOffset) {
+        TimeRow(title: chapter.title, time: chapter.startOffset, isActive: currentTime >= chapter.startOffset && currentTime < chapter.endOffset, isFinished: currentTime > chapter.endOffset) {
             satellite.start(itemID, at: chapter.startOffset)
         }
     }

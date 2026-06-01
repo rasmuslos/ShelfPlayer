@@ -15,7 +15,7 @@ struct ColorSchemePreference<Label: View>: View {
 
     var body: some View {
         Picker(selection: $colorScheme) {
-            ForEach(ConfiguredColorScheme.allCases, id: \.hashValue) {
+            ForEach(ConfiguredColorScheme.allCases, id: \.self) {
                 Text($0.label)
                     .tag($0)
             }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import OSLog
 
 /// ShelfPlayer Item Identifier
 ///
@@ -28,6 +29,8 @@ public final class ItemIdentifier: NSObject {
 
     public let type: ItemType
 
+    private static let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "ItemIdentifier")
+
     public init(primaryID: PrimaryID, groupingID: GroupingID?, libraryID: LibraryID, connectionID: ConnectionID, type: ItemType) {
         self.primaryID = primaryID
         self.groupingID = groupingID
@@ -41,22 +44,24 @@ public final class ItemIdentifier: NSObject {
     public init(string identifier: String) {
         let parts = identifier.split(separator: "::")
 
-        switch parts[0] {
-        case "1":
-            type = ItemType(rawValue: String(parts[1]))!
+        if (parts.count == 5 || parts.count == 6), parts[0] == "1", let type = ItemType(rawValue: String(parts[1])) {
+            self.type = type
 
             connectionID = String(parts[2])
             libraryID = String(parts[3])
-
             primaryID = String(parts[4])
+            groupingID = parts.count == 6 ? String(parts[5]) : nil
+        } else {
+            // A malformed identifier must not crash the app — it can reach us
+            // from corrupted persistence, a stale URL, or legacy migration data.
+            // Fall back to an inert identifier that resolves to nothing.
+            Self.logger.fault("Unparseable item identifier, falling back to inert id: \(identifier, privacy: .public)")
 
-            if parts.count == 6 {
-                groupingID = String(parts[5])
-            } else {
-                groupingID = nil
-            }
-        default:
-            fatalError("Unknown identifier format: \(identifier)")
+            type = .audiobook
+            connectionID = ""
+            libraryID = ""
+            primaryID = identifier
+            groupingID = nil
         }
     }
 
@@ -94,10 +99,6 @@ public final class ItemIdentifier: NSObject {
         }
 
         return base
-    }
-
-    enum ParseError: Error {
-        case invalidVersion
     }
 }
 

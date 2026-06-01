@@ -49,7 +49,7 @@ extension SeriesList {
         var body: some View {
             HStack(spacing: 0) {
                 ZStack {
-                    ForEach(0..<coverCount, id: \.hashValue) {
+                    ForEach(0..<coverCount, id: \.self) {
                         let index = $0
                         let factor: CGFloat = index == 0 ? 1 : index == 1 ? 0.9 : index == 2 ? 0.8 : index == 3 ? 0.7 : 0
                         let offset: CGFloat = index == 0 ? 0 : index == 1 ? 10  : index == 2 ? 20  : index == 3 ? 30  : 0

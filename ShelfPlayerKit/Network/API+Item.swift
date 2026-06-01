@@ -69,10 +69,10 @@ public extension APIClient {
 
         return (
             payload.book?.compactMap { Audiobook(payload: $0.libraryItem, libraryID: library.libraryID, connectionID: connectionID) } ?? [],
-            payload.authors?.map { Person(author: $0, connectionID: connectionID) } ?? [],
+            payload.authors?.compactMap { Person(author: $0, connectionID: connectionID) } ?? [],
             payload.narrators?.map { Person(narrator: $0, libraryID: library.libraryID, connectionID: library.connectionID) } ?? [],
-            payload.series?.map { Series(item: $0.series, audiobooks: $0.books, libraryID: library, connectionID: connectionID) } ?? [],
-            payload.podcast?.map { Podcast(payload: $0.libraryItem, connectionID: connectionID) } ?? [],
+            payload.series?.compactMap { Series(item: $0.series, audiobooks: $0.books, libraryID: library, connectionID: connectionID) } ?? [],
+            payload.podcast?.compactMap { Podcast(payload: $0.libraryItem, connectionID: connectionID) } ?? [],
             payload.episodes?.compactMap {
                 guard let recentEpisode = $0.libraryItem.recentEpisode else {
                     return nil
@@ -90,7 +90,11 @@ public extension APIClient {
         case .author:
             path = "api/authors/\(itemID.primaryID)/image"
         case .episode:
-            path = "api/items/\(itemID.groupingID!)/cover"
+            guard let groupingID = itemID.groupingID else {
+                throw APIClientError.invalidItemType
+            }
+
+            path = "api/items/\(groupingID)/cover"
         default:
             path = "api/items/\(itemID.primaryID)/cover"
         }

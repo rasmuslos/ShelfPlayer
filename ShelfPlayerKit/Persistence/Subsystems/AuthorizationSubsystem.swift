@@ -301,9 +301,14 @@ public extension PersistenceManager.AuthorizationSubsystem {
 
         let updated = Connection(host: connection.host, user: connection.user, headers: headers, added: connection.added, permissions: connection.permissions)
 
-        SecItemUpdate(query, [
+        let status = SecItemUpdate(query, [
             kSecValueData: try JSONEncoder().encode(updated) as CFData,
         ] as! [String: Any] as CFDictionary)
+
+        guard status == errSecSuccess else {
+            logger.error("Error updating connection in keychain: \(SecCopyErrorMessageString(status, nil))")
+            throw PersistenceError.keychainInsertFailed
+        }
 
         await OfflineMode.shared.forceEnable(reason: "Connection updated")
         try await fetchConnections()
@@ -523,11 +528,9 @@ extension PersistenceManager.AuthorizationSubsystem {
             }
         }
 
-        guard connections.map(\.id).sorted() != connectionIDs.sorted() else {
-            logger.info("No connection updates to propagate")
-            return
-        }
-
+        // Always refresh: a connection's host / headers / permissions can change
+        // without the set of connection IDs changing, so comparing IDs alone
+        // would leave friendlyConnections stale after an update.
         updateConnections(connections)
     }
 

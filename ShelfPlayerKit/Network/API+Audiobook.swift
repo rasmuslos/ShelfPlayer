@@ -22,7 +22,7 @@ public extension APIClient {
             case "book":
                 audiobooks.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap { Audiobook(payload: $0, libraryID: libraryID, connectionID: connectionID) }))
             case "authors":
-                authors.append(HomeRow(id: row.id, label: row.label, entities: row.entities.map { Person(author: $0, connectionID: connectionID) }))
+                authors.append(HomeRow(id: row.id, label: row.label, entities: row.entities.compactMap { Person(author: $0, connectionID: connectionID) }))
             case "series":
                 // ABS returns full series objects (with nested books) for the
                 // recent-series shelf. Names are required by Series.init, so

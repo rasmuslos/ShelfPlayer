@@ -41,6 +41,10 @@ extension PersistenceManager {
                 try await attemptSync(connectionID: itemID.connectionID, early: true)
             } catch {
                 logger.error("Sync failed while removing related sessions to itemID \(itemID, privacy: .public): \(error, privacy: .public)")
+                // Sync failed (most likely offline) — keep the unsynced sessions so their
+                // listening time isn't lost. They'll sync on a later attempt. Sessions that
+                // did sync were already deleted inside attemptSync.
+                return
             }
 
             let description = itemID.description

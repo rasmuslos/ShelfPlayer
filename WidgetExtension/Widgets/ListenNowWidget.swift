@@ -190,7 +190,7 @@ private struct ListenNowWidgetContent: View {
                 let missing = rowCount - items.count
 
                 if missing > 0 {
-                    ForEach(0..<missing, id: \.hashValue) { _ in
+                    ForEach(0..<missing, id: \.self) { _ in
                         row(item: Episode.placeholder)
                             .hidden()
                             .allowsHitTesting(false)

@@ -4,14 +4,26 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: "io.rfk.ShelfPlayerKit", category: "Person+Convert")
 
 extension Person {
-    convenience init(author: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
+    convenience init?(author: ItemPayload, connectionID: ItemIdentifier.ConnectionID) {
+        guard let libraryID = author.libraryId else {
+            logger.warning("Skipping author conversion for \(author.id, privacy: .public): missing libraryId")
+            return nil
+        }
+        guard let name = author.name else {
+            logger.warning("Skipping author conversion for \(author.id, privacy: .public): missing name")
+            return nil
+        }
+
         let addedAt = author.addedAt ?? 0
 
         self.init(
-            id: .init(primaryID: author.id, groupingID: nil, libraryID: author.libraryId!, connectionID: connectionID, type: .author),
-            name: author.name!,
+            id: .init(primaryID: author.id, groupingID: nil, libraryID: libraryID, connectionID: connectionID, type: .author),
+            name: name,
             description: author.description,
             addedAt: Date(timeIntervalSince1970: addedAt / 1000),
             bookCount: author.numBooks ?? 0)

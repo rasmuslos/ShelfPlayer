@@ -27,8 +27,11 @@ struct CompactPlaybackModifier: ViewModifier {
     /// loop whenever the gradient isn't actually visible: while collapsed it sits
     /// at `opacity 0`, during the expand/collapse morph it's redundant, and a
     /// backgrounded scene must not spend energy animating an off-screen view.
+    /// Also freeze it during any control interaction — seek/volume slider drags
+    /// and the rate / sleep timer / queue cards — so the backdrop holds still
+    /// while the user is adjusting something on top of it.
     private var isMeshPaused: Bool {
-        isTransitioning || !viewModel.isExpanded || scenePhase != .active
+        isTransitioning || !viewModel.isExpanded || scenePhase != .active || viewModel.areSlidersInUse || viewModel.activeCard != nil
     }
 
     private var nowPlayingCornerRadius: CGFloat {
@@ -97,10 +100,15 @@ struct CompactPlaybackModifier: ViewModifier {
                         ZStack(alignment: .topLeading) {
                             nowPlayingCapsuleMirror(proxy: geometryProxy)
                                 .modifier(PlaybackDragGestureCatcher(height: height))
+                                .onTapGesture(count: 2) {
+                                    withAnimation(.smooth) {
+                                        settings.animatedNowPlayingBackground.toggle()
+                                    }
+                                }
                                 .allowsHitTesting(viewModel.isNowPlayingBackgroundVisible)
                                 .accessibilityHidden(true)
 
-                            PlaybackCompactExpandedForeground(height: height, safeAreTopInset: geometryProxy.safeAreaInsets.top, safeAreBottomInset: geometryProxy.safeAreaInsets.bottom)
+                            PlaybackCompactExpandedForeground(height: height, safeAreaTopInset: geometryProxy.safeAreaInsets.top, safeAreaBottomInset: geometryProxy.safeAreaInsets.bottom)
                                 .frame(width: width, height: height)
                                 .mask(alignment: .topLeading) {
                                     nowPlayingCapsuleMirror(proxy: geometryProxy)
@@ -143,7 +151,7 @@ struct CompactPlaybackModifier: ViewModifier {
                             .opacity(viewModel.expansionAnimationCount > 0 ? 1 : 0)
                             .allowsHitTesting(false)
                             .accessibilityHidden(true)
-                            .id((satellite.nowPlayingItemID?.description ?? "woifoiwefoijwef") + "_nowPlaying_image_animation")
+                            .id((satellite.nowPlayingItemID?.description ?? "placeholder") + "_nowPlaying_image_animation")
 
                     }
                     .ignoresSafeArea()

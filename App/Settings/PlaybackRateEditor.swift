@@ -105,7 +105,7 @@ struct PlaybackRatePicker: View {
 
     var body: some View {
         Picker(label, selection: $selection) {
-            ForEach(playbackRates, id: \.hashValue) { value in
+            ForEach(playbackRates, id: \.self) { value in
                 Button {
                     selection = value
                 } label: {

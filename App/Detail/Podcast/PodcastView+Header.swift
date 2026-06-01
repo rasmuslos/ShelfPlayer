@@ -42,7 +42,7 @@ extension PodcastView {
                                 .rotationEffect(.degrees(180))
                         } else {
                             $0
-                                .fill(Color(UIColor.secondarySystemBackground))
+                                .fill(Color(.secondarySystemBackground))
                         }
                     }
                     .animation(.smooth, value: viewModel.dominantColor)

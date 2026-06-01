@@ -34,7 +34,7 @@ struct GroupingConfigurationSheet: View {
 
                             Divider()
 
-                            ForEach(settings.sleepTimerIntervals, id: \.hashValue) {
+                            ForEach(settings.sleepTimerIntervals, id: \.self) {
                                 Text($0.formatted(.duration(unitsStyle: .short, allowedUnits: [.hour, .minute])))
                                     .tag(SleepTimerConfiguration.interval($0))
                             }
@@ -42,7 +42,7 @@ struct GroupingConfigurationSheet: View {
                             if viewModel.areSleepChaptersAvailable {
                                 Divider()
 
-                                ForEach([1, 2, 3, 5, 7, 10], id: \.hashValue) {
+                                ForEach([1, 2, 3, 5, 7, 10], id: \.self) {
                                     Text("item.chapters \($0)")
                                         .tag(SleepTimerConfiguration.chapters($0))
                                 }
@@ -129,7 +129,7 @@ struct GroupingConfigurationSheet: View {
 
         var body: some View {
             Picker(selection: $retrieval) {
-                ForEach(ConvenienceDownloadRetrievalOption.options(for: itemType), id: \.hashValue) { group in
+                ForEach(ConvenienceDownloadRetrievalOption.options(for: itemType), id: \.self) { group in
                     ForEach(group) { strategy in
                         Text(strategy.label)
                             .tag(strategy)

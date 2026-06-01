@@ -155,7 +155,7 @@ struct ConvertTests {
           ]
         }
         """)
-        let series = Series(payload: payload, libraryID: "lib1", connectionID: "conn1")
+        let series = try #require(Series(payload: payload, libraryID: "lib1", connectionID: "conn1"))
         #expect(series.id.primaryID == "s1")
         #expect(series.id.type == .series)
         #expect(series.name == "Saga")
@@ -168,7 +168,7 @@ struct ConvertTests {
         let payload = try decode("""
         {"id":"s1","name":"Saga"}
         """)
-        let series = Series(payload: payload, libraryID: "lib1", connectionID: "c")
+        let series = try #require(Series(payload: payload, libraryID: "lib1", connectionID: "c"))
         #expect(series.audiobooks.isEmpty)
     }
 
@@ -224,7 +224,7 @@ struct ConvertTests {
           }
         }
         """)
-        let podcast = Podcast(payload: payload, connectionID: "conn1")
+        let podcast = try #require(Podcast(payload: payload, connectionID: "conn1"))
         #expect(podcast.id.primaryID == "p1")
         #expect(podcast.id.type == .podcast)
         #expect(podcast.name == "Pod")
@@ -249,7 +249,7 @@ struct ConvertTests {
           }
         }
         """)
-        let podcast = Podcast(payload: payload, connectionID: "c")
+        let podcast = try #require(Podcast(payload: payload, connectionID: "c"))
         #expect(podcast.publishingType == .serial)
     }
 
@@ -263,7 +263,7 @@ struct ConvertTests {
           }
         }
         """)
-        let podcast = Podcast(payload: payload, connectionID: "c")
+        let podcast = try #require(Podcast(payload: payload, connectionID: "c"))
         #expect(podcast.publishingType == nil)
         #expect(podcast.episodeCount == 0)
         #expect(podcast.explicit == false)
@@ -284,7 +284,7 @@ struct ConvertTests {
           }
         }
         """)
-        let podcast = Podcast(payload: payload, connectionID: "c")
+        let podcast = try #require(Podcast(payload: payload, connectionID: "c"))
         #expect(podcast.episodeCount == 3)
     }
 
@@ -298,7 +298,7 @@ struct ConvertTests {
           }
         }
         """)
-        let podcast = Podcast(payload: payload, connectionID: "c")
+        let podcast = try #require(Podcast(payload: payload, connectionID: "c"))
         #expect(podcast.authors == ["A", "B", "C"])
     }
 
@@ -421,7 +421,7 @@ struct ConvertTests {
         }
         """.data(using: .utf8)!
         let response = try JSONDecoder().decode(EpisodesResponse.self, from: json)
-        let episode = Episode(episode: response.episodes[0], libraryID: "lib1", fallbackIndex: 99, connectionID: "c")
+        let episode = try #require(Episode(episode: response.episodes[0], libraryID: "lib1", fallbackIndex: 99, connectionID: "c"))
         #expect(episode.id.primaryID == "e1")
         #expect(episode.id.groupingID == "p1")
         #expect(episode.podcastName == "PodTitle")
@@ -449,7 +449,7 @@ struct ConvertTests {
         }
         """.data(using: .utf8)!
         let response = try JSONDecoder().decode(EpisodesResponse.self, from: json)
-        let episode = Episode(episode: response.episodes[0], libraryID: "lib1", fallbackIndex: 42, connectionID: "c")
+        let episode = try #require(Episode(episode: response.episodes[0], libraryID: "lib1", fallbackIndex: 42, connectionID: "c"))
         #expect(episode.index.episode == "42")
     }
 
@@ -475,7 +475,7 @@ struct ConvertTests {
           ]
         }
         """)
-        let collection = ItemCollection(payload: payload, type: .collection, connectionID: "c")
+        let collection = try #require(ItemCollection(payload: payload, type: .collection, connectionID: "c"))
         #expect(collection.id.primaryID == "col1")
         #expect(collection.id.type == .collection)
         #expect(collection.name == "MyCollection")
@@ -491,7 +491,7 @@ struct ConvertTests {
           "name": "Empty"
         }
         """)
-        let collection = ItemCollection(payload: payload, type: .collection, connectionID: "c")
+        let collection = try #require(ItemCollection(payload: payload, type: .collection, connectionID: "c"))
         #expect(collection.items.isEmpty)
     }
 
@@ -523,7 +523,7 @@ struct ConvertTests {
           ]
         }
         """)
-        let collection = ItemCollection(payload: payload, type: .playlist, connectionID: "c")
+        let collection = try #require(ItemCollection(payload: payload, type: .playlist, connectionID: "c"))
         #expect(collection.id.type == .playlist)
         #expect(collection.items.count == 1)
         #expect(collection.episodes?.count == 1)
@@ -542,7 +542,7 @@ struct ConvertTests {
           "numBooks": 7
         }
         """)
-        let person = Person(author: payload, connectionID: "c")
+        let person = try #require(Person(author: payload, connectionID: "c"))
         #expect(person.id.primaryID == "auth1")
         #expect(person.id.type == .author)
         #expect(person.name == "Auth Name")
@@ -558,7 +558,7 @@ struct ConvertTests {
           "name": "Auth"
         }
         """)
-        let person = Person(author: payload, connectionID: "c")
+        let person = try #require(Person(author: payload, connectionID: "c"))
         #expect(person.bookCount == 0)
     }
 

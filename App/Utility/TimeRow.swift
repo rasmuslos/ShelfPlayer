@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct TimeRow: View {
-    @Environment(Satellite.self) private var satellite
-
     let title: String
     let time: TimeInterval
 

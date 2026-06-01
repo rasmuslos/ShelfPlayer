@@ -64,7 +64,12 @@ public extension APIClient {
 
     func collection(with identifier: ItemIdentifier) async throws -> ItemCollection {
         let type = itemIdentifierToCollectionType(identifier)
-        return try await ItemCollection(payload: response(APIRequest(path: "api/\(type.apiValue)/\(identifier.primaryID)", method: .get, ttl: 12)), type: type, connectionID: connectionID)
+
+        guard let collection = try await ItemCollection(payload: response(APIRequest(path: "api/\(type.apiValue)/\(identifier.primaryID)", method: .get, ttl: 12)), type: type, connectionID: connectionID) else {
+            throw APIClientError.notFound
+        }
+
+        return collection
     }
 
     func collections(in libraryID: String, type: ItemCollection.CollectionType, limit: Int?, page: Int?) async throws -> ([ItemCollection], Int) {
@@ -78,7 +83,7 @@ public extension APIClient {
         }
 
         let response = try await response(APIRequest<ResultResponse>(path: "api/libraries/\(libraryID)/\(type.apiValue)", method: .get, query: query, ttl: 12))
-        return (response.results.map { ItemCollection(payload: $0, type: type, connectionID: connectionID) }, response.total)
+        return (response.results.compactMap { ItemCollection(payload: $0, type: type, connectionID: connectionID) }, response.total)
     }
 
     func createPlaylistCopy(collectionID: ItemIdentifier) async throws -> ItemIdentifier {

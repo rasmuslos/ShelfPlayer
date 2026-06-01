@@ -10,6 +10,7 @@ import ShelfPlayback
 
 struct CollectionView: View {
     @Environment(Satellite.self) private var satellite
+    @Environment(OfflineMode.self) private var offlineMode
     @State private var viewModel: CollectionViewModel
 
     init(_ collection: ItemCollection) {
@@ -54,7 +55,7 @@ struct CollectionView: View {
     var body: some View {
         Group {
             if viewModel.collection.items.isEmpty {
-                EmptyCollectionView()
+                EmptyCollectionView(systemImage: offlineMode.isEnabled ? "exclamationmark.triangle" : "questionmark.folder")
             } else {
                 listPresentation
             }

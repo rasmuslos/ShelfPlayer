@@ -25,7 +25,7 @@ struct OutdatedServerRow: View {
 
 #Preview {
     List {
-        ForEach(["1.1.1", "2.25.4", "2.26.0", "2.28.0", "3.0.0"], id: \.hashValue) { version in
+        ForEach(["1.1.1", "2.25.4", "2.26.0", "2.28.0", "3.0.0"], id: \.self) { version in
             Section(version) {
                 OutdatedServerRow(version: version)
             }

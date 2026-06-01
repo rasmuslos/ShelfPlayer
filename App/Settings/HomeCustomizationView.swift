@@ -451,7 +451,7 @@ private struct HomeSectionLibraryMenu: View {
                 }
             }
 
-            ForEach(connectionIDs, id: \.hashValue) { connectionID in
+            ForEach(connectionIDs, id: \.self) { connectionID in
                 if let connection = connectionStore.connections.first(where: { $0.id == connectionID }),
                    let libraries = connectionLibraries[connectionID] {
                     let visible = libraries.filter { !hiddenLibraries.contains($0.id) && isCompatible($0) }

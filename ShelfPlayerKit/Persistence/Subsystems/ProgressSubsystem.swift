@@ -62,14 +62,19 @@ extension PersistenceManager.ProgressSubsystem {
             let entities = try modelContext.fetch(fetchDescriptor).filter { $0.status != .tombstone }
 
             if !entities.isEmpty {
-                if entities.count != 1 {
-                    logger.error("Found \(entities.count, privacy: .public) duplicate progress entities for primaryID=\(primaryID, privacy: .public) groupingID=\(groupingID ?? "<nil>", privacy: .public) connectionID=\(connectionID, privacy: .public)")
+                let sorted = entities.sorted { $0.lastUpdate > $1.lastUpdate }
 
-                    var sorted = entities.sorted { $0.lastUpdate > $1.lastUpdate }
-                    sorted.removeFirst()
+                if sorted.count != 1 {
+                    logger.error("Found \(sorted.count, privacy: .public) duplicate progress entities for primaryID=\(primaryID, privacy: .public) groupingID=\(groupingID ?? "<nil>", privacy: .public) connectionID=\(connectionID, privacy: .public)")
 
-                    for entity in sorted {
-                        Task {
+                    // Keep the most recently updated entity and delete the rest in a
+                    // single ordered task — so we never return an entity that's about
+                    // to be deleted, and never mutate the ModelContext from several
+                    // concurrent tasks at once.
+                    let duplicates = Array(sorted.dropFirst())
+
+                    Task {
+                        for entity in duplicates {
                             do {
                                 try await delete(entity)
                             } catch {
@@ -79,7 +84,7 @@ extension PersistenceManager.ProgressSubsystem {
                     }
                 }
 
-                return entities.first
+                return sorted.first
             }
         } catch {
             logger.error("Error fetching progress for primaryID=\(primaryID, privacy: .public) groupingID=\(groupingID ?? "<nil>", privacy: .public) connectionID=\(connectionID, privacy: .public): \(error, privacy: .public)")

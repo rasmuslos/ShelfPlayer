@@ -30,11 +30,15 @@ extension Episode {
             logger.warning("Skipping episode conversion for \(payload.id, privacy: .public): missing media.metadata.title")
             return nil
         }
+        guard let libraryID = payload.libraryId else {
+            logger.warning("Skipping episode conversion for \(payload.id, privacy: .public): missing libraryId")
+            return nil
+        }
 
         let addedAt = payload.addedAt ?? 0
 
         self.init(
-            id: .init(primaryID: id, groupingID: payload.id, libraryID: payload.libraryId!, connectionID: connectionID, type: .episode),
+            id: .init(primaryID: id, groupingID: payload.id, libraryID: libraryID, connectionID: connectionID, type: .episode),
             name: title,
             authors: media.metadata.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: recentEpisode.description,
@@ -54,17 +58,30 @@ extension Episode {
         self.init(payload: item, connectionID: connectionID)
     }
 
-    convenience init(episode: EpisodePayload, podcastName: String? = nil, libraryID: ItemIdentifier.LibraryID, fallbackIndex: Int, connectionID: ItemIdentifier.ConnectionID) {
+    convenience init?(episode: EpisodePayload, podcastName: String? = nil, libraryID: ItemIdentifier.LibraryID, fallbackIndex: Int, connectionID: ItemIdentifier.ConnectionID) {
+        guard let id = episode.id else {
+            logger.warning("Skipping episode conversion: missing id")
+            return nil
+        }
+        guard let title = episode.title else {
+            logger.warning("Skipping episode conversion for \(id, privacy: .public): missing title")
+            return nil
+        }
+        guard let resolvedPodcastName = podcastName ?? episode.podcast?.metadata.title else {
+            logger.warning("Skipping episode conversion for \(id, privacy: .public): missing podcast name")
+            return nil
+        }
+
         self.init(
-            id: .init(primaryID: episode.id!, groupingID: episode.libraryItemId, libraryID: libraryID, connectionID: connectionID, type: .episode),
-            name: episode.title!,
+            id: .init(primaryID: id, groupingID: episode.libraryItemId, libraryID: libraryID, connectionID: connectionID, type: .episode),
+            name: title,
             authors: episode.podcast?.author?.split(separator: ", ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? [],
             description: episode.description,
             addedAt: Date(timeIntervalSince1970: 0),
             released: episode.publishedAt == nil ? nil : String(episode.publishedAt!),
             size: episode.size ?? 0,
             duration: episode.audioFile?.duration ?? 0,
-            podcastName: podcastName ?? episode.podcast!.metadata.title!,
+            podcastName: resolvedPodcastName,
             type: .parse(string: episode.episodeType),
             index: .init(season: episode.season, episode: String(episode.index ?? fallbackIndex)))
     }

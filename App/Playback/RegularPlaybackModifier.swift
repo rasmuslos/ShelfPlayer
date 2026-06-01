@@ -159,6 +159,14 @@ struct RegularPlaybackModifier: ViewModifier {
         settings.animatedNowPlayingBackground && viewModel.nowPlayingMeshColors != nil
     }
 
+    /// Freeze the drift render loop while the scene is backgrounded or the user
+    /// is interacting with a control on top of the gradient — seek/volume slider
+    /// drags and the rate / sleep timer / queue cards — so the backdrop holds
+    /// still during the adjustment.
+    private var isMeshPaused: Bool {
+        scenePhase != .active || viewModel.areSlidersInUse || viewModel.activeCard != nil
+    }
+
     @ViewBuilder
     private func leftHandContent(height: CGFloat) -> some View {
         VStack(spacing: 0) {
@@ -195,12 +203,17 @@ struct RegularPlaybackModifier: ViewModifier {
                             .fill(.background)
                             .overlay {
                                 if isMeshActive, let meshColors = viewModel.nowPlayingMeshColors {
-                                    NowPlayingMeshBackground(colors: meshColors, paused: scenePhase != .active)
+                                    NowPlayingMeshBackground(colors: meshColors, paused: isMeshPaused)
                                         .transition(.opacity)
                                 }
                             }
                             .animation(.smooth(duration: 1.0), value: viewModel.nowPlayingMeshColors)
                             .contentShape(.rect)
+                            .onTapGesture(count: 2) {
+                                withAnimation(.smooth) {
+                                    settings.animatedNowPlayingBackground.toggle()
+                                }
+                            }
                             .modifier(PlaybackDragGestureCatcher(height: geometryProxy.size.height))
                             .ignoresSafeArea()
 
@@ -266,7 +279,7 @@ struct RegularPlaybackModifier: ViewModifier {
                                     Spacer(minLength: 0)
 
                                     VStack(spacing: 0) {
-                                        PlaybackCompactExpandedForeground(height: geometryProxy.size.height, safeAreTopInset: 0, safeAreBottomInset: 0)
+                                        PlaybackCompactExpandedForeground(height: geometryProxy.size.height, safeAreaTopInset: 0, safeAreaBottomInset: 0)
                                     }
                                     .frame(maxWidth: 600)
 

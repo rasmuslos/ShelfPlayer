@@ -82,7 +82,7 @@ struct PlaybackBottomBarPill: View {
             }
             .aspectRatio(1, contentMode: .fit)
             .padding(.vertical, 8)
-            .id((satellite.nowPlayingItemID?.description ?? "qkwndoiqind") + "_nowPlaying_image_collapsed")
+            .id((satellite.nowPlayingItemID?.description ?? "placeholder") + "_nowPlaying_image_collapsed")
 
             VStack(alignment: .leading, spacing: 0) {
                 MarqueeText(text: itemName, font: .subheadline, controller: marqueeController)
@@ -92,7 +92,7 @@ struct PlaybackBottomBarPill: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .id((satellite.nowPlayingItem?.name ?? "wngrwghrgg") + "_nowPlaying_collapsed_name")
+            .id((satellite.nowPlayingItem?.name ?? "placeholder") + "_nowPlaying_collapsed_name")
 
             if viewModel.isPillBackButtonVisible {
                 PlaybackBackwardButton()
@@ -107,7 +107,7 @@ struct PlaybackBottomBarPill: View {
         .contentShape(.capsule)
         .font(.subheadline)
         .padding(.horizontal, 16)
-        .id((satellite.nowPlayingItemID?.description ?? "wejjfnwioejf") + "_nowPlaying_bottom_pill")
+        .id((satellite.nowPlayingItemID?.description ?? "placeholder") + "_nowPlaying_bottom_pill")
     }
 
     var body: some View {
@@ -153,7 +153,7 @@ struct PlaybackBottomBarPill: View {
                     }
                 }
             }
-            .id((satellite.nowPlayingItem?.name ?? "wngrwghrgg") + "_nowPlaying_collapsed")
+            .id((satellite.nowPlayingItem?.name ?? "placeholder") + "_nowPlaying_collapsed")
         }
     }
 }

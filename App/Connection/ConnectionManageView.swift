@@ -22,6 +22,7 @@ struct ConnectionManageView: View {
     @State private var libraryCounts: [String: Int] = [:]
 
     @State private var isUsingLegacyAuthentication = false
+    @State private var headerCount = 0
 
     var body: some View {
         Form {
@@ -29,25 +30,20 @@ struct ConnectionManageView: View {
                 let isOffline = connectionStore.offlineConnections.contains(connection.id)
 
                 VStack(spacing: 12) {
-                    Image(systemName: "server.rack")
+                    Image(systemName: isOffline ? "exclamationmark.triangle.fill" : "server.rack")
                         .font(.system(size: 56))
-                        .foregroundStyle(Color.accentColor)
+                        .foregroundStyle(isOffline ? Color.red : Color.accentColor)
                         .padding(.bottom, 8)
+                        .accessibilityLabel(isOffline ? Text("connection.status.offline") : Text(connection.host, format: .url))
 
                     Text(connection.username)
                         .font(.title2.bold())
 
-                    HStack(spacing: 4) {
-                        if isOffline {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .accessibilityLabel("connection.status.offline")
-                        }
-                        Text(connection.host, format: .url)
-                            .fontDesign(.monospaced)
-                            .multilineTextAlignment(.center)
-                    }
-                    .font(.subheadline)
-                    .foregroundStyle(isOffline ? .red : .secondary)
+                    Text(connection.host, format: .url)
+                        .fontDesign(.monospaced)
+                        .multilineTextAlignment(.center)
+                        .font(.subheadline)
+                        .foregroundStyle(isOffline ? .red : .secondary)
                 }
                 .frame(maxWidth: .infinity)
                 .listRowBackground(Color.clear)
@@ -119,6 +115,7 @@ struct ConnectionManageView: View {
                     Button("connection.editHeaders") {
                         satellite.present(.editConnection(connection.id))
                     }
+                    .badge(headerCount)
                     Button("connection.reauthorize") {
                         satellite.present(.reauthorizeConnection(connection.id))
                     }
@@ -139,6 +136,14 @@ struct ConnectionManageView: View {
         }
         .task {
             isUsingLegacyAuthentication = await PersistenceManager.shared.authorization.isUsingLegacyAuthentication(for: connection.id)
+        }
+        .task {
+            headerCount = (try? await PersistenceManager.shared.authorization.headers(for: connection.id).count) ?? 0
+        }
+        .onReceive(PersistenceManager.shared.authorization.events.connectionsChanged) { _ in
+            Task {
+                headerCount = (try? await PersistenceManager.shared.authorization.headers(for: connection.id).count) ?? 0
+            }
         }
         .task {
             status = try? await ABSClient[connection.id].status()

@@ -70,6 +70,10 @@ extension EpisodeViewModel {
             information.append((String(localized: "item.released"), releaseDate.formatted(date: .numeric, time: .shortened)))
         }
 
+        if episode.duration > 0 {
+            information.append((String(localized: "item.duration"), episode.duration.formatted(.duration(unitsStyle: .short, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 2))))
+        }
+
         return information
     }
 

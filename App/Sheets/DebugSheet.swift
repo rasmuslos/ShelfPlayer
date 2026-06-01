@@ -15,7 +15,7 @@ struct DebugSheet: View {
     var body: some View {
         List {
             Section {
-                ForEach(Array(general.keys).sorted(), id: \.hashValue) {
+                ForEach(Array(general.keys).sorted(), id: \.self) {
                     LabeledContent($0, value: general[$0]!)
                 }
             }

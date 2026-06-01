@@ -468,11 +468,6 @@ private extension APIClient {
     }
 }
 
-private struct PipelinedError: Error {
-    let requestID: String
-    let error: Error
-}
-
 private final class CheckedContinuationBox<T: Sendable>: @unchecked Sendable {
     private enum PendingState {
         case value(T)

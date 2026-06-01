@@ -247,6 +247,7 @@ final class PlaybackViewModel {
         nowPlayingShadowVisibleCount = 0
 
         expansionAnimationCount = 0
+        translateYAnimationCount = 0
         showCompactPlaybackBarOnExpandedViewCount = 0
     }
 

@@ -52,8 +52,6 @@ struct PlayButton: View {
 
         if isPlaying && satellite.duration > 0 {
             return satellite.duration - satellite.currentTime
-        } else if isPlaying, satellite.duration > 0 {
-            return (satellite.duration - satellite.currentTime)
         } else if let duration = tracker.duration, duration > 0, let currentTime = tracker.currentTime {
             return duration - currentTime
         } else if playButtonStyle.hideRemainingWhenUnplayed {
@@ -72,7 +70,7 @@ struct PlayButton: View {
 
     private var label: LocalizedStringKey {
         if isPlaying {
-            return satellite.isPlaying ? "playback.pause" : "playback.pause"
+            return satellite.isPlaying ? "playback.pause" : "playback.play"
         }
 
         let isFinished = tracker.isFinished

@@ -550,7 +550,11 @@ public extension PersistenceManager.ConvenienceDownloadSubsystem {
     }
 
     func purge(connectionID: ItemIdentifier.ConnectionID) async {
-        pendingConfigurationIDs.removeAll()
+        // Configuration IDs embed the item identifier (e.g. "grouping-1::TYPE::CONNECTION::…"),
+        // so keep the entries that don't belong to the purged connection rather than
+        // dropping every connection's pending downloads.
+        pendingConfigurationIDs = pendingConfigurationIDs.filter { !$0.contains("::\(connectionID)::") }
+
         await MainActor.run {
             events.configurationsChanged.send()
         }
