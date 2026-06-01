@@ -372,6 +372,19 @@ extension LocalAudioEndpoint {
         currentTime = time
         await updateChapterIndex()
 
+        // Push the post-seek elapsed time immediately. `updateChapterIndex()` already
+        // refreshed the chapter number and duration, but `chapterCurrentTime` is otherwise
+        // only recomputed on the next periodic observer tick (which never fires while paused).
+        // Without this, Now Playing (CarPlay touchscreen, lock screen) shows the stale
+        // pre-seek elapsed time against the new, shorter chapter duration — rendering a
+        // bogus time code that appears to belong to the following chapter.
+        if let activeChapterIndex {
+            chapterCurrentTime = time - chapters[activeChapterIndex].startOffset
+        } else {
+            chapterCurrentTime = time
+        }
+        await AudioPlayer.shared.currentTimesDidChange(endpointID: id, itemCurrentTime: time, chapterCurrentTime: chapterCurrentTime)
+
         if isPlaying {
             audioPlayer.play()
         }
