@@ -17,6 +17,8 @@ struct PlaybackCompactExpandedForeground: View {
 
     @Bindable private var settings = AppSettings.shared
 
+    @State private var marqueeController = MarqueeController()
+
     let height: CGFloat
     let safeAreaTopInset: CGFloat
     let safeAreaBottomInset: CGFloat
@@ -161,6 +163,7 @@ struct PlaybackCompactExpandedForeground: View {
         .modify(if: isMeshActive) {
             $0.foregroundStyle(.white)
         }
+        .environment(\.playbackMarqueeController, marqueeController)
     }
 }
 

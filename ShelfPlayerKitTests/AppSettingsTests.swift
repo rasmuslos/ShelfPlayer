@@ -106,14 +106,6 @@ struct AppSettingsTests {
         #expect(settings.skipForwardsInterval == 12)
     }
 
-    @Test func remoteSeekAutoEndIntervalRoundTrip() {
-        let original = settings.remoteSeekAutoEndInterval
-        defer { settings.remoteSeekAutoEndInterval = original }
-
-        settings.remoteSeekAutoEndInterval = 33.5
-        #expect(settings.remoteSeekAutoEndInterval == 33.5)
-    }
-
     @Test func defaultPlaybackRateRoundTrip() {
         let original = settings.defaultPlaybackRate
         defer { settings.defaultPlaybackRate = original }

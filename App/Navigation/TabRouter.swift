@@ -110,6 +110,8 @@ struct TabRouter: View {
                 AudiobookTagsPanel()
             case .podcastLibrary:
                 PodcastLibraryPanel()
+            case .podcastChannels:
+                PodcastChannelsPanel()
 
             case .podcastHome:
                 PodcastHomePanel()

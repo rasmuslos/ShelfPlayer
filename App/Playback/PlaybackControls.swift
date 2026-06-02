@@ -10,6 +10,7 @@ import ShelfPlayback
 
 struct PlaybackControls: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.playbackMarqueeController) private var marqueeController
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     @Environment(SkipController.self) private var skipController
@@ -85,7 +86,7 @@ struct PlaybackControls: View {
         VStack(spacing: 0) {
             PlaybackSlider(percentage: satellite.played, seeking: $viewModel.seeking, currentTime: currentTime, duration: duration, textFirst: false) {
                 if let chapter = satellite.chapter, viewModel.seeking == nil {
-                    MarqueeText(text: chapter.title, font: .caption2, foregroundStyle: .init(.secondary), alignment: .center)
+                    MarqueeText(text: chapter.title, font: .caption2, foregroundStyle: .init(.secondary), alignment: .center, controller: marqueeController)
                 } else {
                     Text(displayedRemaining ?? remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
                         .contentTransition(.numericText())

@@ -25,6 +25,8 @@ public extension ItemIdentifier.ItemType {
             String(localized: "item.podcast", bundle: bundle)
         case .episode:
             String(localized: "item.episode", bundle: bundle)
+        case .channel:
+            String(localized: "item.channel", bundle: bundle)
         case .collection:
             String(localized: "item.collection", bundle: bundle)
         case .playlist:
@@ -46,6 +48,8 @@ public extension ItemIdentifier.ItemType {
             "square.stack"
         case .episode:
             "play.square"
+        case .channel:
+            "dot.radiowaves.up.forward"
         case .collection:
             "book.pages.fill"
         case .playlist:

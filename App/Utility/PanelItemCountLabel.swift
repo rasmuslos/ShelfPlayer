@@ -16,8 +16,15 @@ struct PanelItemCountLabel: View {
 
     var label: LocalizedStringKey {
         switch type {
-            case .episode: "item.count.episodes \(total)"
             case .audiobook: "item.count.audiobooks \(total)"
+            case .episode: "item.count.episodes \(total)"
+            case .podcast: "item.count.podcasts \(total)"
+            case .author: "item.count.authors \(total)"
+            case .narrator: "item.count.narrators \(total)"
+            case .series: "item.count.series \(total)"
+            case .channel: "item.count.channels \(total)"
+            case .collection: "item.count.collections \(total)"
+            case .playlist: "item.count.playlists \(total)"
             default: "item.count \(total)"
         }
     }

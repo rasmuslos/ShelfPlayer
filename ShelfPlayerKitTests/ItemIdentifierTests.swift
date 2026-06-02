@@ -46,6 +46,35 @@ struct ItemIdentifierTests {
         #expect(parsed.type == .episode)
     }
 
+    @Test func roundTripChannel() {
+        let identifier = ItemIdentifier(
+            primaryID: "RGV1dHNjaGxhbmRmdW5r",
+            groupingID: nil,
+            libraryID: "lib3",
+            connectionID: "conn3",
+            type: .channel
+        )
+
+        let parsed = ItemIdentifier(string: identifier.description)
+
+        #expect(parsed.primaryID == "RGV1dHNjaGxhbmRmdW5r")
+        #expect(parsed.libraryID == "lib3")
+        #expect(parsed.connectionID == "conn3")
+        #expect(parsed.type == .channel)
+    }
+
+    @Test func formatChannel() {
+        let identifier = ItemIdentifier(
+            primaryID: "primary",
+            groupingID: nil,
+            libraryID: "library",
+            connectionID: "connection",
+            type: .channel
+        )
+
+        #expect(identifier.description == "1::channel::connection::library::primary")
+    }
+
     @Test func format() {
         let identifier = ItemIdentifier(
             primaryID: "primary",
@@ -92,11 +121,13 @@ struct ItemIdentifierTests {
         let episode = ItemIdentifier(primaryID: "1", groupingID: "pod", libraryID: "lib", connectionID: "conn", type: .episode)
         let podcast = ItemIdentifier(primaryID: "1", groupingID: nil, libraryID: "lib", connectionID: "conn", type: .podcast)
         let author = ItemIdentifier(primaryID: "1", groupingID: nil, libraryID: "lib", connectionID: "conn", type: .author)
+        let channel = ItemIdentifier(primaryID: "1", groupingID: nil, libraryID: "lib", connectionID: "conn", type: .channel)
 
         #expect(audiobook.isPlayable)
         #expect(episode.isPlayable)
         #expect(!podcast.isPlayable)
         #expect(!author.isPlayable)
+        #expect(!channel.isPlayable)
     }
 
     @Test func convertEpisodeToPodcast() {

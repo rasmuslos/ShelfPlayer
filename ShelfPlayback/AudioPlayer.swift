@@ -47,10 +47,6 @@ public final actor AudioPlayer: Sendable {
     var didPauseAt: Date?
     var sleepTimerDidExpireAt: (SleepTimerConfiguration, Date)?
 
-    private var remoteSeekDirection: Bool?
-    private var remoteSeekBeganAt: Date?
-    private var remoteSeekAutoEndTask: Task<Void, Never>?
-
     nonisolated(unsafe) var observerSubscriptions = Set<AnyCancellable>()
 
     init() {
@@ -296,78 +292,10 @@ public extension AudioPlayer {
         }
     }
 
-    func handleRemoteSeek(forwards: Bool, type: MPSeekCommandEventType?) async {
-        guard current != nil else {
-            return
-        }
-
-        if type == .endSeeking {
-            let beganAt = remoteSeekBeganAt
-            await stopRemoteSeek()
-
-            // Some senders (e.g. CarPlay rocker buttons) translate a short tap into
-            // begin+end fast-forward within milliseconds. Treat that as a skip command.
-            if let beganAt {
-                let elapsed = Date().timeIntervalSince(beganAt)
-                if elapsed < 0.35 {
-                    logger.info("MP-Command: endSeeking forwards=\(forwards) elapsed=\(elapsed)s < 0.35s threshold → treating as tap, converting to skip")
-                    do {
-                        try await skip(forwards: forwards)
-                    } catch {
-                        logger.error("MP-Command: skip-on-tap failed: \(error)")
-                    }
-                } else {
-                    logger.info("MP-Command: endSeeking forwards=\(forwards) elapsed=\(elapsed)s >= 0.35s threshold → treating as hold, finished seeking")
-                }
-            } else {
-                logger.info("MP-Command: endSeeking forwards=\(forwards) but no beganAt recorded (no active seek) → ignoring")
-            }
-            return
-        }
-
-        if let direction = remoteSeekDirection, direction != forwards {
-            logger.info("MP-Command: seek direction changed (\(direction) → \(forwards)), ending previous seek")
-            await current?.endSeeking()
-            remoteSeekDirection = nil
-            remoteSeekBeganAt = nil
-        }
-
-        if remoteSeekDirection == nil {
-            remoteSeekDirection = forwards
-            remoteSeekBeganAt = Date()
-            logger.info("MP-Command: beginSeeking forwards=\(forwards), seek timer started")
-            await current?.beginSeeking(forwards)
-        } else {
-            logger.info("MP-Command: seek continuation forwards=\(forwards) (already seeking), refreshing auto-end timer")
-        }
-
-        remoteSeekAutoEndTask?.cancel()
-        let timeout = max(0.05, AppSettings.shared.remoteSeekAutoEndInterval)
-        logger.info("MP-Command: scheduling seek auto-end timer in \(timeout)s")
-        remoteSeekAutoEndTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(timeout))
-            guard !Task.isCancelled else {
-                return
-            }
-            self?.logger.info("MP-Command: seek auto-end timer fired after \(timeout)s, stopping seek")
-            await self?.stopRemoteSeek()
-        }
+    func beginSeeking(_ forwards: Bool) async {
+        await current?.beginSeeking(forwards)
     }
-
-    private func stopRemoteSeek() async {
-        remoteSeekAutoEndTask?.cancel()
-        remoteSeekAutoEndTask = nil
-
-        guard remoteSeekDirection != nil else {
-            logger.info("MP-Command: stopRemoteSeek called but no active seek direction, nothing to stop")
-            return
-        }
-
-        let elapsed = remoteSeekBeganAt.map { Date().timeIntervalSince($0) }
-        logger.info("MP-Command: stopRemoteSeek ending seek (direction=\(self.remoteSeekDirection.map(String.init(describing:)) ?? "nil"), elapsed=\(elapsed.map(String.init(describing:)) ?? "nil")s)")
-
-        remoteSeekDirection = nil
-        remoteSeekBeganAt = nil
+    func endSeeking() async {
         await current?.endSeeking()
     }
 
@@ -599,7 +527,10 @@ private extension AudioPlayer {
             self.logger.info("MP-Command: seekBackward triggered (type=\(String(describing: type?.rawValue)))")
 
             Task {
-                await self.handleRemoteSeek(forwards: false, type: type)
+                switch type {
+                    case .beginSeeking: await self.beginSeeking(false)
+                    default: await self.endSeeking()
+                }
             }
 
             return .success
@@ -610,7 +541,10 @@ private extension AudioPlayer {
             self.logger.info("MP-Command: seekForward triggered (type=\(String(describing: type?.rawValue)))")
 
             Task {
-                await self.handleRemoteSeek(forwards: true, type: type)
+                switch type {
+                    case .beginSeeking: await self.beginSeeking(true)
+                    default: await self.endSeeking()
+                }
             }
 
             return .success

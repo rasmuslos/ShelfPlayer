@@ -332,7 +332,7 @@ struct CustomTabValuesPreferences: View {
         .environment(\.editMode, .constant(.active))
         .animation(.smooth, value: pinnedTabValues)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
+            ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Button(role: .destructive) {
                         reset()

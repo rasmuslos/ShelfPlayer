@@ -22,6 +22,8 @@ struct ItemView: View {
             PersonView(person)
         } else if let podcast = item as? Podcast {
             PodcastView(podcast, zoom: zoomID != nil)
+        } else if let channel = item as? Channel {
+            ChannelView(channel)
         } else if let episode = item as? Episode {
             EpisodeView(episode, zoomID: zoomID)
         } else if let collection = item as? ItemCollection {

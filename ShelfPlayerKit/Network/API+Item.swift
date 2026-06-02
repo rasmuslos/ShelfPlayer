@@ -87,6 +87,9 @@ public extension APIClient {
         let path: String
 
         switch itemID.type {
+        case .channel:
+            // Channels are client-derived groupings with no server artwork.
+            throw APIClientError.invalidItemType
         case .author:
             path = "api/authors/\(itemID.primaryID)/image"
         case .episode:

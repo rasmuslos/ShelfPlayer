@@ -64,7 +64,7 @@ public struct LibraryIdentifier: Identifiable, Hashable, Codable, Sendable, Equa
         let type: LibraryMediaType
 
         switch itemID.type {
-        case .episode, .podcast: type = .podcasts
+        case .episode, .podcast, .channel: type = .podcasts
         case .audiobook, .author, .narrator, .series, .collection: type = .audiobooks
         case .playlist: type = .podcasts
         }

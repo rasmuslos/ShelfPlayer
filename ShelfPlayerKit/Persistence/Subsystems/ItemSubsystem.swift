@@ -48,7 +48,7 @@ public extension PersistenceManager.ItemSubsystem {
             switch itemID.type {
             case .audiobook, .episode:
                 isCachePurgeable = true
-            case .author, .narrator, .series, .podcast, .collection, .playlist:
+            case .author, .narrator, .series, .podcast, .channel, .collection, .playlist:
                 isCachePurgeable = false
             }
 

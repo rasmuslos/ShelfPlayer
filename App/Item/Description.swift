@@ -103,7 +103,7 @@ private struct HTMLTextView: UIViewRepresentable {
     func updateUIView(_ textView: UITextView, context: Context) {
         textView.textContainer.size = CGSize(width: width, height: .greatestFiniteMagnitude)
 
-        DispatchQueue.main.async {
+        Task { @MainActor in
             let data = Data(html.utf8)
 
             do {

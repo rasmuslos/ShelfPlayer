@@ -55,6 +55,7 @@ extension PersistenceManager.CustomizationSubsystem {
             case .library:
                 [
                     .podcastLatest(library),
+                    .podcastChannels(library),
                     .playlists(library),
                     .downloaded(library),
                 ]
@@ -117,6 +118,7 @@ public extension PersistenceManager.CustomizationSubsystem {
                 [
                     .podcastHome(library),
                     .podcastLatest(library),
+                    .podcastChannels(library),
                     .playlists(library),
                     .downloaded(library),
                     .podcastLibrary(library),
@@ -124,6 +126,7 @@ public extension PersistenceManager.CustomizationSubsystem {
             case .library:
                 [
                     .podcastLatest(library),
+                    .podcastChannels(library),
                     .playlists(library),
                     .downloaded(library),
                 ]

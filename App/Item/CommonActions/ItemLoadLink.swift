@@ -58,6 +58,8 @@ extension ItemIdentifier.ItemType {
                 "item.view.series"
             case .podcast:
                 "item.view.podcast"
+            case .channel:
+                "item.view.channel"
             case .episode:
                 "item.view.episode"
             case .collection:
@@ -78,6 +80,8 @@ extension ItemIdentifier.ItemType {
                 "error.unavailable.series"
             case .podcast:
                 "error.unavailable.podcast"
+            case .channel:
+                "error.unavailable.channel"
             case .episode:
                 "error.unavailable.episode"
             case .collection:

@@ -9,18 +9,9 @@ import SwiftUI
 import ShelfPlayback
 
 struct CustomTabValueSheet: View {
-    @Environment(\.dismiss) private var dismiss
-
     var body: some View {
         NavigationStack {
             CustomTabValuesPreferences()
-                .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("action.dismiss") {
-                            dismiss()
-                        }
-                    }
-                }
         }
         .onDisappear {
             if !AppSettings.shared.pinnedTabValues.isEmpty {

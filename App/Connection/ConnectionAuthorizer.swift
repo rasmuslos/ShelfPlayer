@@ -62,14 +62,6 @@ struct ConnectionAuthorizer: View {
     var body: some View {
         Group {
             if let strategy {
-                if strategies.count > 1 {
-                    Section {
-                        Button("connection.add.strategy.change") {
-                            self.strategy = nil
-                        }
-                    }
-                }
-
                 Section {
                     switch strategy {
                         case .usernamePassword:
@@ -84,7 +76,7 @@ struct ConnectionAuthorizer: View {
                         case .openID:
                             // No auto-launch: the browser is started explicitly by the
                             // proceed button (here or in the host sheet) via authorize().
-                            Label("connection.strategy.oAuth", systemImage: "person.badge.key.fill")
+                            Label("connection.add.strategy.openID.label", systemImage: "person.badge.key.fill")
                                 .foregroundStyle(.secondary)
                     }
                 } header: {
@@ -102,6 +94,14 @@ struct ConnectionAuthorizer: View {
                     if authorizeTrigger {
                         authorizeTrigger = false
                         authorize()
+                    }
+                }
+                
+                if strategies.count > 1 {
+                    Section {
+                        Button("connection.add.strategy.change") {
+                            self.strategy = nil
+                        }
                     }
                 }
 
@@ -248,3 +248,49 @@ private final class AuthenticationSessionPresentationContextProvider: NSObject, 
             ?? ASPresentationAnchor(windowScene: scene)
     }
 }
+
+#if DEBUG
+/// Builds an `APIClient` from a stub credential provider so the authorizer can render
+/// without a live connection. The provider never returns a token — previews only exercise layout.
+private struct ConnectionAuthorizerPreview: View {
+    let strategies: [AuthorizationStrategy]
+
+    @State private var apiClient: APIClient?
+    @State private var isLoading = false
+    @State private var username = "root"
+
+    var body: some View {
+        Form {
+            if let apiClient {
+                ConnectionAuthorizer(strategies: strategies, isLoading: $isLoading, username: $username, apiClient: apiClient) { _, _, _ in }
+            } else {
+                ProgressView()
+                    .task {
+                        apiClient = try? await APIClient(connectionID: "preview", credentialProvider: PreviewCredentialProvider())
+                    }
+            }
+        }
+        .formStyle(.grouped)
+    }
+
+    private struct PreviewCredentialProvider: APICredentialProvider {
+        var configuration: (URL, [HTTPHeader]) {
+            (URL(string: "http://localhost:3333")!, [])
+        }
+        var accessToken: String? { nil }
+        func refreshAccessToken() async throws {}
+    }
+}
+
+#Preview("Strategy picker") {
+    ConnectionAuthorizerPreview(strategies: [.usernamePassword, .openID])
+}
+
+#Preview("Username & password") {
+    ConnectionAuthorizerPreview(strategies: [.usernamePassword])
+}
+
+#Preview("OpenID") {
+    ConnectionAuthorizerPreview(strategies: [.openID])
+}
+#endif

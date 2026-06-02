@@ -75,12 +75,26 @@ private struct Title: View {
             .multilineTextAlignment(alignment)
 
         if !viewModel.podcast.authors.isEmpty {
-            Text(viewModel.podcast.authors, format: .list(type: .and, width: .short))
-                .lineLimit(2)
-                .foregroundStyle(.thickMaterial)
-                .multilineTextAlignment(alignment)
-                .font(largeFont ? .title2 : .subheadline)
-                .colorScheme(isLight ? .dark : .light)
+            let library = LibraryIdentifier.convertItemIdentifierToLibraryIdentifier(viewModel.podcast.id)
+
+            HStack(spacing: 4) {
+                ForEach(Array(viewModel.podcast.authors.enumerated()), id: \.offset) { index, author in
+                    if index > 0 {
+                        Text(verbatim: "·")
+                            .accessibilityHidden(true)
+                    }
+
+                    NavigationLink(value: NavigationDestination.itemName(author, .channel, library)) {
+                        Text(author)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .lineLimit(2)
+            .foregroundStyle(.thickMaterial)
+            .multilineTextAlignment(alignment)
+            .font(largeFont ? .title2 : .subheadline)
+            .colorScheme(isLight ? .dark : .light)
         }
     }
 }

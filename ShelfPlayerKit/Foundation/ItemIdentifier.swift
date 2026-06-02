@@ -198,6 +198,7 @@ public extension ItemIdentifier {
 
         case podcast = "podcast"
         case episode = "episode"
+        case channel = "channel"
 
         case collection = "collection"
         case playlist = "playlist"

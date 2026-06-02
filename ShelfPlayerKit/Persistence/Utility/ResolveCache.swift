@@ -109,6 +109,8 @@ public extension ResolveCache {
                     item = try await ABSClient[itemID.connectionID].series(with: itemID)
                 case .podcast:
                     item = try await resolveOnlinePodcast(primaryID: itemID.primaryID, connectionID: itemID.connectionID).0
+                case .channel:
+                    item = try await ABSClient[itemID.connectionID].channel(with: itemID)
                 case .episode:
                     guard let groupingID = itemID.groupingID else {
                         throw ResolveError.missingGroupingID

@@ -148,6 +148,7 @@ struct RegularPlaybackModifier: ViewModifier {
     @Bindable private var settings = AppSettings.shared
 
     @State private var didAppear = false
+    @State private var marqueeController = MarqueeController()
 
     var isPresented: Binding<Bool> {
         .init {
@@ -192,6 +193,7 @@ struct RegularPlaybackModifier: ViewModifier {
 
             PlaybackControls()
         }
+        .environment(\.playbackMarqueeController, marqueeController)
     }
 
     func body(content: Content) -> some View {

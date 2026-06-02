@@ -57,12 +57,6 @@ final actor NowPlayingWidgetManager: Sendable {
 
         updateTitle()
     }
-    func update(chapterIndex: Int?, chapterCount: Int) {
-        metadata[MPNowPlayingInfoPropertyChapterCount] = chapterCount
-        metadata[MPNowPlayingInfoPropertyChapterNumber] = chapterIndex as? NSNumber
-        updateWidget()
-    }
-
     func update(isPlaying: Bool) {
         self.isPlaying = isPlaying
         updatePlaybackState()

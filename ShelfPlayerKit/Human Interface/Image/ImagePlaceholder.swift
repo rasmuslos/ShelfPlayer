@@ -12,6 +12,22 @@ struct ImagePlaceholder: View {
     let cornerRadius: CGFloat
     var fallbackLabel: String? = nil
 
+    private var isChannel: Bool {
+        itemID?.type == .channel
+    }
+
+    /// Channels carry no server artwork, so their monogram is derived from the
+    /// author name encoded in the identifier even when no label was passed in.
+    private var effectiveLabel: String? {
+        if let fallbackLabel, !fallbackLabel.isEmpty {
+            return fallbackLabel
+        }
+        if isChannel, let itemID {
+            return Channel.decodeName(from: itemID)
+        }
+        return nil
+    }
+
     private var fallbackIcon: String {
         if let itemID {
             itemID.type.icon
@@ -44,10 +60,18 @@ struct ImagePlaceholder: View {
     var body: some View {
         GeometryReader { geometryProxy in
             ZStack {
-                if let fallbackLabel, !fallbackLabel.isEmpty {
+                if isChannel, let effectiveLabel {
+                    // Channels always show a rounded monogram, regardless of size.
+                    Text(Channel.monogram(for: effectiveLabel))
+                        .font(.system(size: geometryProxy.size.width * 0.38, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.gray)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                } else if let effectiveLabel {
                     let useInitials = geometryProxy.size.width < 72
 
-                    Text(useInitials ? initials(from: fallbackLabel) : fallbackLabel)
+                    Text(useInitials ? initials(from: effectiveLabel) : effectiveLabel)
                         .font(.system(size: useInitials ? geometryProxy.size.width * 0.34 : geometryProxy.size.width * 0.13, weight: .semibold, design: .rounded))
                         .foregroundStyle(.gray)
                         .multilineTextAlignment(.center)

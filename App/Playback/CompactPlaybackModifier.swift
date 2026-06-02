@@ -126,7 +126,7 @@ struct CompactPlaybackModifier: ViewModifier {
                                         .frame(width: viewModel.pillWidth, height: viewModel.pillHeight)
                                 } else {
                                     CompactLegacyCollapsedForeground(decorative: true)
-                                        .frame(width: viewModel.pillWidth)
+                                        .frame(width: viewModel.pillWidth, height: viewModel.pillHeight)
                                 }
                             }
                             .transition(.opacity)

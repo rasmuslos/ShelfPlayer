@@ -233,6 +233,9 @@ extension PodcastViewModel {
                 if refresh || explore.isEmpty {
                     $0.addTask { await self.loadExplore() }
                 }
+                if refresh || channelPodcasts.isEmpty {
+                    $0.addTask { await self.loadChannel() }
+                }
             }
 
             if refresh {
@@ -310,6 +313,33 @@ private extension PodcastViewModel {
             }
         } catch {
             logger.warning("Failed to load explore podcasts for \(self.podcast.id, privacy: .public): \(error, privacy: .public)")
+        }
+    }
+
+    /// Other podcasts on the same channel — i.e. by the same author. Surfaced
+    /// as a row next to "Explore". Resolved through the regular library search
+    /// (see ``APIClient/channel(with:)``), not a full-library scan.
+    func loadChannel() async {
+        #if DEBUG
+        if podcast.id.libraryID == "fixture" {
+            return
+        }
+        #endif
+
+        guard let author = podcast.authors.first(where: { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }) else {
+            return
+        }
+
+        do {
+            let channelID = Channel.convertNameToID(author, libraryID: podcast.id.libraryID, connectionID: podcast.id.connectionID)
+            let channel = try await ABSClient[podcast.id.connectionID].channel(with: channelID)
+            let siblings = channel.podcasts.filter { $0.id != podcast.id }
+
+            withAnimation {
+                self.channelPodcasts = siblings
+            }
+        } catch {
+            logger.warning("Failed to load channel podcasts for \(self.podcast.id, privacy: .public): \(error, privacy: .public)")
         }
     }
 

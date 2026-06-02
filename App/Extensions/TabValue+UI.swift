@@ -36,6 +36,8 @@ extension TabValue {
                 String(localized: "panel.latest")
             case .podcastLibrary:
                 String(localized: "panel.library")
+            case .podcastChannels:
+                String(localized: "panel.channels")
 
             case .playlists:
                 String(localized: "panel.playlists")
@@ -86,6 +88,8 @@ extension TabValue {
                 "calendar.badge.clock"
             case .podcastLibrary:
                 "square.split.2x2.fill"
+            case .podcastChannels:
+                ItemIdentifier.ItemType.channel.icon
 
             case .playlists:
                 ItemIdentifier.ItemType.playlist.icon

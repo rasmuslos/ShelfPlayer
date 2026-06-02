@@ -14,8 +14,14 @@ struct PlaybackTitle: View {
 
     let showTertiarySupplements: Bool
 
+    @Environment(\.playbackMarqueeController) private var sharedMarqueeController
+
     @State private var uuid = UUID()
-    @State private var marqueeController = MarqueeController()
+    @State private var fallbackMarqueeController = MarqueeController()
+
+    private var marqueeController: MarqueeController {
+        sharedMarqueeController ?? fallbackMarqueeController
+    }
 
     var body: some View {
         HStack(spacing: 0) {

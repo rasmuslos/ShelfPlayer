@@ -49,6 +49,8 @@ struct ItemIDLoadView: View {
                     itemID = try await ABSClient[libraryID.connectionID].authorID(from: libraryID, name: name)
                 case .narrator:
                     itemID = Person.convertNarratorToID(name, libraryID: libraryID.libraryID, connectionID: libraryID.connectionID)
+                case .channel:
+                    itemID = Channel.convertNameToID(name, libraryID: libraryID.libraryID, connectionID: libraryID.connectionID)
                 case .series:
                     itemID = try await ABSClient[libraryID.connectionID].seriesID(from: libraryID.libraryID, name: name)
                 default:

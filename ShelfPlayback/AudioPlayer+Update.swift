@@ -90,16 +90,6 @@ extension AudioPlayer {
         await widgetManager.update(chapter: chapter)
         events.chapterChanged.send(chapter)
     }
-    func chapterIndexDidChange(endpointID: UUID, chapterIndex: Int?, chapterCount: Int) async {
-        logger.debug("chapterIndexDidChange index=\(chapterIndex ?? -1, privacy: .public) count=\(chapterCount, privacy: .public)")
-
-        if current != nil && current?.id != endpointID {
-            return
-        }
-
-        await widgetManager.update(chapterIndex: chapterIndex, chapterCount: chapterCount)
-    }
-
     func volumeDidChange(endpointID: UUID, volume: Percentage) async {
         logger.debug("volumeDidChange volume=\(volume, privacy: .public)")
 

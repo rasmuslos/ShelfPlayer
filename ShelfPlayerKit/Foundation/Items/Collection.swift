@@ -72,6 +72,8 @@ struct AnyItem: Codable, Sendable {
             self.item = try Episode(from: decoder)
         case .podcast:
             self.item = try Podcast(from: decoder)
+        case .channel:
+            self.item = try Channel(from: decoder)
         case .series:
             self.item = try Series(from: decoder)
         case .author, .narrator:

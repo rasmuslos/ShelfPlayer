@@ -15,7 +15,7 @@ public struct ItemImage: View {
     let fallbackLabel: String?
 
     private var aspectRatioPolicy: AspectRatioPolicy {
-        if let itemID, itemID.type == .author || itemID.type == .narrator {
+        if let itemID, itemID.type == .author || itemID.type == .narrator || itemID.type == .channel {
             return .square
         }
 

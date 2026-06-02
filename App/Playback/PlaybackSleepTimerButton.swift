@@ -445,40 +445,40 @@ struct PlaybackSleepTimerPickerCard: View {
         .frame(maxWidth: .infinity)
         .animation(.spring(response: 0.45, dampingFraction: 0.65), value: isTimerActive)
     }
-
+    
     @ViewBuilder
     private var presetButtons: some View {
-        VStack(spacing: 8) {
-            if hasChapter {
-                let isSelected = activeChapterAmount != nil
-
-                Button {
-                    satellite.setSleepTimer(.chapters(1))
-                } label: {
-                    Label("playback.sleepTimer.chapter", systemImage: "append.page")
-                        .labelStyle(.titleAndIcon)
-                        .font(.system(.subheadline, weight: isSelected ? .bold : .medium))
-                        .foregroundStyle(isSelected ? primaryColor : secondaryColor)
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 40)
-                        .glassEffect(presetGlass(isSelected: isSelected), in: .capsule)
-                        .contentShape(.capsule)
-                        .scaleEffect(isSelected ? 1.04 : 1)
+        GlassEffectContainer {
+            VStack(spacing: 8) {
+                if hasChapter {
+                    let isSelected = activeChapterAmount != nil
+                    
+                    Button {
+                        satellite.setSleepTimer(.chapters(1))
+                    } label: {
+                        Label("playback.sleepTimer.chapter", systemImage: "append.page")
+                            .labelStyle(.titleAndIcon)
+                            .font(.system(.subheadline, weight: isSelected ? .bold : .medium))
+                            .foregroundStyle(isSelected ? primaryColor : secondaryColor)
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 40)
+                            .glassEffect(presetGlass(isSelected: isSelected), in: .capsule)
+                            .contentShape(.capsule)
+                            .scaleEffect(isSelected ? 1.04 : 1)
+                    }
+                    .buttonStyle(.plain)
+                    .animation(.spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
                 }
-                .buttonStyle(.plain)
-                .animation(.spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
-            }
-            
-            // Chunked HStack rows instead of LazyVGrid — lazy grids recycle
-            // children as they scroll in and out of the viewport, which kills the
-            // selection / scale / glass-effect animations on the chips.
-            GlassEffectContainer {
+                
+                // Chunked HStack rows instead of LazyVGrid — lazy grids recycle
+                // children as they scroll in and out of the viewport, which kills the
+                // selection / scale / glass-effect animations on the chips.
                 let columns = 5
                 let rows = stride(from: 0, to: presetMinutes.count, by: columns).map {
                     Array(presetMinutes[$0..<min($0 + columns, presetMinutes.count)])
                 }
-
+                
                 VStack(spacing: 8) {
                     ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
                         HStack(spacing: 8) {
@@ -500,13 +500,13 @@ struct PlaybackSleepTimerPickerCard: View {
             }
         }
     }
-
+    
     @ViewBuilder
     private func presetChip(minutes: Double) -> some View {
         let isSelected = activeChapterAmount == nil
-            && isTimerActive
-            && abs(Double(totalMinutes) - minutes) < 0.001
-
+        && isTimerActive
+        && abs(Double(totalMinutes) - minutes) < 0.001
+        
         Button {
             applyPresetMinutes(minutes)
         } label: {
@@ -524,7 +524,7 @@ struct PlaybackSleepTimerPickerCard: View {
         .buttonStyle(.plain)
         .animation(isCardDragging ? nil : .spring(response: 0.35, dampingFraction: 0.55), value: isSelected)
     }
-
+    
     /// Anything one hour or longer renders as "H:MM" so a long preset (e.g. 90 min,
     /// 120 min) shows as "1:30" / "2:00" instead of "1 hr 30 min" / "2 hr". Sub-hour
     /// presets keep the localized short unit format ("30 min").
@@ -534,14 +534,14 @@ struct PlaybackSleepTimerPickerCard: View {
         if total >= 60 {
             Text(verbatim: String(format: "%d:%02d", total / 60, total % 60))
         } else {
-            Text(minutes * 60, format: .duration(unitsStyle: .short, allowedUnits: [.hour, .minute]))
+            Text(minutes * 60, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute]))
         }
     }
-
+    
     private func startDrag() {
         activeDragCount += 1
     }
-
+    
     /// Drag-start hook for the unified timer columns. When a live interval is running,
     /// snap our manual state to the countdown's current value *first*, then mark the card
     /// as dragging and cancel the timer. The order matters: the child column has already

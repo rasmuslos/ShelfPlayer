@@ -16,7 +16,7 @@ struct ContrastModifier: ViewModifier {
         if let itemID {
             switch itemID.type {
             case .audiobook, .narrator, .author, .series: .audiobooks
-            case .podcast, .episode, .collection, .playlist: .podcasts
+            case .podcast, .episode, .channel, .collection, .playlist: .podcasts
             }
         } else if let library {
             library.id.type

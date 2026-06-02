@@ -43,7 +43,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             return
         }
 
-        DispatchQueue.main.async {
+        Task { @MainActor in
             backgroundCompletionHandler()
         }
     }

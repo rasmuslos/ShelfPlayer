@@ -138,10 +138,6 @@ private struct YearHeatmap: View {
         days.values.max() ?? 1
     }
 
-    private var activeDayCount: Int {
-        days.values.filter { $0 > 0 }.count
-    }
-
     private var weeks: [[Date?]] {
         let today = calendar.startOfDay(for: .now)
         guard let startDate = calendar.date(byAdding: .year, value: -1, to: today) else { return [] }
@@ -478,7 +474,8 @@ private struct ReadingGoalCalendar: View {
                 Text(monthLabel)
                     .font(.headline)
                     .frame(maxWidth: .infinity)
-                    .animation(nil, value: monthLabel)
+                    .contentTransition(.opacity)
+                    .animation(.smooth, value: monthLabel)
 
                 Button {
                     step(by: 1)
@@ -516,6 +513,18 @@ private struct ReadingGoalCalendar: View {
             .animation(.spring(response: 0.45, dampingFraction: 0.85), value: monthAnchor)
             .clipped()
         }
+        .contentShape(.rect)
+        .gesture(
+            DragGesture(minimumDistance: 20)
+                .onEnded { value in
+                    let threshold: CGFloat = 50
+                    if value.translation.width < -threshold {
+                        step(by: 1)
+                    } else if value.translation.width > threshold {
+                        step(by: -1)
+                    }
+                }
+        )
         .padding(.vertical, 8)
     }
 
@@ -578,8 +587,16 @@ private struct ReadingGoalCalendar: View {
             let comps = calendar.dateComponents([.year, .month], from: next)
             if let nextStart = calendar.date(from: comps), nextStart > today { return }
         }
+        // Commit the direction first, then swap the month on the next runloop
+        // tick. Changing both in one transaction leaves the *outgoing* grid
+        // holding the previous direction's removal edge — its `.transition` was
+        // baked in by the prior body — so the first reversal slides it the wrong
+        // way. Rebuilding it with the new direction before the identity swap
+        // keeps insertion and removal edges consistent.
         stepDirection = months
-        monthAnchor = next
+        Task { @MainActor in
+            monthAnchor = next
+        }
     }
 
     private struct DayCell: View {
@@ -659,7 +676,14 @@ final class StatisticsViewModel {
     }
 
     var activeDayCount: Int {
-        allDays.values.filter { $0 > 0 }.count
+        // Match the heatmap's rolling 12-month window so the count never
+        // exceeds a year. `stats.days` spans the user's entire history, so
+        // counting it unfiltered yields impossible totals (e.g. 554).
+        let today = Calendar.current.startOfDay(for: .now)
+        guard let windowStart = Calendar.current.date(byAdding: .year, value: -1, to: today) else {
+            return allDays.values.filter { $0 > 0 }.count
+        }
+        return allDays.filter { $0.key >= windowStart && $0.value > 0 }.count
     }
 
     var topItems: [(title: String, time: Double)] {
@@ -764,5 +788,28 @@ final class StatisticsViewModel {
         StatisticsView(connectionID: "preview")
     }
     .previewEnvironment()
+}
+
+#Preview("Reading Goal Calendar") {
+    let calendar = Calendar.current
+    let target: TimeInterval = 30 * 60
+    let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: .now)) ?? .now
+
+    // Spread a mix of hit / partial / missed days across the current month so
+    // every DayCell state (filled, faded, empty, today ring) is visible.
+    let days: [Date: Double] = (0..<calendar.component(.day, from: .now)).reduce(into: [:]) { result, offset in
+        guard let date = calendar.date(byAdding: .day, value: offset, to: monthStart) else { return }
+        let seconds: TimeInterval
+        switch offset % 3 {
+        case 0: seconds = target + 600   // hit
+        case 1: seconds = target * 0.4   // partial
+        default: seconds = 0             // miss
+        }
+        result[calendar.startOfDay(for: date)] = seconds
+    }
+
+    return ReadingGoalCalendar(days: days, targetSeconds: target)
+        .padding()
+        .previewEnvironment()
 }
 #endif

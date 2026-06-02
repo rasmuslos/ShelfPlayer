@@ -131,6 +131,29 @@ struct LibraryAPITests {
         }
     }
 
+    // MARK: Channels
+
+    @Test func resolveChannelViaSearch() async throws {
+        let client = try await authenticatedClient()
+        let library = try await podcastLibrary()
+
+        // Pick a real author from the library so the test is not coupled to seed names.
+        let (podcasts, _) = try await client.podcasts(from: library.id.libraryID, sortOrder: .name, ascending: true, limit: 50, page: 0)
+        let author = try #require(podcasts.flatMap(\.authors).first(where: { !$0.isEmpty }), "Podcast library needs a podcast with an author")
+
+        let channelID = Channel.convertNameToID(author, libraryID: library.id.libraryID, connectionID: await client.connectionID)
+        let channel = try await client.channel(with: channelID)
+
+        #expect(channel.id.type == .channel)
+        #expect(channel.name == author)
+        #expect(!channel.podcasts.isEmpty)
+
+        for podcast in channel.podcasts {
+            #expect(podcast.id.type == .podcast)
+            #expect(podcast.authors.contains(author), "Every podcast in the channel must list the channel's author")
+        }
+    }
+
     // MARK: Authors
 
     @Test func fetchAuthors() async throws {

@@ -23,6 +23,7 @@ public indirect enum TabValue: Identifiable, Hashable, Codable, Sendable {
     case podcastHome(LibraryIdentifier)
     case podcastLatest(LibraryIdentifier)
     case podcastLibrary(LibraryIdentifier)
+    case podcastChannels(LibraryIdentifier)
 
     case playlists(LibraryIdentifier)
     case collection(ItemCollection, LibraryIdentifier)
@@ -65,6 +66,8 @@ public indirect enum TabValue: Identifiable, Hashable, Codable, Sendable {
             "podcastLatest_\(library.id)"
         case .podcastLibrary(let library):
             "podcastLibrary_\(library.id)"
+        case .podcastChannels(let library):
+            "podcastChannels_\(library.id)"
 
         case .playlists(let library):
             "playlists_\(library.id)"
@@ -101,6 +104,7 @@ public indirect enum TabValue: Identifiable, Hashable, Codable, Sendable {
              .podcastHome(let library),
              .podcastLatest(let library),
              .podcastLibrary(let library),
+             .podcastChannels(let library),
              .playlists(let library),
              .downloaded(let library):
             library
