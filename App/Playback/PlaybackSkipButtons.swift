@@ -13,8 +13,6 @@ struct PlaybackBackwardButton: View {
     @Environment(Satellite.self) private var satellite
     @Environment(SkipController.self) private var skipController
 
-    @State private var seekTimer: Timer?
-
     private var isLoading: Bool {
         if let currentItemID = satellite.nowPlayingItemID {
             satellite.isBuffering || satellite.isLoading(observing: currentItemID)
@@ -37,14 +35,9 @@ struct PlaybackBackwardButton: View {
         .buttonStyle(.plain)
         .onLongPressGesture(minimumDuration: 0.5, perform: {}, onPressingChanged: { pressing in
             if pressing {
-                seekTimer = .scheduledTimer(withTimeInterval: 0.5, repeats: true) { [satellite, skipController] _ in
-                    Task { @MainActor in
-                        skipController.skipPressed(forwards: false, satellite: satellite)
-                    }
-                }
+                skipController.longPressStarted(forwards: false, satellite: satellite)
             } else {
-                seekTimer?.invalidate()
-                seekTimer = nil
+                skipController.longPressEnded()
             }
         })
         .padding(-12)
@@ -60,8 +53,6 @@ struct PlaybackForwardButton: View {
     @Environment(PlaybackViewModel.self) private var viewModel
     @Environment(Satellite.self) private var satellite
     @Environment(SkipController.self) private var skipController
-
-    @State private var seekTimer: Timer?
 
     private var isLoading: Bool {
         if let currentItemID = satellite.nowPlayingItemID {
@@ -80,14 +71,9 @@ struct PlaybackForwardButton: View {
             .onLongPressGesture(minimumDuration: 0.5, perform: {}, onPressingChanged: { pressing in
                 if pressing {
                     skipController.skipPressed(forwards: true, satellite: satellite)
-                    seekTimer = .scheduledTimer(withTimeInterval: 0.5, repeats: true) { [satellite, skipController] _ in
-                        Task { @MainActor in
-                            skipController.skipPressed(forwards: true, satellite: satellite)
-                        }
-                    }
+                    skipController.longPressStarted(forwards: true, satellite: satellite)
                 } else {
-                    seekTimer?.invalidate()
-                    seekTimer = nil
+                    skipController.longPressEnded()
                 }
             })
             .padding(-12)

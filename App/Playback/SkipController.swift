@@ -20,6 +20,11 @@ final class SkipController {
     @ObservationIgnored
     private(set) var skipTask: Task<Void, Never>?
 
+    @ObservationIgnored
+    private var holdTimer: Timer?
+    @ObservationIgnored
+    private var holdStartedAt: Date?
+
     private(set) var notifySkipBackwards = false
     private(set) var notifySkipForwards = false
 
@@ -58,6 +63,35 @@ final class SkipController {
                 satellite.seek(to: satellite.currentTime + skipCache, insideChapter: false) {}
 
                 AudioPlayer.shared.events.skipped.send(forwards)
+            }
+        }
+    }
+
+    func longPressStarted(forwards: Bool, satellite: Satellite) {
+        holdStartedAt = Date()
+        holdTimer?.invalidate()
+        scheduleHoldTick(forwards: forwards, satellite: satellite)
+    }
+
+    func longPressEnded() {
+        holdTimer?.invalidate()
+        holdTimer = nil
+        holdStartedAt = nil
+    }
+
+    private func scheduleHoldTick(forwards: Bool, satellite: Satellite) {
+        let elapsed = holdStartedAt.map { Date().timeIntervalSince($0) } ?? 0
+        let interval: TimeInterval = switch elapsed {
+        case ..<1.5: 0.28
+        case ..<3.0: 0.16
+        default: 0.09
+        }
+
+        holdTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { [weak self] _ in
+            Task { @MainActor in
+                guard let self else { return }
+                self.skipPressed(forwards: forwards, satellite: satellite)
+                self.scheduleHoldTick(forwards: forwards, satellite: satellite)
             }
         }
     }
