@@ -172,28 +172,36 @@ private struct BottomSlider: View {
         @Bindable var viewModel = viewModel
 
         if replaceVolumeWithTotalProgress, satellite.chapter != nil {
-            PlaybackSlider(percentage: satellite.playedTotal, seeking: $viewModel.seekingTotal, currentTime: currentTime, duration: duration, textFirst: true) {
-                Text(displayedRemaining ?? remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
-                    .contentTransition(.numericText())
-            } complete: {
-                satellite.seek(to: satellite.duration * $0, insideChapter: false) {
-                    Task { @MainActor in
-                        viewModel.seekingTotal = nil
+            VStack(spacing: 4) {
+                PlaybackSlider(percentage: satellite.playedTotal, seeking: $viewModel.seekingTotal, currentTime: currentTime, duration: duration, textFirst: true) {
+                    Text(displayedRemaining ?? remaining, format: .duration(unitsStyle: .abbreviated, allowedUnits: [.hour, .minute, .second], maximumUnitCount: 1))
+                        .contentTransition(.numericText())
+                } complete: {
+                    satellite.seek(to: satellite.duration * $0, insideChapter: false) {
+                        Task { @MainActor in
+                            viewModel.seekingTotal = nil
+                        }
                     }
                 }
-            }
-            .onChange(of: remaining, initial: true) { _, newValue in
-                if hasSettled {
-                    withAnimation(.smooth) {
+                .onChange(of: remaining, initial: true) { _, newValue in
+                    if hasSettled {
+                        withAnimation(.smooth) {
+                            displayedRemaining = newValue
+                        }
+                    } else {
                         displayedRemaining = newValue
                     }
-                } else {
-                    displayedRemaining = newValue
                 }
-            }
-            .task {
-                try? await Task.sleep(for: .milliseconds(500))
-                hasSettled = true
+                .task {
+                    try? await Task.sleep(for: .milliseconds(500))
+                    hasSettled = true
+                }
+
+                Text(viewModel.seekingTotal ?? satellite.playedTotal, format: .percent.precision(.fractionLength(0)))
+                    .contentTransition(.numericText())
+                    .font(viewModel.seekingTotal == nil ? .caption2 : .footnote)
+                    .fontDesign(.rounded)
+                    .foregroundStyle(viewModel.seekingTotal == nil ? .secondary : .primary)
             }
         } else {
             PlaybackSlider(percentage: satellite.volume, seeking: $viewModel.volumePreview, currentTime: nil, duration: nil, textFirst: true) {
